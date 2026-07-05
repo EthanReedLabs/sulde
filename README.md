@@ -56,6 +56,8 @@ This repository is the **Community Edition** — the complete framework mechanis
 
 The Community Edition is not a trial — the mechanism is complete and self-sufficient. Pro is for teams that want the accumulated incident library and advanced skills instead of building their own from scratch.
 
+> **Note**: Community skill docs occasionally reference Pro-only skills (e.g. `/ui-impl`, `/update-design`, `/parallel-dev`, `coordinator-maintenance`) as part of the full workflow. Those steps are optional extensions — every Community skill runs complete without them.
+
 ## Prerequisites
 
 - **Claude Code** with plugin support
