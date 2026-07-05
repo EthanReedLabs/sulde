@@ -1,0 +1,79 @@
+---
+adr: "0002"
+title: "Feature code bypasses scaffold contract (one-off impl instead of shared component)"
+platforms: [android, ios, flutter, harmony]
+first_logged: 2026-01-01
+recurrence: 1
+lint_status: pending
+---
+
+# 0002 — Feature code bypasses scaffold contract
+
+> **Mobile-generic example ADR shipped with sulde-cc v0.2.0.**
+
+**First logged**: 2026-01-01 (illustrative)
+**Platforms**: android, ios, flutter, harmony
+**Recurrence**: 1
+**Lint status**: pending (no automated check yet — see Mitigation §long-term)
+
+---
+
+## Symptom
+
+A feature page implements its own version of a UI element that the project has a shared scaffold component for. Examples:
+
+- Feature implements its own title bar instead of using `AppTopBar`
+- Feature wires its own loading / error / empty states instead of using `AppStateView` / `AdaptiveStateView`
+- Feature implements its own navigation transition instead of `AppRouter` / `NavigationCoordinator`
+- Feature hand-rolls its own bottom sheet instead of the project's `BottomSheetScaffold`
+
+The visible result: subtle inconsistencies across pages (font size 20sp here, 25sp there; spinner colour different per page; transition duration variable). Users perceive the app as "less polished" without being able to articulate why.
+
+## Root cause
+
+Three contributing causes, in decreasing order of impact:
+
+1. **Scaffold discovery cost.** Devs don't read `<docs-hub>/scaffold-map.yaml` before starting a feature. When a similar-looking widget needs to ship today, hand-rolling feels faster than searching for the existing one.
+2. **Scaffold contract gaps.** Even when devs find the scaffold, its contract doc (`scaffolds/{name}.md`) sometimes doesn't cover their use case — so they "extend" by hand-rolling instead of extending the scaffold itself.
+3. **Coordinator under-cites scaffolds.** Task-mds often describe the desired UI without saying "use `AppTopBar`." Devs then default to building from primitives.
+
+## Cost
+
+- **Visual drift**: scaffold values (font, color, spacing) update once, but hand-rolled copies don't follow. Six months later the app has 4 visually-distinct title bars.
+- **Behavioural drift**: scaffold handles accessibility / RTL / dynamic-type correctly; hand-rolled copies often don't.
+- **Refactor difficulty**: when the scaffold's design changes (rebrand, theme overhaul), all hand-rolled copies need separate fixes. The "design tax" compounds.
+- **Cross-frontend asymmetry**: scaffold-bypass on Android may not be mirrored on iOS, causing platform-specific UI bugs.
+
+## Mitigation
+
+### Short-term (per-task)
+
+- The coordinator's `writing-task-md` skill §0.5 Step 4 mandates running `query-scaffold.sh --list` and grep'ing scaffold usage before drafting. The task-md `§起草前 baseline` Step 4 must name the scaffold the task should use.
+- The `assign` skill §0 / §3 reads the task-md scaffold citation and treats it as a hard constraint.
+
+### Medium-term (scaffold contracts)
+
+- Each scaffold in `<docs-hub>/scaffold-map.yaml` should link to its contract doc at `<docs-hub>/scaffolds/{name}.md`. The contract describes:
+  - When to use this scaffold (use cases)
+  - What props it accepts
+  - How to extend it (subclass / config / theme override)
+  - When NOT to use it (anti-cases)
+- Use `/sulde-add-scaffold <name>` to register new scaffolds; this reminds the coordinator to author the contract doc.
+
+### Long-term (tooling)
+
+- Lint rule that detects bypass: e.g. if a feature page renders a top bar without using the project's `AppTopBar`, flag in CI. Implementation depends on stack:
+  - Android: detekt custom rule scanning for `TopAppBar` / `Toolbar` outside scaffold module
+  - iOS: SwiftLint custom rule scanning for `UINavigationBar` / `NavigationStack` outside scaffold module
+  - Flutter: custom_lint package scanning for `AppBar` constructions outside scaffold module
+  - Harmony: hvigorw lint scanning for unauthorized `Navigation` constructions
+
+## Related
+
+- `<docs-hub>/00_shared-rules/data-sources.md` — scaffold contracts sit at tier 3
+- `<docs-hub>/scaffold-map.yaml` — registry of scaffolds
+- `<docs-hub>/ADR/0001-coordinator-impression-based-dispatch.md` — when the coordinator forgets to cite scaffolds
+
+## Example incident (anonymised)
+
+A login page on Android shipped with a custom title bar showing the back button as `<` (chevron-left), font size 18sp, no shadow. The project's `AppTopBar` scaffold renders back as a circular icon, font 22sp, with a subtle bottom shadow. Three other pages had similar one-offs over the previous quarter. A coordinator UI audit caught the drift; a single architectural task replaced all four with `AppTopBar`, saving ~200 lines of duplicated code and bringing the app visually consistent. The audit also retroactively added the missing scaffold contract doc.

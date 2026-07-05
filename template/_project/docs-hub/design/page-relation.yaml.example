@@ -1,0 +1,91 @@
+# page-relation.yaml — 页面关系图谱(coordinator-owned)
+#
+# 维护**所有页面**之间的关系(独立页 / 状态分支 / 弹窗 / 流程下一步),让所有
+# Claude Code session 在改 UI 前先看图谱、按 type 字段分流,避免"A 页面改成
+# B 页面"误判(SwiftUI / Compose 都易把 @State 分支看成新页面)。
+#
+# 协调端独家管辖。Dev 端只读,若需更新走 handoff 通知协调端。
+#
+# 关联 skill:
+# - skills/dev/ui-impl/SKILL.md §4 阶段 0 强制读取本图谱
+# - skills/coordinator/update-design/SKILL.md 通过本图谱 diff 决定哪页需要重新
+#   生成 pen-truth
+# - skills/coordinator/coordinator-maintenance/SKILL.md 周期 audit 本图谱条目
+#   vs `<docs-hub>/design-truth/` 实际文件
+#
+# Schema:
+#   pages:
+#     "<pageId>":
+#       title: "<人类可读名>"
+#       type: page | modal | state | dialog
+#       state-of: "<pageId>"        # type=state 时必填,指向宿主页
+#       parent: "<pageId>"          # 上下文页(一般只读不改)
+#       children: ["<pageId>", ...] # 该页弹出的 modal / 子页
+#       states: ["<pageId>", ...]   # 该页的 state 分支(每个 type=state)
+#       next: ["<pageId>", ...]     # 流程下一步
+#       android:
+#         file: "<相对项目根的 .kt 路径>"
+#         status: clear | review-needed | todo | deferred | archived
+#       ios:
+#         file: "<相对项目根的 .swift 路径>"
+#         status: ...
+#       flutter:
+#         file: "<相对项目根的 .dart 路径>"
+#         status: ...
+#       harmony:
+#         file: "<相对项目根的 .ets 路径>"
+#         status: ...
+#       notes: |
+#         (可选)关于此页的特殊说明 / 已知问题 / 待办
+#
+# audit-log(append-only,记录每次图谱改动):
+#   audit-log:
+#     - date: 2026-05-25
+#       by: coordinator
+#       change: "Added page 05A: Tasks Center; type=page"
+#       trigger: "用户对接需求 / 设计稿更新 / Dev handoff"
+
+pages:
+  # ---- 示例 1:独立 page ----
+  # "01":
+  #   title: "首页"
+  #   type: page
+  #   children: ["01A", "01B"]
+  #   next: ["02"]
+  #   android:
+  #     file: feature-home/src/main/java/.../HomeFragment.kt
+  #     status: clear
+  #   ios:
+  #     file: Sources/FeatureHome/HomeView.swift
+  #     status: clear
+
+  # ---- 示例 2:state 分支(关键!不是独立 view)----
+  # "01A":
+  #   title: "首页引导态"
+  #   type: state
+  #   state-of: "01"
+  #   notes: |
+  #     用户第一次进入首页显示引导。改这页 = 改 01 宿主 + 加条件渲染逻辑.
+  #     绝对不要新建独立 layout / View 文件.
+
+  # ---- 示例 3:modal ----
+  # "01B":
+  #   title: "首页分享浮层"
+  #   type: modal
+  #   parent: "01"
+  #   android:
+  #     file: feature-home/.../ShareDrawerFragment.kt
+  #   ios:
+  #     file: Sources/FeatureHome/ShareDrawerView.swift
+
+  # ---- 示例 4:dialog ----
+  # "auth-login":
+  #   title: "登录确认"
+  #   type: dialog
+  #   parent: "05"
+
+audit-log: []
+# - date: 2026-MM-DD
+#   by: coordinator
+#   change: "Added pageId XX"
+#   trigger: "..."

@@ -1,0 +1,107 @@
+# CLAUDE.md — {{frontend_name}} (Flutter)
+
+> Per-frontend Claude Code rules. Loaded automatically when a Claude session starts in this directory.
+
+## Role
+
+Dev session for Flutter frontend `{{frontend_name}}`. Execute task-mds, verify before declaring done.
+
+You do not edit files outside this frontend, modify design source / design-truth, or dispatch tasks to other frontends.
+
+## What to read at session start
+
+| Before doing this | Read |
+|---|---|
+| Any work | `<docs-hub>/00_shared-rules/self-fix-boundary.md` |
+| Picking `model:` from a task-md | `<docs-hub>/00_shared-rules/model-strategy.md` |
+| Building or verifying | `<docs-hub>/00_shared-rules/verify-build.md` |
+| Visual / UI work | `<docs-hub>/design-truth/{page-id}.md` + `.png` |
+| Perf work | `<docs-hub>/00_shared-rules/perf-diagnosis.md` + Flutter DevTools |
+
+## Stack
+
+- **Language**: Dart {{dart_version}}
+- **Framework**: Flutter {{flutter_version}} (Widgets)
+- **State management**: {{state_mgmt}} (e.g. Riverpod / Bloc / Provider / GetX)
+- **Routing**: {{router}} (e.g. go_router / auto_route)
+- **Minimum platform**: Android {{min_android}} / iOS {{min_ios}}
+- **Test runner**: `flutter test`
+
+## Build / install / runtime verify
+
+The canonical recipe is in `<docs-hub>/00_shared-rules/verify-build.md`. Quick reference:
+
+```bash
+# Doctor — verify environment once per session
+flutter doctor
+
+# Build (Debug APK; iOS use --debug --no-codesign on simulator)
+flutter build apk --debug
+# verify: https://docs.flutter.dev/reference/flutter-cli
+
+# Install + run on connected device
+flutter install
+flutter run --release  # or --profile for perf work
+
+# Runtime log
+flutter logs > .ai-workspace/diag/$(date +%Y-%m-%d)-${TASK}-log.txt
+
+# Screenshot
+flutter screenshot --out .ai-workspace/screenshots/$(date +%Y-%m-%d)-${TASK}-after.png
+
+# Lint
+flutter analyze
+dart format --set-exit-if-changed lib/
+```
+
+## Git identity
+
+This frontend's Dev commits as `{{git_alias}}`. Run `git as-{{alias}} commit ...`. Plain `git commit` is blocked.
+
+## Branch convention
+
+- Integration branch: `{{integration_branch}}`
+- Per-task branches: `dev/{{git_alias}}/{slug}`
+
+## Commit message style
+
+```
+fix: handle null player surface on rebind
+refactor: extract base widget for safe-area
+feat: home tabs reduced to 2
+perf: avoid main-isolate spike on list rebuild
+```
+
+## Flutter gotchas
+
+- **Hot reload ≠ verify**: §5 verify must include a `flutter run --release` build, not just hot reload. State carryover from hot reload hides crashes.
+- **Widget rebuild leaks**: missing `const` constructors → rebuild spikes. Audit `analyze` warnings before committing.
+- **Platform channels**: when touching `MethodChannel` / `EventChannel`, verify on both Android + iOS — handoff must show both build outputs.
+- **Null safety drift**: avoid `!` unwraps on data from network / platform channels; use `?.let { ... }` pattern.
+
+## Output language
+
+Default: **{{output_language}}**.
+
+## Self-fix boundary recap
+
+- **Trivial + safe + in your allowlist**: include in same commit
+- **Anything else**: list under "escalation 候选" in handoff
+
+Full allowlist: `<docs-hub>/00_shared-rules/self-fix-boundary.md`.
+
+## Diagnostic tools (Flutter)
+
+| Tool | Use case |
+|---|---|
+| Flutter DevTools (browser-based) | CPU / memory / widget tree / network |
+| `flutter run --profile` | Frame timing breakdown in DevTools |
+| `flutter doctor` | Environment validation |
+| Observatory / VM Service | Dart-level profiling |
+| Underlying platform tools (`adb`, `idevicesyslog`) | When the issue is below the Flutter layer |
+
+---
+
+## Template placeholders
+
+`{{frontend_name}}` / `{{dart_version}}` / `{{flutter_version}}` / `{{state_mgmt}}` / `{{router}}` / `{{min_android}}` / `{{min_ios}}` / `{{git_alias}}` / `{{author_name}}` / `{{author_email}}` / `{{integration_branch}}` / `{{output_language}}`

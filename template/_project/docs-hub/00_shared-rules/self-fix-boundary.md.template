@@ -1,0 +1,79 @@
+# self-fix-boundary — what devs may fix without prior coordinator approval
+
+> Devs occasionally see a related-but-out-of-scope problem mid-task. This file says when to fix-it-now vs handoff-and-wait.
+
+## The rule
+
+Stay strictly within task-md scope **unless** the change satisfies all three:
+
+1. **Trivial** — < ~20 lines, no logic change, no architectural touch
+2. **Safe** — no risk of regression (no shared state, no API surface)
+3. **In allowlist** — the change category appears in §allowlist below
+
+If any of the three is questionable → **don't fix**, list under `§ escalation 候选` in the handoff.
+
+## §allowlist (auto-fix OK)
+
+These are pre-approved as low-risk. Devs may include them in the same commit as the main task. Mention each in the handoff `§ 改动文件清单` and a one-liner under `§ verify`.
+
+| Category | Examples | Boundary |
+|---|---|---|
+| **Typo in already-touched file** | `viweModel` → `viewModel`; commit msg typo | Only in files you modified for the main task |
+| **Import sort / unused import** | sorting; removing unused imports IDE flagged | Same as above |
+| **Lint-fix in changed lines** | trailing whitespace; missing newline at EOF; var instead of val | Only on lines you already touched |
+| **Stale TODO referencing your work** | TODO comment about the feature you just implemented | Remove or update to reflect new state |
+| **Stale doc comment** | KDoc/JavaDoc/docstring lying about behaviour you just changed | Update to match new behaviour |
+| **Test fixture matching new API** | test expects old return type; you changed it | Update test data, NOT test logic |
+
+## §escalate (always handoff, never auto-fix)
+
+The opposite list — these are always escalation, even if they look small:
+
+| Category | Why |
+|---|---|
+| **Scaffold-layer change** | TopBar, navigation, base class, theme — affects every page |
+| **Shared-rules / docs-hub edit** | Coordinator-owned |
+| **Cross-frontend logic mirror** | "iOS has the same bug" — coordinator decides if/when to mirror |
+| **Public API surface** | Adding / renaming / removing a public function or type |
+| **Data source / endpoint URL** | Backend / config / feature flag changes |
+| **Build / dependency version bump** | Gradle / pubspec / Package.swift / oh-package.json5 |
+| **Migration script / DB schema** | One-way; coordinator owns rollout plan |
+| **Removing existing code** | Even "obvious dead code" — see "Chesterton's fence" |
+| **Three+ unrelated files** | "Sweep" changes; coordinator decides scope |
+
+## §project-sensitive (project-specific override list)
+
+This section is **filled by `/sulde-add-sensitive-file`**. Files listed here are explicitly marked sensitive: even if a change would otherwise fall in §allowlist, touching one of these triggers escalation.
+
+```yaml
+# Example (run /sulde-add-sensitive-file to populate)
+sensitive_files:
+  # - core-ui/src/main/java/.../AppRouter.kt
+  # - Sources/CoreUI/AppRouter.swift
+```
+
+(Reads from `.sulde-config.yaml: scope_sensitivity.sensitive_files[]` — keep that and this list in sync.)
+
+## How the rule shows up in handoffs
+
+The handoff's `§ 改动文件清单` distinguishes the main change from self-fixes:
+
+```markdown
+## § 改动文件清单
+
+### Main task changes (per task-md)
+- `feature-foo/src/.../Foo.kt:42-68` — main logic
+- `feature-foo/src/.../FooView.kt:14` — usage update
+
+### Self-fixes (§allowlist)
+- `feature-foo/src/.../Foo.kt:8` — removed unused import (already touching this file)
+- `feature-foo/src/.../FooTest.kt:24` — updated test fixture (API signature changed in main task)
+```
+
+If self-fixes touch files **not in §allowlist**, the dev must NOT include them in the commit — they go in `§ escalation 候选` and the coordinator decides.
+
+## Anti-pattern this prevents
+
+A common failure mode: dev finishes a 1-hour task with a 50-line commit, but quietly adds a 200-line "while I was in there" cleanup. Coordinator now has a 250-line commit to review across two unrelated changes, and CI breaks for the cleanup half. The boundary keeps commits coherent + review attention focused.
+
+See `<docs-hub>/ADR/0002-scaffold-bypass.md` for a related anti-pattern.

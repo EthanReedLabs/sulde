@@ -1,0 +1,110 @@
+# verify-build — canonical build / install / verify recipe (per frontend)
+
+> The 5-step verify gate from `skills/dev/assign/SKILL.md §5`, with stack-specific commands. Devs cite this file in handoffs.
+
+## The 5-step gate
+
+Every task-md execution finishes with these 5 steps **before commit**. Skip any → §5 fail → handoff `-block.md` (not `-result.md`).
+
+| # | Step | Pass criteria |
+|:-:|---|---|
+| 1 | **Build** | exit 0; zero error; warnings reviewed (escalate new warnings) |
+| 2 | **Install** | exit 0; app launches on the connected device |
+| 3 | **Launch + Log** | manually exercise the changed code path; runtime log has no new crash / fatal / `*: E` error |
+| 4 | **Screenshot** | capture UI; diff vs design-truth or task-md `-before` snapshot |
+| 5 | **Lint** | exit 0 (or only pre-existing warnings unchanged) |
+
+Optional 6th step for perf tasks: **Profile** (see `perf-diagnosis.md`).
+
+## Stack-specific commands
+
+Values come from `.sulde-config.yaml: build_verify[<stack>]`. Defaults reproduced here for reference.
+
+### Android (`mobile-android`)
+
+```bash
+./gradlew :app:assembleDebug                              # build
+# Windows: gradlew.bat :app:assembleDebug
+
+adb install -r app/build/outputs/apk/debug/app-debug.apk  # install
+adb shell am start -n {package}/.MainActivity             # launch
+adb logcat -d AndroidRuntime:E '*:S' > log.txt            # log
+adb shell screencap -p > after.png                        # screenshot
+./gradlew lint                                            # lint
+```
+
+### iOS (`mobile-ios`)
+
+```bash
+xcodebuild -project {project}.xcodeproj \
+           -scheme {scheme} \
+           -destination 'platform=iOS,id={udid}' \
+           build                                          # build (macOS only)
+
+# install — choose one:
+ios-deploy --id {udid} --bundle {app_path} --justlaunch
+xcrun devicectl device install app --device {udid} {app_path}
+
+xcrun devicectl process launch --device {udid} {bundle_id}  # launch
+idevicesyslog -u {udid} > log.txt                           # log
+xcrun simctl io booted screenshot after.png                 # screenshot (simulator)
+xcrun devicectl device snapshot --device {udid}             # screenshot (real device)
+swiftlint                                                   # lint
+```
+
+### Flutter (`mobile-flutter`)
+
+```bash
+flutter build apk --debug         # build
+flutter install                   # install
+flutter run --release             # launch
+flutter logs > log.txt            # log
+flutter screenshot --out after.png  # screenshot
+flutter analyze                   # lint
+```
+
+### Harmony (`mobile-harmony`)
+
+```bash
+./hvigorw assembleHap --mode debug                          # build
+# Windows: hvigorw.bat assembleHap --mode debug
+
+hdc install -r build/default/outputs/default/{hap}.hap      # install
+hdc shell aa start -a {ability} -b {bundle}                 # launch
+hdc shell hilog | grep {bundle} > log.txt                   # log
+hdc shell snapshot_display -f /data/local/tmp/screen.png \
+  && hdc file recv /data/local/tmp/screen.png after.png     # screenshot
+./hvigorw lint                                              # lint
+```
+
+## What gets stored where
+
+Each step's output goes to `<frontend>/.ai-workspace/`:
+
+| Step | Path | Naming |
+|---|---|---|
+| Build | (in handoff inline; no file) | quote BUILD SUCCESSFUL line + duration |
+| Install | (inline) | `adb install` / `hdc install` exit + Success line |
+| Log | `.ai-workspace/diag/{date}-{task}-log.txt` | full file referenced from handoff |
+| Screenshot | `.ai-workspace/screenshots/{date}-{task}-after.png` | + matching `-before.png` if visual change |
+| Lint | (inline if green; file if warnings to escalate) | `.ai-workspace/diag/{date}-{task}-lint.txt` |
+
+## When verify is allowed to be partial
+
+| Scenario | Verify partial? |
+|---|---|
+| Pure doc / .ai-workspace edits | ✅ skip all 5; note "no code change" in handoff |
+| Config-only change (no UI / no runtime path) | ✅ steps 1+5 only |
+| Test-only change | ✅ steps 1+5+ test run output |
+| UI / behavioural change | ❌ all 5 mandatory |
+| Perf change | ❌ all 5 + profile capture (perf-diagnosis.md) |
+
+## CI vs local
+
+Local verify is the dev's responsibility. CI is the coordinator's safety net. The handoff's `§ verify` section quotes local results; the coordinator runs CI before merging to integration.
+
+When local hardware is unavailable (iOS on Linux/Windows; Harmony device unavailable):
+
+- Push to a CI-only branch
+- Reference CI run URL from the handoff
+- The §5 verify still must include the CI summary, not just "CI passes"

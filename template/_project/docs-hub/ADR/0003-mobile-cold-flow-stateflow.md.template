@@ -1,0 +1,89 @@
+---
+adr: "0003"
+title: "Cold Flow / Publisher used where Hot StateFlow / @Published is needed for L1 truth source"
+platforms: [android, ios]
+first_logged: 2026-01-01
+recurrence: 1
+lint_status: pending
+---
+
+# 0003 — Cold Flow / Publisher used where Hot StateFlow / @Published is needed for L1 truth source
+
+> **Mobile-generic example ADR shipped with sulde-cc v0.2.0.**
+
+**First logged**: 2026-01-01 (illustrative)
+**Platforms**: android (Kotlin Flow), ios (Combine Publishers)
+**Recurrence**: 1
+**Lint status**: pending
+
+---
+
+## Symptom
+
+A repository / service exposes a stream that's supposed to represent the **L1 truth source** for some piece of state (current user session, network status, feature flag value). Downstream consumers observe the stream and update UI / behaviour accordingly.
+
+Bug observations:
+- New observers attached after the initial value emission see nothing (cold stream restarts per collector)
+- Two collectors of the "same" stream see different values (each gets its own upstream pipeline)
+- State changes emit fine in tests (single observer) but UI doesn't react in production (multi-observer fan-out broken)
+- Reconnection logic re-fetches everything because the stream rewinds on re-collect
+
+Devs often "fix" this by adding `replay(1)` / `share()` / manual `BehaviorSubject` wrappers, partially papering over the problem but missing the underlying invariant.
+
+## Root cause
+
+**Cold vs hot stream semantics.**
+
+| Stream type | Behaviour | Use for |
+|---|---|---|
+| **Cold** (Kotlin `Flow<T>`, Combine `Publisher<T, _>`) | Each collector runs the upstream chain independently; no shared state | One-shot requests, transformations of other streams, derived computations |
+| **Hot** (Kotlin `StateFlow<T>` / `SharedFlow<T>`, Combine `@Published` / `CurrentValueSubject<T, _>`) | Single upstream; all collectors share the latest value | L1 truth sources (current user, current locale, feature flag value, network reachability) |
+
+When a coordinator-drafted task-md says "expose current user as a stream" without specifying hot vs cold, devs default to cold (it's the framework's default — `flow { ... }` / generic `Publisher`). The bug only surfaces when a second observer attaches.
+
+## Cost
+
+- **Reconnection storms**: cold flow restarts the entire upstream chain (DB query, network call, computation) per observer. A page with 3 observers issues 3× the load.
+- **Inconsistent UI state**: two views of the "same" data drift apart because each collector's pipeline runs independently with different timing.
+- **Hard-to-reproduce bugs**: passes unit tests (one observer), fails in production (multi-observer fan-out).
+- **Late discovery**: bug often surfaces months after the stream was written, when a new feature adds a second observer.
+
+## Mitigation
+
+### Short-term (per-task)
+
+- Coordinator task-mds for any repository / service exposing state must explicitly specify hot vs cold:
+
+  ```markdown
+  Expose `currentUser: StateFlow<User?>` (Android) / `currentUser: AnyPublisher<User?, Never>` backed by `@Published` (iOS)
+  ```
+
+- The `assign` skill §0 baseline verification grep's the file path + symbol; reviewer should also verify the type signature uses hot variants.
+
+### Medium-term (project-pattern)
+
+- Author `<docs-hub>/scaffold-map.yaml` entry for "repository pattern" + contract doc explaining:
+  - L1 truth sources → hot stream (`StateFlow` / `@Published`)
+  - Derived computations → cold stream is fine (`map`, `flatMapLatest`, etc.)
+  - One-shot requests → suspending function / publisher returning one element + completion
+
+### Long-term (lint)
+
+- Android: detekt rule scanning for repositories whose `Flow<T>` return types touch L1 state markers (configurable: e.g. functions named `current*` / containing `*Session*` / `*Identity*`)
+- iOS: SwiftLint rule + naming convention enforcing `AnyPublisher` returns from L1-marked types must be backed by `@Published` or `CurrentValueSubject`
+
+## Related
+
+- `<docs-hub>/00_shared-rules/data-sources.md` — L1 vs derived priority
+- `<docs-hub>/00_shared-rules/perf-diagnosis.md` — reconnection storms surface as perf regressions
+- `skills/coordinator/writing-task-md/SKILL.md §0.5` — Step 2 (grep symbol) often catches missing type-suffix
+
+## Example incident (anonymised)
+
+A `SessionRepository.currentSession: Flow<Session?>` was added in week 1. Initial PR had one observer in `MainActivity`; tests passed. Week 8 a notification feature added a second observer in `NotificationService`. Symptoms:
+- Notifications lost the user identity when switching from foreground → background → foreground (NotificationService re-collected, cold flow restarted, no replay)
+- `MainActivity` and `NotificationService` saw different user objects for ~200ms after login (separate pipelines, separate DB queries with slightly different timing)
+
+Fix: changed `Flow<Session?>` to `StateFlow<Session?>` with `MutableStateFlow` backing in the repository implementation. All downstream observers (now 4) share the same hot state. Reconnection storm eliminated.
+
+iOS counterpart: changed `AnyPublisher<Session?, Never>` constructed from a one-shot `Just(...)` chain to be backed by `@Published var session: Session?` in the repository's observable container.

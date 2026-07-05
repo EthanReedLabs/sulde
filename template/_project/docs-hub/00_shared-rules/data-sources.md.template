@@ -1,0 +1,53 @@
+# data-sources — priority of truth (mobile-first)
+
+> Which source wins when two disagree. Every coordinator task-md and every dev self-fix decision cites this rule.
+
+## Priority order
+
+```
+1. user explicit instruction         (this session, this turn)
+2. design-truth                       (<docs-hub>/design-truth/{page-id}.md + .png)
+3. scaffold contract                  (<docs-hub>/scaffold-map.yaml + scaffolds/{name}.md)
+4. product spec / PRD                 (project's external PRD system, cited by id)
+5. existing implementation            (current code in this commit)
+```
+
+**Higher wins.** When (2) and (3) disagree, the coordinator must flag a "数据源冲突段" in the task-md per `writing-task-md/SKILL.md §0.5.4`. The data-source-conflict block makes the divergence visible and forces a decision (fix scaffold to match design-truth, vs accept scaffold and update design-truth).
+
+## Why this order
+
+| Tier | Why it sits where it does |
+|---|---|
+| User explicit | Real-time human intent overrides every stale artefact |
+| Design-truth | Coordinator-curated truth synced from the design source; only updated via `update-design` skill so changes are auditable |
+| Scaffold contract | Project-wide invariants (e.g. TopBar font, navigation pattern). Higher than per-page PRD because scaffold ensures consistency across all pages |
+| PRD / spec | External truth but slower to update than design-truth; not always synced post-launch |
+| Existing implementation | Last resort — current code may already be off-spec |
+
+## How devs use this
+
+When a task-md cites design-truth values that contradict the dev's reading of existing code:
+
+- **Follow design-truth.** The current code is presumed off-spec (tier 5 loses).
+- If the task-md does NOT cite the conflicting field at all, treat existing code as authoritative for that field — but flag the gap in the handoff `§ escalation 候选`.
+- If you find a scaffold contract that contradicts both the task-md AND existing code, **stop** — handoff a block-handoff (`-block.md` suffix) asking the coordinator to resolve.
+
+## How coordinators use this
+
+When drafting a task-md:
+
+- Always cite the tier-2 source (design-truth) and tier-3 source (scaffold) explicitly with file:line references in `§起草前 baseline 实证 Step 4 / Step 5`.
+- If user input (tier 1) contradicts a documented truth, prefer the user — but record the contradiction in a new design-truth supplement so future task-mds know.
+- Never paste tier-5 (existing code) into a task-md as the "truth"; cite higher tiers or `§数据源冲突段`.
+
+## What does NOT belong in this priority list
+
+- Stack-specific defaults (Android Material vs iOS HIG vs HarmonyOS guidelines) → those live in each frontend's `CLAUDE.md` and only apply when no higher tier specifies.
+- Tooling decisions (Hilt vs Koin, Riverpod vs Bloc) → those live in `<docs-hub>/00_shared-rules/`-adjacent files or in project READMEs.
+- Performance targets → `perf-diagnosis.md`.
+
+## When to revise this file
+
+- Project adds a new design source (multiple .pen files / Figma + Pencil) → describe how `design_source` maps to design-truth.
+- Project adds a real-time data tier (feature flags, A/B tests) → insert as tier 1.5 with explicit rule for when overrides apply.
+- Discovery of a recurring conflict pattern → log an ADR + update this doc with the new rule.

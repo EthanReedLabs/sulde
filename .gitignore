@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# Logs / tmp
+*.log
+.tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Local secrets (just in case — sulde-cc itself has none, but defends against future drift)
+.env
+.env.local
+*.local
+
+# AI workspace — handoffs / drafts / 接力文档, never committed
+/.ai-workspace/

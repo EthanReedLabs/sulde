@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# sulde-cc health check — drift / consistency snapshot.
+#
+# Surfaces:
+#   - scaffold-map.yaml declared scaffolds vs. files that actually exist
+#   - design-truth files vs. page-relation entries
+#   - ADR antipattern counts (total, by status)
+#
+# /sulde-init fills FRONTENDS + DOCS_HUB paths from .sulde-config.yaml.
+
+set -u
+
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DOCS_HUB="$PROJECT_ROOT/<<DOCS_HUB>>"
+FRONTENDS=(<<FRONTENDS>>)
+
+NOW="$(date '+%Y-%m-%d %H:%M:%S')"
+
+cat <<EOF
+# sulde health check
+
+**Generated**: $NOW
+**Source**: scripts/health-check.sh
+
+EOF
+
+# ── Scaffold map drift ────────────────────────────────────────────────────
+scaffold_map="$DOCS_HUB/scaffold-map.yaml"
+echo "## scaffold-map drift"
+if [ -f "$scaffold_map" ]; then
+  declared=$(grep -c '^- name:' "$scaffold_map" 2>/dev/null || echo 0)
+  echo "- declared scaffolds: $declared"
+  echo "- (full file: ${scaffold_map#$PROJECT_ROOT/})"
+else
+  echo "- (scaffold-map.yaml not found at $DOCS_HUB/)"
+fi
+echo ""
+
+# ── Design-truth coverage ────────────────────────────────────────────────
+design_truth="$DOCS_HUB/design-truth"
+echo "## design-truth"
+if [ -d "$design_truth" ]; then
+  echo "- pages with truth doc: $(ls "$design_truth"/*.md 2>/dev/null | wc -l | tr -d ' ')"
+  echo "- pages with .png:      $(ls "$design_truth"/*.png 2>/dev/null | wc -l | tr -d ' ')"
+else
+  echo "- (design-truth/ not yet bootstrapped — run update-design skill)"
+fi
+echo ""
+
+# ── ADR counts ────────────────────────────────────────────────────────────
+adr_dir="$DOCS_HUB/ADR"
+echo "## ADR (antipatterns)"
+if [ -d "$adr_dir" ]; then
+  total=$(ls "$adr_dir"/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | wc -l | tr -d ' ')
+  echo "- total ADR files: $total"
+  echo "- INDEX: ${adr_dir#$PROJECT_ROOT/}/INDEX.md"
+else
+  echo "- (ADR directory not found at $adr_dir)"
+fi
+echo ""
+
+# ── Frontend pre-commit hook status ───────────────────────────────────────
+echo "## frontend pre-commit hooks"
+for fe in "${FRONTENDS[@]}"; do
+  hook="$PROJECT_ROOT/$fe/.git/hooks/pre-commit"
+  if [ -f "$hook" ]; then
+    echo "- $fe: ✅ installed"
+  else
+    echo "- $fe: ⚠️  missing — run \`bash $fe/scripts/pre-commit-installer.sh\`"
+  fi
+done
+echo ""
+
+echo "---"
+echo "**Tip**: run \`/sulde-end-grace\` once you're comfortable with hook enforcement."

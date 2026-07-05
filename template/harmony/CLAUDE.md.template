@@ -1,0 +1,112 @@
+# CLAUDE.md — {{frontend_name}} (HarmonyOS NEXT)
+
+> Per-frontend Claude Code rules for the HarmonyOS NEXT (ArkTS / DevEco) frontend.
+
+## Role
+
+Dev session for HarmonyOS frontend `{{frontend_name}}`. Execute task-mds, verify before declaring done.
+
+You do not edit files outside this frontend, modify design source / design-truth, or dispatch tasks to other frontends.
+
+## What to read at session start
+
+| Before doing this | Read |
+|---|---|
+| Any work | `<docs-hub>/00_shared-rules/self-fix-boundary.md` |
+| Picking `model:` from a task-md | `<docs-hub>/00_shared-rules/model-strategy.md` |
+| Building or verifying | `<docs-hub>/00_shared-rules/verify-build.md` |
+| Visual / UI work | `<docs-hub>/design-truth/{page-id}.md` + `.png` |
+| Perf work | `<docs-hub>/00_shared-rules/perf-diagnosis.md` + SmartPerf-Host |
+
+## Stack
+
+- **Language**: ArkTS (TypeScript-derived; HarmonyOS-specific decorators)
+- **Framework**: ArkUI (declarative, similar to Compose / SwiftUI)
+- **IDE**: DevEco Studio {{deveco_version}}
+- **Build tool**: hvigorw (Gradle-equivalent for HarmonyOS)
+- **State management**: `@State` / `@Prop` / `@Link` decorators + AppStorage
+- **Minimum API**: HarmonyOS NEXT API {{min_api}} (e.g. 11)
+- **Test runner**: hypium (built into DevEco)
+
+## Build / install / runtime verify
+
+The canonical recipe is in `<docs-hub>/00_shared-rules/verify-build.md`. Quick reference:
+
+```bash
+# Build a debug HAP (HarmonyOS Ability Package)
+./hvigorw assembleHap --mode debug
+# Windows: hvigorw.bat assembleHap --mode debug
+# verify: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-hvigor-build-overview
+
+# Install on connected device (USB / wifi pair)
+hdc install -r build/default/outputs/default/{{hap_file}}.hap
+# verify: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/hdc
+
+# Launch a specific Ability
+hdc shell aa start -a {{ability_name}} -b {{bundle_name}}
+
+# Runtime log (filter by bundle for noise control)
+hdc shell hilog | grep {{bundle_name}} | tee .ai-workspace/diag/$(date +%Y-%m-%d)-${TASK}-log.txt
+
+# Screenshot
+hdc shell snapshot_display -f /data/local/tmp/screen.png
+hdc file recv /data/local/tmp/screen.png .ai-workspace/screenshots/$(date +%Y-%m-%d)-${TASK}-after.png
+
+# Lint
+./hvigorw lint
+```
+
+> **Cross-OS note**: DevEco Studio runs on macOS / Windows / Linux. `hvigorw` works in PowerShell, Git Bash, or bash. `hdc` is Huawei's `adb` equivalent — same flow.
+
+## Git identity
+
+Commit as `git as-{{alias}} commit ...`. Plain `git commit` is blocked.
+
+## Branch convention
+
+- Integration branch: `{{integration_branch}}`
+- Per-task branches: `dev/{{git_alias}}/{slug}`
+
+## Commit message style
+
+```
+fix: handle window inset on first frame
+refactor: extract scaffold for TitleBar
+feat: home page reduced to 2 tabs
+perf: defer initial list mount via promise
+```
+
+## HarmonyOS / ArkTS gotchas
+
+- **Decorator order matters**: `@Entry @Component struct Foo` — switching the order changes lifecycle binding.
+- **`@State` value vs reference**: object mutations (push to array, set property on struct) don't auto-refresh — use immutable replacement (`arr = [...arr, x]`).
+- **Ability lifecycle**: `onWindowStageCreate` runs once per ability; UI state lives in `Component` not `Ability` for hot-restart safety.
+- **hvigorw vs Gradle**: similar wrapper pattern but different module graph — refer to `oh-package.json5` for dependencies, not `build.gradle`.
+- **`oh_modules/`**: package install directory, treat like `node_modules/` (gitignore).
+
+## Output language
+
+Default: **{{output_language}}**.
+
+## Self-fix boundary recap
+
+- **Trivial + safe + in allowlist**: include in same commit
+- **Anything else**: list under "escalation 候选"
+
+Full allowlist: `<docs-hub>/00_shared-rules/self-fix-boundary.md`.
+
+## Diagnostic tools (HarmonyOS)
+
+| Tool | Use case |
+|---|---|
+| DevEco Studio Profiler | CPU / memory / energy profiling |
+| `hdc shell hidumper` | System service / hap state dump |
+| SmartPerf-Host | Cross-process performance trace |
+| `hdc shell hilog` | Runtime log stream |
+| `hdc bugreport` | Full system snapshot |
+
+---
+
+## Template placeholders
+
+`{{frontend_name}}` / `{{deveco_version}}` / `{{min_api}}` / `{{hap_file}}` / `{{ability_name}}` / `{{bundle_name}}` / `{{git_alias}}` / `{{author_name}}` / `{{author_email}}` / `{{integration_branch}}` / `{{output_language}}`

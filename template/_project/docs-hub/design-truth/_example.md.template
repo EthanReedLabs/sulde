@@ -1,0 +1,62 @@
+# {{page_id}} — {{page_title}} design truth
+
+> Single source of truth for `{{page_id}}`. Coordinator-owned. Devs read; never write.
+> Last synced: {{sync_date}} from `{{design_source_file}}` node `{{design_node_id}}`.
+
+---
+
+## Node tree
+
+Captured from the design source (`<docs-hub>/../.sulde-config.yaml: design_source`). Top-level container + children with relevant style props.
+
+```
+{{page_id}} ({{frame_size}}, e.g. 375×812)
+├── {{component_a}} ({{type}})
+│   ├── fill: {{value}}
+│   ├── stroke: {{value}}
+│   ├── corner_radius: {{value}}
+│   └── children:
+│       ├── {{leaf_node_1}} (text, "{{content}}", font {{family}} {{size}}/{{weight}}, color {{value}})
+│       └── {{leaf_node_2}} (icon, name="{{icon_name}}", size={{value}})
+├── {{component_b}} ...
+└── {{component_n}} ...
+```
+
+## Visual key attributes
+
+Cross-reference the screenshot (`{{page_id}}.png`) while reading. Implementation must match these values exactly unless an override is explicitly authorised.
+
+| Element | Property | Value | Source |
+|---|---|---|---|
+| {{element_1}} | font | {{family}} {{size}}/{{weight}} | node `{{node_path}}` |
+| {{element_1}} | color | {{hex_or_rgba}} | node `{{node_path}}` |
+| {{element_2}} | corner_radius | {{value}}px | node `{{node_path}}` |
+| {{element_3}} | spacing | {{value}}px | node `{{node_path}}` |
+
+## Asset reference list
+
+Every image / icon the page consumes. Devs `cp` the real file — do not redraw or substitute.
+
+| Reference name | Source path (in design-truth/assets/) | Android target | iOS target | Flutter target | Harmony target |
+|---|---|---|---|---|---|
+| {{name_1}} | `design-truth/assets/{{folder}}/{{file}}.png` | `app/src/main/res/drawable/{{name}}.png` | `Sources/{{Module}}/Resources/{{Name}}.imageset/` | `assets/{{folder}}/{{file}}.png` | `entry/src/main/resources/base/media/{{name}}.png` |
+
+## Implementation hard constraints
+
+Non-negotiable rules for this page. Devs see these and obey; coordinator updates only after a product / design decision.
+
+1. **Use scaffold:** `{{scaffold_name}}` (see `<docs-hub>/scaffold-map.yaml`) — not a one-off implementation.
+2. **Layout responsiveness:** `{{rule}}` — e.g. "always uses safe-area insets via the project's SafeAreaWrap component."
+3. **Color tokens:** all color values resolve through `{{color_system_doc}}` — no hex literals in code.
+4. **Animation:** entry animation respects the project's `motion-timing.md` — durations / curves come from that file, not page-by-page.
+
+## Open questions / notes
+
+Anything the coordinator wants flagged but not enforced yet. Move to ADR or task-md when actionable.
+
+- {{question_1}}
+- {{question_2}}
+
+---
+
+**Template usage**: replace every `{{placeholder}}` and the example rows. Delete this section before publishing.

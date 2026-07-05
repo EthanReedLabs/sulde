@@ -1,0 +1,116 @@
+# ADR (Anti-pattern Decision Record) frontmatter schema
+#
+# Every ADR file in this directory (except _frontmatter.schema.yaml and INDEX.md)
+# must start with a YAML frontmatter block conforming to this schema. The
+# coordinator's audit tooling reads this schema to validate ADR consistency
+# during periodic sweeps.
+#
+# Frontmatter format (each ADR file's first block):
+#
+#   ---
+#   adr: "0001"
+#   title: "Short, action-oriented title"
+#   platforms: [PlatformA, PlatformB]
+#   first_logged: 2026-01-01
+#   recurrence: 1
+#   lint_status: pending
+#   ---
+#
+# Field definitions follow.
+
+fields:
+
+  adr:
+    type: string
+    required: true
+    pattern: "^[0-9]{4}$"
+    description: >
+      Four-digit zero-padded identifier. Assign sequentially as ADRs are
+      registered. Once assigned, never reuse — even if an ADR is later
+      retired, its id stays reserved.
+
+  title:
+    type: string
+    required: true
+    max_length: 120
+    description: >
+      One-line title. Action-oriented and specific enough that another
+      engineer would recognize the pattern from the title alone. Avoid
+      jargon-only titles like "scope creep" — prefer "Dev fixing X bug
+      spreading to unrelated Y file."
+
+  platforms:
+    type: array
+    required: true
+    item_type: string
+    item_enum:                # v0.2.0 mobile-first enum (sulde-cc default)
+      - android
+      - ios
+      - flutter
+      - harmony
+      - coordinator           # patterns specific to the coordinator role
+      - any                   # cross-cutting, not platform-specific
+    description: >
+      Which platforms / stacks this anti-pattern applies to. At least one
+      entry. v0.2.0 enum is mobile-first (android / ios / flutter / harmony)
+      plus `coordinator` for coordinator-side patterns and `any` for cross-
+      cutting ones. Projects with additional stacks (web / backend / desktop)
+      should extend this enum locally rather than freelancing arbitrary
+      strings — keeps the audit tooling honest.
+
+  first_logged:
+    type: date
+    required: true
+    format: YYYY-MM-DD
+    description: >
+      The date this ADR was first registered. Never updated after creation.
+
+  recurrence:
+    type: integer
+    required: true
+    minimum: 1
+    description: >
+      How many distinct incidents have hit this pattern, including the one
+      that triggered the ADR. Increment by 1 each time the pattern recurs
+      in real work (and update the ADR body with the new incident date).
+
+  lint_status:
+    type: string
+    required: true
+    enum: [pending, drafted, shipped, infeasible]
+    description: >
+      pending     — pattern logged but no lint rule yet drafted
+      drafted     — lint rule drafted (script exists, not yet enabled)
+      shipped     — lint rule live in pre-commit / CI
+      infeasible  — pattern cannot be lint-detected (judgment call only)
+
+  legacy_id:
+    type: string
+    required: false
+    description: >
+      Optional. Old identifier from a previous numbering system, kept for
+      cross-reference. Drop after a few months once references settle.
+
+# Optional body conventions (not validated, just convention)
+#
+#   # {adr} — {title}
+#
+#   **First logged**: {date}
+#   **Platforms**: {list}
+#   **Recurrence**: {n} (most recent: {date})
+#   **Lint status**: {status}
+#
+#   ## Symptom
+#   What the engineer / user observes when this pattern fires.
+#
+#   ## Root cause
+#   Why it happens (mechanism, not just "human error").
+#
+#   ## Cost
+#   What it costs the team / project / users when it recurs.
+#
+#   ## Mitigation
+#   How to prevent / detect / recover. Short-term and long-term suggestions.
+#
+#   ## Related
+#   Cross-references to other ADRs, postmortems, lint rules, commits.

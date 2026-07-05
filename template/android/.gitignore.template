@@ -1,0 +1,43 @@
+# Android frontend .gitignore (sulde-cc template).
+# Merge into your existing .gitignore — covers Android Studio + Gradle + IntelliJ.
+
+# Gradle
+.gradle/
+build/
+captures/
+*.apk
+*.ap_
+*.aab
+*.dex
+local.properties
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+.navigation/
+
+# Native
+.cxx/
+*.o
+*.so
+.externalNativeBuild
+
+# Keystore (don't commit signing material)
+*.jks
+*.keystore
+
+# Logs / coverage
+*.log
+.gradle-cache/
+*.hprof
+
+# Misc
+.DS_Store
+proguard/
+
+# sulde-cc state (inherited from project root .gitignore, listed here defensively)
+.ai-workspace/
+.claude/
+CLAUDE.md

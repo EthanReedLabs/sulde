@@ -1,0 +1,129 @@
+# CLAUDE.md — {{frontend_name}} (iOS)
+
+> Per-frontend Claude Code rules. Loaded automatically when a Claude session starts in this directory. Keep this file focused on what is specific to **this iOS frontend**; cross-frontend rules belong in `<docs-hub>/00_shared-rules/`.
+
+## Role
+
+This session runs as a **Dev** for iOS frontend `{{frontend_name}}`. Your job is to execute task-mds the coordinator dispatches, and to verify your work before declaring done.
+
+You do not:
+- Edit files outside this frontend directory
+- Modify the design source or design-truth files (coordinator owns those)
+- Dispatch tasks to other frontends
+
+## What to read at session start
+
+| Before doing this | Read |
+|---|---|
+| Any work | `<docs-hub>/00_shared-rules/self-fix-boundary.md` |
+| Picking `model:` from a task-md | `<docs-hub>/00_shared-rules/model-strategy.md` |
+| Building or verifying | `<docs-hub>/00_shared-rules/verify-build.md` |
+| Visual / UI work | `<docs-hub>/design-truth/{page-id}.md` + `.png` |
+| Perf work | `<docs-hub>/00_shared-rules/perf-diagnosis.md` (Instruments / xctrace) |
+
+## Stack
+
+- **Language**: Swift {{swift_version}} (Objective-C only for legacy bridging)
+- **Framework**: SwiftUI (primary) / UIKit (legacy / embed targets)
+- **Architecture pattern**: {{architecture}} (e.g. TCA / MVVM / The Composable Architecture)
+- **State container**: {{state_container}} (e.g. `@State` + `@Observable` / TCA `Reducer`)
+- **Minimum platform**: iOS {{min_version}} (e.g. 16)
+- **Test runner**: XCTest / swift-testing
+
+## Build / install / runtime verify
+
+The canonical recipe is in `<docs-hub>/00_shared-rules/verify-build.md`. Quick reference:
+
+```bash
+# Build (real device — Xcode 15+)
+xcodebuild -project {{project}}.xcodeproj \
+           -scheme {{scheme}} \
+           -destination 'platform=iOS,id={{udid}}' \
+           build
+# verify: https://developer.apple.com/documentation/xcode/build-system
+
+# Install to real device
+ios-deploy --id {{udid}} --bundle build/Build/Products/Debug-iphoneos/{{app}}.app --justlaunch
+# verify: https://github.com/ios-control/ios-deploy
+# alternative (Xcode 15+): xcrun devicectl device install app --device {{udid}} {{app_path}}
+
+# Launch (xcrun devicectl 15+)
+xcrun devicectl process launch --device {{udid}} {{bundle_id}}
+
+# Runtime log
+idevicesyslog -u {{udid}} | tee .ai-workspace/diag/$(date +%Y-%m-%d)-${TASK}-log.txt
+# verify: https://libimobiledevice.org
+# alt: log stream --device {{udid}} --predicate 'subsystem == "{{bundle_id}}"'
+
+# Screenshot
+xcrun simctl io booted screenshot .ai-workspace/screenshots/$(date +%Y-%m-%d)-${TASK}-after.png
+# real device: xcrun devicectl device snapshot --device {{udid}}
+
+# Lint
+swiftlint
+# verify: https://github.com/realm/SwiftLint
+```
+
+> ⚠️ **macOS only**: building iOS apps requires Xcode, which is macOS-exclusive. Linux / Windows users cannot run this frontend's build locally — use CI (GitHub Actions macOS runners, etc.).
+
+## Git identity
+
+This frontend's Dev commits as `{{git_alias}}`. Run `git as-{{alias}} commit ...`. Plain `git commit` is blocked by the `check_commit_alias.sh` pre-commit hook.
+
+## Branch convention
+
+- Integration branch: `{{integration_branch}}` (typically `develop`)
+- Per-task branches: `dev/{{git_alias}}/{slug}`
+- Fast-forward merge; delete branch after merge
+
+## Commit message style
+
+- Imperative, ≤50 chars
+- No AI traces — pre-commit hook `check_ai_traces.sh` blocks AI-trace keywords
+- Reads like an engineer's notes-to-self
+
+Examples for iOS:
+
+```
+fix: bind player surface unconditionally
+refactor: extract WithPerceptionTracking helper
+feat: reduce home tabs to 2
+perf: defer LazyVStack initial render via task
+```
+
+## SwiftUI / TCA gotchas
+
+When using TCA (The Composable Architecture):
+
+- `@Perception.Bindable` + `WithPerceptionTracking` are paired — iOS 16 fallback requires both
+- `Reducer` cases should match action names from product spec; verify literally before drafting
+- `Effect` returning long-running work needs explicit cancellation in `onDisappear`
+- Avoid `try?` on critical paths — silent failures are §0.5 reason-text anti-pattern
+
+## Output language
+
+Default: **{{output_language}}**.
+
+## Self-fix boundary recap
+
+- **Trivial + safe + in your allowlist**: include in same commit, mention in handoff
+- **Anything else**: leave alone, list under "escalation 候选" in handoff
+
+Full allowlist: `<docs-hub>/00_shared-rules/self-fix-boundary.md`.
+
+## Diagnostic tools (iOS)
+
+| Tool | Use case |
+|---|---|
+| Instruments.app | CPU / allocations / time profiler / leaks |
+| `xcrun xctrace record` | Headless trace capture |
+| `idevicesyslog` | Real-device log stream |
+| Console.app | macOS-side iOS device logs |
+| `xcrun devicectl device snapshot` | Real-device screenshot |
+| Charles / mitmproxy | Network debug (real device pair + CA cert) |
+
+---
+
+## Template placeholders
+
+`{{frontend_name}}` / `{{swift_version}}` / `{{architecture}}` / `{{state_container}}` / `{{min_version}}` / `{{project}}` / `{{scheme}}` / `{{app}}` / `{{bundle_id}}` / `{{udid}}` / `{{app_path}}` / `{{git_alias}}` / `{{author_name}}` / `{{author_email}}` / `{{integration_branch}}` / `{{output_language}}`

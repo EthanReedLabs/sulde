@@ -1,0 +1,7 @@
+# sulde-cc v0.2.0 hook runtime dependencies.
+# Install: pip install -r requirements.txt
+#
+# Note: hooks gracefully degrade to a no-op when pyyaml is missing
+# (each hooks/*.py wraps `import yaml` in a try/except). Installing
+# pyyaml turns enforcement on.
+pyyaml>=6.0

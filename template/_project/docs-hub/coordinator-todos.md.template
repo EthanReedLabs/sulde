@@ -1,0 +1,68 @@
+# Coordinator Todos
+
+> **Long-lived task list** for the coordinator session. Outlives any single Claude Code session — what is here survives `/clear`, context compaction, and session restarts. Read this at the start of every coordinator session.
+>
+> **Not for transient work**: in-session step tracking belongs in the Claude task tool. This file holds dispatched-but-not-finished, paused, or follow-up items.
+
+---
+
+## Active escalations (handle now)
+
+> Items the coordinator must close out, in priority order. Move to "Resolved" with date once done.
+
+- [ ] (placeholder — your active escalations live here)
+
+---
+
+## Pending dispatch (drafted, not yet sent)
+
+> Task-mds drafted but not yet handed to a Dev. Either dispatch or delete.
+
+- [ ] (placeholder)
+
+---
+
+## Awaiting Dev / external
+
+> Things you cannot move forward on alone. Note who/what is blocking, and the date you last checked.
+
+- [ ] (placeholder)
+
+---
+
+## Paused (deliberately not now)
+
+> Work consciously deferred. Each item should have:
+> - Why paused (the trigger to resume)
+> - Date paused
+> - Where the artifacts live (so you can reload context fast)
+
+- [ ] (placeholder)
+
+---
+
+## Periodic / recurring
+
+> Audits, sweeps, cross-checks that should run on a cadence. Track last-run date.
+
+- [ ] ADR `lint_status: pending` audit (quarterly) — last run: never
+- [ ] Handoff archive sweep (weekly — move shipped-and-acknowledged handoffs to `handoff/archive/`) — last run: never
+- [ ] Design-truth ↔ implementation drift audit (cadence per project) — last run: never
+
+---
+
+## Resolved (kept short — archive older items)
+
+> Recent closures, for context when reviewing what shipped recently. Trim older than ~30 days into a date-stamped archive file.
+
+- 2026-01-01: (placeholder — your closed items appear here with date prefix)
+
+---
+
+## Conventions
+
+- **One item per line**, with date prefix where helpful
+- **No nested indentation** beyond one level — if an item needs sub-tasks, give it its own task-md
+- **Date format**: `YYYY-MM-DD`
+- **Mark resolved with date and brief outcome**, not just `[x]`, so the resolved log is useful as a reference
+- **No emoji status markers** — the section heading is enough

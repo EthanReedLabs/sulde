@@ -1,0 +1,44 @@
+# iOS frontend .gitignore (sulde-cc template).
+# Merge into your existing .gitignore — covers Xcode + CocoaPods + SwiftPM.
+
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# SwiftPM
+.swiftpm/
+Package.resolved
+
+# CocoaPods (commit Podfile, ignore Pods/)
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output
+
+# macOS
+.DS_Store
+
+# Logs / coverage
+*.log
+*.profdata
+
+# sulde-cc state (defensive — inherited from project root)
+.ai-workspace/
+.claude/
+CLAUDE.md

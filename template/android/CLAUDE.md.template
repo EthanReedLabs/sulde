@@ -1,0 +1,135 @@
+# CLAUDE.md — {{frontend_name}} (Android)
+
+> Per-frontend Claude Code rules. Loaded automatically when a Claude session starts in this directory. Keep this file focused on what is specific to **this Android frontend**; cross-frontend rules belong in `<docs-hub>/00_shared-rules/`.
+
+## Role
+
+This session runs as a **Dev** for Android frontend `{{frontend_name}}`. Your job is to execute task-mds the coordinator dispatches, and to verify your work before declaring done.
+
+You do not:
+- Edit files outside this frontend directory (use a handoff escalation candidate instead)
+- Modify the design source or design-truth files (coordinator owns those)
+- Dispatch tasks to other frontends
+
+## What to read at session start
+
+| Before doing this | Read |
+|---|---|
+| Any work | `<docs-hub>/00_shared-rules/self-fix-boundary.md` (sensitive-area list) |
+| Picking the `model:` header from a task-md | `<docs-hub>/00_shared-rules/model-strategy.md` |
+| Building or verifying | `<docs-hub>/00_shared-rules/verify-build.md` |
+| Visual / UI work | the cited design-truth file (`<docs-hub>/design-truth/{page-id}.md` + `.png`) |
+| Perf work | `<docs-hub>/00_shared-rules/perf-diagnosis.md` (Profiler / Perfetto required) |
+
+## Stack
+
+- **Language**: Kotlin (Java for legacy modules only)
+- **Framework**: Jetpack Compose (primary) / View system (legacy)
+- **Architecture pattern**: {{architecture}} (e.g. MVI / MVVM / Clean)
+- **DI / state container**: {{di}} (e.g. Hilt / Koin / Dagger)
+- **Minimum platform**: Android {{min_sdk}} (e.g. 8.0 / API 26)
+- **Test runner**: JUnit5 + Robolectric / Espresso
+
+## Build / install / runtime verify
+
+The canonical recipe is in `<docs-hub>/00_shared-rules/verify-build.md`. Quick reference:
+
+```bash
+# Build (Gradle wrapper handles JDK + Android SDK)
+./gradlew :app:assembleDebug
+# Windows: gradlew.bat :app:assembleDebug
+# verify: https://developer.android.com/studio/build/building-cmdline
+
+# Install to connected device
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+# verify: https://developer.android.com/tools/adb
+
+# Launch
+adb shell am start -n {{package}}/.{{main_activity}}
+
+# Runtime log (capture during/after launch)
+adb logcat -d AndroidRuntime:E '*:S' > .ai-workspace/diag/$(date +%Y-%m-%d)-${TASK}-log.txt
+
+# Screenshot
+adb shell screencap -p > .ai-workspace/screenshots/$(date +%Y-%m-%d)-${TASK}-after.png
+
+# Lint
+./gradlew lint
+```
+
+## Git identity
+
+This frontend's Dev commits as `{{git_alias}}`. The alias resolves to:
+
+- Name: `{{author_name}}`
+- Email: `{{author_email}}`
+
+Run `git as-{{alias}} commit ...` (alias installed by `/sulde-add-team-member`). Plain `git commit` is blocked by the `check_commit_alias.sh` pre-commit hook.
+
+## Branch convention
+
+- Integration branch: `{{integration_branch}}` (typically `develop`)
+- Per-task branches: `dev/{{git_alias}}/{slug}` (enforced by `check_branch_format.sh` pre-commit hook)
+- Fast-forward merge to integration; delete branch after merge
+
+## Commit message style
+
+- Imperative, ≤50 chars
+- No AI traces — pre-commit hook `check_ai_traces.sh` blocks `AI / Claude / GPT / LLM / generated / auto-generated` keywords
+- Reads like an engineer's notes-to-self
+
+Examples for Android:
+
+```
+fix: handle null player surface on rebind
+refactor: extract base class for safe-area inset
+feat: home screen tabs reduced to 2
+perf: avoid main-thread spike on RecyclerView bind
+```
+
+## Pre-commit hooks
+
+This frontend installs `sulde-cc` git pre-commit hooks via `scripts/pre-commit-installer.sh`. They check:
+1. branch protection (no direct commits to `main` / `develop`)
+2. branch name format (`dev/<alias>/<slug>`)
+3. `git as-<alias>` usage (sentinel env var)
+4. AI traces in paths + diff
+
+Do not bypass with `--no-verify` unless the user explicitly authorises it.
+
+## Output language
+
+Default: **{{output_language}}** (e.g. English / Chinese / mixed).
+
+## Self-fix boundary recap
+
+When you finish your task and notice a related but out-of-scope problem:
+
+- **Trivial + safe + in your allowlist**: include in the same commit, mention in handoff
+- **Anything else**: leave alone, list under "escalation 候选" in the handoff
+
+The full allowlist is in `<docs-hub>/00_shared-rules/self-fix-boundary.md`. Read once per session.
+
+## Diagnostic tools (Android)
+
+For perf / crash / GPU work the canonical tools are:
+
+| Tool | Use case |
+|---|---|
+| Android Studio Profiler | CPU / memory / energy / network profiling |
+| `dumpsys gfxinfo {{package}}` | Frame timing histogram |
+| Perfetto / Systrace | Cross-process traces |
+| `adb bugreport` | Full system snapshot |
+| LeakCanary | Memory leak detection in debug builds |
+
+Capture the relevant tool output into `.ai-workspace/diag/` and reference from the handoff.
+
+---
+
+## Template placeholders
+
+This file uses `{{name}}` placeholders. `/sulde-init` fills them from `.sulde-config.yaml`. Placeholders:
+
+- `{{frontend_name}}` / `{{architecture}}` / `{{di}}` / `{{min_sdk}}` / `{{package}}` / `{{main_activity}}`
+- `{{git_alias}}` / `{{author_name}}` / `{{author_email}}` / `{{integration_branch}}`
+- `{{output_language}}`

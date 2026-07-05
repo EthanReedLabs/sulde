@@ -1,0 +1,39 @@
+# sulde-cc project root .gitignore
+#
+# /sulde-init merges this into your project's existing .gitignore (appends
+# missing entries; does NOT overwrite). The lines below are the bare minimum
+# for a sulde-cc project — extend with your stack's typical ignores from each
+# template/{stack}/.gitignore.template after init.
+
+# ── sulde-cc state markers (cross-machine state, never commit) ────────────
+.sulde-grace-started
+.sulde-grace-ended
+
+# ── AI traces — pre-commit hook check_ai_traces.sh blocks these ───────────
+.claude/
+CLAUDE.md
+.ai-workspace/
+
+# Plugin-private config: do not commit, contains per-machine paths / aliases
+.sulde-config.yaml.v0.1.0-backup
+.sulde-config.yaml.v2-preview
+
+# ── Python (sulde-cc hooks live in ${CLAUDE_PLUGIN_ROOT}, but local venvs
+#    or `pip install` artefacts may show up here) ────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# ── Editors / OS ─────────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Logs ─────────────────────────────────────────────────────────────────
+*.log
+.tmp/

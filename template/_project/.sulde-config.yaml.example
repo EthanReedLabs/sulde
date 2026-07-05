@@ -1,0 +1,102 @@
+# .sulde-config.yaml — Sulde project configuration
+#
+# Copy this file to `.sulde-config.yaml` at the root of your project (next to your
+# docs-hub and frontend directories), then fill in the placeholders. The plugin
+# reads this file to know your project's structure, roles, design source, and
+# author identities.
+#
+# === Opt-in by design ===
+# The plugin only activates in projects that have this file. If you install the
+# plugin globally but a particular project does NOT have `.sulde-config.yaml`
+# in its root (or any parent up to /), Sulde stays completely silent for that
+# project. This lets you install once and use selectively.
+
+# -----------------------------------------------------------------------------
+# Quick kill switch — set to `false` to disable Sulde in this project without
+# uninstalling the plugin. Default: true (omitting this field is equivalent).
+# -----------------------------------------------------------------------------
+enabled: true
+
+# -----------------------------------------------------------------------------
+# Role of this Claude Code session.
+# -----------------------------------------------------------------------------
+# - coordinator : runs at the project root, dispatches tasks, owns design-truth.
+# - dev         : runs inside a frontend subdirectory, executes task-mds.
+# - both        : single-developer projects where one person plays both roles.
+role: coordinator
+
+# -----------------------------------------------------------------------------
+# Where your shared docs / methodology / ADRs live, relative to project root.
+# Sulde's template names it `docs-hub/`; rename freely. Example: `docs/`, `meta/`,
+# `_shared/`, `coordination/`, or any name that fits your project.
+# -----------------------------------------------------------------------------
+docs_hub: ./docs-hub
+
+# -----------------------------------------------------------------------------
+# Frontend (Dev-side) workspaces. Each entry is one Claude Code Dev session's
+# scope. The directory must contain a `.ai-workspace/` for tasks/handoff/etc.
+#
+# Add as many as your project needs. Names appear in task-md paths and handoffs.
+# -----------------------------------------------------------------------------
+frontends:
+  - name: frontend-a          # human-readable id (kebab-case)
+    path: ./frontend-a        # directory relative to project root
+    stack: web                # informational: web | mobile-android | mobile-ios | desktop | backend | other
+  # - name: frontend-b
+  #   path: ./frontend-b
+  #   stack: mobile-android
+
+# -----------------------------------------------------------------------------
+# Design source-of-truth MCP. Sulde's update-design skill uses this to refresh
+# design-truth files. Leave commented out if your project has no design phase
+# (backend-only, infrastructure, etc.).
+# -----------------------------------------------------------------------------
+# design_source:
+#   mcp: pencil                # or: figma, sketch-mcp, custom (mcp server id)
+#   file: ./design/app.pen     # the design file path (semantics depend on the MCP)
+#   asset_root: ./design/assets/
+
+# -----------------------------------------------------------------------------
+# Team identities. Each entry maps a `git as-X` shell alias to a real person.
+# The coordinator uses these names in task-mds; the Dev's `assign` skill picks
+# the right identity at commit time.
+#
+# Convention: one identity per frontend, so Devs commit under a single name and
+# git history shows clear ownership.
+#
+# Solo developer / single-person project: leave `team: []` empty (or all entries
+# commented out). The `check_commit_alias.sh` pre-commit hook auto-detects empty
+# team and skips the `git as-<alias>` enforcement, so plain `git commit` works.
+# Multi-person team: uncomment entries below or use `/sulde-add-team-member`
+# command to add aliases (creates per-repo `git as-<alias>` aliases automatically).
+# -----------------------------------------------------------------------------
+team:
+  # - alias: as-a
+  #   name: Jane Doe
+  #   email: jane@example.com
+  #   frontend: frontend-a
+  # - alias: as-b
+  #   name: John Roe
+  #   email: john@example.com
+  #   frontend: frontend-b
+
+# -----------------------------------------------------------------------------
+# Per-project skill trigger overrides (optional, v0.2+).
+#
+# The plugin ships a built-in set of trigger keywords for the `writing-task-md`,
+# `assign`, and `update-design` skills. You can add more here. Each entry is a
+# regex on the user prompt + the skill that should be reminded + a role filter.
+# -----------------------------------------------------------------------------
+# skill_triggers:
+#   - regex: "(deploy|发布)"
+#     skill: writing-task-md
+#     role: coordinator
+#     reminder: "Deployment task — make sure §5 verify includes rollback steps."
+
+# -----------------------------------------------------------------------------
+# Project metadata (informational; surfaced in baseline reports).
+# -----------------------------------------------------------------------------
+project:
+  name: my-project
+  # description: ""
+  # repo: ""

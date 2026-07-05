@@ -1,0 +1,46 @@
+# Flutter frontend .gitignore (sulde-cc template).
+
+# Dart / Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+.packages
+.metadata
+pubspec.lock           # commit for apps, ignore for libraries (uncomment to ignore)
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code
+.vscode/
+
+# Coverage
+coverage/
+*.lcov
+
+# Native sub-projects (each may have its own .gitignore — keep these defensive)
+android/.gradle/
+android/build/
+android/captures/
+ios/Pods/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/DerivedData/
+
+# macOS / Linux / Windows
+.DS_Store
+*.swp
+
+# Logs
+*.log
+
+# sulde-cc state (defensive — inherited from project root)
+.ai-workspace/
+.claude/
+CLAUDE.md

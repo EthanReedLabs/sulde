@@ -1,0 +1,71 @@
+# model-strategy — Claude model selection per task type
+
+> Dev picks `model:` in the task-md frontmatter based on task complexity. Wrong model = wasted tokens or quality drop. The `/assign` skill's §2 thinking-mode table is the runtime; this doc is the policy.
+
+## Default matrix
+
+| Task type | Model | Thinking mode |
+|---|---|---|
+| Architecture design / cross-module refactor / hard root-cause | **opus** | `ultrathink` (20K–64K thinking budget) |
+| New feature (≥ 3 files, integration with multiple scaffolds) | **opus** or sonnet | `think hard` (~16K) |
+| UI restoration from design-truth / list pages / API integration | **sonnet** | `think hard` |
+| Bug fix (known reproduction, localised) | **sonnet** | `think hard` |
+| Field rename / config change / endpoint URL update | **sonnet** or haiku | `think` (~4K) |
+| L10n / translation / asset add / compile-error fix | **haiku** | (default) |
+
+## When to escalate to opus
+
+These 7 triggers always justify opus regardless of size:
+
+1. **Abstraction work** — designing or revising a scaffold, base class, or framework
+2. **Known recurring bug** — a previously-fixed pattern recurring (likely subtle interaction)
+3. **Visual contract switch** — a page transitioning between two design-truth states (loading → empty → error → content)
+4. **Multi-source conflict** — task involves resolving design-truth vs scaffold vs PRD mismatch
+5. **Hidden state debugging** — issue requires reasoning about state machine transitions, async ordering, race conditions
+6. **Cross-frontend symmetry decision** — coordinator deciding whether to mirror a fix across frontends
+7. **Multi-step research** — task requires WebFetch / official-docs verification + cross-referencing
+
+## When haiku is safe
+
+These are the few cases where haiku quality is enough:
+
+1. **Pure translation** — adding a locale string given the source string
+2. **Asset placement** — `cp` an icon to the right resource directory
+3. **Compile-error fix from message** — error message is clear, fix is one-liner
+4. **Doc typo** — fixing a typo in a comment / README
+5. **Dependency bump** with provided changelog (just bump version + verify build)
+
+## How the task-md cites it
+
+Task-md frontmatter:
+
+```yaml
+---
+assignee: as-a
+branch: dev/as-a/feature-foo
+model: sonnet            # or opus / haiku
+thinking: think hard     # or think / ultrathink / (omit for default)
+---
+```
+
+The `/assign` skill reads these and:
+- If current Claude Code session model ≠ `model`, prompts the user to switch
+- Sets thinking mode internally (no user action needed)
+
+## Why this matters
+
+Opus is ~5× more expensive than sonnet and ~30× more expensive than haiku per token. Using opus everywhere wastes budget; using sonnet for architecture sometimes misses subtle invariants. The matrix calibrates cost vs quality for typical mobile work.
+
+Re-calibrate this doc when:
+- A new Claude model ships
+- Project hits "we keep escalating to opus" — review whether the trigger list is too permissive
+- Project hits "haiku missed obvious things" — review the haiku-safe list
+
+## Anti-pattern this prevents
+
+Two common failure modes:
+
+1. **Opus for everything**: budget burns 3× faster than necessary; coordinator hits monthly token cap mid-month
+2. **Sonnet for architecture**: dev misses a subtle interaction; same code area gets re-worked 2-3 times because each session's view is too narrow
+
+The matrix shifts the default to "match model to task complexity" rather than "use whatever model is on right now."

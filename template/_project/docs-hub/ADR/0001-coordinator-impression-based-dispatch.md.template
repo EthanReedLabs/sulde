@@ -1,0 +1,78 @@
+---
+adr: "0001"
+title: "Coordinator drafts task-mds from memory instead of grepping the repo"
+platforms: [coordinator]
+first_logged: 2026-01-01
+recurrence: 1
+lint_status: shipped
+---
+
+# 0001 — Coordinator drafts task-mds from memory instead of grepping the repo
+
+> **Mobile-generic example ADR shipped with sulde-cc v0.2.0.** Adapt or replace once your project has registered its first real incident of this pattern.
+
+**First logged**: 2026-01-01 (illustrative)
+**Platforms**: coordinator
+**Recurrence**: 1
+**Lint status**: shipped (`hooks/lib/check_task_md_baseline.py`)
+
+---
+
+## Symptom
+
+Coordinator drafts a task-md citing specific symbols, file paths, scaffold field values, or commit-implied state — but the cited items are stale, renamed, removed, or never existed:
+
+- `grep -rn '<symbol>'` shows zero matches for the action / handler / state name the task-md references
+- the cited file path has been refactored to a new location since the coordinator last looked
+- the design-truth value the task-md cites has been superseded by a coordinator-supplement that was added but never re-synced into the task-md
+- the task-md says "current behaviour: X" based on an old working-tree state, not the actual `develop` branch state
+
+The dev pulls the task, attempts to execute, and discovers the task-md's premises are wrong. They either reflect the divergence in a `-block.md` handoff (good) or — worse — silently "interpret" the task-md to mean whatever fits the current code, producing a fix that doesn't match the user's actual ask.
+
+## Root cause
+
+Three contributing causes, in decreasing order of impact:
+
+1. **Long sessions accumulate stale mental model.** A coordinator session running > 30 minutes builds up a model of "what the code looks like" that drifts from reality as commits land. Without explicit re-grep, the coordinator starts writing from memory instead of fresh evidence.
+2. **No enforced baseline step.** When the only gate is the coordinator's own discipline, fatigue or scope pressure causes the discipline to slip silently.
+3. **Scaffold values get re-checked less often than feature code.** Coordinators tend to assume "AppTopBar is still 20sp because it's been 20sp for months" — without realising a recent commit changed the default.
+
+## Cost
+
+- **Re-baseline cost**: when caught at dev-side, the dev writes a `-block.md` handoff. Coordinator has to re-grep + revise the task-md + re-dispatch. Typical: 30-60 min lost per occurrence.
+- **Silent execution cost**: when NOT caught at dev-side, the dev produces a fix that doesn't address the user's actual ask. Catching this requires the user (or a coordinator audit) to notice the gap — often days later.
+- **Compounding cost**: a stale scaffold value cited in one task-md tends to recur in subsequent task-mds (the coordinator copies their own pattern). Each subsequent task-md is wrong in the same way until baseline catches it.
+
+## Mitigation
+
+### Short-term (per-task, enforced by hook)
+
+- The `hooks/lib/check_task_md_baseline.py` hook blocks Write of any task-md without a `§起草前 baseline 实证` section. The skill `skills/coordinator/writing-task-md/SKILL.md §0.5` spells out the 5-step baseline:
+
+  1. `git log --since=14d --oneline` per affected frontend
+  2. `grep -rn '<symbol>'` to verify literal name
+  3. `git log -S '<symbol>'` to attribute (Dev self-fix / design-truth / coordinator supplement)
+  4. `query-scaffold.sh` + grep usage of scaffold across frontends
+  5. cross-verify scaffold actual vs design-truth values → "§数据源冲突段" if mismatch
+
+- Output of each step is pasted inline into the task-md baseline section, so reviewers and devs can verify the coordinator didn't cheat.
+
+### Medium-term (workflow)
+
+- Coordinator sessions read `<docs-hub>/.ai-workspace/baseline/latest.md` at SessionStart (handled by `hooks/lib/claude_md_inject.py` if you configure `session_baseline.baseline_script`). The injection includes commit + handoff state, reducing the "stale mental model" failure mode at session boundaries.
+
+### Long-term (tooling)
+
+- The dev-side `assign` skill §0 verifies the task-md baseline hasn't drifted since drafting (4-step gate: section exists, cited symbols still grep, cited design-truth still exists, recent commits don't invalidate). This catches drift between draft-time and execute-time.
+- Audit subagent dispatched weekly can re-grep recent task-mds against current code to flag stale citations proactively.
+
+## Related
+
+- `<docs-hub>/00_shared-rules/data-sources.md` — priority order when citations conflict
+- `<docs-hub>/ADR/0002-scaffold-bypass.md` — the dev-side mirror anti-pattern
+- `skills/coordinator/writing-task-md/SKILL.md §0.5` — the rule this ADR enforces
+- `hooks/lib/check_task_md_baseline.py` — the enforcing hook
+
+## Example incident (anonymised)
+
+A coordinator drafted a task-md citing `SkipTapped` as the user-intent action name. Dev grep'd: no `SkipTapped` in the repo. The actual action was `Skip` (the coordinator had mentally pluralised it from "skip button tapped" thinking). Dev wrote `-block.md`; coordinator re-grep'd, fixed task-md to use `Skip`, re-dispatched. 25 min lost. If the dev had "interpreted" instead of blocking, the fix would have targeted a non-existent handler.

@@ -1,0 +1,28 @@
+{
+  "name": "sulde-cc",
+  "version": "0.2.2",
+  "description": "Sulde — mobile-first Claude Code coordination framework (coordinator + N Dev sessions), Community Edition. 4-stack: android / ios / flutter / harmony. 11 enforcement hooks, 5 skills (3 coordinator + 2 dev), 8 commands, project template + docs-hub skeleton. Pro Edition (full anti-pattern ADR library + advanced skills) available separately. v0.1.x MIT preserved at tag v0.1.0; v0.2.0+ BSL 1.1 (Change Date 2030-05-25 → MIT). See CHANGELOG.md for version history.",
+  "author": {
+    "name": "eric.gao.tech",
+    "email": "eric.gao.tech@gmail.com"
+  },
+  "homepage": "https://github.com/EthanReedLabs/sulde-cc",
+  "license": "BUSL-1.1",
+  "keywords": [
+    "claude-code",
+    "multi-end",
+    "coordination",
+    "methodology",
+    "task-md",
+    "handoff",
+    "anti-pattern-adr",
+    "mobile",
+    "mobile-android",
+    "mobile-ios",
+    "mobile-flutter",
+    "mobile-harmony"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json"
+}

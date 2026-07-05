@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# sulde-cc coordinator baseline — cross-frontend state snapshot.
+#
+# Emits ~50 lines covering: per-frontend recent commits, active handoffs,
+# archived handoffs (last 14d), branch tips. SessionStart hook reads stdout
+# and injects it as `additionalContext` so the agent starts with current
+# project state.
+#
+# /sulde-init fills in the FRONTENDS array from .sulde-config.yaml.
+
+set -u
+
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+# /sulde-init populates: e.g. FRONTENDS=("android" "ios" "flutter" "harmony")
+FRONTENDS=(<<FRONTENDS>>)
+
+NOW="$(date '+%Y-%m-%d %H:%M:%S')"
+
+cat <<EOF
+# sulde coordinator baseline
+
+**Generated**: $NOW
+**Source**: scripts/coordinator-baseline.sh
+
+EOF
+
+for fe in "${FRONTENDS[@]}"; do
+  dir="$PROJECT_ROOT/$fe"
+  [ -d "$dir" ] || { echo "## $fe — directory missing"; continue; }
+
+  echo "## $fe"
+  echo ""
+  echo "### Branch / latest commit"
+  branch="$(git -C "$dir" symbolic-ref --short HEAD 2>/dev/null || echo "(detached)")"
+  last="$(git -C "$dir" log -1 --oneline 2>/dev/null || echo "(no commits)")"
+  echo "- branch: \`$branch\`"
+  echo "- HEAD:   $last"
+  echo ""
+
+  active="$dir/.ai-workspace/handoff"
+  if [ -d "$active" ]; then
+    echo "### Active handoffs"
+    found=0
+    for f in "$active"/*.md; do
+      [ -e "$f" ] || continue
+      [[ "$f" == */archive/* ]] && continue
+      echo "- ${f#$PROJECT_ROOT/}"
+      found=1
+    done
+    [ "$found" -eq 0 ] && echo "- (none)"
+    echo ""
+  fi
+
+  archive="$dir/.ai-workspace/handoff/archive"
+  if [ -d "$archive" ]; then
+    echo "### Archived handoffs (recent 10)"
+    ls -t "$archive"/*.md 2>/dev/null | head -10 | while read -r f; do
+      echo "- ${f#$PROJECT_ROOT/}"
+    done
+    echo ""
+  fi
+
+  echo "### Commits in last 14 days"
+  git -C "$dir" log --since=14.days --oneline 2>/dev/null | head -10 | sed 's/^/- /'
+  echo ""
+done
+
+echo "---"
+echo ""
+echo "**Coordinator startup rule**: read the active-handoff list above before drafting any new task-md."

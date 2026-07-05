@@ -1,0 +1,115 @@
+# perf-diagnosis — performance gate (mobile)
+
+> Any task touching performance must produce **measurements** before fixes. The `perf_gate.py` hook surfaces this rule whenever a prompt contains a perf trigger word (`慢 / 卡 / 延迟 / 优化 / jank / lag / slow / perf`).
+
+## Gate
+
+> **Do NOT write a perf fix without numbers.**
+
+The sequence is:
+
+1. **Reproduce** the symptom locally; record the steps
+2. **Measure** with the stack's profiler (commands below)
+3. **Hypothesise** the root cause from the measurements (not from intuition)
+4. **Fix** addressing the measured cause
+5. **Re-measure** to verify the fix moved the metric in the right direction
+6. **Handoff** includes before/after numbers + raw profile output paths
+
+Any task-md without measurements in `§起草前 baseline 实证` and `§ 时序约束 / 性能数据` is a hint that this gate was skipped.
+
+## Per-stack profilers
+
+### Android
+
+| Tool | Use case |
+|---|---|
+| Android Studio Profiler | CPU / memory / energy / network in dev workflow |
+| `dumpsys gfxinfo {package}` | Frame timing histogram (jank rate) |
+| Perfetto (`perfetto -c config.pbtx`) | Cross-process traces, kernel-level scheduler view |
+| Systrace (legacy) | If team still on it |
+| `adb bugreport` | Full system snapshot when issue is system-wide |
+| LeakCanary | Memory leak detection in debug builds |
+
+Key numbers to capture: frame time P50/P95/P99, jank rate (% slow frames), main-thread CPU spike duration, memory delta.
+
+### iOS
+
+| Tool | Use case |
+|---|---|
+| Instruments.app | CPU / allocations / time profiler / leaks |
+| `xcrun xctrace record --template "Time Profiler"` | Headless trace capture for CI |
+| Console.app | Real-device log stream with predicate filters |
+| MetricKit (`MXMetricPayload`) | Field-collected metrics from real users (if instrumented) |
+| Charles / mitmproxy | Network capture with bandwidth shaping |
+
+Key numbers: main-thread CPU%, hang duration (per MXHangDiagnosticPayload spec), launch time (cold/warm/resume).
+
+### Flutter
+
+| Tool | Use case |
+|---|---|
+| Flutter DevTools (browser) | CPU / memory / widget tree / network |
+| `flutter run --profile` | Frame timing breakdown in DevTools |
+| Observatory / Dart VM Service | Dart-level allocation tracking |
+| `flutter doctor -v` | Environment-related slowness |
+| Underlying platform profilers (adb / Instruments) | When the issue is below Flutter |
+
+Key numbers: build time per frame, layout time, paint time, raster time.
+
+### Harmony
+
+| Tool | Use case |
+|---|---|
+| DevEco Studio Profiler | CPU / memory / energy |
+| `hdc shell hidumper` | System service / hap state dump |
+| SmartPerf-Host | Cross-process performance trace (similar to Perfetto) |
+| `hdc shell hilog` | Runtime log stream with bundle filter |
+| `hdc bugreport` | Full system snapshot |
+
+Key numbers: frame time, FPS, JS thread CPU, GPU rendering pipeline timing.
+
+## §perf-gate trigger words
+
+The hook fires on (default list, overridable in `.sulde-config.yaml: enforcement.perf_gate.triggers`):
+
+`慢 / 卡 / 卡顿 / 延迟 / 优化 / 提速 / 加载慢 / 进场慢 / 响应慢 / jank / lag / perf / performance / slow`
+
+When the hook fires, you see a reminder. The reminder is **not blocking** — the dev's responsibility is to honour the gate manually.
+
+## How a perf task-md looks
+
+A coordinator drafting a perf task-md must include:
+
+```markdown
+## §起草前 baseline 实证
+
+### Step 1: 近 14 天 commit
+- (relevant frontend) commits possibly affecting this hot path
+
+### Step 5: scaffold 数值 vs design-truth cross verify
+- N/A for perf (or note design-truth motion-timing constraint)
+
+## §诊断数据 (mandatory for perf task-md)
+
+### Repro steps
+1. ...
+2. ...
+
+### Baseline measurements (before fix)
+- jank rate: 8.2% (50 trials, dumpsys gfxinfo)
+- main-thread spike P95: 120ms (Android Studio Profiler)
+- raw trace: `.ai-workspace/diag/{date}-{task}-baseline.perfetto-trace`
+
+### Hypothesised cause
+The measurements suggest X is doing Y on main thread during onAppear...
+
+### Target after fix
+- jank rate < 1%
+- spike P95 < 50ms
+```
+
+## What this gate prevents
+
+Without numbers, devs (and coordinators) tend to add "defensive" delays / debounces / coroutine dispatchers / `runOnUiThread` calls that don't address the actual cost. The fix appears to work locally because it shifts the spike off the screen the dev is looking at — then re-emerges elsewhere.
+
+See `<docs-hub>/ADR/0003-mobile-cold-flow-stateflow.md` for one form this takes (cold Flow used where StateFlow is needed).

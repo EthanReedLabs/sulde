@@ -1,0 +1,39 @@
+# HarmonyOS NEXT frontend .gitignore (sulde-cc template).
+
+# DevEco / hvigor
+.hvigor/
+build/
+.cxx/
+oh_modules/
+local.properties
+.ohpm/
+
+# Generated artifacts
+*.hap
+*.app
+*.bundle
+
+# DevEco Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Logs / coverage
+*.log
+hidumper-*.txt
+coverage/
+
+# Keystore (don't commit)
+*.p12
+*.cer
+*.csr
+
+# macOS / Windows / Linux
+.DS_Store
+*.swp
+
+# sulde-cc state (defensive — inherited from project root)
+.ai-workspace/
+.claude/
+CLAUDE.md
