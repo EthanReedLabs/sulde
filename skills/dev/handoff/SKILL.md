@@ -150,7 +150,7 @@ Success
 
 1. Read 你的 handoff doc(SessionStart 已扫 `.ai-workspace/handoff/active/`)
 2. § verify 三联实证 cross check
-3. § escalation 候选 → 走 `coordinator-maintenance` skill 派 follow-up task
+3. § escalation 候选 → 协调端 review 后写新的 bounded task-md；不把候选当作已批准工作
 4. handoff 处理完归档到 `.ai-workspace/handoff/archive/`
 
 **你的 handoff 质量 = 协调端能不能信任 "Dev 跑完了"** — 直接影响下个 task md 是否还需重新 verify。

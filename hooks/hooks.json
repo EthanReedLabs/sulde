@@ -1,22 +1,14 @@
 {
-  "description": "Sulde v0.2.0 mobile-first enforcement. 3 entrypoints by hook type, Python-based for cross-OS support. Default enforcement_level=balanced with 7-day grace period; override per project in .sulde-config.yaml.",
+  "description": "Sulde v0.3.0 mobile-first enforcement. One cross-platform launcher feeds 3 entrypoints; project extensions register through extensions/registry.json.",
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": ".*",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/pre_tool_use.py\""
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/pre_tool_use.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" pre-tool-use",
+            "shell": "bash"
           }
         ]
       }
@@ -26,7 +18,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/user_prompt_submit.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" user-prompt-submit",
+            "shell": "bash"
           }
         ]
       }
@@ -36,7 +29,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/session_start.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" session-start",
+            "shell": "bash"
           }
         ]
       }

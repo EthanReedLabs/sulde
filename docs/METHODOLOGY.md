@@ -2,19 +2,22 @@
 
 > The reasoning behind Sulde's structure. Read once before adopting the framework; revisit when you are tempted to bypass a layer.
 >
-> **v0.2.0 scope note**: v0.2.0 narrows the framework's officially-supported scope to **mobile multi-end projects** (Android / iOS / Flutter / HarmonyOS NEXT). The 7-layer pyramid below is stack-neutral; the v0.2.0 templates / hooks / examples assume mobile. Non-mobile users should stay on v0.1.x or wait for v0.3+.
+> **Community 0.3.0 scope note**: the validated templates remain mobile-first (Android / iOS /
+> Flutter / HarmonyOS NEXT). The seven-layer method is stack-neutral; non-mobile teams extend the
+> skeleton in their own fork rather than assuming an unshipped template is supported.
 
 ---
 
 ## Why mobile-first
 
-Three observations from the original multi-end project that birthed sulde-cc:
+Three observations shaped the mobile-first skeleton:
 
 - **Mobile teams suffer the multi-end coordination problem most acutely** — every product feature ships twice (or thrice with HarmonyOS), and each platform has different scaffolds / different conventions / different verify recipes. The artifacts-over-memory principle pays off the fastest here.
 - **Mobile frontends are well-isolated** — each frontend lives in its own directory with its own build system, so the per-frontend workspace layer (L2) maps cleanly to existing project structure without invention.
 - **Mobile design-truth tooling is mature** — Pencil / Figma / Sketch all have MCPs, making the design-truth layer (L4) implementable today rather than aspirational.
 
-For web/backend/N-end projects the 7-layer pyramid still applies, but the templates and per-stack defaults that ship in v0.2.0 are mobile-specific. The pyramid translates; the boilerplate does not.
+For web/backend/N-end projects the seven-layer pyramid still applies, but the shipped templates and
+per-stack defaults are mobile-specific. The pyramid translates; the boilerplate does not.
 
 ---
 
@@ -168,14 +171,18 @@ The cost of running the full framework is overhead. The cost of not running it o
 - [`docs/GETTING_STARTED.md`](GETTING_STARTED.md) — concrete 5-minute setup walkthrough
 - [`template/_project/docs-hub/ADR/0000-example.md`](../template/_project/docs-hub/ADR/0000-example.md) — example ADR demonstrating the format (mobile-generic examples in `0001`-`0003`)
 - The five Sulde skills' `SKILL.md` files — `coordinator/writing-task-md`, `coordinator/configure-sulde`, `coordinator/multi-source-review`, `dev/assign`, `dev/handoff` — read these to understand the day-to-day workflow contracts
-- [`docs/V0.2.0-DESIGN-v2.md`](V0.2.0-DESIGN-v2.md) — the v0.2.0 design spec (hook protocol details, grace-period mechanics, schema schema)
-- [`CHANGELOG.md`](../CHANGELOG.md) — v0.2.0 breaking-change list + migration notes
+- [`docs/V0.2.0-DESIGN-v2.md`](V0.2.0-DESIGN-v2.md) — concise historical design record and current deviations
+- [`docs/EXTENDING.md`](EXTENDING.md) — downstream extension SDK
+- [`docs/KNOWLEDGE-KIT.md`](KNOWLEDGE-KIT.md) — empty project knowledge loop
+- [`CHANGELOG.md`](../CHANGELOG.md) — release and migration history
 
 ## Cross-OS notes
 
 - **macOS** is the only OS supporting all 4 stacks (iOS requires Xcode, macOS-only).
 - **Linux / Windows** support 3 of 4 stacks (no iOS). HarmonyOS works on all three.
-- The Python enforcement hooks run identically across all 3 OSes; the bash git-pre-commit hooks need Git Bash or WSL2 on Windows.
+- Python logic is cross-platform and explicitly UTF-8. Claude Code hook commands and Git
+  pre-commit scripts require Git Bash or WSL2 on Windows; native manual CLI use has a PowerShell
+  launcher.
 
 ## Cost / benefit pivot
 

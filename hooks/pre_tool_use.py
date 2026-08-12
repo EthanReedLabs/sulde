@@ -22,7 +22,7 @@ try:
 except ImportError:
     sys.stderr.write(
         "sulde: pyyaml not installed — hook enforcement disabled. "
-        "Run `pip install pyyaml>=6.0` to enable. (See V0.2.0-DESIGN-v2.md §3.1.1.)\n"
+        "Install PyYAML 6.0+ from the plugin's hooks/requirements.txt to enable.\n"
     )
     sys.exit(0)
 
@@ -32,6 +32,7 @@ import check_task_md_baseline  # noqa: E402
 import check_handoff_verify  # noqa: E402
 import check_subdir_cd  # noqa: E402
 import check_git_commit_alias  # noqa: E402
+import community_extensions  # noqa: E402
 
 
 def main() -> int:
@@ -46,6 +47,8 @@ def main() -> int:
     elif tool_name in ("Write", "Edit", "MultiEdit"):
         check_task_md_baseline.run(config, payload)
         check_handoff_verify.run(config, payload)
+
+    community_extensions.run("PreToolUse", config, payload)
 
     # No check tripped → allow by default (no JSON output).
     return 0

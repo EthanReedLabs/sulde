@@ -1,8 +1,7 @@
 """check_task_md_baseline — coordinator Write/Edit guard.
 
 Blocks task-md drafts that omit a `§baseline` evidence section. Catches the
-"draft from memory instead of grepping the repo" anti-pattern (Freebeat
-ADR §0100).
+generic "draft from memory instead of verifying the repository" anti-pattern.
 
 Trigger: Write/Edit a `.md` file under any `<frontend>/.ai-workspace/tasks/`
 that is not in an exempt subdir (archive/ etc).

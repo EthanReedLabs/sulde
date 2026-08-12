@@ -29,10 +29,10 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 ### Python dependency
 
-The sulde-cc Claude Code hooks require Python 3.6+ with pyyaml:
+The sulde-cc Claude Code hooks require Python 3.10+ with PyYAML 6.0+:
 
 ```bash
-pip install -r ${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt
+python3 -m pip install -r "${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt"
 ```
 
 Without pyyaml the hooks gracefully degrade to no-op + a stderr warning; runs continue.

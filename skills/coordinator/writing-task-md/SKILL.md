@@ -429,7 +429,7 @@ git branch -d dev/<dev-name>/<task-slug>
    - 例:`/assign 任务文件:.ai-workspace/tasks/{date}-xxx-fix.md`
    - **禁止**主会话直接贴 200+ 行 prompt 给用户
    - task 文件结构标准:身份分支 / 视觉/数据/行为契约 / **复用思考** / 验证 / 禁区
-   - 通用约束(必读 / 编译验证 / handoff)在各端 `/ui-impl` `/assign` skill 里硬约束,task 文件不重复写
+   - 通用约束(必读 / 编译验证 / handoff)在各端 `/assign` skill 里硬约束,task 文件不重复写
 
 ---
 

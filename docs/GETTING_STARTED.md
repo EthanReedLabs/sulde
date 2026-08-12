@@ -1,204 +1,138 @@
-# Getting Started (v0.2.0)
+# Getting Started (Community 0.3.0)
 
-> Go from "I cloned sulde-cc" to "my first Dev session is running a task-md" in about 10 minutes.
+This walkthrough takes a clean Claude Code install to the first verified task/handoff loop.
 
-This walkthrough assumes you have Claude Code installed, Python 3.6+ available, and a mobile project (or empty directory) where you want to adopt the methodology.
+## 1. Check prerequisites
 
----
+- Claude Code with plugin support
+- Python 3.10 or newer
+- PyYAML 6.0 or newer
+- Git
+- Git Bash or WSL2 when using Claude Code hooks on Windows
 
-## 1. Install the plugin (~ 2 min)
+Install and diagnose:
 
-```sh
-# Latest v0.2.0 (mobile-first, BSL 1.1, Python hooks)
+```text
 /plugin marketplace add EthanReedLabs/sulde-cc
 /plugin install sulde-cc@sulde-cc
-
-# Python dependency (one time per machine)
-pip install pyyaml>=6.0
 ```
-
-Without `pyyaml` the enforcement hooks degrade gracefully to no-op + a stderr warning. Your workflow does not break, but you lose the gating value. Install it.
-
-After install you should see 5 skills and 8 commands available:
-
-```
-/sulde-init                       /sulde-add-frontend       /sulde-add-team-member
-/sulde-migrate-from-v0.1.0        /sulde-add-sensitive-file  /sulde-add-scaffold
-/sulde-end-grace                  /sulde-add-skill-trigger
-```
-
-And the hooks (`PreToolUse`, `UserPromptSubmit`, `SessionStart`) start watching. They stay silent in any project without `.sulde-config.yaml` — opt-in by design.
-
-## 2. Initialize your project (~ 3 min)
-
-In your project root, run:
 
 ```sh
-cd ~/path/to/your-mobile-project
+python3 -m pip install -r "${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt"
+"${CLAUDE_PLUGIN_ROOT}/scripts/sulde" doctor
 ```
 
-In a Claude Code session there, run:
+The doctor result must have zero errors. A warning that a project has not opted in is expected
+until initialization.
 
-```
+## 2. Initialize a project
+
+Open Claude Code at the project root and run:
+
+```text
 /sulde-init
 ```
 
-The wizard asks ~8 questions:
+The guided flow asks for the project name, role, mobile stacks, optional design source, team,
+enforcement level, grace period, language, and primary OS. It then creates:
 
-1. project name (default = dir basename)
-2. role (`coordinator` / `dev` / `both`; default `coordinator`)
-3. stacks (multi-select: `android`, `ios`, `flutter`, `harmony`; default `[android, ios]`)
-4. design source MCP (`pencil` / `figma` / `sketch` / custom; default `pencil`)
-5. team (one alias per frontend at minimum; can defer with `/sulde-add-team-member` later)
-6. enforcement level (`strict` / `balanced` / `lenient`; default `balanced`)
-7. grace period days (default `7`)
-8. language (`auto` / `en` / `zh` / `ja`; default `auto`)
+- `.sulde-config.yaml`
+- the `docs-hub/` and root script skeleton
+- selected stack directories and `.ai-workspace/` skeletons
+- an empty project-owned `knowledge/` kit
+- a local grace-period marker
+- project pre-commit hooks where selected
 
-It then:
-- writes `.sulde-config.yaml`
-- copies `template/_project/*` to your project root (README, .gitignore.template, scripts/, docs-hub/ skeleton)
-- copies `template/<stack>/*` to each `frontends[].path`
-- installs git pre-commit hooks via each frontend's `scripts/pre-commit-installer.sh`
-- drops a `.sulde-grace-started` marker — for 7 days, enforcement runs at `lenient` regardless of your config so first-week mistakes don't block you
+The copier must preserve files that already exist. Review the generated files before committing.
 
-## 3. Add team members (~ 2 min)
+Verify the initialized project:
 
-For each developer in your project, run:
-
-```
-/sulde-add-team-member <alias> <name> <email> <frontend>
+```sh
+"${CLAUDE_PLUGIN_ROOT}/scripts/sulde" doctor --project "$PWD"
+"${CLAUDE_PLUGIN_ROOT}/scripts/sulde" kb lint --root "$PWD"
 ```
 
-Example:
+## 3. Add team identities if needed
 
-```
-/sulde-add-team-member as-a Alice alice@example.com android
-/sulde-add-team-member as-b Bob   bob@example.com   ios
-```
+For a multi-person project:
 
-This appends to `.sulde-config.yaml: team[]` and creates a per-repo `git as-<alias>` shell alias that sets `SULDE_COMMIT_ALIAS=<alias>` so the `check_commit_alias.sh` pre-commit hook lets the commit through. Plain `git commit` without `git as-<alias>` is now blocked.
-
-## 4. Bootstrap design-truth (~ 5-15 min depending on design size)
-
-If your project has a design tool with MCP support (Pencil / Figma):
-
-```
-/update-design                                                  # not yet bundled — see skills/coordinator/
+```text
+/sulde-add-team-member as-a Alice alice@example.invalid android
 ```
 
-For now, manually create `<docs-hub>/design-truth/<page-id>.md` per page using `<docs-hub>/design-truth/_example.md.template` as the skeleton. Each page truth doc should include:
+This stores a repository-local Git alias. Use `git as-a commit ...` so handoffs and commits retain
+the configured identity. A solo project can leave `team: []`, which disables the alias gate.
 
-- Node tree (component nesting + style props)
-- Visual key attributes (font, color, corner radius)
-- Asset reference list (per-stack paths for `cp`)
-- Implementation hard constraints (which scaffolds to use)
+## 4. Establish project truth
 
-## 5. Dispatch your first task-md (~ 3 min)
+Before dispatching work, replace template placeholders and record the facts the task will depend
+on:
 
-In your coordinator session at project root:
+- actual frontend paths and stack commands;
+- design source or the explicit absence of one;
+- build/install/launch/log/screenshot verification commands;
+- sensitive paths and scaffolds;
+- integration branch and ownership.
 
-> "Dispatch a task to the android frontend: change the home tab count from 3 to 2."
+Do not copy project names, classes, paths, or tool output from example documents as if they were
+current truth. Verify them in the adopting repository.
 
-The `UserPromptSubmit` hook surfaces a `[sulde:writing-task-md]` reminder. Invoke the skill, follow its §0 6-step audit + §0.5 5-step baseline. The skill's enforcement gate (the `check_task_md_baseline.py` PreToolUse hook) blocks Write of any task-md missing the `§起草前 baseline 实证` section.
+## 5. Dispatch the first task
 
-Write the task-md to `./android/.ai-workspace/tasks/<YYYY-MM-DD>-home-tabs-reduction.md`.
+In the coordinator session, describe one bounded outcome. The skill-trigger reminder points to
+`coordinator/writing-task-md`. The task contract should include:
 
-## 6. Execute the task (~ depends on task)
+- verified baseline evidence;
+- allowed and rejected scope;
+- acceptance checks;
+- target branch and assignee;
+- exact handoff expectations.
 
-In a **separate** Claude Code session running inside `./android/`:
+Write it below the selected frontend's `.ai-workspace/tasks/` directory.
 
-```
-/clear
-/model sonnet
-/assign .ai-workspace/tasks/<YYYY-MM-DD>-home-tabs-reduction.md
-```
+## 6. Execute and hand off
 
-The `dev/assign` skill:
+In a separate Dev session rooted at that frontend, invoke `dev/assign` with the task path. The
+workflow rechecks the baseline, performs the task, verifies it, and creates a five-section handoff.
+It does not auto-commit or auto-push.
 
-1. Reads the task-md frontmatter (assignee, branch, model)
-2. Verifies §0 baseline (4-step gate: task md has baseline section, cited symbols still grep, cited design-truth still exists, recent commits don't invalidate)
-3. Switches branch + `git as-<alias>` identity
-4. Executes the contract
-5. Runs §5 verify-strict (build / install / launch+log / screenshot)
-6. Writes a handoff at `.ai-workspace/handoff/<YYYY-MM-DD>-home-tabs-reduction-result.md` per the `dev/handoff` skill's 5-section format
-7. Stages the diff; **does not auto-commit or auto-push** — waits for your confirmation
+The coordinator reviews objective evidence and either accepts the result or dispatches a bounded
+follow-up. A user correction should update the task contract rather than accumulate contradictory
+instructions.
 
-## 7. Coordinator reviews + dispatches follow-ups
+## 7. Grow local knowledge after a reusable incident
 
-Back in your coordinator session, the next `/clear` will SessionStart-inject the head of `CLAUDE.md` + optionally the output of `scripts/coordinator-baseline.sh` so you see what the dev produced.
+If a verified fix is reusable across tasks, prepare a de-identified source file and run:
 
-Read the handoff's `§ verify` (build evidence) + `§ escalation 候选` (out-of-scope problems the dev noticed). Decide:
-- merge the dev's branch into integration
-- or dispatch a follow-up task-md for escalation items
-
-## 8. End the grace period
-
-After ~1 week, you'll have a feel for the hooks. Switch to your real enforcement level:
-
-```
-/sulde-end-grace
-```
-
-This drops a `.sulde-grace-ended` marker. From here on, hooks enforce at the level configured in `.sulde-config.yaml: enforcement_level` (default `balanced`):
-
-| Level | PreToolUse(Write) | PreToolUse(Bash) | UserPromptSubmit |
-|---|---|---|---|
-| `strict` | block (JSON deny) | block (exit 2) | reminder |
-| `balanced` (default) | block | block | reminder |
-| `lenient` | warn (allow) | warn (allow) | reminder |
-
-## 9. Author your first real ADR (when you hit a recurring pattern)
-
-sulde-cc ships three example ADRs (`0001`-`0003`) for mobile-generic anti-patterns + `0000-example.md` for format reference. Once your project hits a recurring incident specific to it, author `<docs-hub>/ADR/{NNNN}-{slug}.md` following `_frontmatter.schema.yaml`. Add a row to `INDEX.md`. Track recurrence over time — the ADR registry is the single most valuable artifact a long project accumulates.
-
----
-
-## What to read next
-
-- [`docs/METHODOLOGY.md`](METHODOLOGY.md) — the 7-layer pyramid + reasoning
-- [`docs/V0.2.0-DESIGN-v2.md`](V0.2.0-DESIGN-v2.md) — hook protocol, schema details, grace mechanics
-- `<docs-hub>/00_shared-rules/*` (after `/sulde-init`) — data-sources / verify-build / self-fix-boundary / perf-diagnosis / model-strategy
-- `${CLAUDE_PLUGIN_ROOT}/skills/dev/assign/SKILL.md` + `dev/handoff/SKILL.md` — day-to-day Dev workflow
-
-## Migrating from v0.1.x
-
-```
-/sulde-migrate-from-v0.1.0
+```sh
+"${CLAUDE_PLUGIN_ROOT}/scripts/sulde" kb dedup --root "$PWD" "symptom description"
+"${CLAUDE_PLUGIN_ROOT}/scripts/sulde" kb redact --root "$PWD" incident.md --output safe.md
+"${CLAUDE_PLUGIN_ROOT}/scripts/sulde" kb sediment --root "$PWD" \
+  --source safe.md --container anti-patterns \
+  --title "Reusable title" --summary "Reusable lesson"
 ```
 
-Reads existing `.sulde-config.yaml`, dry-runs upgrade to `.sulde-config.yaml.v2-preview`, asks for confirmation, backs up the original as `.sulde-config.yaml.v0.1.0-backup`, and drops a 7-day grace marker. The CHANGELOG has the breaking-change list (Python dependency is the main one).
+Review the draft, replace every TODO with evidence, run `kb lint`, and rebuild `kb index`. The tool
+never publishes or commits knowledge for you.
 
-If you cannot install Python 3.6+ in your environment, stay on v0.1.x:
+## 8. Extend only when the base loop is stable
 
-```
-/plugin install skills@sulde-cc@0.1.0
-```
-
-The v0.1.0 tag remains MIT-licensed and Python-free in perpetuity.
+A fork can generate a project-specific skill, hook, check, or knowledge container. Generated files
+are intentionally small and unpopulated. See [EXTENDING.md](EXTENDING.md).
 
 ## Troubleshooting
 
-**The hooks are not running**
+Run:
 
 ```sh
-/plugin list                    # verify sulde-cc shows
-python3 -c "import yaml"        # verify pyyaml installed (silent = ok; error = pip install pyyaml)
+"${CLAUDE_PLUGIN_ROOT}/scripts/sulde" doctor --project "$PWD" --json
 ```
 
-If hooks still don't fire, check that `.sulde-config.yaml` exists in your project root or an ancestor (hooks walk up to find it; no file = silent exit).
+Common results:
 
-**Pre-commit hook blocks `git commit`**
-
-Use `git as-<alias> commit ...` (configured by `/sulde-add-team-member`). To disable: set `enforcement.branch.commit_alias_required: false` in `.sulde-config.yaml`.
-
-**Want to disable enforcement temporarily**
-
-Set `enabled: false` in `.sulde-config.yaml` (kill switch). Or drop to `lenient` for warnings without blocking. Re-enable when ready.
-
-**Trigger keywords don't match my project's vocabulary**
-
-Add custom triggers via `/sulde-add-skill-trigger <regex> <skill> [role]`. The `skill_trigger.py` hook merges your additions with the built-in defaults on every prompt.
-
-**A Dev session is touching files outside its frontend**
-
-Check the Dev's `CLAUDE.md` has the "do not edit files outside this frontend" rule (the v0.2.0 templates include it). If yes, the Dev is ignoring it — file an ADR.
+- `PyYAML is not installed`: install `hooks/requirements.txt` in the Python used by the hook.
+- `project has not opted in`: create or locate `.sulde-config.yaml` in the current ancestor chain.
+- `VERSION and plugin.json differ`: the plugin package is incomplete or mixed-version.
+- `hook launcher is not used`: reinstall from a clean release rather than a partial directory copy.
+- Windows mojibake: use the bundled launchers; they force `PYTHONIOENCODING=utf-8` and
+  `PYTHONUTF8=1` before Python starts.

@@ -72,6 +72,15 @@ def test_project_root_files() -> list[Result]:
         "_project/docs-hub/ADR/INDEX.md",
         "_project/docs-hub/ADR/_frontmatter.schema.yaml",
         "_project/docs-hub/ADR/0000-example.md",
+        "_project/knowledge/README.md",
+        "_project/knowledge/INDEX.md",
+        "_project/knowledge/schema.yaml",
+        "_project/knowledge/containers.json",
+        "_project/knowledge/anti-patterns/README.md",
+        "_project/knowledge/case-studies/README.md",
+        "_project/knowledge/platform-kb/README.md",
+        "_project/knowledge/tech-docs/README.md",
+        "_project/knowledge/work-model/README.md",
     ]
     return [
         expect(f"_project_file:{p}", (TEMPLATE / p).exists())
@@ -182,6 +191,14 @@ def test_copytree_simulation() -> list[Result]:
         results.append(expect(
             "cp:docs_hub_adr_index",
             (proj / "docs-hub" / "ADR" / "INDEX.md").exists(),
+        ))
+        results.append(expect(
+            "cp:knowledge_schema",
+            (proj / "knowledge" / "schema.yaml").exists(),
+        ))
+        results.append(expect(
+            "cp:knowledge_index",
+            (proj / "knowledge" / "INDEX.md").exists(),
         ))
         results.append(expect(
             "cp:harmony_claude_md",

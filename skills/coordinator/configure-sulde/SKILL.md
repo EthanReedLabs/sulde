@@ -38,19 +38,20 @@ user-invocable: true
 7. **Q6**:enforcement_level(default `balanced`)+ grace_period_days(default `7`)
 8. **Q7**:lang(default `auto`)+ os_primary_target(default `unix`)
 9. **生成 `.sulde-config.yaml`** 写入 project root
-10. **复制 `${CLAUDE_PLUGIN_ROOT}/template/_project/*`** 到 project root(根级 + scripts/ + docs-hub/ 骨架)
+10. **复制 `${CLAUDE_PLUGIN_ROOT}/template/_project/*`** 到 project root(根级 + scripts/ + docs-hub/ + 空 knowledge/ 骨架；已有文件必须保留)
 11. **复制 `${CLAUDE_PLUGIN_ROOT}/template/<stack>/*`** 到 `<frontend>/` 每个 frontend(对应 stack 骨架)
 12. **写 grace marker**:`echo '{"started_at":"<ISO>","grace_period_days":7}' > .sulde-grace-started`
 13. **跑各 frontend 的 `scripts/pre-commit-installer.sh`** 装 git hook
-14. **cp `template/_project/docs-hub/design/page-relation.yaml.example` → `<docs-hub>/design/page-relation.yaml`**(空骨架,首次跑 `/ui-impl` 阶段 0 强制读取本图谱,缺则报错)
+14. **cp `template/_project/docs-hub/design/page-relation.yaml.example` → `<docs-hub>/design/page-relation.yaml`**(空骨架；项目按自己的设计同步流程维护)
 15. **输出 next steps**:
     - 7 day grace period 已起,hook 强制 lenient mode 直到 `.sulde-grace-ended` marker
-    - 跑 `pip install -r ${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt` 装 pyyaml
+    - 确认 Python 3.10+，跑 `python3 -m pip install -r "${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt"` 装 PyYAML 6.0+
+    - 跑 `sulde doctor --project <project-root>` 与 `sulde kb lint --root <project-root>`
     - **若多人协作**:跑 `/sulde-add-team-member` 加每个团队成员
     - **若独立开发者**:`team: []` 留空即可(`check_commit_alias.sh` hook 自动 skip alias 强制,plain `git commit` 工作)
-    - **若有设计工具**(Pencil / Figma MCP):跑 `/update-design` 起初版 design-truth
+    - **若有设计工具**(Pencil / Figma MCP):按项目自己的已审查流程生成初版 design-truth；公开版不预置写设计工具的 skill
     - **若无设计工具**:`.sulde-config.yaml: design_source.mcp` 设为 `none`,走手动 design-truth 流程
-    - 首次跑 `/ui-impl` 前协调端**手动填一遍 `<docs-hub>/design/page-relation.yaml`**(参 yaml.example 内 schema 示例)
+    - 首次派 UI task 前协调端**手动填一遍 `<docs-hub>/design/page-relation.yaml`**(参 yaml.example 内 schema 示例)
     - `/sulde-end-grace` 提前结束 grace
 
 **复制实现** 见 §9 跨目录 cp 权限段。
@@ -183,6 +184,9 @@ shutil.copytree(src, dst, dirs_exist_ok=True)
 for sh in dst.glob("**/*.sh"):
     sh.chmod(sh.stat().st_mode | 0o755)
 ```
+
+`dirs_exist_ok=True` 不是覆盖授权。逐文件复制时若目标已存在，必须保留并在结果中列出；
+不得静默替换老项目的 README、脚本、知识或治理文件。
 
 **权限失败**:用户 home / project 权限不够 → skill 输出"无权限写 X,手动 cp 命令:..."降级。
 

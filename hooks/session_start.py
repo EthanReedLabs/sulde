@@ -23,12 +23,14 @@ except ImportError:
 from sulde_common import read_json_stdin, silent_exit_if_no_config  # noqa: E402
 
 import claude_md_inject  # noqa: E402
+import community_extensions  # noqa: E402
 
 
 def main() -> int:
     payload = read_json_stdin()
     config = silent_exit_if_no_config()
     claude_md_inject.run(config, payload)
+    community_extensions.run("SessionStart", config, payload)
     return 0
 
 

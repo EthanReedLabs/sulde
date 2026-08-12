@@ -1,153 +1,196 @@
-# Sulde — Multi-end Claude Code coordination framework (mobile-first)
+# Sulde Community
 
-> **Sulde** (Mongolian: ᠰᠦᠯᠳᠡ, the rallying banner) — a factory-state framework for **mobile** projects where one **coordinator** Claude Code session steers multiple **Dev** sessions across Android / iOS / Flutter / HarmonyOS. Ships as a Claude Code plugin (skills + Python hooks + git pre-commit hooks) plus a project template (root skeleton + 4 stack skeletons + docs-hub).
+Sulde Community is a mobile-first coordination skeleton for Claude Code projects. It provides
+deterministic hooks, project templates, task/handoff conventions, extension scaffolds, and an
+empty knowledge-growth kit. You bring the team rules, domain knowledge, and project-specific
+workflows.
 
-**Status**: v0.2.0 — mobile-first, 11 enforcement hooks (Python), 4-stack template, 8 commands.
+**Current release:** `0.3.0`
+**Runtime contract:** Python 3.10+, PyYAML 6.0+, Git, and Claude Code plugin support.
 
-> Earlier v0.1.x releases (MIT) targeted any N-end split. v0.2.0 narrows scope to mobile to honestly reflect what's been battle-tested. Non-mobile users: stay on v0.1.x (`/plugin install skills@sulde-cc@0.1.0`) or wait for v0.3+ N-end re-entry.
+The public edition is intentionally a framework and a set of ideas—not a populated engineering
+brain. It contains no private corpus, project memory, vector database, background Agent, L2/L3/L4
+governance loop, or autonomous execution system.
 
----
+## What ships
 
-## What you get
+- Five core skills:
+  - `coordinator/writing-task-md`
+  - `coordinator/configure-sulde`
+  - `coordinator/multi-source-review`
+  - `dev/assign`
+  - `dev/handoff`
+- Eight `/sulde-*` setup and maintenance commands.
+- Three opt-in Claude Code hook entrypoints for task, handoff, navigation, identity, skill-trigger,
+  performance, and session-start checks.
+- Four mobile project skeletons: Android, iOS, Flutter, and HarmonyOS.
+- `sulde doctor` for source-checkout and clean-install diagnostics.
+- An extension SDK for adding a project skill, hook, doctor check, or knowledge container.
+- An empty project-owned knowledge kit with deterministic add, dedup, redact, lint, index, search,
+  and light sediment commands.
 
-- A **plugin** (`/plugin install ...`) that adds:
-  - **5 skills**:
-    - `coordinator/writing-task-md` — gates task dispatch through a structured task-md contract (5-step baseline verification enforced by hook)
-    - `coordinator/configure-sulde` — 8-mode setup / migration / team-management dispatcher (`init`, `migrate-from-v0.1.0`, `add-frontend`, `add-team-member`, `add-sensitive-file`, `add-scaffold`, `add-skill-trigger`, `end-grace`)
-    - `coordinator/multi-source-review` — major-review 4-class triage to prevent single-source misjudgement
-    - `dev/assign` — executes a task-md (baseline verify → run → verify-strict → handoff)
-    - `dev/handoff` — formalises the 5-section handoff format
-  - **11 enforcement hooks** (Python entrypoints + git pre-commit bash):
-    - PreToolUse Write/Edit — task-md baseline section, handoff 5-section format
-    - PreToolUse Bash — block `cd` into frontend dirs (context-pollution prevention), require `git as-<alias>` commits
-    - UserPromptSubmit — skill-trigger reminders, perf-gate (no fixes without measurements)
-    - SessionStart — inject CLAUDE.md head + optional baseline / health scripts via `additionalContext`
-    - git pre-commit — branch protect, branch format, commit-alias, AI-traces (4 bash hooks)
-  - **8 user commands** — `/sulde-init`, `/sulde-migrate-from-v0.1.0`, `/sulde-add-*` (×5), `/sulde-end-grace`
-- A **project template** (`template/_project/` + `template/{android,ios,flutter,harmony}/`) — root skeleton + 4 stack skeletons, `/sulde-init` copies them into a new project ~5 minutes.
-- A **methodology document** (`docs/METHODOLOGY.md`) explaining the layers the skills sit on.
+## What does not ship
 
-## What you don't get (by design)
+- A pre-populated incident or anti-pattern library.
+- User, session, or cross-project memory.
+- Embedding models, hosted search, MCP servers, or paid API calls.
+- Autonomous governance, self-repair, task approval, publishing, commit, or push behavior.
+- Claude Code/Codex dual-host runtime parity. This public release is a Claude Code plugin skeleton;
+  its methodology and generated artifacts can still be adapted by downstream projects.
+- Private or commercial Sulde implementation details.
 
-Sulde is **factory-state mechanism**, not populated content. You bring:
-
-- Your design source (Pencil / Figma / Sketch / custom MCP)
-- Your anti-pattern catalog (3 mobile examples ship; you accumulate the rest from actual incidents)
-- Your team identities (`git as-X` aliases configured via `/sulde-add-team-member`)
-- Your domain rules (which files are sensitive, model-selection thresholds, language conventions)
-
-## Community Edition vs Pro Edition
-
-This repository is the **Community Edition** — the complete framework mechanism, free under BSL 1.1. Everything you need to run Sulde on your project is here, and it will stay here.
-
-**Pro Edition** adds the *content* accumulated from 6+ months of real multi-end project work — content that was never in this public repository:
-
-| | Community (this repo) | Pro |
-|---|---|---|
-| Enforcement hooks (11) | ✅ | ✅ |
-| Project template (4 stacks + docs-hub) | ✅ | ✅ |
-| User commands (8) | ✅ | ✅ |
-| Core skills | 5 (writing-task-md / configure-sulde / multi-source-review / assign / handoff) | 17+ (adds ui-impl, perf-diagnose, crash-fix, code-review, postmortem, parallel-dev, bug-hunt, update-design, coordinator-maintenance, sediment-from-code, curate-to-kb …) |
-| Anti-pattern ADR library | 3 mobile-generic examples | **139+ full ADRs** (mobile / coordination / AI-behavior / incident catalog) |
-| Engineering case studies | — | 17+ five-section deep dives (Android media & perf / iOS-TCA / cross-end consistency / mobile caching / diagnosis methodology) |
-| Knowledge-sedimentation loop | — | Two-layer KB + curation workflow (bugbook → anti-pattern → case study) |
-
-**Pro Edition inquiry**: eric.gao.tech@gmail.com
-
-The Community Edition is not a trial — the mechanism is complete and self-sufficient. Pro is for teams that want the accumulated incident library and advanced skills instead of building their own from scratch.
-
-> **Note**: Community skill docs occasionally reference Pro-only skills (e.g. `/ui-impl`, `/update-design`, `/parallel-dev`, `coordinator-maintenance`) as part of the full workflow. Those steps are optional extensions — every Community skill runs complete without them.
-
-## Prerequisites
-
-- **Claude Code** with plugin support
-- **Python 3.6+** with `pyyaml>=6.0` — the v0.2.0 enforcement hooks are Python-based for cross-OS support
-  ```sh
-  pip install -r ${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt
-  ```
-  Without pyyaml the hooks gracefully degrade to no-op + a stderr warning (your workflow does not break)
-- **Git** with bash available (Windows: Git Bash or WSL2)
-- **Stack-specific build tools** per frontend (Gradle / Xcode / Flutter SDK / DevEco Studio)
-
-If Python 3.6+ is unavailable in your environment, install v0.1.x instead (MIT, no Python dependency).
-
----
+These exclusions are product boundaries, not missing dependencies. A clean Community install must
+work without another Sulde repository or another Agent host.
 
 ## Install
 
-### As a Claude Code plugin (recommended)
+### Claude Code marketplace
 
-```sh
-# Latest v0.2.0 (mobile-first, BSL 1.1)
+```text
 /plugin marketplace add EthanReedLabs/sulde-cc
 /plugin install sulde-cc@sulde-cc
-
-# Or stay on v0.1.x (MIT, generic N-end)
-/plugin install skills@sulde-cc@0.1.0
 ```
 
-### Bootstrap a new project
+Install the one Python dependency used by the enforcement hooks and knowledge kit:
 
 ```sh
-cd your-mobile-project
+python3 -m pip install -r "${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt"
+```
+
+The plugin is opt-in per project. Hooks remain silent until an ancestor directory contains
+`.sulde-config.yaml` with `enabled: true`.
+
+### Local fork
+
+```sh
+git clone https://github.com/EthanReedLabs/sulde-cc.git
+cd sulde-cc
+python3 -m pip install -r hooks/requirements.txt
+./bin/sulde doctor
+```
+
+Then add the local checkout as a Claude Code marketplace.
+
+## Runtime and OS contract
+
+- Python `3.10+` is required because the source uses modern type syntax.
+- PyYAML `6.0+` is required for active project enforcement and knowledge validation.
+- All Python file I/O and command output use UTF-8 explicitly.
+- `hooks/run-hook.sh` discovers `python3`, `python`, or `py -3` and verifies the minimum version
+  before dispatching a hook.
+- macOS and Linux use a POSIX shell. Windows uses Git Bash or WSL2 for Claude Code's hook command;
+  `hooks/run-hook.ps1` and `scripts/sulde.ps1` provide native PowerShell launchers for manual use.
+- If Python or PyYAML is unavailable, enforcement hooks disclose the missing dependency and avoid
+  blocking unrelated Claude Code work. `sulde doctor` reports it as an error.
+
+Run diagnostics at any time:
+
+```sh
+sulde doctor
+sulde doctor --project /path/to/project
+sulde doctor --json
+```
+
+On Windows PowerShell:
+
+```powershell
+./scripts/sulde.ps1 doctor --project C:\path\to\project
+```
+
+## Start a project
+
+In Claude Code, run:
+
+```text
 /sulde-init
 ```
 
-The init wizard asks ~8 questions (project name, role, stacks, design source, team, enforcement level, language, OS target), writes `.sulde-config.yaml`, copies the matching templates, installs git pre-commit hooks, and drops a 7-day grace marker so the first week of enforcement runs in lenient mode.
+The guided setup creates `.sulde-config.yaml`, copies the project and selected stack skeletons,
+installs project pre-commit hooks, and starts the configured grace period. See
+[`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md) for the first task/handoff loop.
 
-### Migrate from v0.1.x
+The project template now includes an empty `knowledge/` directory. It belongs to the adopting
+project and grows only when its maintainers add reviewed content.
+
+## Extend a fork
+
+Generators update `extensions/registry.json` and refuse to overwrite an existing file or registry
+entry:
 
 ```sh
-/sulde-migrate-from-v0.1.0
+sulde add-skill release-review --description "Review release evidence"
+sulde add-hook ticket-gate --event PreToolUse --matcher "Write|Edit"
+sulde add-check repo-policy
+sulde add-knowledge-container domain-notes
 ```
 
-Reads existing `.sulde-config.yaml`, dry-runs the schema upgrade to `.sulde-config.yaml.v2-preview`, backs up the original as `.sulde-config.yaml.v0.1.0-backup` once you confirm, and drops a 7-day grace marker for re-acclimation.
+Review generated code before enabling it. A Skill or hook is procedural code; it does not grant an
+Agent new write, publishing, or network authority. See [`docs/EXTENDING.md`](docs/EXTENDING.md).
 
-### Opt-in per project
+## Grow project knowledge
 
-Installing the plugin does not affect any project until you place `.sulde-config.yaml` in a project root. The hooks walk up from CWD, find nothing, and exit silently in non-sulde projects.
+The kit is deterministic and local:
 
----
+```sh
+sulde kb init --root /path/to/project
+sulde kb dedup --root /path/to/project "symptom description"
+sulde kb redact --root /path/to/project incident.md --output safe-incident.md
+sulde kb sediment --root /path/to/project \
+  --source safe-incident.md \
+  --container anti-patterns \
+  --title "Recurring failure title" \
+  --summary "Reusable, de-identified lesson"
+sulde kb lint --root /path/to/project
+sulde kb index --root /path/to/project
+sulde kb search --root /path/to/project "same symptom in different words"
+```
 
-## 4 supported stacks (v0.2.0)
+`sediment` creates a draft; it does not mark the knowledge active, commit it, or publish it. See
+[`docs/KNOWLEDGE-KIT.md`](docs/KNOWLEDGE-KIT.md).
 
-| Stack | Template | Notes |
+## Supported project stacks
+
+| Stack | Template | Primary verification tools |
 |---|---|---|
-| Android | `template/android/` | Kotlin + Compose / View; Gradle wrapper; `adb` |
-| iOS | `template/ios/` | Swift + SwiftUI / UIKit / TCA; xcodebuild + `ios-deploy` / `xcrun devicectl`; **macOS only** |
-| Flutter | `template/flutter/` | Dart + Widgets; `flutter` CLI; targets Android + iOS |
-| HarmonyOS NEXT | `template/harmony/` | ArkTS + ArkUI; DevEco Studio + `hvigorw`; `hdc` |
+| Android | `template/android/` | Gradle, adb |
+| iOS | `template/ios/` | xcodebuild, ios-deploy/xcrun |
+| Flutter | `template/flutter/` | flutter CLI |
+| HarmonyOS NEXT | `template/harmony/` | hvigorw, hdc |
 
-React Native demoted to v0.2.1+ (see `docs/V0.2.0-DESIGN-v2.md §0.2 #15`).
+The framework can be forked for other stacks through the extension and template mechanisms. The
+public repository does not claim those variants are pre-validated.
 
----
+## Safety model
 
-## 5-minute walkthrough
+- Installing the plugin does not opt a project in.
+- Generators preserve existing content and reject unsafe relative paths.
+- Diagnostics report error types without printing full project payloads or credentials.
+- Knowledge additions fail on deterministic redaction findings and likely duplicates.
+- Indexes are derived artifacts; Markdown and Git remain the source of truth.
+- No command in the Community toolkit commits, pushes, publishes, or calls a remote model.
 
-See [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md).
+## Development and release checks
 
-## Why a coordinator + N Devs
+```sh
+python3 -m unittest discover -s tests -v
+./bin/sulde doctor --strict
+git diff --check
+```
 
-See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) — the 7-layer pyramid (project meta → docs hub → design-truth → tasks → handoff → ADR → cross-session memory).
+Maintainer exports from the private development tree use a reviewed, digest-pinned manifest and
+stage validation before touching this repository. Directory-wide `rsync` is not part of the release
+path.
 
-## OS compatibility
+## Documentation
 
-- **macOS** — full support across all 4 stacks
-- **Linux** — full support for android / flutter / harmony; iOS requires macOS for Xcode
-- **Windows** — Git Bash or WSL2 required for git pre-commit hooks; iOS not supported; Harmony fully supported via DevEco; android / flutter work via WSL2 or PowerShell + Gradle wrapper
-
-## Contribute
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). The maintainer accepts PRs in bounded areas: anti-pattern ADR additions, stack-specific examples, docs corrections, i18n. Plugin internals (skill structure, hook protocol, template top-level shape) are author-controlled. PRs require a CLA in line with the Business Source License.
-
----
+- [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md) — first install and task loop
+- [`docs/ONBOARDING.md`](docs/ONBOARDING.md) — new/legacy/offline adoption
+- [`docs/EXTENDING.md`](docs/EXTENDING.md) — fork extension SDK
+- [`docs/KNOWLEDGE-KIT.md`](docs/KNOWLEDGE-KIT.md) — project-owned knowledge loop
+- [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) — coordination model
 
 ## License
 
-**v0.2.0 onward**: [Business Source License 1.1](LICENSE) — Change Date 2030-05-25, Change License MIT.
-
-**v0.1.x and earlier**: MIT — preserved in [`LICENSE-v0.1.0-MIT-archive`](LICENSE-v0.1.0-MIT-archive) for the lifetime of the repository.
-
-## Acknowledgements
-
-Sulde grew out of a real multi-end mobile project (one coordinator + two Dev sessions running for 6+ months). The methodology was distilled from ~100 anti-pattern ADRs accumulated during that work. v0.2.0 ships the structural mechanism and three mobile-generic ADR examples; your project supplies its own incident catalog over time.
+Version `0.2.0` and later use the [Business Source License 1.1](LICENSE), with Change Date
+2030-05-25 and Change License MIT. The `0.1.x` MIT license is retained in
+[`LICENSE-v0.1.0-MIT-archive`](LICENSE-v0.1.0-MIT-archive).

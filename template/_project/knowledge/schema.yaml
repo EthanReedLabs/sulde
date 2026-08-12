@@ -1,0 +1,36 @@
+version: 1
+required_frontmatter:
+  - doc_id
+  - container
+  - platform
+  - title
+  - summary
+  - status
+statuses:
+  - draft
+  - active
+  - deprecated
+platforms:
+  - cross
+  - android
+  - ios
+  - flutter
+  - harmonyos
+  - web
+  - backend
+containers:
+  anti-patterns:
+    path: anti-patterns
+    description: Recurring failures, root causes, and prevention.
+  case-studies:
+    path: case-studies
+    description: Evidence-backed engineering investigations.
+  platform-kb:
+    path: platform-kb
+    description: Platform-specific facts and verified procedures.
+  tech-docs:
+    path: tech-docs
+    description: Reusable technical designs and contracts.
+  work-model:
+    path: work-model
+    description: Team and Agent working methods.

@@ -2,12 +2,40 @@
 
 All notable changes to sulde-cc (Community Edition) are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) loosely; versions follow [SemVer](https://semver.org/).
 
+## [0.3.0] — 2026-08-12 — Public skeleton completion (P0 + P1)
+
+### Added
+
+- `sulde doctor` validates Python/PyYAML, UTF-8, plugin layout, manifest registration, hook launcher,
+  extensions, the empty knowledge schema, and an optional adopting project.
+- Cross-platform CLI and hook launchers with an explicit Python 3.10+ and UTF-8 contract.
+- Extension SDK generators for a project skill, hook, doctor check, and knowledge container. They
+  update one registry and refuse to overwrite existing files.
+- Empty project knowledge kit with add, dedup, redact, lint, deterministic index/search, and a
+  human-reviewed sediment-draft flow.
+- Clean-install and generator/knowledge integration tests.
+
+### Changed
+
+- Removed explicit `hooks` from `plugin.json`; `hooks/hooks.json` is the single conventional
+  discovery path.
+- Corrected public documentation to the actual 0.3.0 / Python 3.10+ / five-skill product state.
+- Defined Community as an extensible skeleton. L2/L3/L4, memory, MCP, autonomous governance, remote
+  model calls, and private corpus remain outside the public scope.
+
+### Security
+
+- Private-to-public release uses a digest-pinned allowlist manifest, temporary staging, content
+  scanning, staged-tree verification, and managed-path replacement. Directory-wide `rsync` is no
+  longer a release path.
+
 ## [0.2.2-community] — 2026-07-05 — Community / Pro Edition split
 
 This public repository now hosts the **Community Edition**: the complete framework mechanism (hooks / template / commands / 5 core skills / methodology docs) under BSL 1.1, with a clean history.
 
 - Community Edition contents: 11 enforcement hooks, 4-stack template + docs-hub skeleton, 8 commands, 5 skills (`coordinator/writing-task-md`, `coordinator/configure-sulde`, `coordinator/multi-source-review`, `dev/assign`, `dev/handoff`), 3 mobile-generic example ADRs, `docs/METHODOLOGY.md` + `docs/GETTING_STARTED.md` + `docs/ONBOARDING.md`.
-- Pro Edition (private, commercial license) holds the accumulated content library: 139+ anti-pattern ADRs, engineering case studies, and 12 advanced skills. See README "Community Edition vs Pro Edition".
+- A separate private development repository retained accumulated project content and advanced
+  runtime work; none of that corpus was published here.
 - Nothing was removed from this repository — the Pro content was never published here.
 - License unchanged: BSL 1.1, Change Date 2030-05-25 → MIT. v0.1.x remains MIT (`LICENSE-v0.1.0-MIT-archive`).
 

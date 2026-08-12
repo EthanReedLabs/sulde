@@ -18,7 +18,7 @@ try:
 except ImportError:
     sys.stderr.write(
         "sulde: pyyaml not installed — skill triggers / perf gate disabled. "
-        "Run `pip install pyyaml>=6.0` to enable.\n"
+        "Install PyYAML 6.0+ from the plugin's hooks/requirements.txt to enable.\n"
     )
     sys.exit(0)
 
@@ -26,6 +26,7 @@ from sulde_common import read_json_stdin, silent_exit_if_no_config  # noqa: E402
 
 import skill_trigger  # noqa: E402
 import perf_gate  # noqa: E402
+import community_extensions  # noqa: E402
 
 
 def main() -> int:
@@ -33,6 +34,7 @@ def main() -> int:
     config = silent_exit_if_no_config()
     skill_trigger.run(config, payload)
     perf_gate.run(config, payload)
+    community_extensions.run("UserPromptSubmit", config, payload)
     return 0
 
 

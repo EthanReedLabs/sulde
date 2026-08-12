@@ -1,6 +1,6 @@
 ---
 name: assign
-description: Dev 单任务指派 / 派给某个人 / 让 A 做 / 切到分支干活 / 执行 task md。指派一个具体任务给指定 Dev,自动切换到对应分支和 git 身份执行。当用户说"让 A 做 X""派给 Dev A""切到 dev/xxx 改 Y""/assign <path>"时自动触发。多任务并行用 /parallel-dev。stack 中性 — 团队 / 模块 / build 命令全部从 `.sulde-config.yaml` 读。
+description: Dev 单任务指派 / 派给某个人 / 让 A 做 / 切到分支干活 / 执行 task md。指派一个具体任务给指定 Dev,自动切换到对应分支和 git 身份执行。当用户说"让 A 做 X""派给 Dev A""切到 dev/xxx 改 Y""/assign <path>"时自动触发。多任务由协调端拆成独立 task-md 后分别执行。stack 中性 — 团队 / 模块 / build 命令全部从 `.sulde-config.yaml` 读。
 user-invocable: true
 ---
 

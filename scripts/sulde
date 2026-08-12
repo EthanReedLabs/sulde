@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+for candidate in python3 python; do
+    if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)' >/dev/null 2>&1; then
+        PYTHONIOENCODING=utf-8 PYTHONUTF8=1 exec "$candidate" "$SCRIPT_DIR/sulde.py" "$@"
+    fi
+done
+
+if command -v py >/dev/null 2>&1 && py -3 -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)' >/dev/null 2>&1; then
+    PYTHONIOENCODING=utf-8 PYTHONUTF8=1 exec py -3 "$SCRIPT_DIR/sulde.py" "$@"
+fi
+
+echo "sulde: Python 3.10+ is required" >&2
+exit 2
