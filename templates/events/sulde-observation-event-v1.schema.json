@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sulde.local/schema/sulde-observation-event-v1.json",
+  "title": "Sulde redacted observation event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "event_id",
+    "occurred_at",
+    "domain",
+    "type",
+    "phase",
+    "outcome",
+    "provider",
+    "actor",
+    "correlation",
+    "source",
+    "attributes"
+  ],
+  "properties": {
+    "schema": {"const": "sulde-observation-event-v1"},
+    "event_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "domain": {
+      "enum": [
+        "approval",
+        "context",
+        "execution",
+        "governance",
+        "intent",
+        "knowledge",
+        "lifecycle",
+        "memory",
+        "notification",
+        "sedimentation"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+    },
+    "phase": {
+      "enum": ["started", "completed", "decision", "snapshot", "observed", "finalized"]
+    },
+    "outcome": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 256
+    },
+    "provider": {"enum": ["claude", "codex", "import", "system", "unknown"]},
+    "actor": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 256
+    },
+    "correlation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "experiment_id": {"$ref": "#/$defs/opaqueId"},
+        "intent_id": {"$ref": "#/$defs/opaqueId"},
+        "intent_revision": {"$ref": "#/$defs/opaqueId"},
+        "opportunity_id": {"$ref": "#/$defs/opaqueId"},
+        "review_id": {"$ref": "#/$defs/opaqueId"},
+        "run_id": {"$ref": "#/$defs/opaqueId"},
+        "session_id": {"$ref": "#/$defs/opaqueId"},
+        "task_id": {"$ref": "#/$defs/opaqueId"},
+        "workspace_id": {"$ref": "#/$defs/opaqueId"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "line", "row_sha256"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "maxLength": 256
+        },
+        "name": {"type": "string", "minLength": 1, "maxLength": 256},
+        "line": {"type": "integer", "minimum": 1},
+        "row_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "attributes": {
+      "type": "object",
+      "propertyNames": {
+        "allOf": [
+          {"pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"},
+          {
+            "not": {
+              "enum": [
+                "arguments",
+                "command",
+                "content",
+                "cwd",
+                "detail",
+                "evidence",
+                "lesson",
+                "markdown",
+                "message",
+                "output",
+                "path",
+                "payload",
+                "prompt",
+                "query",
+                "reason",
+                "result",
+                "target",
+                "token",
+                "url",
+                "id"
+              ]
+            }
+          },
+          {"not": {"pattern": "_id$"}}
+        ]
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {"type": "string", "maxLength": 512},
+          {"type": ["number", "boolean", "null"]},
+          {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "oneOf": [
+                {"type": "string", "maxLength": 512},
+                {"type": ["number", "boolean", "null"]}
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "opaqueId": {"type": "string", "pattern": "^sha256:[0-9a-f]{24}$"}
+  }
+}

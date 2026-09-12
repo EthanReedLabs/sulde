@@ -8,7 +8,7 @@ enforcement-level matrix.
 Behavior matrix (v2 protocol-compliant):
 
                        strict           balanced        lenient
-  hard (Write)         JSON deny + 0    JSON deny + 0   stderr + JSON allow + 0
+  hard (Write)         JSON deny + 0    JSON deny + 0   stderr + silent allow + 0
   medium (Bash)        stderr + exit 2  stderr + exit 2 stderr + exit 0
   soft (prompt/inject) stderr + exit 0  stderr + exit 0 stderr + exit 0
 
@@ -97,7 +97,10 @@ def sulde_exit_or_warn(
     # severity == "hard" — Write / Edit path
     if level == "lenient":
         sys.stderr.write(banner)
-        _emit_permission_decision("allow", localized, hook_event)
+        # Codex accepts ``permissionDecision: allow`` only when the hook also
+        # provides a valid ``updatedInput``.  This compatibility hook does not
+        # rewrite tool input, so the portable allow response is a successful,
+        # silent stdout.  The warning remains visible on stderr.
         sys.exit(0)
 
     # strict or balanced → block via JSON

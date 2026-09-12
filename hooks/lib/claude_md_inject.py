@@ -97,6 +97,8 @@ def _run_optional_script(config: SuldeConfig, key: str) -> str:
             cwd=str(config.project_root),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=20,
             check=False,
         )

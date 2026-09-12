@@ -25,10 +25,10 @@ For CI without Macs: use GitHub Actions `macos-latest` runners or a cloud Mac se
 
 ### Python dependency
 
-The sulde-cc Claude Code hooks require Python 3.10+ with PyYAML 6.0+:
+The sulde-cc Claude Code hooks require Python 3.6+ with pyyaml:
 
 ```bash
-python3 -m pip install -r "${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt"
+pip install -r ${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt
 ```
 
 ## .ai-workspace/ layout

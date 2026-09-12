@@ -1,0 +1,32 @@
+---
+assignee: example-agent
+branch: task/example
+capability_tier: balanced
+---
+
+# Task brief template — not an authorized task
+
+Replace the example metadata and fill the sections with current task facts.
+Do not add provider-specific model or thinking fields.
+
+## Objective
+
+Describe the user's requested observable outcome.
+
+## Baseline and scope
+
+Record the inspected revision, relevant existing behavior, exact allowed paths
+and effects, and what must remain unchanged. Include applicable design or API
+evidence for the actual task; do not require unrelated project artifacts.
+
+## Acceptance and verification
+
+State success and negative cases, test scope, needed host/platform evidence and
+how results will bind to the tested candidate. Record unavailable checks as
+unverified rather than passed.
+
+## Recovery and open decisions
+
+Define reversible recovery where possible. Route changes of scope and high-risk
+effects through the current host's human decision surface. This template itself
+does not transfer authority, settle effects or authorize publication.

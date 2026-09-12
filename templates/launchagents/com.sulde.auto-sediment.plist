@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 每日 10:30：接 09:30 日蒸馏之后消化候选；单批最多 5 条，避免长跑。 -->
+    <key>Label</key>
+    <string>com.sulde.auto-sediment</string>
+    <key>Program</key>
+    <string>/usr/bin/python3</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>__SULDE_SOURCE_ROOT__/scripts/kb/auto-sediment.py</string>
+        <string>--max-candidates</string>
+        <string>5</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>10</integer>
+        <key>Minute</key>
+        <integer>30</integer>
+    </dict>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__SULDE_USER_BIN__:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>SULDE_KB_HOME</key>
+        <string>__SULDE_KB_HOME__</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>__SULDE_KB_HOME__/auto-sediment.log</string>
+    <key>StandardErrorPath</key>
+    <string>__SULDE_KB_HOME__/auto-sediment.log</string>
+</dict>
+</plist>

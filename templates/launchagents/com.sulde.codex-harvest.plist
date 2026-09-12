@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.sulde.codex-harvest</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>__SULDE_SOURCE_ROOT__/scripts/kb/codex-harvest.py</string>
+    </array>
+    <key>WatchPaths</key>
+    <array>
+        <string>__SULDE_CODEX_SESSIONS__</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>1800</integer>
+</dict>
+</plist>

@@ -1,6 +1,6 @@
 # 00_shared-rules — Cross-session shared rules
 
-This directory holds rules that **all Claude Code sessions in your project read** — coordinator, every Dev, every audit subagent. They are the project's "constitution": one source of truth for conventions, boundaries, and references.
+This directory holds rules that **all supported Agent sessions in your project read** — Claude Code or Codex, coordinator, every Dev, and every audit subagent. They are the project's "constitution": one source of truth for conventions, boundaries, and references.
 
 Sulde leaves this directory **empty by design**. The rules your team needs depend on your specific stack, team size, design tool, and accumulated incidents. Sulde provides the slot; you fill it.
 
@@ -32,9 +32,9 @@ Steps the Dev must run before declaring a task done — compile commands, lint s
 
 ### `model-strategy.md`
 
-> Which Claude model to use for which kind of task.
+> Which host-neutral capability tier a task needs and how each host renders it.
 
-Project's view on opus / sonnet / haiku trade-offs. Coordinator writes `model:` in task-mds based on this; Dev's `assign` skill honors it.
+The coordinator writes `capability_tier: light|balanced|deep`. The target session translates that tier only after identifying its current host and current model. Provider-specific model IDs never become shared task truth.
 
 ### `perf-diagnosis.md` (if your project has performance-sensitive UI or backend paths)
 
@@ -59,7 +59,7 @@ Before any action that fits one of these scenarios, read the corresponding rule:
 |---|---|
 | Writing a task-md | docs-hub/00_shared-rules/self-fix-boundary.md, data-sources.md |
 | Building or verifying | docs-hub/00_shared-rules/verify-build.md |
-| Picking model: header  | docs-hub/00_shared-rules/model-strategy.md |
+| Picking capability tier or rendering host-native model controls | docs-hub/00_shared-rules/model-strategy.md |
 ```
 
 This way you control which rules are mandatory reads, not the framework.

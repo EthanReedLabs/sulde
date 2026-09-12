@@ -114,7 +114,11 @@ def grep_rule(rule, root: Path):
                 pattern,
                 str(root),
             ],
-            capture_output=True, text=True, timeout=60,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=60,
         )
         # grep exit: 0 = 命中,1 = 无命中,>= 2 = 错误
         if result.returncode not in (0, 1):

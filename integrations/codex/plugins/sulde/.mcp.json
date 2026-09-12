@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "sulde_kb": {
+      "command": "./scripts/run-mcp.sh",
+      "cwd": "."
+    }
+  }
+}

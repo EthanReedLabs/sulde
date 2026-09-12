@@ -1,6 +1,9 @@
 ---
 name: multi-source-review
-description: 多源评审 / 三角验证 / 防单源误判 — 当用户说"review 一下 / 评估一下 / 现在有什么问题 / 哪里需要修 / 跑一下评审 / 看看哪里有问题 / 开评审 / 完工前自检"等;或自动触发场景:重大 doc 起草后(>500 行/含协议字段/架构决策)、大改动合并前(>10 文件/跨模块/breaking change)、发版前 final check、跨决策边界改动(public/private/license/scope)。Orchestrates multi-source review with triangulation. Distinguishes code vs doc review. Classifies findings into 4 buckets: 🔴 real bug / 🟡 reviewer-missing-context / 🟠 user-decision-needed / 🟢 nit (uses receiving-code-review methodology). Refuses blind implementation; refuses performative agreement.
+description: >-
+  多源评审 / 三角验证 / 防单源误判。用于重大文档、大改动、发版前检查和跨决策边界改动；
+  自动编排多源实证、区分代码与文档审查，并将 finding 分类为真实缺陷、上下文缺失、
+  用户语义决策和低优先级建议，拒绝盲目实施或表演式同意。
 user-invocable: true
 ---
 
@@ -18,22 +21,14 @@ user-invocable: true
 |---|---|:-:|
 | `general-purpose` subagent | Claude Code 内置 | ✅ 始终可用 |
 | `Plan` / `Explore` subagent | Claude Code 内置 | ✅ 始终可用 |
-| `claude-code-guide` subagent | Claude Code 内置(部分版本)| 检查 Task tool schema;不可用 → fallback `general-purpose` + 用户自跑 WebFetch |
+| `claude-code-guide` subagent | Claude Code 内置(部分版本)| 检查 Task tool schema;不可用 → Agent 改用当前宿主的通用审查能力并自行查官方文档 |
 | `superpowers:receiving-code-review` | `superpowers` plugin | 强烈推荐(本 skill §5 引其方法论)|
 | `superpowers:verification-before-completion` | 同上 | 类 A 实施完后用 |
 | `mattpocock-skills:grill-with-docs` | `mattpocock-skills` plugin | §3 候选组合可选 |
 | `mattpocock-skills:improve-codebase-architecture` | 同上 | §3 候选组合可选 |
-| `mattpocock-skills:zoom-out` | 同上 | §3 候选组合可选(注:可能 `disable-model-invocation`,需用户主动触发)|
+| `mattpocock-skills:zoom-out` | 同上 | §3 候选组合可选；不能由 Agent 调用时选用等价的当前宿主审查能力 |
 
-**装法**(若缺):
-```
-/plugin marketplace add anthropics/claude-code-superpowers
-/plugin install superpowers@superpowers
-/plugin marketplace add mattpocock/skills
-/plugin install skills@mattpocock-skills
-```
-
-若 plugin 未装,本 skill 仍可用(降级用 `general-purpose` subagent 覆盖)。
+**依赖处理**:Agent 先发现当前宿主已有能力。缺少可选 plugin 时默认用内置审查能力降级；若安装确有材料收益且涉及外部变更，展示宿主原生 Allow/Deny，Allow 后由 Agent 安装并验证。不得把安装命令交给用户。
 
 ---
 
@@ -103,7 +98,7 @@ user-invocable: true
 | `superpowers:verification-before-completion` | claim 完工前自检 | 通用 — 必配 | 5 min |
 | `Plan` subagent | 架构师视角 / trade-off / 实施风险 | 通用 — 大改动前 | 10 min |
 | `Explore` subagent | 快速 grep / read 全 codebase 找 pattern | 代码评估 — 探索 | 5-10 min |
-| 用户主动 `/ultrareview` | 多 agent 云审 + 用户付费 | 代码评估 — 终审 | 用户触发,你不能 launch |
+| 宿主原生高阶 review | 多 Agent 云审 + 可能计费 | 代码评估 — 终审 | 先展示原生计费/高风险决策，Allow 后由 Agent 启动；不可用则降级 |
 
 **禁忌**:不要一次 spawn ≥4 subagent — 信息过载,你无法消化。
 

@@ -20,9 +20,7 @@ Keep it stable across the project — task-mds reference these ids verbatim.
 
 ## How docs get generated
 
-If your project uses a design tool with MCP support (Pencil / Figma), define and review a
-project-specific synchronization skill or manual process. Community records `design_source` but does
-not ship a tool-writing design skill; MCP writes retain their own approval boundary.
+If your project uses a design tool with MCP support (Pencil / Figma), run `/update-design` — the skill reads `.sulde-config.yaml: design_source`, walks the page node tree, and writes truth docs + screenshots automatically.
 
 Otherwise, write by hand following `_example.md.template`.
 

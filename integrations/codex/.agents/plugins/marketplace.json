@@ -1,0 +1,20 @@
+{
+  "name": "sulde-local",
+  "interface": {
+    "displayName": "Sulde Local"
+  },
+  "plugins": [
+    {
+      "name": "sulde",
+      "source": {
+        "source": "local",
+        "path": "./plugins/sulde"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Engineering"
+    }
+  ]
+}

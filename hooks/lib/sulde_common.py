@@ -26,6 +26,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+
+def configure_utf8_stdio() -> None:
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            try:
+                reconfigure(encoding="utf-8", errors="strict")
+            except (LookupError, OSError):
+                pass
+
+
+configure_utf8_stdio()
+
 try:
     import yaml
 except ImportError:  # pragma: no cover — handled by entrypoint guard
@@ -94,8 +107,9 @@ def load_config(start_dir: Path | str | None = None) -> SuldeConfig | None:
 def silent_exit_if_no_config(start_dir: Path | str | None = None) -> SuldeConfig:
     """Either return a loaded config, or exit 0 if this is not a sulde project.
 
-    Use at the top of every hook entrypoint: keeps the plugin invisible to
-    projects that did not opt in (no .sulde-config.yaml).
+    Use before project-specific KB/enforcement work: keeps those features
+    invisible to projects that did not opt in. The workspace intent guardian
+    intentionally runs before this gate and is documented separately.
     """
     cfg = load_config(start_dir)
     if cfg is None:

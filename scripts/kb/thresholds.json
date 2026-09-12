@@ -1,0 +1,316 @@
+{
+  "same_project_recall_score": {
+    "value": 0.5,
+    "op": ">=",
+    "unit": "score",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的同项目召回门。",
+    "owner": "mem_recall",
+    "observation": {
+      "source": "threshold_registry",
+      "field": "value",
+      "bucket": "configuration"
+    }
+  },
+  "golden_kb_rate": {
+    "value": 0.8,
+    "op": ">=",
+    "unit": "ratio",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的 KB golden CI 门。",
+    "owner": "kb-golden-ci",
+    "observation": {
+      "source": "kb_golden",
+      "field": "rate",
+      "bucket": "retrieval_quality"
+    }
+  },
+  "golden_mem_rate": {
+    "value": 0.9,
+    "op": ">=",
+    "unit": "ratio",
+    "rationale": "重排门修复后扩展集实测 100%(28/28),门槛保持 0.90 锁定成果防回退;gm-07 已确认为查询歧义并在不调整阈值的前提下修正",
+    "owner": "mem-golden",
+    "observation": {
+      "source": "mem_golden",
+      "field": "rate",
+      "bucket": "retrieval_quality"
+    }
+  },
+  "distill_window_entries_min": {
+    "value": 20,
+    "op": ">=",
+    "unit": "entries",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的最小蒸馏窗口。",
+    "owner": "auto-distill",
+    "observation": {
+      "source": "auto_distill",
+      "field": "window_entries_min",
+      "bucket": "collection_health"
+    }
+  },
+  "distill_window_entries_max": {
+    "value": 300,
+    "op": "<=",
+    "unit": "entries",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的最大蒸馏窗口；absolute_margin 为试点值,待趋势数据校准。",
+    "owner": "auto-distill",
+    "absolute_margin": 20,
+    "observation": {
+      "source": "auto_distill",
+      "field": "window_entries_max",
+      "bucket": "collection_health"
+    }
+  },
+  "distill_window_chars_max": {
+    "value": 40000,
+    "op": "<=",
+    "unit": "characters",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的蒸馏字符上限；absolute_margin 为试点值,待趋势数据校准。",
+    "owner": "auto-distill",
+    "absolute_margin": 2000,
+    "observation": {
+      "source": "auto_distill",
+      "field": "window_chars_max",
+      "bucket": "collection_health"
+    }
+  },
+  "task_stall_age_seconds": {
+    "value": 1800,
+    "op": "<=",
+    "unit": "seconds",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的任务滞留 30 分钟线。",
+    "owner": "fleet",
+    "observation": {
+      "source": "fleet",
+      "field": "max_running_age_seconds",
+      "bucket": "runtime_health"
+    }
+  },
+  "distill_age_seconds": {
+    "value": 172800,
+    "op": "<=",
+    "unit": "seconds",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的蒸馏滞留 48 小时线。",
+    "owner": "auto-distill",
+    "observation": {
+      "source": "auto_distill",
+      "field": "age_seconds",
+      "bucket": "collection_health"
+    }
+  },
+  "export_age_seconds": {
+    "value": 86400,
+    "op": "<=",
+    "unit": "seconds",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的导出滞留 24 小时线。",
+    "owner": "mem-sync-export",
+    "observation": {
+      "source": "sync_export",
+      "field": "age_seconds",
+      "bucket": "collection_health"
+    }
+  },
+  "pending_embeddings": {
+    "value": 500,
+    "op": "<=",
+    "unit": "entries",
+    "rationale": "docs/sulde-memory-design.md §4.2.8 登记的待嵌积压线。",
+    "owner": "sulde-status",
+    "observation": {
+      "source": "status",
+      "field": "mem_pending_embedding",
+      "bucket": "runtime_health"
+    }
+  },
+  "event_contract_violations": {
+    "value": 0,
+    "op": "<=",
+    "unit": "rows",
+    "rationale": "统一观察面只接受可验证、可脱敏投影的已声明事件格式；无效、未知或不可读行必须保持为显式契约违规。",
+    "owner": "event-observer",
+    "observation": {
+      "source": "status",
+      "field": "event_contract_violations",
+      "bucket": "runtime_health"
+    }
+  },
+  "interventions_open": {
+    "value": 0,
+    "op": "<=",
+    "unit": "items",
+    "rationale": "任何尚未裁决的外部副作用 unknown 都必须保持人工可见，不能被生命周期 ready 或自动重试掩盖。",
+    "owner": "effect-intervention",
+    "observation": {
+      "source": "status",
+      "field": "interventions_open",
+      "bucket": "runtime_health"
+    }
+  },
+  "effect_blocking": {
+    "value": 0,
+    "op": "<=",
+    "unit": "attempts",
+    "rationale": "已派发、待验证或仍为 unknown 的 effect attempt 会阻断同通道依赖写入，必须显式收敛。",
+    "owner": "effect-intervention",
+    "observation": {
+      "source": "status",
+      "field": "effect_blocking",
+      "bucket": "runtime_health"
+    }
+  },
+  "intervention_invalid_stores": {
+    "value": 0,
+    "op": "<=",
+    "unit": "stores",
+    "rationale": "外部副作用事实日志必须可完整重放；损坏或序列缺口不得降级为无待办。",
+    "owner": "effect-intervention",
+    "observation": {
+      "source": "status",
+      "field": "intervention_invalid_stores",
+      "bucket": "runtime_health"
+    }
+  },
+  "l2_coverage_rate": {
+    "value": 0.3,
+    "op": ">=",
+    "unit": "ratio",
+    "rationale": "docs/sulde-memory-design.md §4.3 登记的 L2 覆盖升级提醒线。",
+    "owner": "governance-weekly",
+    "observation": {
+      "source": "mem_edges",
+      "field": "l2_coverage_rate",
+      "bucket": "knowledge_quality"
+    }
+  },
+  "mem_adoption_rate": {
+    "value": 0.3,
+    "op": ">=",
+    "unit": "ratio",
+    "rationale": "首基线(2026-08-09 实测 0.296/样本196),无外部依据;**待周质量委员会红队评审修订**——不得为凑此数调参",
+    "owner": "mem-capture",
+    "observation": {
+      "source": "mem_adoption",
+      "field": "rate",
+      "bucket": "retrieval_quality"
+    }
+  },
+  "golden_candidates_pending": {
+    "value": 20,
+    "op": "<=",
+    "unit": "entries",
+    "rationale": "首基线,待委员会红队评审",
+    "owner": "golden-expand",
+    "observation": {
+      "source": "golden_candidates",
+      "field": "pending_review",
+      "bucket": "knowledge_quality"
+    }
+  },
+  "graph_audit_unsupported": {
+    "value": 5,
+    "op": "<=",
+    "unit": "edges",
+    "rationale": "首基线,待委员会红队评审",
+    "owner": "graph-audit",
+    "observation": {
+      "source": "graph_audit",
+      "field": "unsupported",
+      "bucket": "knowledge_quality"
+    }
+  },
+  "kb_aging_stale": {
+    "value": 30,
+    "op": "<=",
+    "unit": "entries",
+    "rationale": "首基线,待委员会红队评审",
+    "owner": "kb-aging",
+    "observation": {
+      "source": "kb_aging",
+      "field": "stale",
+      "bucket": "knowledge_quality"
+    }
+  },
+  "kb_dedup_clusters": {
+    "value": 20,
+    "op": "<=",
+    "unit": "clusters",
+    "rationale": "首基线,待委员会红队评审",
+    "owner": "kb-dedup",
+    "observation": {
+      "source": "kb_dedup",
+      "field": "clusters",
+      "bucket": "knowledge_quality"
+    }
+  },
+  "governance_missing_source_streak_max": {
+    "value": 3,
+    "op": "<=",
+    "unit": "periods",
+    "rationale": "红队提案 P-02 经周质量委员会批准：同一指标连续不可用达到 3 期升级为红灯；不改变任何质量指标阈值。",
+    "owner": "governance-weekly",
+    "observation": {
+      "source": "threshold_registry",
+      "field": "value",
+      "bucket": "configuration"
+    }
+  },
+  "governance_missing_source_escalation_enabled": {
+    "value": 0,
+    "op": "<=",
+    "unit": "boolean",
+    "rationale": "红队提案 P-05(a) 经批准：升级暂缓，计数起点待人工回填；默认关闭且不改变既有阈值。",
+    "owner": "governance-weekly",
+    "observation": {
+      "source": "threshold_registry",
+      "field": "value",
+      "bucket": "configuration"
+    }
+  },
+  "governance_near_edge_counter_start_backfilled": {
+    "value": 0,
+    "op": "<=",
+    "unit": "boolean",
+    "rationale": "红队提案 P-13 经批准：贴边连续计数起点尚未人工回填；仅声明计数可信边界，不改变判定或阈值。",
+    "owner": "governance-weekly",
+    "observation": {
+      "source": "threshold_registry",
+      "field": "value",
+      "bucket": "configuration"
+    }
+  },
+  "governance_missing_counter_start_backfilled": {
+    "value": 0,
+    "op": "<=",
+    "unit": "boolean",
+    "rationale": "红队提案 P-13 经批准：缺源连续计数起点尚未人工回填；保留既有升级暂缓。",
+    "owner": "governance-weekly",
+    "observation": {
+      "source": "threshold_registry",
+      "field": "value",
+      "bucket": "configuration"
+    }
+  },
+  "governance_breach_counter_start_backfilled": {
+    "value": 0,
+    "op": "<=",
+    "unit": "boolean",
+    "rationale": "红队提案 P-13 经批准：已破连续计数起点尚未人工回填；仅声明下界，不改变灯色。",
+    "owner": "governance-weekly",
+    "observation": {
+      "source": "threshold_registry",
+      "field": "value",
+      "bucket": "configuration"
+    }
+  },
+  "degradation_drop_ratio": {
+    "value": 0.2,
+    "op": "<=",
+    "unit": "ratio",
+    "rationale": "红队提案 P-03 经周质量委员会批准：相对近 6 期均值退化超过 20% 时提示；不改变灯色或既有阈值。",
+    "owner": "governance-weekly",
+    "observation": {
+      "source": "threshold_registry",
+      "field": "value",
+      "bucket": "configuration"
+    }
+  }
+}

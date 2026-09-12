@@ -21,7 +21,8 @@ user-invocable: true
 | `/sulde-add-skill-trigger <regex> <skill>` | **add-skill-trigger** | 加 UserPromptSubmit 触发词 → `.sulde-config.yaml: skill_triggers` |
 | `/sulde-end-grace` | **end-grace** | 主动结束 7d grace period,切真 `enforcement_level` |
 
-任一 mode 跑完输出 "next steps" 段(用户下一步操作)。
+任一 mode 跑完输出“结果与阻塞”段。范围内的 next steps 由 Agent 继续执行；只有缺少外部事实、
+物理接入或高风险授权时才向用户询问，不输出让用户代跑的命令。
 
 ---
 
@@ -38,21 +39,21 @@ user-invocable: true
 7. **Q6**:enforcement_level(default `balanced`)+ grace_period_days(default `7`)
 8. **Q7**:lang(default `auto`)+ os_primary_target(default `unix`)
 9. **生成 `.sulde-config.yaml`** 写入 project root
-10. **复制 `${CLAUDE_PLUGIN_ROOT}/template/_project/*`** 到 project root(根级 + scripts/ + docs-hub/ + 空 knowledge/ 骨架；已有文件必须保留)
+10. **复制 `${CLAUDE_PLUGIN_ROOT}/template/_project/*`** 到 project root(根级 + scripts/ + docs-hub/ 骨架)
 11. **复制 `${CLAUDE_PLUGIN_ROOT}/template/<stack>/*`** 到 `<frontend>/` 每个 frontend(对应 stack 骨架)
 12. **写 grace marker**:`echo '{"started_at":"<ISO>","grace_period_days":7}' > .sulde-grace-started`
 13. **跑各 frontend 的 `scripts/pre-commit-installer.sh`** 装 git hook
-14. **cp `template/_project/docs-hub/design/page-relation.yaml.example` → `<docs-hub>/design/page-relation.yaml`**(空骨架；项目按自己的设计同步流程维护)
-15. **输出 next steps**:
+14. **cp `template/_project/docs-hub/design/page-relation.yaml.example` → `<docs-hub>/design/page-relation.yaml`**(空骨架,首次跑 `/ui-impl` 阶段 0 强制读取本图谱,缺则报错)
+15. **由 Agent 完成后续收尾并输出结果**:
     - 7 day grace period 已起,hook 强制 lenient mode 直到 `.sulde-grace-ended` marker
-    - 确认 Python 3.10+，跑 `python3 -m pip install -r "${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt"` 装 PyYAML 6.0+
-    - 跑 `sulde doctor --project <project-root>` 与 `sulde kb lint --root <project-root>`
-    - **若多人协作**:跑 `/sulde-add-team-member` 加每个团队成员
+    - Agent 检查运行时依赖；缺 PyYAML 时在当前环境安装并回读版本，权限或网络需要扩大时走原生确认
+    - **若多人协作**:Agent 根据已收集的团队信息继续执行 add-team-member；缺少身份事实时一次问齐
     - **若独立开发者**:`team: []` 留空即可(`check_commit_alias.sh` hook 自动 skip alias 强制,plain `git commit` 工作)
-    - **若有设计工具**(Pencil / Figma MCP):按项目自己的已审查流程生成初版 design-truth；公开版不预置写设计工具的 skill
-    - **若无设计工具**:`.sulde-config.yaml: design_source.mcp` 设为 `none`,走手动 design-truth 流程
-    - 首次派 UI task 前协调端**手动填一遍 `<docs-hub>/design/page-relation.yaml`**(参 yaml.example 内 schema 示例)
-    - `/sulde-end-grace` 提前结束 grace
+    - **若有设计工具**(Pencil / Figma MCP):Agent 继续执行 `/update-design` 起初版 design-truth
+    - **若无设计工具**:`.sulde-config.yaml: design_source.mcp` 设为 `none`，Agent 根据用户提供的设计源生成 design-truth
+    - 首次跑 `/ui-impl` 前由 Agent 根据可验证页面关系填写 `<docs-hub>/design/page-relation.yaml`；
+      只有关系语义不明时才问一个自然语言问题
+    - 用户明确要求提前结束 grace 时，Agent 执行 `/sulde-end-grace`
 
 **复制实现** 见 §9 跨目录 cp 权限段。
 
@@ -68,12 +69,11 @@ user-invocable: true
    - 新增字段填 default(`enforcement_level: balanced` / `lang: auto` / `enforcement_grace_period_days: 7` / `scope_inheritance: parent` / `os_compatibility: {primary_target: unix, windows_shell_hint: git-bash}` / `build_verify: {...}` / `enforcement: {...}`)
    - skill paths 从 v0.1.0 的 user-private bundle → v0.2.0 generic(假定用户没改 plugin 源)
 3. **Dry-run write** to `.sulde-config.yaml.v2-preview`
-4. **用户 confirm** → 备份原 file 为 `.sulde-config.yaml.v0.1.0-backup` → 写新 file
+4. 用户已经请求迁移且 preview 无未决语义时，Agent 备份原 file 为
+   `.sulde-config.yaml.v0.1.0-backup` 后写新 file；只有字段含义无法推断时才询问具体选择
 5. **写 grace marker** `.sulde-grace-started`(7d grace 让用户适应新 enforcement)
-6. **输出 migration report + next steps**:
-   - `pip install -r ${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt`(Python 依赖,breaking change)
-   - 跑各 frontend 的 `scripts/pre-commit-installer.sh` 装 v0.2.0 git hook
-   - **v0.1.0 退路**:若有问题 `/plugin install skills@sulde-cc@0.1.0`(MIT,无 Python 依赖)
+6. Agent 安装并回读 Python 依赖与各 frontend git hook，输出 migration report；若失败自动恢复备份。
+   报告保留 v0.1.0 回滚路径，但不要求用户代跑安装命令。
 
 ---
 
@@ -85,7 +85,7 @@ Args: `<name> <path> <stack>`(例:`/sulde-add-frontend harmony ./harmony mobile-
 2. Append to `frontends:` 数组
 3. 复制 `${CLAUDE_PLUGIN_ROOT}/template/<stack>/*` 到 `<path>/`(用户可未存在该目录,创建)
 4. 跑 `<path>/scripts/pre-commit-installer.sh` 装 git hook
-5. 输出 next steps:`/sulde-add-team-member <alias> <name> <email> <frontend-name>` 给新 frontend 配人
+5. 已提供团队身份时由 Agent 继续配置；缺少 alias/name/email 时一次问齐，不输出待用户再次触发的命令
 
 可用 stack(v0.2.0):`mobile-android` / `mobile-ios` / `mobile-flutter` / `mobile-harmony`。
 
@@ -110,9 +110,8 @@ Args: `<alias> <name> <email> <frontend>`(例:`/sulde-add-team-member as-c Carol
        as-c = "!SULDE_COMMIT_ALIAS=as-c git -c user.name='Carol' -c user.email='carol@team.com' commit"
      ```
    - 注:`SULDE_COMMIT_ALIAS` 是 sentinel,`check_commit_alias.sh` pre-commit hook 据此放行
-4. 输出 next steps:
-   - 用 `git as-c commit ...` 提交
-   - alias 是 per-repo,新 clone 需重跑本 mode 或手动加 alias
+4. 回读 alias 配置并报告；后续提交由 Agent 使用 `git as-c commit ...`。alias 是 per-repo，
+   新 clone 由 Agent 重新执行本 mode，不让用户手工编辑 `.git/config`
 
 ---
 
@@ -120,8 +119,11 @@ Args: `<alias> <name> <email> <frontend>`(例:`/sulde-add-team-member as-c Carol
 
 Args: `<path>`(例:`/sulde-add-sensitive-file core-ui/AppRouter.kt`)
 
-1. Read existing config → append to `scope_sensitivity.sensitive_files:` 数组(去重)
-2. 输出 reminder:Dev 端 self-fix-boundary 会 block 自发改这些文件;改动必经 task md
+委托 `skills/sulde-add-sensitive-file/SKILL.md` 完整执行：
+
+1. Read existing config → append to `scope_sensitivity.sensitive_files:` 数组(去重)，作为 advisory/self-fix 边界。
+2. 同时向项目 `.claude/settings.json: permissions.deny` 去重追加 `Edit(<相对路径>)` 与 `Write(<相对路径>)`，作为 harness 级 deny；保留其他键，首次修改已有 settings 前备份为 `.claude/settings.json.bak-sulde`。
+3. 输出双保险 reminder:Dev 端 self-fix-boundary 会 block 自发改这些文件，harness 拒绝直接 Edit/Write；改动必经 task md。
 
 ---
 
@@ -185,10 +187,8 @@ for sh in dst.glob("**/*.sh"):
     sh.chmod(sh.stat().st_mode | 0o755)
 ```
 
-`dirs_exist_ok=True` 不是覆盖授权。逐文件复制时若目标已存在，必须保留并在结果中列出；
-不得静默替换老项目的 README、脚本、知识或治理文件。
-
-**权限失败**:用户 home / project 权限不够 → skill 输出"无权限写 X,手动 cp 命令:..."降级。
+**权限失败**:Agent 先解析精确目标并通过宿主原生权限面申请一次性写入；获准后重试并回读。
+若权限仍不可用，报告精确 blocker 并保持原文件不变，禁止输出让用户代跑的 `cp` 命令。
 
 **跨 OS** windows:
 - `shutil.copytree` works
@@ -229,5 +229,5 @@ for sh in dst.glob("**/*.sh"):
 | `.sulde-config.yaml` 不存在 但 mode != `init` | 提示 "run `/sulde-init` first" |
 | `.sulde-config.yaml` 存在 但 mode == `init` | 提示 "use `/sulde-migrate-from-v0.1.0` to upgrade or delete `.sulde-config.yaml` to re-init" |
 | add-* 重名 | 提示 + abort(不覆盖) |
-| copytree 权限失败 | 输出降级手动 cp 命令 |
+| copytree 权限失败 | Agent 请求精确的一次性宿主权限并重试；仍失败则安全停止并报告 blocker |
 | 用户 Ctrl-C 中途退出 | `.sulde-config.yaml.v2-preview` 保留,提示"恢复"路径 |

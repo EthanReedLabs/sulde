@@ -8,7 +8,6 @@ your-project/
 ├── .gitignore                  # merged from .gitignore.template here
 ├── .sulde-grace-started        # 7-day grace marker (auto, gitignored)
 ├── docs-hub/                   # coordinator-owned docs (skeleton from this template)
-├── knowledge/                  # empty, project-owned reusable knowledge kit
 ├── scripts/                    # baseline + health scripts (templates here)
 └── {frontend-dirs}/            # one per `.sulde-config.yaml: frontends[]`
                                 # each copied from template/{stack}/
@@ -21,8 +20,7 @@ your-project/
 | `.sulde-config.yaml.example` | Full annotated config; `/sulde-init` walks the user through filling it. |
 | `.gitignore.template` | Conservative project gitignore — covers `.sulde-grace-*` markers + `.claude/` (no AI traces in git) + general OS / editor noise. Your existing `.gitignore` is **appended**, not overwritten. |
 | `scripts/` | Coordinator-side automation: `coordinator-baseline.sh.template` + `health-check.sh.template` (renamed to `.sh` during init). |
-| `docs-hub/` | Coordinator-owned documentation root with shared-rule, design-truth, and historical ADR skeletons for the adopting project to complete. |
-| `knowledge/` | Empty schema and containers for the adopting project's de-identified reusable knowledge. |
+| `docs-hub/` | Coordinator-owned documentation root. Sub-skeletons for `00_shared-rules/` (P3 fills), `design-truth/` (you fill from your design source), `ADR/` (P3 ships 3 mobile examples). |
 
 ## What does NOT live here
 
@@ -34,14 +32,13 @@ your-project/
 
 After `/sulde-init` runs, the coordinator should:
 
-1. Install Python 3.10+ and `python3 -m pip install -r "${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt"`.
-2. Run `sulde doctor --project "$PWD"` and `sulde kb lint --root "$PWD"`.
-3. Run `/sulde-add-team-member` for each developer.
-4. Read `<docs-hub>/00_shared-rules/*` and adapt the defaults to your project.
-5. Bootstrap `<docs-hub>/design-truth/` from your real design source when one exists.
-6. Let the grace period expire or use `/sulde-end-grace` after a verified task/handoff loop.
+1. `pip install pyyaml>=6.0` (Python hook dependency)
+2. Run `/sulde-add-team-member` for each developer
+3. Read `<docs-hub>/00_shared-rules/*` and adapt the defaults to your project
+4. Bootstrap `<docs-hub>/design-truth/` from your design source (Pencil / Figma / etc.)
+5. Either let the 7-day grace period expire naturally, or `/sulde-end-grace` to switch to `enforcement_level: balanced` immediately
 
 ## See also
 
-- `${CLAUDE_PLUGIN_ROOT}/docs/V0.2.0-DESIGN-v2.md` — concise historical design record
+- `${CLAUDE_PLUGIN_ROOT}/docs/V0.2.0-DESIGN-v2.md` — full spec
 - `${CLAUDE_PLUGIN_ROOT}/docs/GETTING_STARTED.md` — user-facing walkthrough

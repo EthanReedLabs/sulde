@@ -18,7 +18,7 @@ Coverage:
   user_prompt_submit.py:
     8. Prompt with skill trigger      → stdout reminder + exit 0
     9. Prompt with perf-gate trigger  → stdout reminder + exit 0
-   10. Prompt with no triggers        → no output + exit 0
+   10. Prompt with no triggers        → intent context + exit 0
 
   session_start.py:
    11. With CLAUDE.md present         → JSON additionalContext + exit 0
@@ -26,6 +26,9 @@ Coverage:
   Cross-cutting:
    12. Non-sulde project (no config)  → silent exit 0
    13. pyyaml ImportError fallback    → stderr warning + exit 0
+   14. Legacy codepage override       → UTF-8 prompt survives round-trip
+   15. Canon legacy codepage override → UTF-8 JSON survives round-trip
+   16. Notify legacy codepage override → UTF-8 JSON survives round-trip
 
 Run:
   python3 tests/p1_hook_dryrun.py
@@ -43,11 +46,23 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+
+def configure_utf8_stdio() -> None:
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            reconfigure(encoding="utf-8", errors="strict")
+
+
+configure_utf8_stdio()
+
+REPO_ROOT = Path(os.environ.get("SULDE_PLUGIN_UNDER_TEST", Path(__file__).resolve().parents[1]))
 HOOKS_DIR = REPO_ROOT / "hooks"
 ENTRY_PRE = HOOKS_DIR / "pre_tool_use.py"
 ENTRY_PROMPT = HOOKS_DIR / "user_prompt_submit.py"
 ENTRY_SESSION = HOOKS_DIR / "session_start.py"
+ENTRY_CANON = HOOKS_DIR / "canon_inject.py"
+ENTRY_NOTIFICATION = HOOKS_DIR / "notification.py"
 
 
 @dataclass
@@ -67,13 +82,16 @@ def run_hook(
     env: dict | None = None,
 ) -> subprocess.CompletedProcess:
     real_env = os.environ.copy()
+    real_env.update({"PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"})
     if env:
         real_env.update(env)
     return subprocess.run(
         [sys.executable, str(entry)],
-        input=json.dumps(payload),
+        input=json.dumps(payload, ensure_ascii=False),
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         cwd=str(cwd),
         env=real_env,
         timeout=15,
@@ -140,7 +158,7 @@ def test_write_task_md_with_baseline(project: Path) -> Result:
         "tool_name": "Write",
         "tool_input": {
             "file_path": f"{project}/android/.ai-workspace/tasks/2026-05-25-foo.md",
-            "content": "# foo\n## §起草前 baseline 实证\n- git log: abc\n## §1\nbar",
+            "content": "---\ncapability_tier: balanced\n---\n# foo\n## §起草前 baseline 实证\n- git log: abc\n## §1\nbar",
         },
     }
     r = run_hook(ENTRY_PRE, payload, cwd=project)
@@ -148,6 +166,64 @@ def test_write_task_md_with_baseline(project: Path) -> Result:
         "write_task_md_with_baseline",
         r.returncode == 0 and not r.stdout.strip(),
         f"exit={r.returncode}, stdout={r.stdout[:120]}",
+    )
+
+
+def test_write_task_md_missing_capability_tier(project: Path) -> Result:
+    payload = {
+        "tool_name": "Write",
+        "tool_input": {
+            "file_path": f"{project}/android/.ai-workspace/tasks/2026-05-25-no-tier.md",
+            "content": "# foo\n## §起草前 baseline 实证\n- git log: abc",
+        },
+    }
+    r = run_hook(ENTRY_PRE, payload, cwd=project)
+    try:
+        out = json.loads(r.stdout.strip().splitlines()[-1]) if r.stdout.strip() else {}
+    except json.JSONDecodeError:
+        out = {}
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    return expect(
+        "write_task_md_missing_capability_tier",
+        r.returncode == 0 and decision == "deny" and "capability_tier" in r.stdout,
+        f"exit={r.returncode}, decision={decision}, stdout={r.stdout[:160]}",
+    )
+
+
+def test_write_task_md_rejects_provider_model(project: Path) -> Result:
+    payload = {
+        "tool_name": "Write",
+        "tool_input": {
+            "file_path": f"{project}/android/.ai-workspace/tasks/2026-05-25-provider-model.md",
+            "content": "---\nmodel: opus\ncapability_tier: deep\n---\n# foo\n## §起草前 baseline 实证\n- git log: abc",
+        },
+    }
+    r = run_hook(ENTRY_PRE, payload, cwd=project)
+    try:
+        out = json.loads(r.stdout.strip().splitlines()[-1]) if r.stdout.strip() else {}
+    except json.JSONDecodeError:
+        out = {}
+    decision = out.get("hookSpecificOutput", {}).get("permissionDecision")
+    return expect(
+        "write_task_md_rejects_provider_model",
+        r.returncode == 0 and decision == "deny" and "provider-specific" in r.stdout,
+        f"exit={r.returncode}, decision={decision}, stdout={r.stdout[:160]}",
+    )
+
+
+def test_write_task_md_allows_business_model_in_body(project: Path) -> Result:
+    payload = {
+        "tool_name": "Write",
+        "tool_input": {
+            "file_path": f"{project}/android/.ai-workspace/tasks/2026-05-25-business-model.md",
+            "content": "---\ncapability_tier: balanced\n---\n# foo\n## §起草前 baseline 实证\n- git log: abc\n## API example\nmodel: ArticleDto",
+        },
+    }
+    r = run_hook(ENTRY_PRE, payload, cwd=project)
+    return expect(
+        "write_task_md_allows_business_model_in_body",
+        r.returncode == 0 and not r.stdout.strip(),
+        f"exit={r.returncode}, stdout={r.stdout[:160]}",
     )
 
 
@@ -214,7 +290,12 @@ def test_bash_git_as_commit(project: Path) -> Result:
 
 def test_prompt_skill_trigger(project: Path) -> Result:
     payload = {"prompt": "帮我写个 task md 派活给 Dev A"}
-    r = run_hook(ENTRY_PROMPT, payload, cwd=project)
+    r = run_hook(
+        ENTRY_PROMPT,
+        payload,
+        cwd=project,
+        env={"SULDE_KB_HOME": str(project / ".sulde-test-kb")},
+    )
     return expect(
         "prompt_skill_trigger",
         r.returncode == 0 and "writing-task-md" in r.stdout,
@@ -222,9 +303,24 @@ def test_prompt_skill_trigger(project: Path) -> Result:
     )
 
 
+def test_prompt_dispatch_skill_trigger(project: Path) -> Result:
+    payload = {"prompt": "签发返修任务，给 Dev 发送继续原任务的档位指令"}
+    r = run_hook(ENTRY_PROMPT, payload, cwd=project)
+    return expect(
+        "prompt_dispatch_skill_trigger",
+        r.returncode == 0 and "dispatch-task" in r.stdout,
+        f"exit={r.returncode}, stdout has dispatch-task={'dispatch-task' in r.stdout}",
+    )
+
+
 def test_prompt_perf_gate(project: Path) -> Result:
     payload = {"prompt": "app 很卡,帮我优化下"}
-    r = run_hook(ENTRY_PROMPT, payload, cwd=project)
+    r = run_hook(
+        ENTRY_PROMPT,
+        payload,
+        cwd=project,
+        env={"SULDE_KB_HOME": str(project / ".sulde-test-kb")},
+    )
     return expect(
         "prompt_perf_gate",
         r.returncode == 0 and ("perf-gate" in r.stdout or "性能" in r.stdout),
@@ -234,11 +330,86 @@ def test_prompt_perf_gate(project: Path) -> Result:
 
 def test_prompt_no_trigger(project: Path) -> Result:
     payload = {"prompt": "rename a vim register"}
-    r = run_hook(ENTRY_PROMPT, payload, cwd=project)
+    r = run_hook(
+        ENTRY_PROMPT,
+        payload,
+        cwd=project,
+        env={"SULDE_KB_HOME": str(project / ".sulde-test-kb")},
+    )
     return expect(
         "prompt_no_trigger",
-        r.returncode == 0 and not r.stdout.strip(),
+        r.returncode == 0 and "[sulde intent] ACTIVE" in r.stdout,
         f"exit={r.returncode}, stdout={r.stdout[:120]}",
+    )
+
+
+def test_utf8_protocol_overrides_legacy_codepage(project: Path) -> Result:
+    payload = {"prompt": "性能很卡 🙂 请检查"}
+    r = run_hook(
+        ENTRY_PROMPT,
+        payload,
+        cwd=project,
+        env={
+            "PYTHONIOENCODING": "cp936",
+            "SULDE_KB_HOME": str(project / ".sulde-test-kb"),
+        },
+    )
+    return expect(
+        "utf8_protocol_overrides_legacy_codepage",
+        r.returncode == 0 and "性能" in r.stdout,
+        f"exit={r.returncode}, stderr={r.stderr[:160]}",
+    )
+
+
+def test_canon_utf8_protocol_overrides_legacy_codepage(project: Path) -> Result:
+    try:
+        r = run_hook(
+            ENTRY_CANON,
+            {},
+            cwd=project,
+            env={"PYTHONIOENCODING": "cp936"},
+        )
+    except UnicodeDecodeError as exc:
+        return expect("canon_utf8_protocol_overrides_legacy_codepage", False, str(exc))
+    try:
+        output = json.loads(r.stdout)
+    except json.JSONDecodeError:
+        output = {}
+    context = output.get("hookSpecificOutput", {}).get("additionalContext", "")
+    return expect(
+        "canon_utf8_protocol_overrides_legacy_codepage",
+        r.returncode == 0 and "法典" in context,
+        f"exit={r.returncode}, stderr={r.stderr[:160]}",
+    )
+
+
+def test_notification_utf8_protocol_overrides_legacy_codepage(project: Path) -> Result:
+    with tempfile.TemporaryDirectory(prefix="sulde-notify-boundary-") as td:
+        fixture_hooks = Path(td) / "hooks"
+        fixture_lib = fixture_hooks / "lib"
+        fixture_lib.mkdir(parents=True)
+        shutil.copy2(ENTRY_NOTIFICATION, fixture_hooks / "notification.py")
+        shutil.copy2(HOOKS_DIR / "lib" / "sulde_common.py", fixture_lib / "sulde_common.py")
+        (fixture_lib / "kb_notify.py").write_text(
+            "def run(payload):\n"
+            "    print('MATCH' if payload.get('message') == '构建完成 🙂' else 'MISMATCH')\n",
+            encoding="utf-8",
+        )
+        try:
+            r = run_hook(
+                fixture_hooks / "notification.py",
+                {"message": "构建完成 🙂"},
+                cwd=project,
+                env={"PYTHONIOENCODING": "cp936"},
+            )
+        except UnicodeDecodeError as exc:
+            return expect(
+                "notification_utf8_protocol_overrides_legacy_codepage", False, str(exc)
+            )
+    return expect(
+        "notification_utf8_protocol_overrides_legacy_codepage",
+        r.returncode == 0 and r.stdout.strip() == "MATCH",
+        f"exit={r.returncode}, stdout={r.stdout[:120]}, stderr={r.stderr[:160]}",
     )
 
 
@@ -308,14 +479,21 @@ def main() -> int:
 
         results.append(test_write_task_md_missing_baseline(project))
         results.append(test_write_task_md_with_baseline(project))
+        results.append(test_write_task_md_missing_capability_tier(project))
+        results.append(test_write_task_md_rejects_provider_model(project))
+        results.append(test_write_task_md_allows_business_model_in_body(project))
         results.append(test_write_task_md_archive_exempt(project))
         results.append(test_bash_cd_frontend(project))
         results.append(test_bash_absolute_path(project))
         results.append(test_bash_git_commit_no_alias(project))
         results.append(test_bash_git_as_commit(project))
         results.append(test_prompt_skill_trigger(project))
+        results.append(test_prompt_dispatch_skill_trigger(project))
         results.append(test_prompt_perf_gate(project))
         results.append(test_prompt_no_trigger(project))
+        results.append(test_utf8_protocol_overrides_legacy_codepage(project))
+        results.append(test_canon_utf8_protocol_overrides_legacy_codepage(project))
+        results.append(test_notification_utf8_protocol_overrides_legacy_codepage(project))
         results.append(test_session_start_with_claude_md(project))
         results.append(test_pyyaml_importerror_fallback(project))
 

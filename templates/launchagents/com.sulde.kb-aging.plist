@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 每周日 12:00：在图谱抽检之后盘点零采纳且超龄的知识条目。 -->
+    <key>Label</key>
+    <string>com.sulde.kb-aging</string>
+    <key>Program</key>
+    <string>/usr/bin/python3</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>__SULDE_SOURCE_ROOT__/scripts/kb/kb-aging.py</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>12</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__SULDE_USER_BIN__:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>SULDE_KB_HOME</key>
+        <string>__SULDE_KB_HOME__</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>__SULDE_KB_HOME__/kb-aging.log</string>
+    <key>StandardErrorPath</key>
+    <string>__SULDE_KB_HOME__/kb-aging.log</string>
+</dict>
+</plist>

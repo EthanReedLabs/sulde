@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dispatch Task"
+  short_description: "按目标宿主生成可复制的模型、推理档与任务派单指令及校验"
+  default_prompt: "Use $dispatch-task to render provider-native instructions for this task."

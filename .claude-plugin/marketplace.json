@@ -1,0 +1,15 @@
+{
+  "name": "sulde",
+  "description": "Sulde dual-host engineering knowledge, memory and constrained autonomy.",
+  "owner": {
+    "name": "eric.gao.tech",
+    "email": "eric.gao.tech@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "sulde-cc",
+      "source": "./",
+      "description": "Sulde — Claude Code / Codex dual-host engineering life system with shared knowledge, memory and constrained autonomy."
+    }
+  ]
+}

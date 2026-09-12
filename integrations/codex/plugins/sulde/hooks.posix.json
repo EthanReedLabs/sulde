@@ -1,0 +1,78 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" pre-tool-use",
+            "timeout": 120,
+            "statusMessage": "Checking the active Sulde intent contract..."
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" permission-request",
+            "timeout": 120,
+            "statusMessage": "Binding the readable Sulde decision to this approval..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" post-tool-use",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" stop",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" session-start",
+            "timeout": 120,
+            "statusMessage": "Checking Sulde knowledge and memory..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" user-prompt-submit",
+            "timeout": 120,
+            "statusMessage": "Searching Sulde knowledge and memory..."
+          }
+        ]
+      }
+    ]
+  }
+}

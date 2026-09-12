@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.sulde.mem-sync-import</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>__SULDE_SOURCE_ROOT__/scripts/kb/mem-sync.py</string>
+        <string>import</string>
+        <string>--scheduled</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>21600</integer>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__SULDE_USER_BIN__:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>SULDE_KB_HOME</key>
+        <string>__SULDE_KB_HOME__</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>__SULDE_KB_HOME__/mem-sync-import.log</string>
+    <key>StandardErrorPath</key>
+    <string>__SULDE_KB_HOME__/mem-sync-import.log</string>
+</dict>
+</plist>

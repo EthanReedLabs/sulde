@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 每周日 11:30：以 20 条样本控制图谱审查成本，并承接委员会后的治理窗口。 -->
+    <key>Label</key>
+    <string>com.sulde.graph-audit</string>
+    <key>Program</key>
+    <string>/usr/bin/python3</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>__SULDE_SOURCE_ROOT__/scripts/kb/graph-audit.py</string>
+        <string>--sample</string>
+        <string>20</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>11</integer>
+        <key>Minute</key>
+        <integer>30</integer>
+    </dict>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__SULDE_USER_BIN__:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>SULDE_KB_HOME</key>
+        <string>__SULDE_KB_HOME__</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>__SULDE_KB_HOME__/graph-audit.log</string>
+    <key>StandardErrorPath</key>
+    <string>__SULDE_KB_HOME__/graph-audit.log</string>
+</dict>
+</plist>

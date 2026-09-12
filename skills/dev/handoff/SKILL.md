@@ -38,7 +38,7 @@ handoff doc 必含以下 5 段(段标含**关键字串**,被 hook 字面检测):
 
 - `feature-foo/src/main/java/.../FooView.kt:42-68` — 加 onAppear delay 150ms 防 jank
 - `feature-foo/build.gradle.kts:14` — bump compose 1.6.1 → 1.6.2
-- `.ai-workspace/diag/2026-05-25-foo-before.png` — 截图归档(verify 用)
+- `.ai-workspace/diag/<date>-foo-before.png` — 截图归档(verify 用)
 ```
 
 **禁忌**:写"改了 FooView 相关逻辑"(太抽象)— 必引用 file:line。
@@ -68,9 +68,9 @@ Success
 - 关键路径触达:adb logcat 抓到 `FooView onAppear` log 1 次,delay 后批量绑定开始
 
 ### Screenshot diff
-- before:`.ai-workspace/diag/2026-05-25-foo-before.png`
-- after:`.ai-workspace/diag/2026-05-25-foo-after.png`
-- 视觉对照 design-truth `<docs-hub>/design-truth/03A1.md` §3.2 → ✅ 相符
+- before:`.ai-workspace/diag/<date>-foo-before.png`
+- after:`.ai-workspace/diag/<date>-foo-after.png`
+- 视觉对照 design-truth `<docs-hub>/design-truth/<page-a>.md` 对应章节 → ✅ 相符
 ```
 
 **禁忌**:"build 过了 / 没问题" 一行 — 必贴命令 + 输出 / 路径。
@@ -83,7 +83,7 @@ Success
 ## § escalation 候选
 
 - [ ] iOS 也有相同代码路径(`Sources/FeatureFoo/FooView.swift:55`)— 是否对称 fix?(scope 扩散,需协调端拍板)
-- [ ] design-truth 03A1 §3.2 字号 25/600 vs scaffold AppTopBar 20sp 偏 5sp — 是 scaffold 应改 / 还是接受?
+- [ ] design-truth `<page-a>` 对应章节字号 25/600 vs scaffold AppTopBar 20sp 偏 5sp — 是 scaffold 应改 / 还是接受?
 - [ ] 无 → 写 "本任务无 escalation"
 ```
 
@@ -119,9 +119,9 @@ Success
 `{YYYY-MM-DD}-{frontend}-{slug}-{result|block|selffix|audit}.md`
 
 例:
-- `2026-05-25-android-foo-jank-fix-result.md`(成功完工)
-- `2026-05-25-ios-bar-state-block.md`(中途阻塞,需协调端拍板)
-- `2026-05-25-android-removed-stale-dep-selffix.md`(自发清理 stale dep,在 self-fix-boundary 内)
+- `<date>-android-foo-jank-fix-result.md`(成功完工)
+- `<date>-ios-bar-state-block.md`(中途阻塞,需协调端拍板)
+- `<date>-android-removed-stale-dep-selffix.md`(自发清理 stale dep,在 self-fix-boundary 内)
 
 ---
 
@@ -131,7 +131,7 @@ Success
 2. `git add` 改动 + handoff doc + diag 截图 + log file
 3. **不 commit** — 等 §1 § verify 段被你自己 Read 一遍 review 通过
 4. `git as-<alias> commit -m "..."`(走 alias,被 pre-commit hook check_commit_alias 校验)
-5. **不 push** — 等用户 / 协调端确认
+5. **push 由 Agent 收尾** — 合同已授权远端与目标分支时直接执行；否则展示宿主原生 Allow/Deny，Allow 后由 Agent 执行，不把命令交给用户 / 协调者代跑
 
 ---
 
@@ -150,7 +150,7 @@ Success
 
 1. Read 你的 handoff doc(SessionStart 已扫 `.ai-workspace/handoff/active/`)
 2. § verify 三联实证 cross check
-3. § escalation 候选 → 协调端 review 后写新的 bounded task-md；不把候选当作已批准工作
+3. § escalation 候选 → 走 `coordinator-maintenance` skill 派 follow-up task
 4. handoff 处理完归档到 `.ai-workspace/handoff/archive/`
 
 **你的 handoff 质量 = 协调端能不能信任 "Dev 跑完了"** — 直接影响下个 task md 是否还需重新 verify。

@@ -1,7 +1,6 @@
 ---
 name: writing-task-md
-description: 协调端写 task md 给前端 Dev(Android/iOS/Web 等)派活的完整规则。当用户说"写个 task md / 派活给 Dev / 给某端 Dev 写任务 / 派单 / 写 fix task / 写 audit task / /assign 准备 / 协调端写指令"等触发词或语境时必 invoke。覆盖:6 步审单 / 起草前 baseline 实证(含运行期 binding / 字段值映射 / crash 关键词澄清等扩展步)/ 3 维同步铁律 / contract-based 风格 / 模型选择 8 问 / 视觉对齐强制证据 / 防 N+1 round / 上下文压缩后 metacog / worktree 隔离 / 派单短指令 / ralph-loop 自循环。
-user-invocable: true
+description: 协调端写 task md 给前端 Dev(Android/iOS/Web 等)派活的完整规则。当用户说"写个 task md / 派活给 Dev / 给某端 Dev 写任务 / 派单 / 写 fix task / 写 audit task / /assign 准备 / 协调端写指令"等触发词或语境时必 invoke。覆盖:6 步审单 / 起草前 baseline 实证(含运行期 binding / 字段值映射 / crash 关键词澄清等扩展步)/ 3 维同步铁律 / contract-based 风格 / 能力档选择 8 问 / 目标 Claude Code 或 Codex 宿主原生派单 / 视觉对齐强制证据 / 防 N+1 round / 上下文压缩后 metacog / worktree 隔离。
 ---
 
 # 协调端写 task md 完整规则
@@ -81,15 +80,15 @@ user-invocable: true
 | skill | 适合场景 | 工时 | 触发 |
 |:-:|---|:-:|---|
 | **`Agent`(general-purpose audit subagent,opus)** ⭐ 高频核心 | 真因不定位 / 多端代码对比 / PRD/API/design-truth 三方实证 / git log 反推 | ~15-30min opus | 协调端 invoke `Agent({subagent_type:"general-purpose", model:"opus", prompt:...})` |
-| **`mattpocock:grill-me`** | 方案 stress-test / 反推"更简单解" / 找最小改动 | ~10min 交互 | user 触发 `/grill-me` |
-| **`mattpocock:zoom-out`** | 陷入局部细节 → 跳出看架构层根因 | ~5-10min | user 触发 `/zoom-out` |
-| **`mattpocock:diagnose`** | 复发型 bug / 多端真因系统化诊断 | ~20-30min | user 触发 `/diagnose` |
+| **`mattpocock:grill-me`** | 方案 stress-test / 反推"更简单解" / 找最小改动 | ~10min 交互 | Agent 在当前宿主可用时调用 |
+| **`mattpocock:zoom-out`** | 陷入局部细节 → 跳出看架构层根因 | ~5-10min | Agent 在当前宿主可用时调用 |
+| **`mattpocock:diagnose`** | 复发型 bug / 多端真因系统化诊断 | ~20-30min | Agent 在当前宿主可用时调用 |
 | **`superpowers:verification-before-completion`** | 完工前 verify(Dev handoff 真值审计 — 防 handoff "已修"自报 fail) | ~5min | 协调端 invoke |
-| **`/ultrareview`**(系统命令)| 大改 / 高风险 / 多端架构改造 PR 级 review | ~10-15min 异步 | user 触发,billable |
+| **`/ultrareview`**(系统命令)| 大改 / 高风险 / 多端架构改造 PR 级 review | ~10-15min 异步 | 宿主可用且获原生高风险/计费 Allow 后由 Agent 调用 |
 
 **最高效组合**:
 1. **audit subagent**(实证真因 + 多端代码 + 真值源 PRD/API/design-truth)— **必跑**
-2. **grill-me**(stress-test 真因 / 找最小改动)— 可选,user 时间允许时跑
+2. **grill-me**(stress-test 真因 / 找最小改动)— 可选,当前宿主可用且任务收益足够时由 Agent 跑
 3. **verification-before-completion**(Dev 完工 handoff 来时三联实证)— Dev 完工后跑
 
 **Step 14 强制铁律**(违一即不合格):
@@ -104,7 +103,7 @@ user-invocable: true
 ---
 - assignee: ...
 - branch: ...
-- model: ...
+- capability_tier: ...
 ---
 
 # {任务标题}
@@ -286,11 +285,12 @@ task md scope 段加 **"相邻 audit 列表"**(Dev 不扩 scope 但 grep 标记)
 ### Step 6 — 真机 verify 频次目标(防真机反馈环路慢)
 
 每 round 完工后真机 verify 不超 24h:
-- 用户自跑 5-10min(每 round 必)
-- 若某端真机 `unavailable` → 优先修复(借设备 / 退回工具链 / 兜底部署),不接受多 round 累积代码 audit 不真机
-- 真机 verify 反馈 → 协调端 24h 内起 follow-up task md(不放置 backlog 长)
+- Agent 负责 build、安装、启动、触达改动路径、采集日志/截图并判定结果
+- 若某端真机 `unavailable` → Agent 优先恢复工具链或切换可验证设备，不接受多 round 累积代码 audit 不真机
+- 只有连接、解锁或现实环境操作确实无法自动化时，才请用户完成该物理动作；随后 Agent 自动重探测并完成剩余验证，不要求用户回贴命令输出或固定短语
+- 真机 verify 失败 → 协调端 Agent 在 24h 内生成并推进 follow-up task md(不放置 backlog 长)
 
-**判定线**:某 round 完工 ≥ 48h 无真机 verify → 协调端起 ticket 跟用户协调真机时机
+**判定线**:某 round 完工 ≥ 48h 无真机 verify → 协调端 Agent 自动建立带 blocker 的 ticket；仅物理设备时机需要人决定时才询问
 
 ---
 
@@ -420,16 +420,16 @@ git branch -d dev/<dev-name>/<task-slug>
 
 ## §2 给终端写指令格式(基础 4 条)
 
-1. 指令要可直接复制粘贴,不要让用户自己拼接
+1. 指令要能被受管 Agent 直接消费，不让用户复制、粘贴或自行拼接
 2. 路径用绝对路径,避免歧义
 3. 明确告诉终端用什么 skill + 该 skill 期望的输入格式
 4. **任何超过 30 行的任务必须写 task 文件**(强制):
    - 路径:`<frontend>/.ai-workspace/tasks/{YYYY-MM-DD}-{slug}.md`
-   - 给用户的指令缩到 1-3 行,只引用文件路径
+   - 调度消息缩到 1-3 行，只引用文件路径并由协调 Agent 直接派发
    - 例:`/assign 任务文件:.ai-workspace/tasks/{date}-xxx-fix.md`
-   - **禁止**主会话直接贴 200+ 行 prompt 给用户
+   - **禁止**主会话把 200+ 行 prompt 交给用户搬运
    - task 文件结构标准:身份分支 / 视觉/数据/行为契约 / **复用思考** / 验证 / 禁区
-   - 通用约束(必读 / 编译验证 / handoff)在各端 `/assign` skill 里硬约束,task 文件不重复写
+   - 通用约束(必读 / 编译验证 / handoff)在各端 `/ui-impl` `/assign` skill 里硬约束,task 文件不重复写
 
 ---
 
@@ -531,40 +531,39 @@ grep -E "复用思考|公共控件|抽 .*widgets|widgets/" {file}.md
 ```markdown
 - 身份:Dev A(`git as-a`) ← Android;Dev B(`git as-a`) ← iOS
 - 分支:`dev/dev-a/...` 或 `dev/dev-b/...`
-- 思考模式:think hard
-- model:**sonnet**
+- capability_tier:**balanced**
 - 工时:~Nh
 ```
 
-### model 三选一
+### capability_tier 三选一（宿主无关）
 
-- **`sonnet`(默认 80%+ 任务)**:视觉对齐 / token 改 / 中等改造 / pendingAction / Toggle 复用 / 全屏选择页等
-- **`opus`(7 大触发,任一命中即标)**:
+- **`balanced`(默认 80%+ 任务)**:视觉对齐 / token 改 / 中等改造 / pendingAction / Toggle 复用 / 全屏选择页等
+- **`deep`(7 大触发,任一命中即标)**:
   1. 架构妥协 / Option C / 跨 Feature 大重构 / 多 stage wizard 整合
   2. 高频手势多防(WaveformTrim 类)
-  3. 复杂 bug 根因诊断(需 ultrathink + 多文件交叉)
+  3. 复杂 bug 根因诊断(需最高档推理 + 多文件交叉)
   4. 多 stage / wizard / 跨页串联工作流
-  5. **抽象 / 复用 / 举一反三决策**:抽公共控件 / base class / scaffold 升级 / 跨页规律抽象判断 — Sonnet 偏 instruction-following,涉及"反思+抽象+复用"必须 opus
-  6. **框架已知 bug / 兼容性诊断**:SwiftUI / Asset Catalog / 平台 beta 已知坑 — Sonnet 不主动查官方 Developer Forums,凭印象写假设,必 opus + WebSearch 实证
+  5. **抽象 / 复用 / 举一反三决策**:抽公共控件 / base class / scaffold 升级 / 跨页规律抽象判断
+  6. **框架已知 bug / 兼容性诊断**:SwiftUI / Asset Catalog / 平台 beta 已知坑,必须深度档 + WebSearch 实证
   7. **视觉契约切换 / 跨 Feature 状态广播架构**:视觉契约修改必各端同步 sweep;登录态 / token 变化广播给所有持字段的子 feature
-- **`haiku`**:一行修复 / 翻译补全 / 单 drawable / 简单 grep + commit
+- **`light`**:一行修复 / 翻译补全 / 单 drawable / 简单 grep + commit
 
-协调端本身保持高能力模型(Opus 档)。
+协调端本身保持 `deep` 能力档；具体模型由当前宿主决定。
 
 ### 协调端自检 8 问(标 model 前问自己)
 
-- Q1 涉及"抽公共控件 / 升 scaffold / 跨页复用"?是 → opus
-- Q2 同模式跨 ≥2 task 重复出现(圆角图片 / gradient stroke / sheet 容器 等)?是 → opus + 加"复用思考"段
-- Q3 涉及多 stage 串联 / 跨 Feature 数据流?是 → opus
-- Q4 是高频手势 / 复杂状态机?是 → opus
-- **Q5 涉及框架已知 bug / SwiftUI / Asset Catalog / 平台 beta 兼容性?**是 → opus + Step 4 WebSearch 实证
-- **Q6 涉及视觉契约切换 / 跨 Feature 状态广播架构?**是 → opus
-- Q7 都不是 → sonnet OK
+- Q1 涉及"抽公共控件 / 升 scaffold / 跨页复用"?是 → `deep`
+- Q2 同模式跨 ≥2 task 重复出现(圆角图片 / gradient stroke / sheet 容器 等)?是 → `deep` + 加"复用思考"段
+- Q3 涉及多 stage 串联 / 跨 Feature 数据流?是 → `deep`
+- Q4 是高频手势 / 复杂状态机?是 → `deep`
+- **Q5 涉及框架已知 bug / SwiftUI / Asset Catalog / 平台 beta 兼容性?**是 → `deep` + Step 4 WebSearch 实证
+- **Q6 涉及视觉契约切换 / 跨 Feature 状态广播架构?**是 → `deep`
+- Q7 都不是 → `balanced` OK
 - **Q8 task 涉及 onAppear / onViewCreated / onCreate + 批量渲染(列表绑定 / 媒体初始化)?**是 → task md 必含"时序约束"段
 
 ### 误判兜底
 
-Sonnet 跑卡 / fail / 复用决策不主动 → Dev 在 handoff 显式声明"建议升级 opus 重试",协调端下次派单改标 `model: opus`。
+当前档位跑卡 / fail / 复用决策不主动 → Dev 在 handoff 显式声明"建议升级能力档重试",协调端下次派单改标 `capability_tier: deep`。
 
 ---
 
@@ -668,68 +667,56 @@ handoff 任一缺失即不合格:
 
 ## §8 派单短指令格式(强制)
 
-协调端给用户的派单短指令**统一格式**:
+协调端必须 invoke `$dispatch-task`，确认**目标执行 session**的宿主；普通 Codex 派单不查询模型或推理档，
+再运行稳定 `model-dispatch` launcher。把 stdout 原样放进“给 Dev 发送”；禁止凭记忆手写或
+从本文其他宿主示例复制。机器装了 Claude Code/Codex 两种 CLI 不是当前宿主证据；宿主不明确
+时停止并要求显式选择。
 
-```
-/clear                              ← 若 Dev session 已运行
-/model {opus|sonnet|haiku}
-/assign 任务文件:.ai-workspace/tasks/{date}-{slug}.md
-```
-
-三行连续。`/clear` 让 CLAUDE.md / shared-rules 最新版本生效(防旧 system-reminder 快照不更新);模型前缀对应 task md 的 `model:` 字段。
-
-### /clear 例外
-
-- Dev session **新启动**(第一次派 task)→ 不需 `/clear`
-- 协调端 CLAUDE.md / shared-rules / 反模式集合 **未改动** + Dev session 已跑过同 session 的其他 task → 可省 `/clear`(但默认带最稳)
-- **改动了 CLAUDE.md / shared-rules** + Dev session 已运行 → **必加 `/clear`**(否则旧快照注入违规)
-
-### 多任务连续派(用户复制全段一次贴)
-
-```
-# iOS 终端
-/model sonnet
-/assign 任务文件:.ai-workspace/tasks/{date}-task-A.md
-/model opus
-/assign 任务文件:.ai-workspace/tasks/{date}-task-B.md
+```bash
+SULDE_MODEL_DISPATCH="${SULDE_HOME:-$HOME/.sulde}/bin/model-dispatch"
+"$SULDE_MODEL_DISPATCH" --provider <claude|codex> \
+  --tier <light|balanced|deep> --task .ai-workspace/tasks/{date}-{slug}.md \
+  [--model-advice] # 仅用户明确要求模型建议时添加
 ```
 
-每条 `/assign` 前必带对应 `/model` 切换。
+- Claude Code 输出只能含 Claude 原生模型控制和 `/assign`；
+- Codex 默认只输出任务正文；仅用户明确要求模型建议时才可输出 `/model`、`/reasoning`，禁止 Claude 型号、
+  thinking 词、`/mode`、`/assign`、`/clear`、`ralph-loop`；
+- “继续原任务/返修”不加 `--fresh-session`，保留当前上下文；
+- 多任务逐项给出任务正文，不在一段里手工切换型号；
+- 默认保留当前配置，不展示“无需切换”提示；旧模板示例不得覆盖此规则。
 
-### 派单完成回默认
+### 派单完成后的模型状态
 
-一批 task 跑完后,协调端在最后一条派单后显式告诉用户:
+不切换模型。只有用户明确要求建议时，才依据目标宿主和能力档生成建议。
 
-> 完工后 session 内执行 `/model sonnet` 切回默认,避免下次新 task 启动时残留 opus。
+### 长任务语言漂移防护
 
-### Sonnet 语言漂移防护
-
-Sonnet 跑长 task 易出现"语言漂移"(中英混合 / handoff 段标题英化)。
+Agent 跑长 task 易出现"语言漂移"(中英混合 / handoff 段标题英化)。
 
 **协调端**写 task md:
 - 不夹杂英文段标题(`## Implementation` 改 `## 实施`)
 - handoff 段名也用中文(`### 改动文件清单` 不是 `### Files Changed`)
-- 如果 Dev 上次 handoff 已漂移英文,新 task md 加显式约束:`> ⚠️ handoff 段标题中文(避免 Sonnet 漂移)`
+- 如果 Dev 上次 handoff 已漂移英文,新 task md 加显式约束:`> ⚠️ handoff 段标题中文(避免语言漂移)`
 
 ### 反例
 
-❌ 错误派单(不带模型前缀):
-```
-/assign 任务文件:.ai-workspace/tasks/{date}-xxx.md
-```
-用户不知道 task 用啥模型,可能高能模型跑简单 task = 性能冗余,或 Sonnet 跑架构改造 = 卡住返工。
+❌ 错误派单:未识别目标宿主就套 Claude 的 mode/model 与 assign 指令，导致 Codex session
+收到无效或错误的宿主命令。
 
 ✅ 正确派单:
 ```
-/model sonnet
-/assign 任务文件:.ai-workspace/tasks/{date}-xxx.md
+provider=codex,current_model=<实值>,capability_tier=deep → 按 Codex 路径渲染
 ```
 
 ---
 
-## §9 大型 task(audit / 多 stage 批量执行)用 ralph-loop 自循环
+## §9 Claude Code 大型 task 可用 ralph-loop 自循环
 
-**适用场景**:task md 含多项重复机械工作(audit 80+ 项 / 批量翻译 / 多 stage Wizard 同步实施 等),sonnet 单轮跑不完 → 用 `ralph-loop` 自循环推进直到完成。
+**宿主边界**:`ralph-loop` 是 Claude Code 工作流。目标 session 为 Codex 时不得输出本节命令；
+使用当前 Codex 的原生持续执行/自动化能力或由受控 `agent-runtime.py` 执行。
+
+**适用场景**:目标为 Claude Code 且 task md 含多项重复机械工作(audit 80+ 项 / 批量翻译 / 多 stage Wizard 同步实施 等),单轮跑不完 → 用 `ralph-loop` 自循环推进直到完成。
 
 **机制**:`ralph-loop` plugin 装 Stop hook 拦截 session 退出,把原 PROMPT 反复喂给 Claude,Claude 看自己之前的 handoff / commit 继续推进,直到匹配 `--completion-promise` 或 `--max-iterations`。
 
@@ -757,7 +744,7 @@ Sonnet 跑长 task 易出现"语言漂移"(中英混合 / handoff 段标题英�
 /ralph-loop 推进 <端> <任务名>。先 Read task md `.ai-workspace/tasks/<date>-<slug>.md` 拿 contract:按 frontmatter 切分支 + git 身份 + 思考模式。然后 Read 已存在 handoff `.ai-workspace/handoff/<date>-<slug>-result.md`(若存在),identify 还缺哪些项 + 自检 X 问哪几条未 ✅。继续推进未完项。全部齐全 → 输出 <promise>BUSINESS_SPECIFIC_PROMISE</promise>。 --completion-promise "BUSINESS_SPECIFIC_PROMISE" --max-iterations 30
 ```
 
-### 监控指令(派给用户)
+### 监控动作(由 Agent 执行)
 
 ```bash
 # 实时看 iteration 数
@@ -766,6 +753,8 @@ watch -n 5 'grep "^iteration:" <PROJECT_ROOT>/<frontend>/.claude/ralph-loop.loca
 # 中途停止:在 Dev session 内输入 /cancel-ralph
 ```
 
+Agent 负责执行监控与停止动作并汇报状态；上面的命令是执行器参考，不得作为用户代跑步骤输出。
+
 ### 何时**不用** ralph-loop
 
 | 场景 | 用 ralph? |
@@ -773,7 +762,7 @@ watch -n 5 'grep "^iteration:" <PROJECT_ROOT>/<frontend>/.claude/ralph-loop.loca
 | audit 80+ 项 / 批量翻译 100+ 文件 | ✅ 用 |
 | 单 bug fix | ❌ 不用(单轮搞定 + /assign 已够)|
 | UI 还原单页 | ❌ 不用 |
-| 多 stage Wizard 整合(全部 stage 同 ViewModel 修)| ✅ 用(但需 opus,因有架构决策)|
+| 多 stage Wizard 整合(全部 stage 同 ViewModel 修)| ✅ 用(但需 `deep`,因有架构决策)|
 | 性能 fix(需诊断 → 改 → 验证 → 改)| ❌ 不用(诊断 + fix + verify 都不可重入)|
 
 ### 反例(踩过的坑)

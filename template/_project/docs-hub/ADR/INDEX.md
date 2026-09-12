@@ -35,10 +35,7 @@ When you ship a lint rule that catches the pattern:
 | 0003 | Cold Flow / Publisher used where Hot StateFlow / @Published is needed for L1 truth source | android, ios | 2026-01-01 | — | 1 | pending |
 | — | (your project's first real ADR lands here as `0004`) | | | | | |
 
-> **Note**: rows 0000-0003 are historical mobile examples. Grow new project knowledge in the
-> project-owned `knowledge/` kit, and keep this ADR directory only when the adopting project uses
-> the original docs-hub convention. Row 0001 is enforced by
-> `hooks/lib/check_task_md_baseline.py` (`lint_status: shipped`).
+> **Note**: rows 0000-0003 ship as mobile examples in the sulde-cc v0.2.0 template. Replace or extend with your project's actual incidents over time. Row 0001 is enforced by `hooks/lib/check_task_md_baseline.py` (`lint_status: shipped`).
 
 ## Conventions
 

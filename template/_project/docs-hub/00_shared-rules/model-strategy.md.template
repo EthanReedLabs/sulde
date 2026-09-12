@@ -1,71 +1,70 @@
-# model-strategy — Claude model selection per task type
+# model-strategy — host-neutral task capability and native dispatch
 
-> Dev picks `model:` in the task-md frontmatter based on task complexity. Wrong model = wasted tokens or quality drop. The `/assign` skill's §2 thinking-mode table is the runtime; this doc is the policy.
+> A task records the capability it needs. Ordinary Codex dispatch preserves current session settings and outputs only task instructions. Model advice is explicit opt-in.
 
-## Default matrix
+## Task contract
 
-| Task type | Model | Thinking mode |
-|---|---|---|
-| Architecture design / cross-module refactor / hard root-cause | **opus** | `ultrathink` (20K–64K thinking budget) |
-| New feature (≥ 3 files, integration with multiple scaffolds) | **opus** or sonnet | `think hard` (~16K) |
-| UI restoration from design-truth / list pages / API integration | **sonnet** | `think hard` |
-| Bug fix (known reproduction, localised) | **sonnet** | `think hard` |
-| Field rename / config change / endpoint URL update | **sonnet** or haiku | `think` (~4K) |
-| L10n / translation / asset add / compile-error fix | **haiku** | (default) |
-
-## When to escalate to opus
-
-These 7 triggers always justify opus regardless of size:
-
-1. **Abstraction work** — designing or revising a scaffold, base class, or framework
-2. **Known recurring bug** — a previously-fixed pattern recurring (likely subtle interaction)
-3. **Visual contract switch** — a page transitioning between two design-truth states (loading → empty → error → content)
-4. **Multi-source conflict** — task involves resolving design-truth vs scaffold vs PRD mismatch
-5. **Hidden state debugging** — issue requires reasoning about state machine transitions, async ordering, race conditions
-6. **Cross-frontend symmetry decision** — coordinator deciding whether to mirror a fix across frontends
-7. **Multi-step research** — task requires WebFetch / official-docs verification + cross-referencing
-
-## When haiku is safe
-
-These are the few cases where haiku quality is enough:
-
-1. **Pure translation** — adding a locale string given the source string
-2. **Asset placement** — `cp` an icon to the right resource directory
-3. **Compile-error fix from message** — error message is clear, fix is one-liner
-4. **Doc typo** — fixing a typo in a comment / README
-5. **Dependency bump** with provided changelog (just bump version + verify build)
-
-## How the task-md cites it
-
-Task-md frontmatter:
+New task frontmatter uses one provider-neutral field:
 
 ```yaml
 ---
 assignee: as-a
 branch: dev/as-a/feature-foo
-model: sonnet            # or opus / haiku
-thinking: think hard     # or think / ultrathink / (omit for default)
+capability_tier: balanced   # light | balanced | deep
 ---
 ```
 
-The `/assign` skill reads these and:
-- If current Claude Code session model ≠ `model`, prompts the user to switch
-- Sets thinking mode internally (no user action needed)
+Do not write provider-specific model IDs or thinking syntax into a new task.
 
-## Why this matters
+| Capability tier | Typical work | Minimum |
+|---|---|---|
+| `deep` | architecture, cross-module refactor, hidden-state root cause, recurring issue | host deep tier; Codex reasoning at least `high` |
+| `balanced` | feature work, known bug, UI restoration, API integration | host balanced tier; Codex reasoning at least `medium` |
+| `light` | deterministic one-line fix, field/config, translation, asset, clear compile error | host light tier; Codex reasoning at least `low` |
 
-Opus is ~5× more expensive than sonnet and ~30× more expensive than haiku per token. Using opus everywhere wastes budget; using sonnet for architecture sometimes misses subtle invariants. The matrix calibrates cost vs quality for typical mobile work.
+The tier is a floor. Keep a current session that is already stronger; downgrade only between tasks when cost matters.
 
-Re-calibrate this doc when:
-- A new Claude model ships
-- Project hits "we keep escalating to opus" — review whether the trigger list is too permissive
-- Project hits "haiku missed obvious things" — review the haiku-safe list
+## Dispatch algorithm
 
-## Anti-pattern this prevents
+Before writing copyable instructions, identify the **target session's** provider. A machine having both CLIs installed is not host evidence. If the target host is unknown, ask instead of guessing. Ordinary Codex dispatch does not require current model or reasoning information.
 
-Two common failure modes:
+### Claude Code
 
-1. **Opus for everything**: budget burns 3× faster than necessary; coordinator hits monthly token cap mid-month
-2. **Sonnet for architecture**: dev misses a subtle interaction; same code area gets re-worked 2-3 times because each session's view is too narrow
+Translate only at the Claude boundary:
 
-The matrix shifts the default to "match model to task complexity" rather than "use whatever model is on right now."
+| Tier | Claude family | Thinking hint |
+|---|---|---|
+| `deep` | `opus` | `ultrathink` |
+| `balanced` | `sonnet` | `think hard` |
+| `light` | `haiku` | default/`think` |
+
+Claude-native example:
+
+```text
+/clear
+/model opus
+/assign 任务文件:.ai-workspace/tasks/<task>.md
+```
+
+### Codex
+
+- Preserve the current session settings, including when the model or reasoning state is unknown.
+- Do not emit `/model`, `/reasoning`, model-choice advice, or a “no switch needed” preamble by default.
+- Only when the user explicitly asks for model advice, use dispatch-task with `--model-advice` and available current-state arguments. A capability_tier in the task is not an explicit request.
+- Tell the current Codex session to execute the task path directly; do not emit Claude `/assign` syntax.
+
+Default Codex dispatch:
+
+```text
+执行任务文件:.ai-workspace/tasks/<task>.md
+```
+
+Codex 派单禁止出现其他宿主的控制命令或模型标签。The capability table is for explicit advice and managed-runtime policy, not an interactive dispatch gate. Older examples must not override this task-only default.
+
+## Archived-task compatibility
+
+An old task may be interpreted in memory as `opus/ultrathink → deep`, `sonnet/think-hard → balanced`, or `haiku/think → light`. If legacy fields conflict, use the stronger tier and warn. Do not rewrite archives and do not copy legacy fields into a new task.
+
+## Recalibration
+
+Revisit host-specific mappings when a provider changes its model catalog or commands. The shared `capability_tier` contract should remain stable.

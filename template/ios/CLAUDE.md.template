@@ -16,7 +16,7 @@ You do not:
 | Before doing this | Read |
 |---|---|
 | Any work | `<docs-hub>/00_shared-rules/self-fix-boundary.md` |
-| Picking `model:` from a task-md | `<docs-hub>/00_shared-rules/model-strategy.md` |
+| Picking or applying a task `capability_tier:` | `<docs-hub>/00_shared-rules/model-strategy.md` |
 | Building or verifying | `<docs-hub>/00_shared-rules/verify-build.md` |
 | Visual / UI work | `<docs-hub>/design-truth/{page-id}.md` + `.png` |
 | Perf work | `<docs-hub>/00_shared-rules/perf-diagnosis.md` (Instruments / xctrace) |

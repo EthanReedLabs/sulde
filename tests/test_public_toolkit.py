@@ -243,7 +243,11 @@ class PublicToolkitTest(unittest.TestCase):
         rendered = json.dumps(hooks)
         self.assertIn("run-hook.sh", rendered)
         self.assertNotIn("python3 ", rendered)
-        self.assertEqual(rendered.count('"shell": "bash"'), 3)
+        self.assertEqual(rendered.count('"shell": "bash"'), 9)
+        self.assertEqual(set(hooks["hooks"]), {
+            "PreToolUse", "PostToolUse", "PostToolUseFailure", "UserPromptSubmit",
+            "SessionStart", "PreCompact", "Notification", "Stop",
+        })
 
     def test_launchers_pin_utf8_and_python_contract(self) -> None:
         shell = (REPO / "hooks" / "run-hook.sh").read_text(encoding="utf-8")

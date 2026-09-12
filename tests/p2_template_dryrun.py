@@ -19,13 +19,29 @@ from __future__ import annotations
 
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parent.parent
+CHECKOUT = Path(__file__).resolve().parent.parent
+REPO = Path(os.environ.get("SULDE_PLUGIN_UNDER_TEST", CHECKOUT)).expanduser().resolve()
 TEMPLATE = REPO / "template"
+
+EXECUTABLE_PATHS = (
+    Path("scripts/kb/bootstrap.sh"),
+    Path("scripts/kb/kb-index"),
+    Path("integrations/codex/plugins/sulde/scripts/run-hook.sh"),
+    Path("template/_project/scripts/coordinator-baseline.sh.template"),
+    Path("template/_project/scripts/health-check.sh.template"),
+    Path("template/android/scripts/pre-commit-installer.sh"),
+    Path("template/ios/scripts/pre-commit-installer.sh"),
+    Path("template/flutter/scripts/pre-commit-installer.sh"),
+    Path("template/harmony/scripts/pre-commit-installer.sh"),
+)
+
+PYTHON_EXECUTABLE_PATHS = (Path("scripts/kb/kb-index"),)
 
 STACKS = ("android", "ios", "flutter", "harmony")
 AI_WORKSPACE_SUBDIRS = (
@@ -72,15 +88,6 @@ def test_project_root_files() -> list[Result]:
         "_project/docs-hub/ADR/INDEX.md",
         "_project/docs-hub/ADR/_frontmatter.schema.yaml",
         "_project/docs-hub/ADR/0000-example.md",
-        "_project/knowledge/README.md",
-        "_project/knowledge/INDEX.md",
-        "_project/knowledge/schema.yaml",
-        "_project/knowledge/containers.json",
-        "_project/knowledge/anti-patterns/README.md",
-        "_project/knowledge/case-studies/README.md",
-        "_project/knowledge/platform-kb/README.md",
-        "_project/knowledge/tech-docs/README.md",
-        "_project/knowledge/work-model/README.md",
     ]
     return [
         expect(f"_project_file:{p}", (TEMPLATE / p).exists())
@@ -108,24 +115,120 @@ def test_stack_files() -> list[Result]:
     return results
 
 
-def test_executable_bits() -> list[Result]:
+def git_index_modes() -> tuple[dict[str, str], str]:
+    try:
+        output = subprocess.check_output(
+            [
+                "git",
+                "ls-files",
+                "-s",
+                "--",
+                *[path.as_posix() for path in EXECUTABLE_PATHS],
+            ],
+            cwd=CHECKOUT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+    except (OSError, subprocess.CalledProcessError) as exc:
+        return {}, str(exc)
+
+    modes: dict[str, str] = {}
+    for line in output.splitlines():
+        metadata, path = line.split("\t", 1)
+        modes[path] = metadata.split(" ", 1)[0]
+    return modes, ""
+
+
+def find_git_bash() -> Path | None:
+    git = shutil.which("git")
+    candidates: list[Path] = []
+    if git:
+        git_root = Path(git).resolve().parent.parent
+        candidates.extend((git_root / "bin" / "bash.exe", git_root / "usr" / "bin" / "bash.exe"))
+    for variable in ("ProgramFiles", "ProgramFiles(x86)"):
+        root = os.environ.get(variable)
+        if root:
+            candidates.extend(
+                (Path(root) / "Git" / "bin" / "bash.exe", Path(root) / "Git" / "usr" / "bin" / "bash.exe")
+            )
+    discovered = shutil.which("bash.exe") or shutil.which("bash")
+    if discovered and "git" in {part.casefold() for part in Path(discovered).parts}:
+        candidates.append(Path(discovered))
+    return next((candidate for candidate in candidates if candidate.is_file()), None)
+
+
+def bash_syntax(relative: Path, bash: Path | None) -> tuple[bool, str]:
+    if bash is None:
+        return False, "Git Bash not found"
+
+    source = CHECKOUT / relative
+    with tempfile.TemporaryDirectory(prefix="sulde-p2-bash-") as temp_dir:
+        target = source
+        if source.suffix == ".template":
+            target = Path(temp_dir) / source.name.removesuffix(".template")
+            rendered = source.read_text(encoding="utf-8")
+            rendered = rendered.replace("<<FRONTENDS>>", '"android" "ios"')
+            rendered = rendered.replace("<<DOCS_HUB>>", "docs-hub")
+            target.write_text(rendered, encoding="utf-8")
+        completed = subprocess.run(
+            [str(bash), "-n", target.as_posix()],
+            cwd=CHECKOUT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+        )
+        return completed.returncode == 0, completed.stderr.strip()
+
+
+def python_syntax(relative: Path) -> tuple[bool, str]:
+    source = (CHECKOUT / relative).read_bytes()
+    if not source.startswith(b"#!/usr/bin/env python3\n"):
+        return False, "missing Python shebang"
+    try:
+        compile(source, str(relative), "exec")
+    except SyntaxError as error:
+        return False, str(error)
+    return True, ""
+
+
+def test_executable_contract() -> list[Result]:
     results: list[Result] = []
-    targets = [
-        TEMPLATE / "_project/scripts/coordinator-baseline.sh.template",
-        TEMPLATE / "_project/scripts/health-check.sh.template",
-    ]
-    for stack in STACKS:
-        targets.append(TEMPLATE / stack / "scripts/pre-commit-installer.sh")
-    for p in targets:
-        if not p.exists():
-            results.append(expect(f"exec_bit:{p.name}", False, f"missing: {p}"))
-            continue
-        mode = p.stat().st_mode
+    modes, git_error = git_index_modes()
+    for relative in EXECUTABLE_PATHS:
+        rendered = relative.as_posix()
+        actual = modes.get(rendered)
         results.append(expect(
-            f"exec_bit:{p.relative_to(TEMPLATE)}",
-            bool(mode & 0o111),
-            f"mode={oct(mode)}",
+            f"git_exec_mode:{rendered}",
+            actual == "100755",
+            git_error or f"mode={actual or 'missing'}",
         ))
+
+    if os.name != "nt":
+        for relative in EXECUTABLE_PATHS:
+            target = CHECKOUT / relative
+            mode = target.stat().st_mode if target.exists() else 0
+            results.append(expect(
+                f"posix_exec_bit:{relative.as_posix()}",
+                bool(mode & 0o111),
+                f"mode={oct(mode)}" if target.exists() else f"missing: {target}",
+            ))
+    else:
+        bash = find_git_bash()
+        for relative in EXECUTABLE_PATHS:
+            if relative in PYTHON_EXECUTABLE_PATHS:
+                ok, detail = python_syntax(relative)
+                syntax = "python_syntax"
+            else:
+                ok, detail = bash_syntax(relative, bash)
+                syntax = "bash_syntax"
+            results.append(expect(
+                f"{syntax}:{relative.as_posix()}",
+                ok,
+                detail,
+            ))
     return results
 
 
@@ -193,14 +296,6 @@ def test_copytree_simulation() -> list[Result]:
             (proj / "docs-hub" / "ADR" / "INDEX.md").exists(),
         ))
         results.append(expect(
-            "cp:knowledge_schema",
-            (proj / "knowledge" / "schema.yaml").exists(),
-        ))
-        results.append(expect(
-            "cp:knowledge_index",
-            (proj / "knowledge" / "INDEX.md").exists(),
-        ))
-        results.append(expect(
             "cp:harmony_claude_md",
             (proj / "harmony" / "CLAUDE.md.template").exists(),
         ))
@@ -208,10 +303,23 @@ def test_copytree_simulation() -> list[Result]:
             "cp:harmony_aiws_handoff",
             (proj / "harmony" / ".ai-workspace" / "handoff" / "README.md").exists(),
         ))
-        results.append(expect(
-            "cp:harmony_installer_executable",
-            bool((proj / "harmony" / "scripts" / "pre-commit-installer.sh").stat().st_mode & 0o111),
-        ))
+        installer = proj / "harmony" / "scripts" / "pre-commit-installer.sh"
+        if os.name == "nt":
+            source = Path("template/harmony/scripts/pre-commit-installer.sh")
+            modes, git_error = git_index_modes()
+            syntax_ok, syntax_detail = bash_syntax(source, find_git_bash())
+            source_ok = modes.get(source.as_posix()) == "100755" and syntax_ok
+            results.append(expect(
+                "cp:harmony_installer_present",
+                installer.is_file() and source_ok,
+                git_error or syntax_detail,
+            ))
+        else:
+            results.append(expect(
+                "cp:harmony_installer_executable",
+                bool(installer.stat().st_mode & 0o111),
+                f"mode={oct(installer.stat().st_mode)}",
+            ))
     return results
 
 
@@ -225,7 +333,7 @@ def main() -> int:
     all_results: list[Result] = []
     all_results += test_project_root_files()
     all_results += test_stack_files()
-    all_results += test_executable_bits()
+    all_results += test_executable_contract()
     all_results += test_stack_command_signatures()
     all_results += test_no_residual_frontend_a()
     all_results += test_copytree_simulation()
@@ -240,7 +348,7 @@ def main() -> int:
     if failures:
         print("Failures:")
         for r in failures:
-            line = f"  ❌ {r.name}"
+            line = f"  FAIL {r.name}"
             if r.detail:
                 line += f"  ({r.detail})"
             print(line)

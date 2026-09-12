@@ -1,0 +1,4 @@
+interface:
+  display_name: "Intent Guardian"
+  short_description: "Align intent and supervise agent actions"
+  default_prompt: "Use $intent-guardian to mirror my intent and guard this task from drift."

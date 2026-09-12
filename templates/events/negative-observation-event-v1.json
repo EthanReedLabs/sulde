@@ -1,0 +1,23 @@
+{
+  "schema": "sulde-observation-event-v1",
+  "event_id": "0123456789abcdef0123456789abcdef",
+  "occurred_at": "2026-08-14T02:00:00.000000Z",
+  "domain": "execution",
+  "type": "execution.self_repair",
+  "phase": "finalized",
+  "outcome": "success",
+  "provider": "system",
+  "actor": "agent-runtime",
+  "correlation": {
+    "task_id": "raw-private-task-name"
+  },
+  "source": {
+    "kind": "self-repair-execution",
+    "name": "/private/absolute/executed.jsonl",
+    "line": 7,
+    "row_sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "attributes": {
+    "prompt": "full private prompt must never enter the observation projection"
+  }
+}

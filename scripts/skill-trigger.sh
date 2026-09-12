@@ -66,7 +66,7 @@ fi
 # Each line: `<regex>::<skill-id>::<role-filter>::<reminder>`
 # role-filter is one of: coordinator, dev, any
 triggers=(
-  '(派活|派单|派任务|写.{0,3}task|dispatch.{0,3}task|assign.{0,3}task)::writing-task-md::coordinator::Before writing the task-md, invoke the writing-task-md skill — it enforces §0 baseline / §1 design-truth / §3 scope / §5 verify / §6 git completion / §7 model selection.'
+  '(派活|派单|派任务|写.{0,3}task|dispatch.{0,3}task|assign.{0,3}task)::writing-task-md::coordinator::Before writing the task-md, invoke the writing-task-md skill — it enforces §0 baseline / §1 design-truth / §3 scope / §5 verify / §6 git completion / §7 host-neutral capability selection.'
   '(/assign|执行.{0,3}task|跑.{0,3}task)::assign::dev::You are about to run a task-md. Invoke the assign skill — it gates on §0 baseline drift, §1 design-truth staleness, and §3 scope.'
   '(设计稿|design.{0,3}truth|figma.{0,3}export|new.{0,3}design|update.{0,3}design|refresh.{0,3}design)::update-design::coordinator::Design-truth refresh requested. Invoke the update-design skill — it extracts node tree + visual + asset-reference list from the configured design-source MCP.'
 )

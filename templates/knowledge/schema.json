@@ -1,0 +1,92 @@
+{
+  "schema": "sulde-sedimentation-v2",
+  "version": 2,
+  "frontmatter": {
+    "required": [
+      "sedimentation_schema",
+      "problem_type",
+      "evidence_status"
+    ],
+    "problem_types": [
+      "bug-fix",
+      "regression",
+      "performance",
+      "intent-drift",
+      "skill-mcp-misuse",
+      "host-inconsistency",
+      "workflow",
+      "platform-fact",
+      "design-decision",
+      "other"
+    ],
+    "evidence_statuses": [
+      "verified",
+      "inconclusive"
+    ]
+  },
+  "roles": {
+    "problem_context": [
+      "问题原型"
+    ],
+    "root_cause": [
+      "根因与证据",
+      "为什么错"
+    ],
+    "applicability": [
+      "适用边界"
+    ],
+    "route_positive": [
+      "路由正例"
+    ],
+    "route_negative": [
+      "路由反例"
+    ],
+    "outcome_positive": [
+      "执行合格例"
+    ],
+    "outcome_negative": [
+      "执行失败例"
+    ],
+    "solution": [
+      "正确做法",
+      "✅ 正确"
+    ],
+    "consumer": [
+      "消费与防复发"
+    ]
+  },
+  "sample_contract": {
+    "route_positive": {
+      "input_field": "输入",
+      "expected": "apply"
+    },
+    "route_negative": {
+      "input_field": "输入",
+      "expected": "skip"
+    },
+    "outcome_positive": {
+      "input_field": "做法或输出",
+      "expected": "pass"
+    },
+    "outcome_negative": {
+      "input_field": "做法或输出",
+      "expected": "fail"
+    }
+  },
+  "sample_fields": [
+    "预期",
+    "原因",
+    "来源"
+  ],
+  "sample_sources": [
+    "observed",
+    "constructed"
+  ],
+  "container_templates": {
+    "anti-patterns": "anti-pattern.md",
+    "platform-kb": "platform-kb.md",
+    "tech-docs": "tech-docs.md",
+    "case-studies": "case-studies.md",
+    "work-model": "work-model.md"
+  }
+}

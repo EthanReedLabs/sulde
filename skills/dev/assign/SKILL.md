@@ -1,12 +1,12 @@
 ---
 name: assign
-description: Dev 单任务指派 / 派给某个人 / 让 A 做 / 切到分支干活 / 执行 task md。指派一个具体任务给指定 Dev,自动切换到对应分支和 git 身份执行。当用户说"让 A 做 X""派给 Dev A""切到 dev/xxx 改 Y""/assign <path>"时自动触发。多任务由协调端拆成独立 task-md 后分别执行。stack 中性 — 团队 / 模块 / build 命令全部从 `.sulde-config.yaml` 读。
+description: Dev 单任务指派 / 派给某个人 / 让 A 做 / 切到分支干活 / 执行 task md。指派一个具体任务给指定 Dev,自动切换到对应分支和 git 身份执行。当用户说"让 A 做 X""派给 Dev A""切到 dev/xxx 改 Y""/assign <path>"时自动触发。多任务并行用 /parallel-dev。stack 中性 — 团队 / 模块 / build 命令全部从 `.sulde-config.yaml` 读。
 user-invocable: true
 ---
 
 # /assign — Dev 端任务执行入口
 
-接 `/assign` 后,按本 skill 流程跑:**§0 baseline 验证 → §1 启动 → §2 思考模式 → §3 执行 → §4 完工 → §5 verify strict → §6 handoff**。
+接 `/assign` 或 Codex 的“执行任务文件”后,按本 skill 流程跑:**§0 baseline 验证 → §1 启动 → §2 能力档 → §3 执行 → §4 完工 → §5 verify strict → §6 handoff**。
 
 ## §0 baseline 验证(强制 — 跑任务前 30 秒自检)
 
@@ -41,8 +41,11 @@ user-invocable: true
 2. **从 frontmatter 提取**:
    - `assignee` → 切对应 `git as-<alias>` 身份(从 `.sulde-config.yaml: team[]` 读 alias)
    - `branch` → 切到该分支(不存在则从 default branch 创建)
-   - `model` → 验证模型与当前一致(已切则跳过;未切则提示用户切)
-   - `思考模式 / thinking` → 设置思考模式(`think` / `think hard` / `ultrathink`)
+   - `capability_tier` → 读取宿主无关最低能力档(`light` / `balanced` / `deep`)
+   - 识别**当前执行宿主**；普通 Codex 任务保留会话配置，不要求查询模型或切换:
+     - Claude Code:按能力档选择当前可用的 Claude 模型;需要时用 Claude 原生 `/model`
+     - Codex:默认仅执行任务；只有用户明确请求模型建议，才经 dispatch-task 的 `--model-advice` 输出 `/model` 或 `/reasoning`
+   - `model` / `思考模式` / `thinking_mode` 仅为旧 task 兼容输入,先在内存映射为 `capability_tier`,不得把 `opus/sonnet/haiku` 原样发给 Codex
 3. 跑 §0 baseline 验证(上节 4 step)
 4. 按 task md 内容执行
 5. 完工按 §5 verify strict + §6 handoff
@@ -55,17 +58,24 @@ user-invocable: true
 2. 在哪个分支上?(新建 `dev/<alias>/<slug>` / 已有分支)
 3. 任务描述?
 
-## §2 思考模式(按任务复杂度自评)
+## §2 宿主无关能力档(按任务复杂度自评)
 
-| 任务类型 | 思考模式 | 关键词 |
-|---|---|---|
-| 架构搭建 / 跨模块重构 | ultrathink | "ultrathink。" |
-| Bug 修复 / 新 Feature 开发 | think hard | "think hard。" |
-| UI 还原 / 列表页 / API 接入 | think hard | "think hard。" |
-| 字段增删 / 配置修改 | think | "think。" |
-| 翻译补全 / 资源添加 / 编译错误修复 | 默认 | 不加 |
+| 任务类型 | `capability_tier` | 宿主执行要求 |
+|---|:---:|---|
+| 架构搭建 / 跨模块重构 / 隐蔽根因诊断 | `deep` | 当前宿主的深度能力档;Codex 推理至少 `high` |
+| Bug 修复 / 新 Feature / UI 还原 / API 接入 | `balanced` | 当前宿主的平衡能力档;Codex 推理至少 `medium` |
+| 字段增删 / 配置 / 翻译 / 资源 / 明确编译错误 | `light` | 当前宿主的轻量能力档;Codex 推理至少 `low` |
 
-执行前在内部判断 "这个任务属于哪一档",启用对应模式。
+能力档是任务元数据，不在 task 中硬编码提供方型号。上表供显式模型建议或受管执行器消费，
+不强制交互式 Codex 会话换档；普通派单沿用当前配置，不展示切换或“无需切换”提示。
+
+### 宿主原生派单不变量
+
+- Codex 指令中禁止出现 `model: opus|sonnet|haiku`、`/model opus|sonnet|haiku` 或 `/mode ...`。
+- Claude Code 指令中禁止伪造 Codex 模型 ID 或 reasoning 档位。
+- 无法确定当前宿主时停止并要求显式选择,不得因为另一 CLI 已安装而静默借用。
+- 新 task 缺 `capability_tier` 时拒绝执行并退回协调端;只有明确标记为归档/旧格式的 task 才走兼容映射。
+- 确定性参考实现:`scripts/kb/model-dispatch.py --provider <claude|codex> --tier <light|balanced|deep> --task <path>`。
 
 ## §3 执行
 
@@ -112,7 +122,7 @@ verify 通过 + handoff 写完后:
 1. 用 task md `assignee` 字段对应的 `git as-<alias>` commit(`.sulde-config.yaml: team[].alias`)
 2. commit message 中文(若项目用中文)/ 英文(若项目用英文)
 3. **禁止** 在代码 / commit message / handoff 内出现 `AI / Claude / GPT / LLM / generated / auto-generated` 字样(pre-commit hook `check_ai_traces.sh` 会拦)
-4. **不要自动 push** — 等用户确认
+4. **push 由 Agent 执行** — 任务合同已明确远端和目标分支时直接完成；否则先展示宿主原生 Allow/Deny，Allow 后由 Agent 执行。不得把 Git 命令交给用户代跑
 
 ## §8 git 身份切换示例
 

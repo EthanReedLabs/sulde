@@ -22,3 +22,18 @@ __pycache__/
 
 # AI workspace — handoffs / drafts / 接力文档, never committed
 /.ai-workspace/
+
+# Runtime data must remain local
+/.sulde/
+/.ua/
+/.kb-index/
+/.codex-agent/
+/.worktrees/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.jsonl
+*.jsonl.zst
+.env*
