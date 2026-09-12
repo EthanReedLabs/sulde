@@ -13,7 +13,7 @@ from typing import NamedTuple
 # uses the verified deployment descriptor, never this name or a PATH lookup.
 DEFAULT_CODEX_EXECUTABLE = "codex"
 NATIVE_AUTHORITY_SPEC_VERSION = 2
-AUDITED_CODEX_VERSION = "codex-cli 0.153.4"
+AUDITED_CODEX_VERSION = "codex-cli 0.154.0"
 CODEX_PATH_ALIAS_PERMISSION_WARNING = (
     "WARNING: proceeding, even though we could not create PATH aliases: "
     "Operation not permitted (os error 1)\n"

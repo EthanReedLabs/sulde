@@ -339,6 +339,15 @@ def prepare(
     candidate_id: str | None = None,
 ) -> dict[str, Any]:
     started = time.monotonic()
+    # Cheap identity rejection precedes Python setup, source scans and all
+    # candidate writes. Full help/profile/handshake proof remains mandatory.
+    codex_identity = installer._codex_command_identity(codex)
+    try:
+        version = installer._codex_version_preflight(Path(codex), installer.run_command)
+    except installer.InstallError as error:
+        raise CandidateError(str(error)) from error
+    if installer._codex_command_identity(codex) != codex_identity:
+        raise CandidateError("Codex executable changed during candidate preflight")
     python_identity = _candidate_python()
     source = _source_identity()
     identifier = candidate_id or (
@@ -351,15 +360,6 @@ def prepare(
         raise CandidateError(f"candidate already exists: {identifier}")
     slot.mkdir(mode=0o700)
     artifact = slot / "artifact"
-    codex_identity = installer._codex_command_identity(codex)
-    version_result = installer.run_command(
-        [codex, "--version"], check=False, timeout=15
-    )
-    version = installer.successful_version_identity(
-        version_result.returncode, version_result.stdout
-    )
-    if version is None:
-        raise CandidateError("Codex version could not be observed")
     state: dict[str, Any] = {
         "schema": STATE_SCHEMA,
         "schema_version": 1,
@@ -733,6 +733,16 @@ def verify(
     if state.get("status") != "prepared":
         raise CandidateError("only a prepared candidate can be verified")
     selected_codex = codex or str(state["codex"]["executable"])
+    if state["codex"].get("version") != installer.AUDITED_CODEX_VERSION:
+        raise CandidateError("candidate was prepared for another audited Codex version")
+    identity = installer._codex_command_identity(selected_codex)
+    if (identity["codex_command"] != state["codex"]["executable"]
+            or identity["codex_command_sha256"] != state["codex"]["executable_sha256"]):
+        raise CandidateError("Codex executable changed after candidate preparation")
+    try:
+        installer._codex_version_preflight(Path(selected_codex), installer.run_command)
+    except installer.InstallError as error:
+        raise CandidateError(str(error)) from error
     before = installer.deployment_cas_snapshot(
         installer.default_kb_home(), selected_codex
     )

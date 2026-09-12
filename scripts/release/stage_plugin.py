@@ -54,6 +54,14 @@ CLAUDE_FILES = {
     "spec/task-authoring.md",
     "spec/task-contract.md",
 }
+# Private publication tooling consumes the source repository, not an installed
+# runtime. Keep its importer and overlay together on the source side; do not
+# sanitize their matching rules or exclude the unrelated maintenance tools.
+PRIVATE_PUBLISHING_FILES = frozenset({
+    "scripts/release/export_public_harness.py",
+    "scripts/release/verify_public_harness_candidate.py",
+})
+PRIVATE_PUBLISHING_PREFIXES = ("scripts/release/public_harness_overlay/",)
 CODEX_ROOT = Path("integrations/codex")
 CODEX_PLUGIN = CODEX_ROOT / "plugins" / "sulde"
 RUNTIME_PREFIXES = (
@@ -292,6 +300,15 @@ def is_prefixed(path: Path, prefixes: tuple[str, ...]) -> bool:
     return any(rendered.startswith(prefix) for prefix in prefixes)
 
 
+def is_claude_release_path(path: Path) -> bool:
+    rendered = path.as_posix()
+    if rendered in PRIVATE_PUBLISHING_FILES or is_prefixed(
+        path, PRIVATE_PUBLISHING_PREFIXES
+    ):
+        return False
+    return rendered in CLAUDE_FILES or is_prefixed(path, CLAUDE_PREFIXES)
+
+
 def neutralize_launchagent_paths(runtime: Path) -> None:
     """Turn source-only machine tokens into portable staged placeholders."""
     targets = [
@@ -366,9 +383,7 @@ def stage_claude(root: Path, output: Path) -> Path:
     _validated_required_runtime_sources(root)
     prepare_output(output)
     for entry in release_entries(root):
-        if entry.path.as_posix() in CLAUDE_FILES or is_prefixed(
-            entry.path, CLAUDE_PREFIXES
-        ):
+        if is_claude_release_path(entry.path):
             copy_entry(root, output, entry, output / entry.path)
     neutralize_launchagent_paths(output)
     manifest = load_manifest(output, verify_files=True)

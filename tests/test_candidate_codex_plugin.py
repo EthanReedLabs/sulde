@@ -38,6 +38,70 @@ class CandidateDeploymentTests(unittest.TestCase):
     def tearDown(self) -> None:
         self.temporary.cleanup()
 
+    def test_prepare_rejects_unaudited_versions_before_any_candidate_write(self):
+        identity = {"codex_command": "/fixture/codex", "codex_command_sha256": "c" * 64}
+        for code, output in ((0, "codex-cli 0.153.4\n"),
+                             (0, "codex-cli 0.155.0\n"),
+                             (0, "wrapper codex-cli 0.154.0\n"),
+                             (1, "codex-cli 0.154.0\n")):
+            with (
+                self.subTest(code=code, output=output),
+                mock.patch.object(self.installer, "_codex_command_identity", return_value=identity),
+                mock.patch.object(self.installer, "run_command", return_value=
+                    self.installer.CommandResult(("codex", "--version"), code, output, "")),
+                mock.patch.object(self.module, "_candidate_python") as python_setup,
+                mock.patch.object(self.module, "_source_identity") as source_scan,
+                mock.patch.object(self.installer, "_stage_artifact") as stage,
+                self.assertRaisesRegex(self.module.CandidateError, "exactly codex-cli 0.154.0"),
+            ):
+                self.module.prepare(candidate_home=self.root / "untouched", codex="/fixture/codex",
+                                    platform="posix", candidate_id="rejected")
+            python_setup.assert_not_called()
+            source_scan.assert_not_called()
+            stage.assert_not_called()
+            self.assertFalse((self.root / "untouched").exists())
+
+    def test_prepare_rejects_identity_drift_and_accepts_exact_version_gate(self):
+        first = {"codex_command": "/fixture/codex", "codex_command_sha256": "c" * 64}
+        for changed in (False, True):
+            second = {**first, "codex_command_sha256": "d" * 64} if changed else first
+            error = "changed during candidate preflight" if changed else "reached Python preflight"
+            with (
+                self.subTest(changed=changed),
+                mock.patch.object(self.installer, "_codex_command_identity", side_effect=[first, second]),
+                mock.patch.object(self.installer, "run_command", return_value=
+                    self.installer.CommandResult(("codex", "--version"), 0, "codex-cli 0.154.0\n", "")),
+                mock.patch.object(self.module, "_candidate_python",
+                                  side_effect=self.module.CandidateError("reached Python preflight")) as setup,
+                self.assertRaisesRegex(self.module.CandidateError, error),
+            ):
+                self.module.prepare(candidate_home=self.root / "untouched", codex="/fixture/codex",
+                                    platform="posix", candidate_id="probe")
+            self.assertEqual(setup.call_count, 0 if changed else 1)
+            self.assertFalse((self.root / "untouched").exists())
+
+    def test_verify_rejects_old_version_and_identity_drift_before_environment_setup(self):
+        for old_version in (False, True):
+            slot = self.root / ("old-version" if old_version else "changed-bytes")
+            slot.mkdir()
+            state = self.state(slot)
+            if old_version:
+                state["codex"]["version"] = "codex-cli 0.153.4"
+                self.module._write_state(slot, state)
+            before = (slot / "state.json").read_bytes()
+            with (
+                mock.patch.object(self.installer, "_codex_command_identity", return_value={
+                    "codex_command": "/opt/codex", "codex_command_sha256": "f" * 64}),
+                mock.patch.object(self.module, "_candidate_environment") as environment,
+                mock.patch.object(self.installer, "deployment_cas_snapshot") as snapshot,
+                self.assertRaisesRegex(self.module.CandidateError,
+                    "another audited Codex version" if old_version else "changed after candidate preparation"),
+            ):
+                self.module.verify(candidate_home=self.root, candidate_id=slot.name)
+            environment.assert_not_called()
+            snapshot.assert_not_called()
+            self.assertEqual((slot / "state.json").read_bytes(), before)
+
     def test_candidate_environment_discards_parent_authority_and_private_context(self):
         sentinels = {key: 'private-parent-sentinel' for key in (
             'SULDE_INTENT_CONTRACT', 'SULDE_INTENT_ID', 'CODEX_THREAD_ID',
@@ -75,7 +139,7 @@ class CandidateDeploymentTests(unittest.TestCase):
             "codex": {
                 "executable": "/opt/codex",
                 "executable_sha256": "c" * 64,
-                "version": "codex-cli 0.153.4",
+                "version": "codex-cli 0.154.0",
             },
             "python": self.module._python_identity(Path(sys.executable)),
             "artifact": {
@@ -302,6 +366,9 @@ class CandidateDeploymentTests(unittest.TestCase):
                 self.state(slot)
                 live = {"schema": "sulde-codex-promotion-prestate-v1", "marker": fault}
                 with (
+                    mock.patch.object(self.installer, "_codex_command_identity", return_value={
+                        "codex_command": "/opt/codex", "codex_command_sha256": "c" * 64}),
+                    mock.patch.object(self.installer, "_codex_version_preflight", return_value="codex-cli 0.154.0"),
                     mock.patch.object(
                         self.installer,
                         "deployment_cas_snapshot",
@@ -536,7 +603,7 @@ class InstallerCandidateBoundaryTests(unittest.TestCase):
             "codex": {
                 "executable": "/opt/codex",
                 "executable_sha256": "e" * 64,
-                "version": "codex-cli 0.153.4",
+                "version": "codex-cli 0.154.0",
             },
             "python": self.installer.inspect_python(python_path),
             "live_prestate": live,
@@ -555,7 +622,7 @@ class InstallerCandidateBoundaryTests(unittest.TestCase):
 
         def codex_runner(command, **_kwargs):
             return self.installer.CommandResult(
-                tuple(command), 0, "codex-cli 0.153.4\n", ""
+                tuple(command), 0, "codex-cli 0.154.0\n", ""
             )
 
         with (

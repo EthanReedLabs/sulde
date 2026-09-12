@@ -216,7 +216,7 @@ class AgentRuntimeTests(unittest.TestCase):
     def test_runtime_imports_exact_shared_codex_cli_authority(self) -> None:
         module = load_runtime_module()
         contract = sys.modules[module.successful_version_identity.__module__]
-        self.assertEqual(module.AUDITED_CODEX_VERSION, "codex-cli 0.153.4")
+        self.assertEqual(module.AUDITED_CODEX_VERSION, "codex-cli 0.154.0")
         self.assertEqual(
             module.NATIVE_AUTHORITY_SPEC_VERSION,
             contract.NATIVE_AUTHORITY_SPEC_VERSION,
@@ -338,7 +338,7 @@ class AgentRuntimeTests(unittest.TestCase):
         if not os.environ.get("SULDE_TEST_CODEX_EXECUTABLE"):
             self.skipTest("set SULDE_TEST_CODEX_EXECUTABLE for the real CLI gate")
         if not Path(os.environ["SULDE_TEST_CODEX_EXECUTABLE"]).is_file():
-            self.skipTest("audited codex-cli 0.153.4 is not installed")
+            self.skipTest("audited codex-cli 0.154.0 is not installed")
 
         nonpty = observe_audited_codex_help_from_parent(pseudo_terminal=False)
         try:
@@ -346,8 +346,8 @@ class AgentRuntimeTests(unittest.TestCase):
         except PermissionError as error:
             self.skipTest(f"managed environment denies real pseudo-terminal: {error}")
 
-        self.assertEqual(nonpty["version"], "codex-cli 0.153.4")
-        self.assertEqual(pty["version"], "codex-cli 0.153.4")
+        self.assertEqual(nonpty["version"], "codex-cli 0.154.0")
+        self.assertEqual(pty["version"], "codex-cli 0.154.0")
         self.assertEqual(nonpty, pty)
 
     def git(self, root: Path, *arguments: str) -> str:
@@ -3753,7 +3753,7 @@ class AgentRuntimeTests(unittest.TestCase):
             [1, 2, 3],
         )
 
-    def test_audited_codex_0153_real_cli_contract(self) -> None:
+    def test_audited_codex_real_cli_contract(self) -> None:
         from tests.test_codex_plugin_install import (
             exercise_audited_codex_native_authority_roundtrip,
         )
@@ -3858,7 +3858,7 @@ class AgentRuntimeTests(unittest.TestCase):
         module = load_runtime_module()
         with self.assertRaisesRegex(
             module.AgentRuntimeError,
-            "installation-bound audited codex-cli 0.153.4 target",
+            "installation-bound audited codex-cli 0.154.0 target",
         ):
             self.synthetic_preflight(module,
                 "codex",
@@ -3870,10 +3870,12 @@ class AgentRuntimeTests(unittest.TestCase):
             "codex-cli 0.151.0\n",
             "codex-cli 0.152.0\n",
             "codex-cli 0.153.0\n",
-            "wrapper codex-cli 0.153.4\n",
-            "codex-cli 0.153.4 future\n",
-            " codex-cli 0.153.4\n",
-            "codex-cli 0.153.4\n\n",
+            "codex-cli 0.153.4\n",
+            "codex-cli 0.155.0\n",
+            "wrapper codex-cli 0.154.0\n",
+            "codex-cli 0.154.0 future\n",
+            " codex-cli 0.154.0\n",
+            "codex-cli 0.154.0\n\n",
         ):
             with (
                 self.subTest(surface=surface),
@@ -3889,7 +3891,7 @@ class AgentRuntimeTests(unittest.TestCase):
                 ) as run,
                 self.assertRaisesRegex(
                     module.AgentRuntimeError,
-                    "exactly audited codex-cli 0.153.4",
+                    "exactly audited codex-cli 0.154.0",
                 ),
             ):
                 self.synthetic_preflight(module,
@@ -4161,7 +4163,7 @@ class AgentRuntimeTests(unittest.TestCase):
             mock.patch.object(module.subprocess, "run", return_value=old) as run,
             self.assertRaisesRegex(
                 module.AgentRuntimeError,
-                "exactly audited codex-cli 0.153.4",
+                "exactly audited codex-cli 0.154.0",
             ),
         ):
             self.synthetic_preflight(module,
@@ -4598,7 +4600,7 @@ class H06HSelfContainedEvidenceTests(unittest.TestCase):
             "report_relative_path": ".codex-agent/h06h.last.md",
             "model_reasoning_effort": "high",
             "codex_executable": "/opt/codex/bin/codex",
-            "codex_version": "codex-cli 0.153.4",
+            "codex_version": "codex-cli 0.154.0",
             "codex_executable_sha256": hashlib.sha256(b"codex").hexdigest(),
             "broker_generation": 2,
             "broker_sha256": hashlib.sha256(b"broker").hexdigest(),

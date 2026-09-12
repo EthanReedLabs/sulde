@@ -839,7 +839,8 @@ def _codex_hook_trust_observation(codex: Path, *, cwd: Path) -> dict[str, Any]:
         }
 
 
-def _codex_cli_installed_smoke(codex: Path, runner: Runner) -> dict[str, str]:
+def _codex_version_preflight(codex: Path, runner: Runner) -> str:
+    """Reject an unaudited CLI before candidate staging or registry changes."""
     probe_spec = codex_probe_spec(os.environ)
     version = runner(
         [str(codex), "--version"],
@@ -855,6 +856,12 @@ def _codex_cli_installed_smoke(codex: Path, runner: Runner) -> dict[str, str]:
         raise InstallError(
             f"installed Codex version is not exactly {AUDITED_CODEX_VERSION}"
         )
+    return version_identity
+
+
+def _codex_cli_installed_smoke(codex: Path, runner: Runner) -> dict[str, str]:
+    _codex_version_preflight(codex, runner)
+    probe_spec = codex_probe_spec(os.environ)
     helps = (
         runner(
             [str(codex), "--help"],

@@ -459,7 +459,7 @@ class CodexPluginInstallTests(unittest.TestCase):
     def test_installer_imports_shared_codex_cli_authority(self) -> None:
         installer = load_installer()
         contract = sys.modules[installer.successful_version_identity.__module__]
-        self.assertEqual(installer.AUDITED_CODEX_VERSION, "codex-cli 0.153.4")
+        self.assertEqual(installer.AUDITED_CODEX_VERSION, "codex-cli 0.154.0")
         self.assertEqual(
             installer.DEFAULT_CODEX_EXECUTABLE,
             "codex",
@@ -731,10 +731,12 @@ class CodexPluginInstallTests(unittest.TestCase):
             (0, "codex-cli 0.151.0\n"),
             (0, "codex-cli 0.152.0\n"),
             (0, "codex-cli 0.153.0\n"),
-            (0, "wrapper codex-cli 0.153.4\n"),
-            (0, "codex-cli 0.153.4 future\n"),
-            (0, " codex-cli 0.153.4\n"),
-            (0, "codex-cli 0.153.4\n\n"),
+            (0, "codex-cli 0.153.4\n"),
+            (0, "codex-cli 0.155.0\n"),
+            (0, "wrapper codex-cli 0.154.0\n"),
+            (0, "codex-cli 0.154.0 future\n"),
+            (0, " codex-cli 0.154.0\n"),
+            (0, "codex-cli 0.154.0\n\n"),
             (1, installer.AUDITED_CODEX_VERSION + "\n"),
         ):
             with self.subTest(returncode=returncode, stdout=stdout):
@@ -752,7 +754,7 @@ class CodexPluginInstallTests(unittest.TestCase):
 
                 with self.assertRaisesRegex(
                     installer.InstallError,
-                    "exactly codex-cli 0.153.4",
+                    "exactly codex-cli 0.154.0",
                 ):
                     installer._codex_cli_installed_smoke(
                         self.fake,
@@ -1260,7 +1262,7 @@ class CodexPluginInstallTests(unittest.TestCase):
         native = deployment["native_runtime_authority"]
         self.assertEqual(native["schema"], "sulde-installed-native-runtime-authority-v1")
         self.assertEqual(native["spec_version"], 2)
-        self.assertEqual(native["codex_version"], "codex-cli 0.153.4")
+        self.assertEqual(native["codex_version"], "codex-cli 0.154.0")
         self.assertEqual(
             deployment["native_runtime_authority_sha256"],
             native["authority_sha256"],
@@ -1319,7 +1321,7 @@ class CodexPluginInstallTests(unittest.TestCase):
         installed_contract = importlib.util.module_from_spec(contract_spec)
         sys.modules[contract_spec.name] = installed_contract
         contract_spec.loader.exec_module(installed_contract)
-        self.assertEqual(installed_contract.AUDITED_CODEX_VERSION, "codex-cli 0.153.4")
+        self.assertEqual(installed_contract.AUDITED_CODEX_VERSION, "codex-cli 0.154.0")
         self.assertFalse(list((installed / "runtime").rglob("__pycache__")))
         self.assertFalse(list((installed / "runtime").rglob("*.pyc")))
         self.assertTrue((installed / "hooks" / "hooks.json").is_file())
@@ -2918,7 +2920,7 @@ class CodexPluginInstallTests(unittest.TestCase):
             sealed["production_codex_resolved_executable"],
             str(self.fake.resolve()),
         )
-        self.assertEqual(sealed["codex_version"], "codex-cli 0.153.4")
+        self.assertEqual(sealed["codex_version"], "codex-cli 0.154.0")
 
     def test_recovery_rejects_recomputed_native_authority_drift(self) -> None:
         installer = load_installer()

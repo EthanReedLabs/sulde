@@ -53,7 +53,7 @@ Codex installation selects its executable through the installer's `--codex`
 input, then binds the resolved absolute target, exact audited CLI version,
 file digest and help observation into the deployment identity. Managed tasks
 use that verified identity; they never reselect a CLI through PATH or
-`SULDE_CODEX_EXE`. This candidate's audited protocol remains `codex-cli 0.153.4`.
+`SULDE_CODEX_EXE`. This candidate's audited protocol is `codex-cli 0.154.0`.
 Changing the executable requires a new verified installation. Identity format
 v1 is not silently upgraded to v2 by a task runner.
 

@@ -24,6 +24,33 @@ def _corpus_count() -> int:
 
 
 class StagePluginTests(unittest.TestCase):
+    def test_claude_release_excludes_only_private_publishing_inputs(self) -> None:
+        select = runpy.run_path(str(STAGER))["is_claude_release_path"]
+        excluded = (
+            "scripts/release/export_public_harness.py",
+            "scripts/release/verify_public_harness_candidate.py",
+            "scripts/release/public_harness_overlay/README.md",
+            "scripts/release/public_harness_overlay/hooks/run-hook.sh",
+            "scripts/release/public_harness_overlay/knowledge/SEDIMENTATION-STANDARD.md",
+            "tests/test_export_public_harness.py",
+        )
+        retained = (
+            "scripts/release/stage_plugin.py",
+            "scripts/release/install_codex_plugin.py",
+            "scripts/release/candidate_codex_plugin.py",
+            "scripts/kb/intent-guardian.py",
+            "hooks/pre_tool_use.py",
+            "tools/kb-mcp/server.py",
+            "scripts/release/export_public_harness_extra.py",
+            "scripts/release/public_harness_overlay_extra/README.md",
+        )
+        for relative in excluded:
+            with self.subTest(excluded=relative):
+                self.assertFalse(select(Path(relative)))
+        for relative in retained:
+            with self.subTest(retained=relative):
+                self.assertTrue(select(Path(relative)))
+
     def assert_distributed_task_inputs(self, runtime: Path) -> None:
         paths = (
             "spec/task-authoring.md", "spec/task-contract.md",
@@ -139,7 +166,7 @@ class StagePluginTests(unittest.TestCase):
 
         self.assertEqual(
             locations(),
-            [("scripts/kb/codex_cli_contract.py", "codex-cli 0.153.4")],
+            [("scripts/kb/codex_cli_contract.py", "codex-cli 0.154.0")],
         )
         self.assertEqual(
             locations(
@@ -152,7 +179,7 @@ class StagePluginTests(unittest.TestCase):
             ),
             [
                 ("integrations/codex/copied-contract.toml", "codex-cli 0.153.4"),
-                ("scripts/kb/codex_cli_contract.py", "codex-cli 0.153.4"),
+                ("scripts/kb/codex_cli_contract.py", "codex-cli 0.154.0"),
             ],
         )
 
@@ -342,6 +369,15 @@ class StagePluginTests(unittest.TestCase):
             self.assertTrue((claude / "hooks" / "lib" / "recall_log.py").is_file())
             self.assertFalse((claude / ".git").exists())
             self.assertFalse((claude / "tests").exists())
+            for relative in (
+                "scripts/release/export_public_harness.py",
+                "scripts/release/verify_public_harness_candidate.py",
+                "scripts/release/public_harness_overlay",
+            ):
+                with self.subTest(private_publishing_input=relative):
+                    self.assertFalse((claude / relative).exists())
+            for name in ("stage_plugin.py", "install_codex_plugin.py", "candidate_codex_plugin.py"):
+                self.assertTrue((claude / "scripts/release" / name).is_file())
             self.assert_no_developer_paths(claude)
             self.assertIn(f"{_corpus_count()} corpus documents", completed.stdout)
             self.assert_shell_syntax((
@@ -472,7 +508,7 @@ class StagePluginTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(imported.returncode, 0, imported.stderr)
-            self.assertEqual(imported.stdout.strip(), "codex-cli 0.153.4")
+            self.assertEqual(imported.stdout.strip(), "codex-cli 0.154.0")
             mcp_manifest = json.loads(
                 (plugin / ".mcp.json").read_text(encoding="utf-8")
             )["mcpServers"]["sulde_kb"]
