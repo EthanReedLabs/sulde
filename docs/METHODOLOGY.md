@@ -190,4 +190,4 @@ The cost of running the full framework is overhead. The cost of not running it o
 
 - **One-week prototype, single dev**: skip the framework entirely; you will not run long enough for any layer to pay back its cost.
 - **Multi-month single-platform project**: keep L1-L3 + L7. Skip the L5/L6 contract dance (use inline chat); skip the L2 workspace if you only have one Dev.
-- **Multi-platform, multi-month, ≥2 Devs**: full framework. This is where sulde-cc was designed.
+- **Multi-platform, multi-month, ≥2 Devs**: full framework. This is where sulde was designed.

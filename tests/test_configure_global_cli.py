@@ -26,6 +26,20 @@ def load_configurator_module():
 
 
 class ConfigureGlobalCliTest(unittest.TestCase):
+    def test_cache_candidates_prefer_new_name_and_keep_legacy_fallback(self) -> None:
+        module = load_configurator_module()
+        with tempfile.TemporaryDirectory() as name:
+            home = Path(name)
+            current = home / ".claude/plugins/cache/sulde/sulde/0.8.4"
+            legacy = home / ".claude/plugins/cache/sulde/sulde-cc/0.8.4"
+            current.mkdir(parents=True)
+            legacy.mkdir(parents=True)
+            with mock.patch.object(module.Path, "home", return_value=home):
+                candidates = module.root_candidates()
+            self.assertIn(current, candidates)
+            self.assertIn(legacy, candidates)
+            self.assertLess(candidates.index(current), candidates.index(legacy))
+
     def test_canonical_kb_home_renders_product_wide_launcher(self) -> None:
         module = load_configurator_module()
         with tempfile.TemporaryDirectory() as temp_dir:

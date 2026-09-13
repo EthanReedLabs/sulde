@@ -89,7 +89,7 @@ perf: avoid main-thread spike on RecyclerView bind
 
 ## Pre-commit hooks
 
-This frontend installs `sulde-cc` git pre-commit hooks via `scripts/pre-commit-installer.sh`. They check:
+This frontend installs `sulde` git pre-commit hooks via `scripts/pre-commit-installer.sh`. They check:
 1. branch protection (no direct commits to `main` / `develop`)
 2. branch name format (`dev/<alias>/<slug>`)
 3. `git as-<alias>` usage (sentinel env var)

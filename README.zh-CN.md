@@ -93,8 +93,8 @@ flowchart TB
 ### 安装源码工具箱
 
 ```sh
-git clone https://github.com/EthanReedLabs/sulde-cc.git
-cd sulde-cc
+git clone https://github.com/EthanReedLabs/sulde.git
+cd sulde
 python3 -m venv .venv
 ```
 
@@ -200,7 +200,7 @@ Sulde 目录中；模型调用和外部服务的数据边界由实际配置决�
 
 欢迎文档修正、可复现的问题报告、平台兼容性改进，以及通用框架和工具箱的改进。
 
-1. 在 [Issues](https://github.com/EthanReedLabs/sulde-cc/issues) 描述问题、复现步骤与预期行为。
+1. 在 [Issues](https://github.com/EthanReedLabs/sulde/issues) 描述问题、复现步骤与预期行为。
 2. 按[贡献指南](CONTRIBUTING.md)确定改动范围；涉及核心协议或许可时先讨论。
 3. 提交聚焦单一问题的 Pull Request，附上验证结果。
 

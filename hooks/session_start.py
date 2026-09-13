@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sulde-cc SessionStart entrypoint.
+"""sulde SessionStart entrypoint.
 
 Injects CLAUDE.md head + optional baseline / health output as
 `additionalContext` so the session starts with current project state.

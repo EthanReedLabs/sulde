@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sulde-cc — git pre-commit hook: require commits via `git as-<alias>`.
+# sulde — git pre-commit hook: require commits via `git as-<alias>`.
 #
 # git aliases set with `git config alias.as-<alias>` end up calling
 # `git commit --author=...`. We detect "this commit came through an alias"
@@ -54,7 +54,7 @@ case "${GIT_REFLOG_ACTION:-}" in
 esac
 
 cat >&2 <<'EOF'
-❌ sulde-cc: commit through a project alias is required.
+❌ sulde: commit through a project alias is required.
 
 Run via:  git as-<alias> commit ...
 Set up aliases: /sulde-add-team-member

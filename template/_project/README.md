@@ -1,6 +1,6 @@
-# sulde-cc — project root template
+# sulde — project root template
 
-This directory is the **project root scaffold** that `/sulde-init` copies into a new sulde-cc project. After running `/sulde-init`, your project root will look like:
+This directory is the **project root scaffold** that `/sulde-init` copies into a new sulde project. After running `/sulde-init`, your project root will look like:
 
 ```
 your-project/

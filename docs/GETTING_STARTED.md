@@ -13,9 +13,15 @@ This walkthrough takes a clean Claude Code install to the first verified task/ha
 Install and diagnose:
 
 ```text
-/plugin marketplace add EthanReedLabs/sulde-cc
-/plugin install sulde-cc@sulde-cc
+/plugin marketplace add EthanReedLabs/sulde
+/plugin install sulde@sulde
 ```
+
+The repository and current plugin ID are `sulde` (previously `sulde-cc`). Existing
+plugin installations keep their old identity until migrated. When switching to
+`sulde@sulde`, disable the old plugin entry to avoid loading both sets of hooks.
+Existing knowledge and memory data should be reused through the configured data
+root; renaming the repository does not require moving it.
 
 ```sh
 python3 -m pip install -r "${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt"

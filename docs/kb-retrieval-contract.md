@@ -173,7 +173,7 @@ related: [ap-0109, case-studies/05-诊断方法论/动作到主力与协同肌�
 
 ## 4. 自动注入(sulde hook):"在项目中自动找到对应沉淀"
 
-sulde-cc 本身是 Claude 插件,该能力由插件 hook 提供,**不依赖任何服务**。
+sulde 本身是 Claude 插件,该能力由插件 hook 提供,**不依赖任何服务**。
 原则:检索便宜就每轮跑,注入昂贵就设闸,一致性要求低就容忍陈旧。
 
 **UserPromptSubmit(注入)**:每轮对当前 prompt 跑 T1.5 检索(本地毫秒级);

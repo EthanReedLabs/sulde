@@ -1,5 +1,5 @@
 ---
-description: Migrate a v0.1.0 sulde-cc project to v0.2.0 (config schema + Python hooks + grace period).
+description: Migrate a v0.1.0 sulde project to v0.2.0 (config schema + Python hooks + grace period).
 ---
 
 Run the `configure-sulde` skill in **migrate** mode.

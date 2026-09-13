@@ -1,4 +1,4 @@
-# {{frontend_name}} — iOS frontend (sulde-cc)
+# {{frontend_name}} — iOS frontend (sulde)
 
 This directory contains the iOS frontend for the project. `/sulde-init` populated it from `${CLAUDE_PLUGIN_ROOT}/template/ios/`.
 
@@ -25,7 +25,7 @@ For CI without Macs: use GitHub Actions `macos-latest` runners or a cloud Mac se
 
 ### Python dependency
 
-The sulde-cc Claude Code hooks require Python 3.6+ with pyyaml:
+The sulde Claude Code hooks require Python 3.6+ with pyyaml:
 
 ```bash
 pip install -r ${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt

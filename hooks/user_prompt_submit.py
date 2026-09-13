@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sulde-cc UserPromptSubmit entrypoint.
+"""sulde UserPromptSubmit entrypoint.
 
 Ordinary reminder failures degrade visibly without blocking. Legacy
 control-shaped text is never authority; factual attestations and pause requests

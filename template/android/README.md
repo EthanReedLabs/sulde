@@ -1,4 +1,4 @@
-# {{frontend_name}} — Android frontend (sulde-cc)
+# {{frontend_name}} — Android frontend (sulde)
 
 This directory contains the Android frontend for the project. `/sulde-init` populated it from `${CLAUDE_PLUGIN_ROOT}/template/android/`.
 
@@ -29,7 +29,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 ### Python dependency
 
-The sulde-cc Claude Code hooks require Python 3.6+ with pyyaml:
+The sulde Claude Code hooks require Python 3.6+ with pyyaml:
 
 ```bash
 pip install -r ${CLAUDE_PLUGIN_ROOT}/hooks/requirements.txt

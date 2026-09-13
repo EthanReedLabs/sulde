@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sulde-cc — git pre-commit hook: protect main/develop from direct commits.
+# sulde — git pre-commit hook: protect main/develop from direct commits.
 #
 # Sourced (or invoked) by the project's .git/hooks/pre-commit installed via
 # `template/<stack>/scripts/pre-commit-installer.sh`. Reads protected branch
@@ -33,7 +33,7 @@ current="$(git symbolic-ref --short HEAD 2>/dev/null || echo "")"
 for b in $protected; do
   if [ "$current" = "$b" ]; then
     cat >&2 <<EOF
-❌ sulde-cc: direct commit to protected branch '$current' is not allowed.
+❌ sulde: direct commit to protected branch '$current' is not allowed.
 
 Create a feature branch: git checkout -b dev/<alias>/<slug>
 Override (temporary): set enforcement.branch.protected: [] in .sulde-config.yaml

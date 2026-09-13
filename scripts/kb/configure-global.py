@@ -102,9 +102,11 @@ def root_candidates() -> list[Path]:
     if override:
         candidates.append(absolute_path(override))
     candidates.append(Path(__file__).resolve().parents[2])
-    cache = Path.home() / ".claude/plugins/cache/sulde/sulde-cc"
-    if cache.is_dir():
-        candidates.extend(sorted(cache.iterdir(), key=version_key, reverse=True))
+    cache_root = Path.home() / ".claude/plugins/cache/sulde"
+    for plugin_name in ("sulde", "sulde-cc"):
+        cache = cache_root / plugin_name
+        if cache.is_dir():
+            candidates.extend(sorted(cache.iterdir(), key=version_key, reverse=True))
     return candidates
 
 

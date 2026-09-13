@@ -1,4 +1,4 @@
-# HarmonyOS NEXT frontend .gitignore (sulde-cc template).
+# HarmonyOS NEXT frontend .gitignore (sulde template).
 
 # DevEco / hvigor
 .hvigor/
@@ -33,7 +33,7 @@ coverage/
 .DS_Store
 *.swp
 
-# sulde-cc state (defensive — inherited from project root)
+# sulde state (defensive — inherited from project root)
 .ai-workspace/
 .claude/
 CLAUDE.md

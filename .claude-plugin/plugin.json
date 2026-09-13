@@ -1,12 +1,12 @@
 {
-  "name": "sulde-cc",
+  "name": "sulde",
   "version": "0.8.4",
   "description": "Sulde is an extensible agent harness for tools with compatible protocols, providing intent supervision, verifiable execution, knowledge retrieval and cross-session memory. Compatible tools can reuse MCP/CLI interfaces; full integration uses host adapters. Claude Code and Codex adapters are included. Source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
   "author": {
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
   },
-  "homepage": "https://github.com/EthanReedLabs/sulde-cc",
+  "homepage": "https://github.com/EthanReedLabs/sulde",
   "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": [
     "claude-code",

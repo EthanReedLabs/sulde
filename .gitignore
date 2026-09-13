@@ -16,7 +16,7 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Local secrets (just in case — sulde-cc itself has none, but defends against future drift)
+# Local secrets (just in case — sulde itself has none, but defends against future drift)
 .env
 .env.local
 *.local

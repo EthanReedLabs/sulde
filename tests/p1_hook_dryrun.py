@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sulde-cc P1 hook dry-run test suite.
+"""sulde P1 hook dry-run test suite.
 
 Spins up a temporary sulde-config'd project under /tmp, feeds JSON payloads
 into each hook entrypoint via stdin, and asserts the exit code + stdout
@@ -468,7 +468,7 @@ def test_pyyaml_importerror_fallback(project: Path) -> Result:
 
 def main() -> int:
     if not ENTRY_PRE.exists():
-        print(f"FATAL: {ENTRY_PRE} not found — run from a sulde-cc checkout", file=sys.stderr)
+        print(f"FATAL: {ENTRY_PRE} not found — run from a sulde checkout", file=sys.stderr)
         return 1
 
     results: list[Result] = []
@@ -502,7 +502,7 @@ def main() -> int:
     passed = sum(1 for r in results if r.ok)
     total = len(results)
     print()
-    print(f"sulde-cc P1 hook dry-run: {passed}/{total} passed")
+    print(f"sulde P1 hook dry-run: {passed}/{total} passed")
     print()
     for r in results:
         flag = "✅" if r.ok else "❌"

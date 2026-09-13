@@ -17,7 +17,7 @@ CURRENT_SCORE_MIN = 0.55
 CURRENT_MARGIN = 0.10
 MIN_SAMPLES = 20
 PROJECT_MIN_SAMPLES = 10
-META_PROJECT_MARKER = "sulde-cc"
+META_PROJECT_MARKERS = frozenset({"sulde", "sulde-cc"})
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "hooks" / "lib"))
@@ -83,7 +83,8 @@ def project_name(cwd: Any) -> str:
 
 
 def is_meta_work(cwd: Any) -> bool:
-    return META_PROJECT_MARKER in str(cwd or "")
+    parts = str(cwd or "").replace("\\", "/").split("/")
+    return bool(META_PROJECT_MARKERS.intersection(parts))
 
 
 def analyze_rows(rows: list[dict[str, Any]], min_samples: int) -> dict[str, Any]:
@@ -255,7 +256,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     parser.add_argument("--home", type=Path, default=state_dir(), help="KB runtime state directory")
-    parser.add_argument("--include-meta", action="store_true", help="include sulde-cc meta-work in threshold recommendations")
+    parser.add_argument("--include-meta", action="store_true", help="include Sulde meta-work in threshold recommendations")
     args = parser.parse_args()
     report = analyze(
         read_jsonl(args.home / LOG_FILENAME),

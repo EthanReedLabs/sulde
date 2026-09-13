@@ -327,7 +327,7 @@ review 结果到手后 **不盲目实施 / 不盲目推翻**。按 4 类分:
 | `superpowers:receiving-code-review` | 本 skill §5 4 类分类引用其方法论 |
 | `superpowers:verification-before-completion` | 类 A 实施完后用它 verify |
 | `mattpocock:grill-with-docs` | §3 推荐组合的候选之一 |
-| `writing-task-md`(若 sulde-cc 装)| review 类 A 修复若 >30 行,走 task md |
+| `writing-task-md`(若 sulde 装)| review 类 A 修复若 >30 行,走 task md |
 
 ---
 

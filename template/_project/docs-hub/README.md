@@ -1,6 +1,6 @@
 # docs-hub — coordinator-owned project documentation
 
-This directory is the **coordinator-side knowledge base** for a sulde-cc project. Dev sessions read from here but only the coordinator writes here.
+This directory is the **coordinator-side knowledge base** for a sulde project. Dev sessions read from here but only the coordinator writes here.
 
 ## Layout
 

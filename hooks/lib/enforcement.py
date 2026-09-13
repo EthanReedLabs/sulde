@@ -31,7 +31,7 @@ from sulde_common import (
 
 Severity = Literal["hard", "medium", "soft"]
 
-_DOCS_URL = "https://github.com/EthanReedLabs/sulde-cc/blob/main/docs/V0.2.0-DESIGN-v2.md"
+_DOCS_URL = "https://github.com/EthanReedLabs/sulde/blob/main/docs/V0.2.0-DESIGN-v2.md"
 
 _OVERRIDE_HINT = {
     "en": "Set `enforcement_level: lenient` in .sulde-config.yaml to downgrade to warning.",

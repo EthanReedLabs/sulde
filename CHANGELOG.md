@@ -1,11 +1,14 @@
 # Changelog
 
-All notable changes to sulde-cc (Community Edition) are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) loosely; versions follow [SemVer](https://semver.org/).
+All notable changes to sulde (Community Edition) are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) loosely; versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
 ### Changed
 
+- Rename the repository and Claude plugin to `sulde`; update installation commands
+  and repository links. Cache discovery accepts both the new plugin ID and the
+  legacy `sulde-cc` ID; historical data migration paths remain supported.
 - Describe Sulde as an extensible harness for tools with compatible protocols;
   distinguish reusable MCP/CLI interfaces from full host integration, with
   Claude Code and Codex as the currently included adapters.

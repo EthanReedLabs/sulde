@@ -9,7 +9,7 @@ lint_status: shipped
 
 # 0001 — Coordinator drafts task-mds from memory instead of grepping the repo
 
-> **Mobile-generic example ADR shipped with sulde-cc v0.2.0.** Adapt or replace once your project has registered its first real incident of this pattern.
+> **Mobile-generic example ADR shipped with sulde v0.2.0.** Adapt or replace once your project has registered its first real incident of this pattern.
 
 **First logged**: 2026-01-01 (illustrative)
 **Platforms**: coordinator

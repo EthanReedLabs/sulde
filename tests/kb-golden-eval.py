@@ -18,13 +18,13 @@ DEFAULT_DATA = Path(__file__).with_name("kb-golden.jsonl")
 kb_cli = SimpleNamespace(
     **runpy.run_path(str(ROOT / "hooks" / "lib" / "kb_cli.py"))
 )
+_paths = SimpleNamespace(
+    **runpy.run_path(str(ROOT / "scripts" / "kb" / "sulde_paths.py"))
+)
 
 
 def kb_home() -> Path:
-    configured = os.environ.get("SULDE_KB_HOME")
-    if configured:
-        return Path(configured).expanduser()
-    return Path.home() / ".claude" / "plugins" / "data" / "sulde-cc" / "kb"
+    return _paths.kb_home()
 
 
 def load_cases(path: Path) -> list[dict[str, Any]]:

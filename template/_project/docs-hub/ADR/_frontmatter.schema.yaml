@@ -43,7 +43,7 @@ fields:
     type: array
     required: true
     item_type: string
-    item_enum:                # v0.2.0 mobile-first enum (sulde-cc default)
+    item_enum:                # v0.2.0 mobile-first enum (sulde default)
       - android
       - ios
       - flutter

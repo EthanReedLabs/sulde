@@ -1,4 +1,4 @@
-# {{frontend_name}} — HarmonyOS NEXT frontend (sulde-cc)
+# {{frontend_name}} — HarmonyOS NEXT frontend (sulde)
 
 This directory contains the HarmonyOS frontend for the project. `/sulde-init` populated it from `${CLAUDE_PLUGIN_ROOT}/template/harmony/`.
 

@@ -1,4 +1,4 @@
-# Flutter frontend .gitignore (sulde-cc template).
+# Flutter frontend .gitignore (sulde template).
 
 # Dart / Flutter
 .dart_tool/
@@ -40,7 +40,7 @@ ios/DerivedData/
 # Logs
 *.log
 
-# sulde-cc state (defensive — inherited from project root)
+# sulde state (defensive — inherited from project root)
 .ai-workspace/
 .claude/
 CLAUDE.md

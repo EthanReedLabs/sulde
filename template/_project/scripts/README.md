@@ -1,4 +1,4 @@
-# Project scripts (sulde-cc)
+# Project scripts (sulde)
 
 This directory holds **coordinator-side** automation scripts. They run at the project root (not per-frontend) and surface session-start context for Claude Code through the SessionStart hook.
 
@@ -15,7 +15,7 @@ Templates here ship with `.template` suffix to make `/sulde-init` copy semantics
 
 ## Customising
 
-These templates assume a typical sulde-cc layout (`{frontend}/.ai-workspace/handoff/` etc.). Adapt to your repo by editing the `FRONTENDS=` array at the top of each script — `/sulde-init` does that automatically from `.sulde-config.yaml: frontends[]`.
+These templates assume a typical sulde layout (`{frontend}/.ai-workspace/handoff/` etc.). Adapt to your repo by editing the `FRONTENDS=` array at the top of each script — `/sulde-init` does that automatically from `.sulde-config.yaml: frontends[]`.
 
 ## Running outside Claude Code
 

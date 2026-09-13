@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sulde-cc coordinator baseline — cross-frontend state snapshot.
+# sulde coordinator baseline — cross-frontend state snapshot.
 #
 # Emits ~50 lines covering: per-frontend recent commits, active handoffs,
 # archived handoffs (last 14d), branch tips. SessionStart hook reads stdout

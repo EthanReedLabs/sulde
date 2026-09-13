@@ -1,4 +1,4 @@
-# iOS frontend .gitignore (sulde-cc template).
+# iOS frontend .gitignore (sulde template).
 # Merge into your existing .gitignore — covers Xcode + CocoaPods + SwiftPM.
 
 # Xcode
@@ -38,7 +38,7 @@ fastlane/test_output
 *.log
 *.profdata
 
-# sulde-cc state (defensive — inherited from project root)
+# sulde state (defensive — inherited from project root)
 .ai-workspace/
 .claude/
 CLAUDE.md

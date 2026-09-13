@@ -1,5 +1,5 @@
 ---
-description: Bootstrap sulde-cc into a new project (interactive 8-step wizard).
+description: Bootstrap sulde into a new project (interactive 8-step wizard).
 argument-hint: "[project-dir]"
 ---
 

@@ -29,6 +29,33 @@ def load_module():
 
 
 class LauncherContractTests(unittest.TestCase):
+    def test_renamed_and_legacy_cache_paths_resolve_in_generated_launchers(self) -> None:
+        for plugin_name in ("sulde", "sulde-cc"):
+            with self.subTest(plugin_name=plugin_name):
+                with tempfile.TemporaryDirectory(prefix="sulde-rename-cache-") as name:
+                    base = Path(name).resolve()
+                    source = base / "source"
+                    shutil.copytree(self.root, source)
+                    home = base / "launcher-home"
+                    self.module.install_launchers(home, source)
+                    cache = base / "claude/plugins/cache/sulde" / plugin_name / "0.8.4"
+                    cache.parent.mkdir(parents=True)
+                    source.rename(cache)
+                    environment = dict(os.environ)
+                    environment["CLAUDE_CONFIG_DIR"] = str(base / "claude")
+                    environment["CODEX_HOME"] = str(base / "codex")
+                    environment.pop("SULDE_KB_INDEX", None)
+                    spec = next(item for item in self.module.LAUNCHERS if item.name == "kb-index")
+                    resolved, override = self.module.resolve_target(spec, source, environment=environment)
+                    self.assertEqual(resolved, cache / spec.target_relative)
+                    self.assertFalse(override)
+                    completed = subprocess.run(
+                        [sys.executable, str(home / "bin/kb-index"), "--sulde-launcher-probe"],
+                        env=environment, capture_output=True, text=True, check=False,
+                    )
+                    self.assertEqual(completed.returncode, 0, completed.stderr)
+                    self.assertEqual(json.loads(completed.stdout)["target"], str(resolved))
+
     def test_runtime_tree_digest_rejects_git_and_python_bytecode(self) -> None:
         module = load_module()
         digest = module.runtime_tree_digest

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sulde-cc PreToolUse entrypoint.
+"""sulde PreToolUse entrypoint.
 
 Dispatches Bash + Write/Edit tool calls to the relevant check_*.py module.
 Stays silent (exit 0) when:

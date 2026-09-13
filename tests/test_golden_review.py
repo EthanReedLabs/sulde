@@ -102,13 +102,13 @@ class GoldenReviewTests(unittest.TestCase):
         invalid["project"] = ""
         self.write_jsonl(self.candidates, [invalid, case("candidate-2")])
         corrected = dict(invalid)
-        corrected["project"] = "sulde-cc"
+        corrected["project"] = "sulde"
         accepted = self.run_review(
             [{"id": "candidate-1", "action": "accept", "reason": "project restored", "case": corrected}],
             apply=True,
         )
         self.assertEqual(accepted.returncode, 0, accepted.stderr)
-        self.assertEqual(self.read_jsonl(self.golden)[-1]["project"], "sulde-cc")
+        self.assertEqual(self.read_jsonl(self.golden)[-1]["project"], "sulde")
 
     def test_preview_validates_batch_without_writes(self) -> None:
         decisions = [

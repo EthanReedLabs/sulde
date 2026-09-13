@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sulde-cc PreCompact entrypoint."""
+"""sulde PreCompact entrypoint."""
 
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sulde-cc health check — drift / consistency snapshot.
+# sulde health check — drift / consistency snapshot.
 #
 # Surfaces:
 #   - scaffold-map.yaml declared scaffolds vs. files that actually exist

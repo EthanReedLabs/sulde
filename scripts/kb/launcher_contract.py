@@ -512,6 +512,9 @@ def resolve_target(
         *claude_home.glob(
             "plugins/cache/sulde/sulde-cc/*/" + spec.target_relative
         ),
+        *claude_home.glob(
+            "plugins/cache/sulde/sulde/*/" + spec.target_relative
+        ),
         *codex_home.glob(
             "plugins/cache/sulde-local/sulde/*/runtime/" + spec.target_relative
         ),
@@ -676,6 +679,10 @@ def resolve():
     patterns = (
         os.path.join(
             claude_home, "plugins", "cache", "sulde", "sulde-cc", "*",
+            *TARGET_RELATIVE.split("/"),
+        ),
+        os.path.join(
+            claude_home, "plugins", "cache", "sulde", "sulde", "*",
             *TARGET_RELATIVE.split("/"),
         ),
         os.path.join(

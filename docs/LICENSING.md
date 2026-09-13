@@ -70,8 +70,8 @@ version number alone is not enough to identify applicable terms. Check the exact
 
 | Material | Applicable terms |
 | --- | --- |
-| Historical v0.1.x | Existing MIT grants remain effective; see the [MIT text in Git history](https://github.com/EthanReedLabs/sulde-cc/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-v0.1.0-MIT-archive) |
-| Copies distributed under BSL 1.1 before this change | Their original BSL conditions and change-license rights remain effective; see the [BSL declaration in Git history](https://github.com/EthanReedLabs/sulde-cc/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-BSL-1.1-archive) |
+| Historical v0.1.x | Existing MIT grants remain effective; see the [MIT text in Git history](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-v0.1.0-MIT-archive) |
+| Copies distributed under BSL 1.1 before this change | Their original BSL conditions and change-license rights remain effective; see the [BSL declaration in Git history](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-BSL-1.1-archive) |
 | New material first distributed under the current license | PolyForm Noncommercial 1.0.0, with no automatic MIT conversion date |
 
 Historical license files are kept in the pinned Git revision above rather than the current source

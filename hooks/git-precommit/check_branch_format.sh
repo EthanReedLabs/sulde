@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sulde-cc — git pre-commit hook: enforce branch naming pattern.
+# sulde — git pre-commit hook: enforce branch naming pattern.
 #
 # Default pattern: ^dev/[^/]+/.+$  (e.g. dev/alice/feat-login)
 # Override via .sulde-config.yaml: enforcement.branch.pattern
@@ -44,7 +44,7 @@ esac
 if ! echo "$current" | grep -Eq "$pattern"; then
   if [ "$level" = "lenient" ]; then
     cat >&2 <<EOF
-⚠️  sulde-cc: branch name '$current' does not match required pattern.
+⚠️  sulde: branch name '$current' does not match required pattern.
    pattern: $pattern
    suggested: dev/<alias>/<slug>   (e.g. dev/alice/feat-login)
 
@@ -53,7 +53,7 @@ EOF
     exit 0
   fi
   cat >&2 <<EOF
-❌ sulde-cc: branch name '$current' does not match required pattern.
+❌ sulde: branch name '$current' does not match required pattern.
    pattern: $pattern
    suggested: dev/<alias>/<slug>   (e.g. dev/alice/feat-login)
 

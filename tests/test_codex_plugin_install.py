@@ -998,8 +998,8 @@ class CodexPluginInstallTests(unittest.TestCase):
             )
             source = configurator.read_text(encoding="utf-8")
             source = source.replace(
-                'cache = Path.home() / ".claude/plugins/cache/sulde/sulde-cc"',
-                'cache = Path("/test-fixture/no-claude-cache")',
+                'cache_root = Path.home() / ".claude/plugins/cache/sulde"',
+                'cache_root = Path("/test-fixture/no-claude-cache")',
             )
             configurator.write_text(source, encoding="utf-8")
             installer = load_installer()

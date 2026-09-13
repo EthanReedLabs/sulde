@@ -1,4 +1,4 @@
-"""sulde_common — shared utilities for every sulde-cc hook entrypoint.
+"""sulde_common — shared utilities for every sulde hook entrypoint.
 
 Walks up from the current working directory to find `.sulde-config.yaml`,
 parses it into a typed dataclass, and exposes frontend / role / grace-period

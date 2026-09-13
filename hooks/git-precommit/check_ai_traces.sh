@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# sulde-cc — git pre-commit hook: block AI traces in staged content.
+# sulde — git pre-commit hook: block AI traces in staged content.
 #
 # Two layers:
 #   1. forbidden paths — staged files that should NEVER enter git history
@@ -50,7 +50,7 @@ done
 
 if [ -n "$violations" ]; then
   cat >&2 <<EOF
-❌ sulde-cc: refusing to commit AI traces / sulde state files.
+❌ sulde: refusing to commit AI traces / sulde state files.
    forbidden paths matched: $violations
 
 These belong in .gitignore. To unstage:
@@ -67,7 +67,7 @@ if [ -n "$keywords_cfg" ]; then
     [ -z "$kw" ] && continue
     if echo "$diff_added" | grep -Fqi "$kw"; then
       cat >&2 <<EOF
-❌ sulde-cc: AI-trace keyword '$kw' found in staged diff.
+❌ sulde: AI-trace keyword '$kw' found in staged diff.
 
 Remove the line or override: enforcement.ai_traces.forbidden_keywords: []
 EOF

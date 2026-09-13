@@ -1,6 +1,6 @@
 ---
 name: configure-sulde
-description: sulde-cc 项目配置 / 接入 / 升级 / 团队管理 / 加 frontend / 加 scaffold / 加 skill trigger / 结束 grace period。8 mode 统一入口:init(新项目接入)/ migrate-from-v0.1.0(老版本升级)/ add-frontend / add-team-member / add-sensitive-file / add-scaffold / add-skill-trigger / end-grace。当用户跑 `/sulde-init` / `/sulde-migrate-from-v0.1.0` / `/sulde-add-*` / `/sulde-end-grace` 任一命令时触发。**单 SKILL 多 mode**,根据入口 command name 选 mode dispatch。
+description: sulde 项目配置 / 接入 / 升级 / 团队管理 / 加 frontend / 加 scaffold / 加 skill trigger / 结束 grace period。8 mode 统一入口:init(新项目接入)/ migrate-from-v0.1.0(老版本升级)/ add-frontend / add-team-member / add-sensitive-file / add-scaffold / add-skill-trigger / end-grace。当用户跑 `/sulde-init` / `/sulde-migrate-from-v0.1.0` / `/sulde-add-*` / `/sulde-end-grace` 任一命令时触发。**单 SKILL 多 mode**,根据入口 command name 选 mode dispatch。
 user-invocable: true
 ---
 
@@ -12,7 +12,7 @@ user-invocable: true
 
 | Command | Mode | 备注 |
 |---|---|---|
-| `/sulde-init [project-dir]` | **init** | 新项目从零接入 sulde-cc |
+| `/sulde-init [project-dir]` | **init** | 新项目从零接入 sulde |
 | `/sulde-migrate-from-v0.1.0` | **migrate** | v0.1.0 → v0.2.0 升级 |
 | `/sulde-add-frontend <name> <path> <stack>` | **add-frontend** | 增加一个 frontend(已有项目)|
 | `/sulde-add-team-member <alias> <name> <email> <frontend>` | **add-team-member** | 加团队成员 + 创建 `git as-<alias>` |
@@ -28,7 +28,7 @@ user-invocable: true
 
 ## §1 Mode: init(对话式 8 步)
 
-新项目接入 sulde-cc。步骤:
+新项目接入 sulde。步骤:
 
 1. **Detect existing** `.sulde-config.yaml`(若有,refuse + 提示 `/sulde-migrate-from-v0.1.0`)
 2. **Q1**:project name(default = dir basename)

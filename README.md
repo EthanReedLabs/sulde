@@ -102,8 +102,8 @@ The standalone project toolkit runs without starting an agent host, model, or MC
 ### Install the source toolkit
 
 ```sh
-git clone https://github.com/EthanReedLabs/sulde-cc.git
-cd sulde-cc
+git clone https://github.com/EthanReedLabs/sulde.git
+cd sulde
 python3 -m venv .venv
 ```
 
@@ -218,7 +218,7 @@ package, review the [public data boundary](docs/PUBLIC-DATA-BOUNDARY.md) and rem
 Documentation fixes, reproducible bug reports, platform compatibility improvements, and
 improvements to the reusable framework and toolkit are welcome.
 
-1. Describe the issue, reproduction steps, and expected behavior in [Issues](https://github.com/EthanReedLabs/sulde-cc/issues).
+1. Describe the issue, reproduction steps, and expected behavior in [Issues](https://github.com/EthanReedLabs/sulde/issues).
 2. Follow the [contribution guidelines](CONTRIBUTING.md) to establish scope; discuss core protocol or license changes first.
 3. Submit a pull request focused on one issue and include verification results.
 

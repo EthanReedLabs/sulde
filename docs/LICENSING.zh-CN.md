@@ -61,8 +61,8 @@ Sulde 当前源码采用 **PolyForm Noncommercial License 1.0.0**，SPDX 标识�
 
 | 范围 | 适用说明 |
 | --- | --- |
-| 历史 v0.1.x | 已授出的 MIT 权利继续有效，见 [Git 历史中的 MIT 文本](https://github.com/EthanReedLabs/sulde-cc/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-v0.1.0-MIT-archive) |
-| 此次切换前已按 BSL 1.1 分发的副本 | 原有 BSL 条件及转 MIT 权利继续有效，见 [Git 历史中的 BSL 声明](https://github.com/EthanReedLabs/sulde-cc/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-BSL-1.1-archive) |
+| 历史 v0.1.x | 已授出的 MIT 权利继续有效，见 [Git 历史中的 MIT 文本](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-v0.1.0-MIT-archive) |
+| 此次切换前已按 BSL 1.1 分发的副本 | 原有 BSL 条件及转 MIT 权利继续有效，见 [Git 历史中的 BSL 声明](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-BSL-1.1-archive) |
 | 首次按当前许可分发的新内容 | PolyForm Noncommercial 1.0.0；没有自动转 MIT 的日期 |
 
 旧许可证文件保存在上方链接固定的 Git 历史版本中，当前源码目录和插件包不再携带。

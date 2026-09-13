@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sulde-cc PostToolUse entrypoint for silent KB adoption feedback."""
+"""sulde PostToolUse entrypoint for silent KB adoption feedback."""
 
 from __future__ import annotations
 

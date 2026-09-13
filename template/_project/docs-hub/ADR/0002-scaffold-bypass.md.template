@@ -9,7 +9,7 @@ lint_status: pending
 
 # 0002 — Feature code bypasses scaffold contract
 
-> **Mobile-generic example ADR shipped with sulde-cc v0.2.0.**
+> **Mobile-generic example ADR shipped with sulde v0.2.0.**
 
 **First logged**: 2026-01-01 (illustrative)
 **Platforms**: android, ios, flutter, harmony

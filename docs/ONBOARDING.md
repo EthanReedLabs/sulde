@@ -1,4 +1,4 @@
-# sulde-cc Community 0.3.0 接入指南
+# sulde Community 0.3.0 接入指南
 
 本指南面向新项目、老项目、内网项目和维护公开 fork 的团队。公开版的定位是“骨架与
 方法”，接入方负责补全自己的规则、知识和扩展，不依赖私有 Sulde 仓库。
@@ -31,15 +31,19 @@ python3 -m pip install -r hooks/requirements.txt
 ### GitHub marketplace
 
 ```text
-/plugin marketplace add EthanReedLabs/sulde-cc
-/plugin install sulde-cc@sulde-cc
+/plugin marketplace add EthanReedLabs/sulde
+/plugin install sulde@sulde
 ```
+
+当前仓库和插件标识为 `sulde`，旧标识为 `sulde-cc`。切换到 `sulde@sulde` 时，
+停用旧插件入口，避免两份 Hooks 同时加载。已有知识与记忆继续使用配置的数据根，
+仓库改名不要求迁移数据目录。
 
 ### 本地 fork
 
 ```sh
-git clone https://github.com/EthanReedLabs/sulde-cc.git
-cd sulde-cc
+git clone https://github.com/EthanReedLabs/sulde.git
+cd sulde
 python3 -m pip install -r hooks/requirements.txt
 ./scripts/sulde doctor
 ```

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sulde-cc Notification entrypoint."""
+"""sulde Notification entrypoint."""
 
 from __future__ import annotations
 

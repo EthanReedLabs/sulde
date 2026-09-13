@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sulde-cc P2 template dry-run test suite.
+"""sulde P2 template dry-run test suite.
 
 Validates the v0.2.0 template/ tree by:
   1. Asserting each expected file exists in template/_project/ and
@@ -341,7 +341,7 @@ def main() -> int:
     passed = sum(1 for r in all_results if r.ok)
     total = len(all_results)
     print()
-    print(f"sulde-cc P2 template dry-run: {passed}/{total} passed")
+    print(f"sulde P2 template dry-run: {passed}/{total} passed")
     print()
     # Group failures separately for readability
     failures = [r for r in all_results if not r.ok]
