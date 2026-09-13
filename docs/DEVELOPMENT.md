@@ -20,6 +20,16 @@ Packages include license files and the runtime code required by the host. The ra
 at `integrations/codex/plugins/sulde` is for adapter development; use a complete staged package
 for integration.
 
+Staging requires every license and notice file in `LICENSE_FILES` to be tracked, present, and
+a nonempty regular file before creating output. The set includes the historical license archives,
+contribution terms, and both languages of the licensing guide and [third-party inventory](../THIRD_PARTY_NOTICES.md).
+Claude packages carry them at the root; Codex packages carry them at both the plugin and runtime roots.
+
+For each release candidate, record the clean source commit (`git rev-parse HEAD`), target platform,
+and SHA-256 of the final archive. Keep that archive and its checksum together with the source
+revision and validation results. A checksum identifies bytes; it is not a trusted publication
+timestamp or a legal determination. Plugin version numbers alone do not identify licensing changes.
+
 Hook dependencies are listed in `hooks/requirements.txt`. KB bootstrap declares `fastembed`,
 `jieba`, `cryptography`, and `pyyaml`; FastEmbed supplies its numerical and model dependencies.
 There is no separate KB requirements file. Use a separate data root for testing and keep it away

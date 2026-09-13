@@ -56,6 +56,7 @@ class StagePluginTests(unittest.TestCase):
             "LICENSE", "NOTICE", "LICENSE-v0.1.0-MIT-archive",
             "LICENSE-BSL-1.1-archive", "CONTRIBUTING.md", "docs/LICENSING.md",
             "docs/LICENSING.zh-CN.md",
+            "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_NOTICES.zh-CN.md",
         )
         paths = (
             "spec/task-authoring.md", "spec/task-contract.md",

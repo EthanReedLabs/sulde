@@ -52,6 +52,9 @@ users' independently authored project code or knowledge. Material containing or 
 content remains subject to the applicable terms. Ownership of an independent output does not
 itself authorize commercial use of Sulde as a tool.
 
+See the [third-party inventory](../THIRD_PARTY_NOTICES.md) for dependency and model sources,
+their upstream license references, and the additional records needed for bundled distributions.
+
 ## Why source available
 
 [Section 6 of the Open Source Definition](https://opensource.org/osd) requires that licenses do

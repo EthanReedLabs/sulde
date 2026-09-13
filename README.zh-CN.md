@@ -159,9 +159,9 @@ python3 -B scripts/sulde.py kb search --root .tmp/sulde-demo "缓存更新导致
 | 任务协议 | [任务编写规范](spec/task-authoring.md) · [任务契约](spec/task-contract.md) |
 | 知识与扩展 | [知识工具箱](docs/KNOWLEDGE-KIT.md) · [检索契约](docs/kb-retrieval-contract.md) · [扩展指南](docs/EXTENDING.md) |
 | 开发维护 | [开发与构建](docs/DEVELOPMENT.zh-CN.md) · [变更记录](CHANGELOG.md) · [贡献指南](CONTRIBUTING.md) |
-| 数据与许可 | [公开数据边界](docs/PUBLIC-DATA-BOUNDARY.md) · [许可说明](docs/LICENSING.zh-CN.md) · [版权声明](NOTICE) |
+| 数据与许可 | [公开数据边界](docs/PUBLIC-DATA-BOUNDARY.md) · [许可说明](docs/LICENSING.zh-CN.md) · [版权声明](NOTICE) · [第三方清单](THIRD_PARTY_NOTICES.zh-CN.md) |
 
-项目首页、开发指南与许可说明提供英文和简体中文版本。其余文档暂保留原语言；
+项目首页、开发指南、许可说明与第三方清单提供英文和简体中文版本。其余文档暂保留原语言；
 知识工具箱、扩展指南、任务编写与任务契约、贡献指南及公开数据边界为英文，
 意图监督、双宿主运行、事件观察与知识检索契约为中文。
 文档语言支持不代表 CLI 输出或所有 Skill 已完成本地化。

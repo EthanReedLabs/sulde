@@ -171,9 +171,9 @@ See the [task authoring specification](spec/task-authoring.md) for the task cont
 | Task protocol | [Task authoring](spec/task-authoring.md) · [Task contract](spec/task-contract.md) |
 | Knowledge and extensions | [Knowledge Kit](docs/KNOWLEDGE-KIT.md) · [Retrieval contract (Chinese)](docs/kb-retrieval-contract.md) · [Extension guide](docs/EXTENDING.md) |
 | Development | [Development and packaging](docs/DEVELOPMENT.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) |
-| Data and licensing | [Public data boundary](docs/PUBLIC-DATA-BOUNDARY.md) · [Licensing guide](docs/LICENSING.md) · [Notices](NOTICE) |
+| Data and licensing | [Public data boundary](docs/PUBLIC-DATA-BOUNDARY.md) · [Licensing guide](docs/LICENSING.md) · [Notices](NOTICE) · [Third-party inventory](THIRD_PARTY_NOTICES.md) |
 
-The project overview, development guide, and licensing guide are available in English and
+The project overview, development guide, licensing guide, and third-party inventory are available in English and
 Simplified Chinese. Other documents retain their original language, as indicated above.
 Documentation translations do not imply that CLI output or every skill is localized.
 

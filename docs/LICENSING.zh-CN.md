@@ -45,6 +45,9 @@ Sulde 当前源码采用 **PolyForm Noncommercial License 1.0.0**，SPDX 标识�
 本许可不主张用户独立编写的项目代码或知识内容的所有权；包含或改编 Sulde 内容
 的材料仍需遵守适用条款。独立产物的归属也不等于获准商业使用 Sulde 工具本身。
 
+依赖与模型的来源、上游许可，以及附带分发时需要补齐的记录，见
+[第三方软件与模型清单](../THIRD_PARTY_NOTICES.zh-CN.md)。
+
 ## 为什么称为源码可见
 
 [OSI 开源定义第 6 条](https://opensource.org/osd)要求不得限制商业等应用领域。

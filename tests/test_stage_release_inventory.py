@@ -30,6 +30,45 @@ import intent_guardian  # noqa: E402
 
 
 class ReleaseInventoryTests(unittest.TestCase):
+    def test_incomplete_license_inputs_fail_before_creating_any_artifact(self) -> None:
+        targets = (("claude", None), ("codex", "posix"), ("codex", "windows"))
+        cases = (
+            ("untracked", "THIRD_PARTY_NOTICES.zh-CN.md", "not tracked"),
+            ("missing", "LICENSE", "unavailable"),
+            ("empty", "NOTICE", "nonempty regular file"),
+            ("directory", "LICENSE-BSL-1.1-archive", "nonempty regular file"),
+        )
+        for target, platform in targets:
+            for kind, relative, error in cases:
+                with self.subTest(target=target, platform=platform, kind=kind):
+                    with tempfile.TemporaryDirectory(prefix="sulde-license-inputs-") as name:
+                        root = Path(name) / "repo"
+                        root.mkdir()
+                        self.write_required_sources(root)
+                        tracked = []
+                        for path in sorted(stage_plugin.LICENSE_FILES):
+                            source = root / path
+                            source.parent.mkdir(parents=True, exist_ok=True)
+                            source.write_text("license fixture\n", encoding="utf-8")
+                            if kind != "untracked" or path != relative:
+                                tracked.append(stage_plugin.GitEntry(Path(path), 0o100644))
+                        damaged = root / relative
+                        if kind == "missing":
+                            damaged.unlink()
+                        elif kind == "empty":
+                            damaged.write_bytes(b"")
+                        elif kind == "directory":
+                            damaged.unlink()
+                            damaged.mkdir()
+                        output = Path(name) / "artifact"
+                        with mock.patch.object(stage_plugin, "git_entries", return_value=tracked):
+                            with self.assertRaisesRegex(ValueError, f"required license file.*{error}"):
+                                if target == "claude":
+                                    stage_plugin.stage_claude(root, output)
+                                else:
+                                    stage_plugin.stage_codex(root, output, platform)
+                        self.assertFalse(output.exists())
+
     def write_required_sources(self, root: Path) -> None:
         for relative in stage_plugin.REQUIRED_RUNTIME_SOURCE_FILES:
             path = root / relative

@@ -17,6 +17,15 @@ python3 -B scripts/release/stage_plugin.py --target codex --platform windows --o
 构建包含许可文件与宿主所需运行代码。Codex 的裸 `integrations/codex/plugins/sulde`
 目录用于适配器开发，正式接入应使用完整 staged 包。
 
+创建输出前，打包器要求 `LICENSE_FILES` 中所有许可和通知文件已被 Git 跟踪、实际存在，
+且为非空普通文件。清单包含历史许可存档、贡献条款、双语许可指南及
+[第三方清单](../THIRD_PARTY_NOTICES.zh-CN.md)。Claude 包在根目录携带这些文件；
+Codex 包在插件根目录和 runtime 根目录分别携带。
+
+每个发布候选应记录干净源码提交（`git rev-parse HEAD`）、目标平台和最终压缩包的
+SHA-256，将压缩包、校验值、源码版本和验证结果一同保存。校验值用于标识字节内容，
+不是可信发布时间戳或法律结论。插件版本号不能单独标识许可切换。
+
 Hook 依赖见 `hooks/requirements.txt`。KB 初始化脚本声明 `fastembed`、`jieba`、
 `cryptography` 和 `pyyaml`；数值计算与模型依赖由 FastEmbed 提供，没有单独的 KB
 requirements 文件。测试时使用独立数据根，不连接已有生产数据目录。

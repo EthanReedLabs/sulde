@@ -6,6 +6,9 @@ All notable changes to sulde-cc (Community Edition) are recorded here. The forma
 
 ### Changed
 
+- Include an English and Chinese third-party dependency/model inventory in plugin
+  packages. Staging now fails before creating output if a required license or
+  notice file is untracked, missing, empty, or not a regular file.
 - Publish the project overview, development guide, and licensing guide in English
   and Simplified Chinese, with reciprocal language navigation. English is the
   default documentation entry; plugin packages retain the translated guides.
