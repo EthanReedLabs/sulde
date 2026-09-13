@@ -1,6 +1,6 @@
 # Sulde
 
-**An extensible harness for AI agent tools**
+**Task orchestration and engineering delivery for AI agents**
 
 **English** | [简体中文](README.zh-CN.md)
 
@@ -8,11 +8,13 @@
 [![Python 3.10–3.14](https://img.shields.io/badge/python-3.10%E2%80%933.14-3776AB)](docs/DEVELOPMENT.md)
 [![Status: Source Candidate](https://img.shields.io/badge/status-source%20candidate-orange)](docs/DEVELOPMENT.md)
 
-Sulde provides intent supervision, task execution and verification, knowledge retrieval,
-and cross-session memory for AI coding agents. Host adapters, hooks, skills, and MCP services
-connect task objectives, tool operations, and delivery evidence in a traceable engineering workflow.
-Tools that implement compatible interfaces can reuse the corresponding capabilities. The repository
-currently provides host adapters for Claude Code and Codex.
+Sulde is a task orchestration and engineering delivery framework for AI agents. It covers task
+definition and assignment, execution supervision, engineering checks, result verification, and
+acceptance and rework, with knowledge retrieval and cross-session memory providing context.
+Tools with compatible MCP/CLI interfaces can reuse the corresponding capabilities. Claude Code
+and Codex adapters are included; full supervision requires host adaptation and validation.
+
+Sulde is independently developed and maintained by an individual developer.
 
 **Source available for noncommercial use.** See the [licensing guide](docs/LICENSING.md)
 for permitted uses and historical license rights.
@@ -21,10 +23,17 @@ for permitted uses and historical license rights.
 
 ## Overview
 
-Sulde supports agent workflows that need persistent context, explicit execution boundaries,
-and verifiable deliverables. It records user objectives and acceptance criteria as task contracts,
-tracks observable actions and outcomes during execution, and makes engineering knowledge and
-session history available as traceable references for future work.
+Sulde organizes engineering work around explicit tasks: who owns each task, what it depends on,
+which paths it may change, and what evidence is needed for acceptance. Dispatch instructions
+target the selected host. For approved managed L3 tasks, the runtime executes in isolated Git
+worktrees and verifies the resulting artifacts and execution state.
+
+The coordinator checks evidence before advancing a managed task through implementation, task
+verification, integration, system verification, and acceptance. Unresolved findings block
+verification and acceptance; the coordinator can reopen work for repair and check it again.
+Task decomposition, assignment, check selection, and judgment of the result remain explicit
+work by the user and coordinating agent. These mechanisms do not imply that arbitrary requests
+are automatically split, scheduled, or accepted.
 
 Integration follows protocols and host capabilities. Compatible tools can use the exposed MCP and
 CLI interfaces, while host adapters connect lifecycle events, permission decisions, and execution
@@ -39,8 +48,11 @@ handling, and background scheduling must be verified in each target environment.
 
 ## Features
 
-- **Intent supervision** — Guardian maintains revisable objectives, execution boundaries, and acceptance criteria, with records of user corrections and boundary violations.
-- **Verifiable execution** — Task contracts, isolated worktrees, tool-result readbacks, and delivery reports support task acceptance.
+- **Task definition and assignment** — Managed task contracts record an owner, dependencies, a base commit, owned paths, acceptance criteria, and evidence gates. Registration checks path ownership conflicts; state transitions require accepted dependencies.
+- **Host-aware dispatch and isolated execution** — The dispatch Skill prepares instructions for the selected host. Approved managed L3 tasks use `agent-runtime.py` to run and verify work in isolated Git worktrees; ordinary interactive tasks use the current host.
+- **Execution supervision** — Guardian tracks objectives, scope, user corrections, and observable Skill/MCP/tool actions through host hooks or managed execution streams.
+- **Engineering checks and result verification** — Run checks chosen for the task, retain results tied to the tested inputs, and read back tool effects. The managed verifier checks task bindings, delivery reports, and terminal execution state; a passing command alone does not establish acceptance.
+- **Acceptance and rework** — The managed program distinguishes implementation, task verification, integration, system verification, and acceptance. Coordinator-controlled transitions require evidence and resolved findings; reopened work must be verified again.
 - **Engineering knowledge retrieval** — Keyword and vector search retrieve relevant knowledge while retaining source paths and applicability conditions for verification.
 - **Cross-session memory** — Store, retrieve, and organize project and session information to recover the context needed for later tasks.
 - **Constrained automation** — LIFE provides background tasks and layered governance within configured permissions and acceptance conditions.
@@ -51,24 +63,29 @@ handling, and background scheduling must be verified in each target environment.
 
 ```mermaid
 flowchart TB
-    Claude[Claude Code] --> Adapters[Host adapters · Hooks · Skills · MCP]
-    Codex[Codex] --> Adapters
-    Compatible[Other compatible agent tools] -.-> Adapters
-    Adapters --> Guardian[Guardian · Intent and scope]
-    Guardian --> Execution[Task execution · Tools · LIFE]
-    Execution --> Evidence[Result readback · Verification · Reports]
-    Evidence --> Guardian
-    Knowledge[Engineering knowledge · Local retrieval] --> Guardian
-    Memory[Project and session memory] --> Guardian
-    Evidence --> Review[Experience review and curation]
-    Review --> Knowledge
+    Intent[User objective and acceptance criteria] --> Tasks[Task definition · Owner · Dependencies · Scope]
+    Tasks --> Dispatch[Dispatch to the selected host]
+    Dispatch --> Adapters[Claude Code / Codex adapters]
+    Adapters --> Execution[Interactive work / Approved managed L3 worktree]
+    Execution --> Checks[Engineering checks · Effect readback · Evidence]
+    Checks --> Review[Coordinator verification and acceptance]
+    Review -->|Accepted| Delivery[Engineering deliverable]
+    Review -->|Rework| Tasks
+    Guardian[Guardian · Intent and execution supervision] -.-> Dispatch
+    Guardian -.-> Execution
+    Guardian -.-> Checks
+    Context[Knowledge retrieval · Cross-session memory] -.-> Tasks
+    Context -.-> Execution
+    Compatible[Compatible tools via MCP / CLI] -.-> Context
 ```
 
-The adapter layer integrates native host events and tools. The core maintains task and execution
-state, while knowledge and memory provide historical references. Search results require checking
-the original sources, and tool calls require verification of their effects. Switching hosts does
-not automatically transfer state or authority. See the [host contract](docs/dual-runtime-contract.md)
-and [intent supervision reference](docs/intent-guardian.md), both currently in Chinese.
+The diagram shows the delivery workflow; each step needs the relevant task definition, host
+integration, and evidence. Knowledge and memory supply references throughout the work. Search
+results require checking original sources, and tool calls require verification of their effects.
+Switching hosts does not automatically transfer state or authority. See the
+[task contract](spec/task-contract.md), [managed runtime](scripts/kb/agent-runtime.py),
+[program state and evidence gates](scripts/kb/guardian_program.py), and the Chinese references for
+[host integration](docs/dual-runtime-contract.md) and [intent supervision](docs/intent-guardian.md).
 
 ### Protocol compatibility
 
@@ -148,6 +165,39 @@ models and write local data; use a separate test environment for the first integ
 
 ## Examples
 
+### Define, dispatch, check, and accept a task
+
+After integrating a host, start with a human-readable task brief. This illustrative brief is
+not executable managed-task JSON and does not itself authorize execution:
+
+```text
+Task: cache-refresh-order
+Objective: Fix stale data overwriting newer data after a cache refresh.
+Owner: cache-agent; coordinator reviews the evidence and accepts or returns the work.
+Dependencies: None; record prerequisite task IDs when work must wait for their acceptance.
+Base: Record the verified commit before dispatch.
+Scope: src/cache/** and tests/cache/**; preserve the public API.
+Host: Codex for this example; select the actual target host explicitly.
+Acceptance: Concurrent refresh cases and existing cache tests pass; no out-of-scope changes.
+Evidence: Changed files, tested commit, check commands and results, and delivery report.
+Rework: Record failing cases or missing evidence, return bounded work, then verify again.
+Context: Retrieve relevant cases and read their original sources before applying them.
+```
+
+1. Define the owner, dependencies, allowed paths, and acceptance criteria using the
+   [task authoring specification](spec/task-authoring.md). For a managed program, translate the
+   brief into the [task contract](spec/task-contract.md), including its four evidence gates.
+2. Use the [dispatch Skill](skills/dispatch-task/SKILL.md) to prepare instructions for the
+   selected host. A dispatched brief alone does not start a managed worker. Approved managed
+   L3 execution uses the runtime and isolated worktree described in the
+   [host contract](docs/dual-runtime-contract.md).
+3. Run the task's engineering checks and retain evidence for the actual candidate. Report
+   passed, failed, skipped, and environment-blocked checks separately; verify tool effects by
+   readback. See [event observability (Chinese)](docs/event-observability.md).
+4. The coordinator reviews the result against acceptance criteria. In a managed program,
+   evidence gates and unresolved findings constrain verification and acceptance. Reopen work
+   for repairs when needed, then verify the changed candidate before advancing it again.
+
 ### Create a project knowledge base
 
 Initialize empty knowledge containers in a separate example directory, validate their format,
@@ -169,21 +219,6 @@ python3 -B scripts/sulde.py kb search --root .tmp/sulde-demo "stale data overwri
 
 This CLI uses local lexical matching. The full Harness's hybrid retrieval engine is initialized
 separately. An empty knowledge base returns an empty result.
-
-### Define a verifiable agent task
-
-After integrating a host, describe a task using this structure so intent supervision and task
-tooling can record, execute, and verify it:
-
-```text
-Objective: Fix stale data overwriting newer data after a cache refresh.
-Scope: The cache module and its regression tests; preserve the public API.
-Acceptance: Concurrent refresh cases and existing tests pass; include a change summary and command results.
-Knowledge: Retrieve relevant cases and check their sources; draft a knowledge candidate once the conclusion has evidence.
-```
-
-See the [task authoring specification](spec/task-authoring.md) for the task contract and
-[event observability (Chinese)](docs/event-observability.md) for verifying tool and external effects.
 
 ## Documentation
 

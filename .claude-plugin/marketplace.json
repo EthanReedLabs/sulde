@@ -1,6 +1,6 @@
 {
   "name": "sulde",
-  "description": "Sulde agent harness for tools with compatible protocols: knowledge, memory and verifiable execution. Source available for noncommercial use.",
+  "description": "Sulde: task orchestration and engineering delivery for AI agents, from assignment and supervision to checks, verification, acceptance and rework, with knowledge and memory as context. Independently developed; source available for noncommercial use.",
   "owner": {
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
@@ -9,7 +9,7 @@
     {
       "name": "sulde",
       "source": "./",
-      "description": "Sulde provides intent supervision, knowledge, memory and verifiable execution through compatible interfaces and host adapters. Includes Claude Code and Codex adapters. PolyForm Noncommercial 1.0.0; commercial use is not granted."
+      "description": "Task definition and assignment, execution supervision, engineering checks, result verification, acceptance and rework, supported by knowledge and memory. Compatible MCP/CLI tools can reuse capabilities; full supervision requires host adaptation and validation. Includes Claude Code and Codex adapters. Independently developed; PolyForm Noncommercial 1.0.0; commercial use is not granted."
     }
   ]
 }

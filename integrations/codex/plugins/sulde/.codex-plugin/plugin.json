@@ -1,7 +1,7 @@
 {
   "name": "sulde",
   "version": "0.2.5+codex.20260911043115-19fde00701",
-  "description": "Codex adapter for Sulde, an extensible agent harness for tools with compatible protocols. Integrates intent supervision, knowledge, memory and constrained lifecycle automation. Source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
+  "description": "Codex adapter for Sulde, a task orchestration and engineering delivery framework for AI agents. Supports task definition and assignment, execution supervision, engineering checks, result verification, acceptance and rework, with knowledge and memory as context. Independently developed; source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
   "author": {
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
@@ -10,6 +10,9 @@
   "repository": "https://github.com/EthanReedLabs/sulde",
   "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": [
+    "task-orchestration",
+    "engineering-delivery",
+    "verification",
     "knowledge-base",
     "memory",
     "context-injection",
@@ -18,8 +21,8 @@
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Sulde",
-    "shortDescription": "Guard intent and recall Sulde knowledge in every Codex turn.",
-    "longDescription": "Connects Codex to Sulde's shared core through its host adapter. Maintains an intent contract, supervises observable Skill/MCP/tool actions, recalls knowledge and memory, and includes the runtime for constrained lifecycle automation. Sulde also exposes MCP/CLI interfaces for compatible tools. Source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
+    "shortDescription": "Orchestrate AI agent tasks and verify engineering delivery.",
+    "longDescription": "Connects Codex to Sulde's task orchestration and engineering delivery core: task owners, dependencies and scope, host-aware dispatch, approved managed execution in isolated worktrees, engineering checks, result verification, acceptance and rework. Guardian supervises observable actions; knowledge retrieval and cross-session memory provide context. Compatible tools can reuse MCP/CLI capabilities. Claude Code and Codex adapters are included; full supervision requires host adaptation and validation. Independently developed; English and Simplified Chinese overview docs. Source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
     "developerName": "eric.gao.tech",
     "category": "Engineering",
     "capabilities": [
@@ -28,7 +31,7 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Guard my intent and recall relevant Sulde knowledge for this task."
+      "Help define and assign this task, supervise execution, and check the evidence for acceptance or rework, using relevant knowledge and memory as context."
     ]
   }
 }

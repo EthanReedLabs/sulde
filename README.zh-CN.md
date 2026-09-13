@@ -1,6 +1,6 @@
 # Sulde
 
-**面向 AI Agent 工具的可扩展 Harness**
+**面向 AI Agent 的任务编排与工程交付框架**
 
 [English](README.md) | **简体中文**
 
@@ -8,10 +8,12 @@
 [![Python 3.10–3.14](https://img.shields.io/badge/python-3.10%E2%80%933.14-3776AB)](docs/DEVELOPMENT.zh-CN.md)
 [![Status: Source Candidate](https://img.shields.io/badge/status-source%20candidate-orange)](docs/DEVELOPMENT.zh-CN.md)
 
-Sulde 为 AI 编程 Agent 提供意图监督、任务执行与验收、知识检索和跨会话记忆。
-它通过宿主适配器、Hooks、Skills 和 MCP 服务，将任务目标、工具操作与交付证据连接成
-可追踪的工程工作流。
-实现兼容接口的工具可以复用相应能力；仓库目前提供 Claude Code 和 Codex 的宿主适配器。
+Sulde 是面向 AI Agent 的任务编排与工程交付框架，覆盖任务定义与分配、执行监督、工程检查、
+结果校验及验收返修，并以知识检索和跨会话记忆提供上下文支撑。
+兼容 MCP/CLI 等接口的工具可复用相应能力；当前提供 Claude Code 与 Codex 适配器，
+完整监督需要宿主适配和验证。
+
+Sulde 由个人独立开发和维护。
 
 **源码可见，限非商业使用。** 具体授权与历史版本边界见[许可证说明](docs/LICENSING.zh-CN.md)。
 
@@ -19,9 +21,14 @@ Sulde 为 AI 编程 Agent 提供意图监督、任务执行与验收、知识检
 
 ## 概述
 
-Sulde 面向需要持续上下文、明确执行范围和可验证交付的 Agent 工作流。它把用户目标与
-验收标准保存为任务契约，在执行过程中记录可观察的操作与结果，并为后续任务提供可溯源的
-工程知识和会话记忆。
+Sulde 围绕明确的任务组织工程工作：谁负责、依赖哪些任务、允许改动哪些路径、验收需要
+哪些证据。派单指令面向选定宿主；已批准的受管 L3 任务由运行时在隔离 Git worktree 中
+执行，并核验产物与执行状态。
+
+协调端依据证据，将受管任务从实现推进到任务验证、集成、系统验证和最终验收。未解决的
+问题会阻止验证与验收；协调端可重新打开任务返修，再次检查。任务拆分、负责人分配、
+检查项选择与结果判断仍由用户和协调 Agent 明确完成，这些机制不代表任意需求都能自动
+拆分、调度或验收。
 
 项目按协议和宿主能力接入。兼容工具可调用已暴露的 MCP 与 CLI 接口，宿主适配器负责
 将生命周期事件、权限决策和执行结果连接到共享核心。现有 Claude Code 与 Codex 适配器
@@ -33,8 +40,11 @@ Sulde 面向需要持续上下文、明确执行范围和可验证交付的 Agen
 
 ## 特性
 
-- **意图监督** — Guardian 维护可修订的目标、执行范围与验收条件，记录用户纠正和越界处理。
-- **可验证执行** — 任务契约、隔离 worktree、工具结果回读和交付报告共同支撑任务验收。
+- **任务定义与分配** — 受管任务契约记录负责人、依赖、基准提交、改动路径、验收条件及证据门禁；登记时检查路径归属冲突，状态推进要求依赖已验收。
+- **宿主派单与隔离执行** — 派单 Skill 为选定宿主准备指令；已批准的受管 L3 任务通过 `agent-runtime.py` 在隔离 Git worktree 中执行和核验，普通交互任务使用当前宿主。
+- **执行监督** — Guardian 通过宿主 Hooks 或受管执行事件流，跟踪目标、范围、用户纠正及可观察的 Skill/MCP/工具操作。
+- **工程检查与结果校验** — 执行按任务选定的检查，保留与被测输入绑定的结果，并回读工具实际效果。受管校验器核对任务绑定、交付报告和执行终态；单条命令通过不等于验收完成。
+- **验收与返修** — 受管流程区分实现、任务验证、集成、系统验证及验收；协调端推进状态需满足证据要求并解决遗留问题，重新打开返修的任务需要再次验证。
 - **工程知识检索** — 通过关键词与向量检索召回相关知识，保留原文路径和适用条件供核验。
 - **跨会话记忆** — 保存、检索与整理项目及会话信息，为后续任务恢复必要背景。
 - **受约束自动化** — LIFE 提供后台任务与分层治理，在已配置的权限和验收条件下推进工作。
@@ -45,22 +55,27 @@ Sulde 面向需要持续上下文、明确执行范围和可验证交付的 Agen
 
 ```mermaid
 flowchart TB
-    Claude[Claude Code] --> Adapters[宿主适配器 · Hooks · Skills · MCP]
-    Codex[Codex] --> Adapters
-    Compatible[其他兼容的 Agent 工具] -.-> Adapters
-    Adapters --> Guardian[Guardian · 意图与执行范围]
-    Guardian --> Execution[任务执行 · 工具调用 · LIFE]
-    Execution --> Evidence[结果回读 · 验收证据 · 交付报告]
-    Evidence --> Guardian
-    Knowledge[工程知识 · 本地检索] --> Guardian
-    Memory[项目与会话记忆] --> Guardian
-    Evidence --> Review[经验整理与审核]
-    Review --> Knowledge
+    Intent[用户目标与验收条件] --> Tasks[任务定义 · 负责人 · 依赖 · 改动范围]
+    Tasks --> Dispatch[向选定宿主派单]
+    Dispatch --> Adapters[Claude Code / Codex 适配器]
+    Adapters --> Execution[交互执行 / 已批准的受管 L3 worktree]
+    Execution --> Checks[工程检查 · 效果回读 · 证据]
+    Checks --> Review[协调端校验与验收]
+    Review -->|通过| Delivery[工程交付物]
+    Review -->|返修| Tasks
+    Guardian[Guardian · 意图与执行监督] -.-> Dispatch
+    Guardian -.-> Execution
+    Guardian -.-> Checks
+    Context[知识检索 · 跨会话记忆] -.-> Tasks
+    Context -.-> Execution
+    Compatible[通过 MCP / CLI 接入的兼容工具] -.-> Context
 ```
 
-宿主适配层负责接入原生事件和工具能力，核心层维护任务与执行状态，知识和记忆层提供
-历史依据。检索结果需回读原文，工具调用需验证实际结果；状态与权限不会因切换宿主而
-自动继承。详细接口见[双宿主契约](docs/dual-runtime-contract.md)和[意图监督](docs/intent-guardian.md)。
+图中展示交付流程，各环节需要相应的任务定义、宿主接入和证据。知识与记忆在工作过程中
+提供参考；检索结果需回读原文，工具调用需验证实际效果。状态与权限不会因切换宿主而
+自动继承。实现依据见[任务契约](spec/task-contract.md)、[受管运行时](scripts/kb/agent-runtime.py)、
+[任务状态与证据门禁](scripts/kb/guardian_program.py)、[双宿主契约](docs/dual-runtime-contract.md)
+和[意图监督](docs/intent-guardian.md)。
 
 ### 协议兼容范围
 
@@ -136,6 +151,35 @@ python3 -B scripts/sulde.py doctor --strict
 
 ## 使用示例
 
+### 定义、派单、检查与验收任务
+
+接入宿主后，先编写供人阅读的任务说明。以下为说明示例，不是可执行的受管任务 JSON，
+也不因写下说明而产生执行授权：
+
+```text
+任务：cache-refresh-order
+目标：修复缓存刷新后旧数据覆盖新数据的问题。
+负责人：cache-agent；协调端审核证据并验收或退回。
+依赖：无；若需等待前置任务验收，记录其任务 ID。
+基准：派单前记录已核实的提交。
+范围：src/cache/** 与 tests/cache/**；保留现有公共接口。
+宿主：本例为 Codex；实际派单时明确选择目标宿主。
+验收：并发刷新用例与已有缓存测试通过；无范围外改动。
+证据：改动文件、被测提交、检查命令与结果、交付报告。
+返修：记录失败用例或缺失证据，限定返修范围，再次校验。
+上下文：检索相关案例，采纳前阅读原文。
+```
+
+1. 按[任务编写规范](spec/task-authoring.md)明确负责人、依赖、允许路径与验收条件。
+   使用受管程序时，再按[任务契约](spec/task-contract.md)转换为结构化任务，包含四阶段证据门禁。
+2. 使用[派单 Skill](skills/dispatch-task/SKILL.md)为选定宿主准备指令。发出任务说明本身不会
+   启动受管执行者；已批准的受管 L3 执行使用[双宿主契约](docs/dual-runtime-contract.md)中的
+   运行时与隔离 worktree。
+3. 执行任务所需的工程检查，为实际候选版本保留证据。分别记录通过、失败、跳过及环境阻塞的
+   检查；工具效果通过回读验证，见[事件观察](docs/event-observability.md)。
+4. 协调端对照验收条件审核结果。受管程序通过证据门禁与未解决问题约束验证、验收状态；
+   需要返修时重新打开任务，在再次推进前验证修改后的候选版本。
+
 ### 创建项目知识库
 
 在独立示例目录初始化空知识容器，检查文档格式并生成索引：
@@ -155,20 +199,6 @@ python3 -B scripts/sulde.py kb search --root .tmp/sulde-demo "缓存更新导致
 ```
 
 该 CLI 使用本地词法匹配；完整 Harness 的混合检索引擎另行初始化。空知识库返回空结果。
-
-### 定义可验收的 Agent 任务
-
-接入宿主后，可以用以下结构描述任务，由意图监督与任务工具保存、执行和验证：
-
-```text
-目标：修复缓存刷新后旧数据覆盖新数据的问题。
-范围：缓存模块及其回归测试，保留现有公共接口。
-验收：并发刷新用例通过；已有测试通过；交付变更说明与命令结果。
-知识：检索相关案例并核对原文；结论有证据后整理为知识候选。
-```
-
-任务契约定义见[任务编写规范](spec/task-authoring.md)，工具与外部操作的结果验证见
-[事件观察](docs/event-observability.md)。
 
 ## 文档
 
