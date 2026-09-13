@@ -53,29 +53,112 @@ Sulde 围绕明确的任务组织工程工作：谁负责、依赖哪些任务�
 
 ## 架构
 
+### 模块关系与执行边界
+
 ```mermaid
 flowchart TB
-    Intent[用户目标与验收条件] --> Tasks[任务定义 · 负责人 · 依赖 · 改动范围]
-    Tasks --> Dispatch[向选定宿主派单]
-    Dispatch --> Adapters[Claude Code / Codex 适配器]
-    Adapters --> Execution[交互执行 / 已批准的受管 L3 worktree]
-    Execution --> Checks[工程检查 · 效果回读 · 证据]
-    Checks --> Review[协调端校验与验收]
-    Review -->|通过| Delivery[工程交付物]
-    Review -->|返修| Tasks
-    Guardian[Guardian · 意图与执行监督] -.-> Dispatch
-    Guardian -.-> Execution
-    Guardian -.-> Checks
-    Context[知识检索 · 跨会话记忆] -.-> Tasks
-    Context -.-> Execution
-    Compatible[通过 MCP / CLI 接入的兼容工具] -.-> Context
+    User["用户与协调 Agent"]
+
+    subgraph Planning["1 · 任务编排"]
+        Brief["目标 · 需求 · 验收条件"]
+        Task["受管任务契约<br/>负责人 · 依赖 · 基准提交 · 改动路径"]
+        Gates["登记与就绪检查<br/>路径归属冲突 · 依赖已验收"]
+        Dispatch["派单 Skill<br/>明确目标宿主 · 任务指令"]
+        Brief --> Task --> Gates --> Dispatch
+        Brief -->|"交互任务"| Dispatch
+    end
+
+    subgraph Execution["2 · 宿主执行"]
+        Host["Claude Code / Codex 适配器"]
+        Interactive["交互任务<br/>当前宿主与会话"]
+        Managed["已批准的受管 L3 任务<br/>agent-runtime.py · 隔离 Git worktree"]
+        Backend["ExecutionBackend / RunHandle<br/>提供方进程 · 中断 · 清理"]
+        Tools["工程操作<br/>文件 · 命令 · MCP / 外部工具"]
+        Host --> Interactive --> Tools
+        Host --> Managed --> Backend --> Tools
+    end
+
+    subgraph Supervision["3 · 执行监督"]
+        Guardian["Guardian<br/>意图契约 · 范围 · 验收边界"]
+        Decisions["纠正与权限决策<br/>需要时走当前宿主的决策通道"]
+        Audit["事件与效果记录<br/>Skill / 工具事件 · 回读 · 未决效果"]
+        Guardian --> Decisions
+        Guardian --> Audit
+    end
+
+    subgraph Verification["4 · 交付校验"]
+        Checks["按任务选择检查<br/>测试 · 构建 / lint · 集成检查"]
+        Evidence["证据工件<br/>任务 / 运行 / 基准 · 命令 · 结果 · 摘要"]
+        Verify["受管校验器<br/>任务绑定 · 报告 · 执行终态 · 进程清理"]
+        Review["协调端审核<br/>证据门禁 · 遗留问题 · 验收条件"]
+        Delivery["已验收的工程交付物"]
+        Checks --> Evidence
+        Evidence -->|"受管任务"| Verify --> Review --> Delivery
+        Evidence -->|"交互审核"| Review
+    end
+
+    subgraph Context["5 · 上下文支撑"]
+        Interfaces["通过 MCP / CLI 接入的兼容工具"]
+        Knowledge["工程知识<br/>检索 · 原文路径 · 适用条件"]
+        Memory["跨会话记忆<br/>项目事实 · 会话历史"]
+        Sources["核实后的参考依据<br/>采纳前阅读原文"]
+        Interfaces --> Knowledge --> Sources
+        Interfaces --> Memory --> Sources
+    end
+
+    User --> Brief
+    Dispatch --> Host
+    Task -.-> Guardian
+    Host -.->|"原生 Hooks"| Guardian
+    Managed -.->|"提供方事件流"| Guardian
+    Decisions -.->|"范围与执行控制"| Interactive
+    Decisions -.->|"需要时暂停 / 中断"| Backend
+    Tools --> Checks
+    Tools -->|"效果回读"| Audit
+    Audit --> Verify
+    Backend -->|"运行结果与清理证据"| Verify
+    Brief -.->|"检索上下文"| Interfaces
+    Tools -.->|"检索上下文"| Interfaces
 ```
 
-图中展示交付流程，各环节需要相应的任务定义、宿主接入和证据。知识与记忆在工作过程中
-提供参考；检索结果需回读原文，工具调用需验证实际效果。状态与权限不会因切换宿主而
-自动继承。实现依据见[任务契约](spec/task-contract.md)、[受管运行时](scripts/kb/agent-runtime.py)、
-[任务状态与证据门禁](scripts/kb/guardian_program.py)、[双宿主契约](docs/dual-runtime-contract.md)
-和[意图监督](docs/intent-guardian.md)。
+实线表示工作与证据流转，虚线表示上下文、观察事件及监督关系。任务登记门禁和受管校验器
+适用于受管路径；普通交互任务使用当前宿主工具与审核流程。检查项按任务选择，并非每次
+无条件运行整套测试。兼容 MCP/CLI 客户端可复用已暴露的能力，完整监督需要经过验证的
+宿主适配器。状态与权限不会因切换宿主而自动继承。
+
+### 受管任务的验收与返修
+
+```mermaid
+flowchart TB
+    Planned["planned · 任务已登记"] -->|"依赖已验收"| Ready["ready · 可以派单"]
+    Ready --> Running["running · 执行或返修"]
+    Running -->|"实现证据"| Implemented["implemented · 已产出改动"]
+    Implemented -->|"任务验证证据"| TaskVerified["task_verified · 任务已验证"]
+    TaskVerified -->|"集成证据"| Integrated["integrated · 集成已验证"]
+    Integrated -->|"系统验证证据"| SystemVerified["system_verified · 系统已验证"]
+    SystemVerified -->|"累计证据齐备且无未解决问题"| Accepted["accepted · 协调端验收通过"]
+    Implemented -->|"返修"| Running
+    TaskVerified -->|"协调端重新打开"| Running
+    Integrated -->|"协调端重新打开"| Running
+    SystemVerified -->|"协调端重新打开"| Running
+    Running -->|"记录阻塞项"| Blocked["blocked · 暂不能推进"]
+    Blocked -->|"协调端解除阻塞并重查前置条件"| Ready
+    Blocked -->|"协调端恢复并重查前置条件"| Running
+```
+
+图中展开主要交付路径和返修回路；完整状态机还支持验收前阻塞，以及对符合条件的任务进行
+显式替代。验证与验收状态由协调端推进。证据必须对应任务与被测输入、工件可回读且摘要
+未漂移，并满足配置的门禁；未解决问题会阻止验证与验收。检查失败或证据不足时，状态推进
+被拒绝，不会因此自动修复任务。`accepted` 是终态，后续工作需要建立新任务。
+
+| 边界 | 实现与证据 |
+| --- | --- |
+| 负责人、依赖与允许改动范围 | [任务契约](spec/task-contract.md) · [登记与状态迁移](scripts/kb/guardian_program.py) |
+| 宿主选择与派单 | [任务编写规范](spec/task-authoring.md) · [派单 Skill](skills/dispatch-task/SKILL.md) |
+| 受管隔离执行 | [受管运行时](scripts/kb/agent-runtime.py) · [进程执行后端](scripts/kb/execution_backend.py) |
+| 意图、纠正与工具效果 | [意图监督](docs/intent-guardian.md) · [事件观察](docs/event-observability.md) |
+| 受管运行成功条件 | [终态不变量](scripts/kb/terminal_invariants.py)：意图 / 效果 / 批准记录已闭合、运行结果有效、进程清理有证据 |
+| 宿主能力与上下文接入 | [双宿主契约](docs/dual-runtime-contract.md) · [检索契约](docs/kb-retrieval-contract.md) |
 
 ### 协议兼容范围
 

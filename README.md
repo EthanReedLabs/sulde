@@ -61,31 +61,117 @@ handling, and background scheduling must be verified in each target environment.
 
 ## Architecture
 
+### Components and execution boundaries
+
 ```mermaid
 flowchart TB
-    Intent[User objective and acceptance criteria] --> Tasks[Task definition · Owner · Dependencies · Scope]
-    Tasks --> Dispatch[Dispatch to the selected host]
-    Dispatch --> Adapters[Claude Code / Codex adapters]
-    Adapters --> Execution[Interactive work / Approved managed L3 worktree]
-    Execution --> Checks[Engineering checks · Effect readback · Evidence]
-    Checks --> Review[Coordinator verification and acceptance]
-    Review -->|Accepted| Delivery[Engineering deliverable]
-    Review -->|Rework| Tasks
-    Guardian[Guardian · Intent and execution supervision] -.-> Dispatch
-    Guardian -.-> Execution
-    Guardian -.-> Checks
-    Context[Knowledge retrieval · Cross-session memory] -.-> Tasks
-    Context -.-> Execution
-    Compatible[Compatible tools via MCP / CLI] -.-> Context
+    User["User and coordinating agent"]
+
+    subgraph Planning["1 · Task orchestration"]
+        Brief["Objective · Requirements · Acceptance criteria"]
+        Task["Managed task contract<br/>Owner · Dependencies · Base commit · Owned paths"]
+        Gates["Registration and readiness checks<br/>Path ownership conflicts · Accepted dependencies"]
+        Dispatch["Dispatch Skill<br/>Explicit target host · Task instructions"]
+        Brief --> Task --> Gates --> Dispatch
+        Brief -->|"Interactive task"| Dispatch
+    end
+
+    subgraph Execution["2 · Host execution"]
+        Host["Claude Code / Codex adapters"]
+        Interactive["Interactive task<br/>Current host and session"]
+        Managed["Approved managed L3 task<br/>agent-runtime.py · Isolated Git worktree"]
+        Backend["ExecutionBackend / RunHandle<br/>Provider process · Interrupt · Cleanup"]
+        Tools["Engineering work<br/>Files · Commands · MCP / external tools"]
+        Host --> Interactive --> Tools
+        Host --> Managed --> Backend --> Tools
+    end
+
+    subgraph Supervision["3 · Supervision"]
+        Guardian["Guardian<br/>Intent contract · Scope · Acceptance boundaries"]
+        Decisions["Corrections and permission decisions<br/>Current host decision route when required"]
+        Audit["Event and effect records<br/>Skill / tool events · Readback · Unresolved effects"]
+        Guardian --> Decisions
+        Guardian --> Audit
+    end
+
+    subgraph Verification["4 · Verification"]
+        Checks["Task-selected checks<br/>Tests · Build / lint · Integration checks"]
+        Evidence["Evidence artifacts<br/>Task / run / baseline · Commands · Results · Digests"]
+        Verify["Managed verifier<br/>Task binding · Report · Terminal state · Process cleanup"]
+        Review["Coordinator review<br/>Evidence gates · Findings · Acceptance criteria"]
+        Delivery["Accepted engineering deliverable"]
+        Checks --> Evidence
+        Evidence -->|"Managed task"| Verify --> Review --> Delivery
+        Evidence -->|"Interactive review"| Review
+    end
+
+    subgraph Context["5 · Context"]
+        Interfaces["Compatible tools via MCP / CLI"]
+        Knowledge["Engineering knowledge<br/>Retrieval · Source paths · Applicability"]
+        Memory["Cross-session memory<br/>Project facts · Session history"]
+        Sources["Checked references<br/>Read original sources before applying"]
+        Interfaces --> Knowledge --> Sources
+        Interfaces --> Memory --> Sources
+    end
+
+    User --> Brief
+    Dispatch --> Host
+    Task -.-> Guardian
+    Host -.->|"Native hooks"| Guardian
+    Managed -.->|"Provider event stream"| Guardian
+    Decisions -.->|"Scope and execution controls"| Interactive
+    Decisions -.->|"Pause / interrupt when required"| Backend
+    Tools --> Checks
+    Tools -->|"Effect readback"| Audit
+    Audit --> Verify
+    Backend -->|"Run result and cleanup evidence"| Verify
+    Brief -.->|"Context lookup"| Interfaces
+    Tools -.->|"Context lookup"| Interfaces
 ```
 
-The diagram shows the delivery workflow; each step needs the relevant task definition, host
-integration, and evidence. Knowledge and memory supply references throughout the work. Search
-results require checking original sources, and tool calls require verification of their effects.
-Switching hosts does not automatically transfer state or authority. See the
-[task contract](spec/task-contract.md), [managed runtime](scripts/kb/agent-runtime.py),
-[program state and evidence gates](scripts/kb/guardian_program.py), and the Chinese references for
-[host integration](docs/dual-runtime-contract.md) and [intent supervision](docs/intent-guardian.md).
+Solid arrows show work and evidence flow; dashed arrows show context, observed events, and
+supervision. The task registration gates and managed verifier apply to the managed path;
+ordinary interactive work uses the current host's tools and review process. Checks are selected
+for the task rather than an unconditional test suite. Compatible MCP/CLI clients can reuse
+exposed capabilities; full supervision requires a validated host adapter. Switching hosts does
+not automatically transfer state or authority.
+
+### Managed task acceptance and rework
+
+```mermaid
+flowchart TB
+    Planned["planned · Task registered"] -->|"Dependencies accepted"| Ready["ready · Ready for dispatch"]
+    Ready --> Running["running · Execute or repair"]
+    Running -->|"Implementation evidence"| Implemented["implemented · Change produced"]
+    Implemented -->|"Task verification evidence"| TaskVerified["task_verified · Task checked"]
+    TaskVerified -->|"Integration evidence"| Integrated["integrated · Integration checked"]
+    Integrated -->|"System verification evidence"| SystemVerified["system_verified · System checked"]
+    SystemVerified -->|"Cumulative evidence and no unresolved findings"| Accepted["accepted · Accepted by coordinator"]
+    Implemented -->|"Rework"| Running
+    TaskVerified -->|"Coordinator reopens"| Running
+    Integrated -->|"Coordinator reopens"| Running
+    SystemVerified -->|"Coordinator reopens"| Running
+    Running -->|"Blocker recorded"| Blocked["blocked · Work cannot advance"]
+    Blocked -->|"Coordinator unblocks; prerequisites rechecked"| Ready
+    Blocked -->|"Coordinator resumes; prerequisites rechecked"| Running
+```
+
+This diagram highlights the main delivery path and repair loops. The full state machine also
+allows blocking before acceptance and explicitly superseding eligible tasks. Verification and
+acceptance transitions belong to the coordinator. Evidence must match the task and tested
+inputs, remain available without digest drift, and satisfy the configured gates; unresolved
+findings prevent verification and acceptance. A failed check or missing evidence prevents a
+transition rather than automatically repairing the task. `accepted` is terminal; further work
+needs a new task.
+
+| Boundary | Implementation and evidence |
+| --- | --- |
+| Task ownership, dependencies, allowed changes | [Task contract](spec/task-contract.md) · [Registration and state transitions](scripts/kb/guardian_program.py) |
+| Host selection and dispatch | [Task authoring](spec/task-authoring.md) · [Dispatch Skill](skills/dispatch-task/SKILL.md) |
+| Isolated managed execution | [Managed runtime](scripts/kb/agent-runtime.py) · [Process execution backend](scripts/kb/execution_backend.py) |
+| Intent, corrections, and tool effects | [Intent supervision](docs/intent-guardian.md) · [Event observability](docs/event-observability.md) (Chinese) |
+| Managed-run success | [Terminal invariants](scripts/kb/terminal_invariants.py): settled intent/effect/approval records, run result, and proven process cleanup |
+| Host capability and context integration | [Host contract](docs/dual-runtime-contract.md) · [Retrieval contract](docs/kb-retrieval-contract.md) (Chinese) |
 
 ### Protocol compatibility
 
