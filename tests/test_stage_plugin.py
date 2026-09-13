@@ -52,14 +52,28 @@ class StagePluginTests(unittest.TestCase):
                 self.assertTrue(select(Path(relative)))
 
     def assert_distributed_task_inputs(self, runtime: Path) -> None:
+        license_paths = (
+            "LICENSE", "NOTICE", "LICENSE-v0.1.0-MIT-archive",
+            "LICENSE-BSL-1.1-archive", "CONTRIBUTING.md", "docs/LICENSING.md",
+        )
         paths = (
             "spec/task-authoring.md", "spec/task-contract.md",
             "template/_project/docs-hub/00_shared-rules/task-brief.md.template",
             "docs/kb-retrieval-contract.md",
         )
-        for relative in paths:
+        for relative in (*license_paths, *paths):
             with self.subTest(distributed_input=relative):
                 self.assertEqual((runtime / relative).read_bytes(), (ROOT / relative).read_bytes())
+        plugin = runtime.parent if runtime.name == "runtime" else runtime
+        manifest_dir = ".codex-plugin" if runtime.name == "runtime" else ".claude-plugin"
+        descriptor = plugin / manifest_dir / "plugin.json"
+        self.assertEqual(
+            json.loads(descriptor.read_text(encoding="utf-8"))["license"],
+            "PolyForm-Noncommercial-1.0.0",
+        )
+        for relative in license_paths:
+            with self.subTest(plugin_license_input=relative):
+                self.assertEqual((plugin / relative).read_bytes(), (ROOT / relative).read_bytes())
         spec = runtime / "spec/task-authoring.md"
         for relative in re.findall(r"\]\(([^)]+)\)", spec.read_text(encoding="utf-8")):
             target = (spec.parent / relative).resolve()

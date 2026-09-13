@@ -1,14 +1,14 @@
 {
   "name": "sulde",
   "version": "0.2.5+codex.20260911043115-19fde00701",
-  "description": "Self-contained Codex host for Sulde intent supervision, knowledge, memory and constrained L2/L3/L4 lifecycle automation.",
+  "description": "Self-contained Codex host for Sulde intent supervision, knowledge, memory and constrained L2/L3/L4 lifecycle automation. Source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
   "author": {
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
   },
   "homepage": "https://github.com/EthanReedLabs/sulde-cc",
   "repository": "https://github.com/EthanReedLabs/sulde-cc",
-  "license": "BUSL-1.1",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": [
     "knowledge-base",
     "memory",
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Sulde",
     "shortDescription": "Guard intent and recall Sulde knowledge in every Codex turn.",
-    "longDescription": "Maintains a shared intent contract, supervises observable Skill/MCP/tool actions, shows Sulde health, recalls relevant knowledge and memory, and ships the self-contained runtime used by constrained L2/L3/L4 lifecycle automation.",
+    "longDescription": "Maintains a shared intent contract, supervises observable Skill/MCP/tool actions, shows Sulde health, recalls relevant knowledge and memory, and ships the self-contained runtime used by constrained L2/L3/L4 lifecycle automation. Source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
     "developerName": "eric.gao.tech",
     "category": "Engineering",
     "capabilities": [

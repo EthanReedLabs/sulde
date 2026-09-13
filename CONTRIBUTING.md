@@ -1,8 +1,9 @@
-# Contributing to Sulde Community
+# Contributing to Sulde
 
-Sulde Community deliberately stays a small framework. Contributions should improve the generic
-mechanism without importing a project's private knowledge or turning the public skeleton into the
-private runtime.
+Sulde shares its framework under [PolyForm Noncommercial 1.0.0](LICENSE).
+Read the [licensing guide](docs/LICENSING.md) before contributing. Contributions should improve
+the reusable framework while keeping project knowledge, session memory and operational data
+outside the source distribution; see the [public data boundary](docs/PUBLIC-DATA-BOUNDARY.md).
 
 ## Welcome contributions
 
@@ -51,14 +52,16 @@ git diff --check
 For packaging changes, also copy the tracked tree without `.git`, caches, or local configuration and
 run doctor from that clean artifact. Passing only inside the development checkout is insufficient.
 
-## Contributor License Agreement
+## Contribution licensing
 
-By opening a pull request you assert that you authored the contribution and may submit it. You
-license it under the repository's Business Source License 1.1 terms and grant the Licensor a
-perpetual, irrevocable right to re-license it under an OSI-approved license so the stated Change Date
-and Change License can apply consistently. You retain copyright in your contribution.
+By opening a pull request you assert that you authored the contribution, or have the necessary
+rights to submit it, and offer it under PolyForm Noncommercial 1.0.0. You retain copyright in
+your contribution. No copyright assignment or additional relicensing permission is implied.
+Identify third-party material and preserve its original license and attribution; do not submit
+material whose terms are incompatible with this distribution.
 
-The `0.1.x` line remains under its archived MIT license.
+This policy applies to new contributions submitted under these terms. Historical contributions
+and releases retain their existing grants; see [license history](docs/LICENSING.md#license-history).
 
 ## Code of conduct
 

@@ -42,11 +42,22 @@ CLAUDE_PREFIXES = (
     "templates/",
     "tools/",
 )
-CLAUDE_FILES = {
+LICENSE_FILES = {
+    "LICENSE",
+    "NOTICE",
+    "LICENSE-v0.1.0-MIT-archive",
+    "LICENSE-BSL-1.1-archive",
+    "CONTRIBUTING.md",
+    "docs/LICENSING.md",
+}
+CLAUDE_FILES = LICENSE_FILES | {
     "CANON.md",
     "CHANGELOG.md",
-    "LICENSE",
     "README.md",
+    "docs/DEVELOPMENT.md",
+    "docs/EXTENDING.md",
+    "docs/KNOWLEDGE-KIT.md",
+    "docs/PUBLIC-DATA-BOUNDARY.md",
     "docs/dual-runtime-contract.md",
     "docs/event-observability.md",
     "docs/intent-guardian.md",
@@ -73,9 +84,8 @@ RUNTIME_PREFIXES = (
     "tools/kb-index/",
     "tools/kb-mcp/",
 )
-RUNTIME_FILES = {
+RUNTIME_FILES = LICENSE_FILES | {
     "CANON.md",
-    "LICENSE",
     "docs/dual-runtime-contract.md",
     "docs/event-observability.md",
     "docs/intent-guardian.md",
@@ -431,7 +441,7 @@ def stage_codex(
 
     plugin_root = output / "plugins" / "sulde"
     for entry in entries:
-        if any(
+        if entry.path.as_posix() in LICENSE_FILES or any(
             entry.path.is_relative_to(Path("skills") / name)
             for name in CODEX_SKILLS
         ):

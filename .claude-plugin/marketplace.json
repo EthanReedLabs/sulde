@@ -1,6 +1,6 @@
 {
   "name": "sulde",
-  "description": "Sulde dual-host engineering knowledge, memory and constrained autonomy.",
+  "description": "Sulde dual-host engineering knowledge, memory and constrained autonomy. Source available for noncommercial use.",
   "owner": {
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
@@ -9,7 +9,7 @@
     {
       "name": "sulde-cc",
       "source": "./",
-      "description": "Sulde — Claude Code / Codex dual-host engineering life system with shared knowledge, memory and constrained autonomy."
+      "description": "Sulde — Claude Code / Codex dual-host engineering life system with shared knowledge, memory and constrained autonomy. PolyForm Noncommercial 1.0.0; commercial use is not granted."
     }
   ]
 }

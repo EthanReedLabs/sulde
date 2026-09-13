@@ -1,0 +1,25 @@
+Required Notice: Copyright (c) 2026 eric.gao.tech (EthanReedLabs) and contributors.
+Required Notice: Sulde source: https://github.com/EthanReedLabs/sulde-cc
+
+Current license: PolyForm Noncommercial License 1.0.0
+SPDX identifier: PolyForm-Noncommercial-1.0.0
+License text: LICENSE
+Licensing guide: docs/LICENSING.md
+Contact: eric.gao.tech@gmail.com
+
+This source revision is offered under the accompanying LICENSE. It does not
+grant commercial use or promise automatic conversion to MIT or another license.
+The standard license's express permissions, including its Noncommercial
+Organizations provision, remain unchanged.
+
+The project license covers project-owned code, scripts, hooks, skills, templates
+and documentation except material explicitly licensed otherwise. Third-party
+software, models, services and other separately licensed material retain their
+own terms. This notice does not relicense them or license users' independent work.
+
+Previously distributed copies retain their original license grants. Versions
+through v0.1.x retain MIT; LICENSE-v0.1.0-MIT-archive preserves that text. Copies
+previously distributed under BSL 1.1 retain their parameters and change-license
+rights; LICENSE-BSL-1.1-archive preserves the previous repository declaration.
+Those archives are historical records, not alternative licenses for new work
+first distributed under the current LICENSE.

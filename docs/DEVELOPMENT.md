@@ -1,0 +1,47 @@
+# 开发与构建
+
+本文面向维护者和宿主集成开发者。用户入口见[项目首页](../README.md)。
+
+## 环境与发布件
+
+从已完整提交、无本机数据的干净源码 checkout 构建独立插件包，输出目录必须是新目录：
+
+```sh
+python3 -B scripts/release/stage_plugin.py --target claude --output ../sulde-claude-candidate
+python3 -B scripts/release/stage_plugin.py --target codex --platform posix --output ../sulde-codex-candidate
+python3 -B scripts/release/stage_plugin.py --target codex --platform windows --output ../sulde-codex-windows-candidate
+```
+
+构建包含许可文件与宿主所需运行代码。Codex 的裸 `integrations/codex/plugins/sulde`
+目录用于适配器开发，正式接入应使用完整 staged 包。
+
+Hook 依赖见 `hooks/requirements.txt`。KB 初始化脚本声明 `fastembed`、`jieba`、
+`cryptography` 和 `pyyaml`；数值计算与模型依赖由 FastEmbed 提供，没有单独的 KB
+requirements 文件。测试时使用独立数据根，不连接已有生产数据目录。
+
+Codex 安装入口为 `scripts/release/install_codex_plugin.py`，通过 `--codex` 选择实际
+可执行文件，并绑定绝对路径、版本、文件摘要和协议观察。当前源码审计的 CLI 协议版本为
+`codex-cli 0.154.0`；变更可执行文件需重新完成安装验证。受管任务不会通过 PATH 或
+`SULDE_CODEX_EXE` 重选 CLI，也不会静默把 v1 部署身份升级为 v2。
+
+真实 CLI 回归检查需要显式设置 `SULDE_TEST_CODEX_EXECUTABLE` 的绝对路径。
+缺少该输入的检查记为未验证；该测试参数不能选择生产任务的执行器。
+
+打包检查不替代宿主安装、原生权限确认、Hook 执行和调度器的现场验收。
+Windows 包构建成功不等于 Windows 运行验证通过。
+
+`tests/test_control_composition_architecture.py` 和
+`tests/test_control_composition_performance.py` 中的历史基线用例依赖私有提交或报告，
+不属于可直接在公开仓库运行的通用回归检查；缺失输入时不能报告通过，也不能为运行它们
+导入私有历史。SELF 模板不携带操作者目标、历史批准或已经验证的本机能力状态。
+
+
+## 本地检查
+
+```sh
+python3 -B scripts/sulde.py doctor --strict
+git diff --check
+```
+
+修改后运行受影响模块的回归检查。打包变更还需从干净源码副本验证实际产物，
+检查许可文件、入口和运行依赖完整。贡献要求见[贡献指南](../CONTRIBUTING.md)。

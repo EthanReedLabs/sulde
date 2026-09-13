@@ -2,6 +2,19 @@
 
 All notable changes to sulde-cc (Community Edition) are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) loosely; versions follow [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Current source licensing changes to PolyForm Noncommercial 1.0.0. Commercial
+  use is not granted, including internal commercial development and paid client
+  work; the standard license's express organizational permissions remain intact.
+- README, contribution terms and host plugin metadata identify the noncommercial
+  license. `docs/LICENSING.md` explains usage, redistribution and historical rights.
+- Preserve the previous BSL declaration in `LICENSE-BSL-1.1-archive` and the existing
+  MIT archive. Prior grants and BSL change-license rights remain effective for
+  previously licensed material; the new license has no automatic MIT conversion.
+
 ## [0.3.0] — 2026-08-12 — Public skeleton completion (P0 + P1)
 
 ### Added

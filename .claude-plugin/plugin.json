@@ -1,13 +1,13 @@
 {
   "name": "sulde-cc",
   "version": "0.8.4",
-  "description": "Sulde — dual-host engineering life system for Claude Code or Codex. Either runtime independently powers intent supervision, knowledge recall, memory, L2/L3/L4, governance and constrained evolution across Android, iOS, Flutter and HarmonyOS. Includes Skill/MCP/tool supervision, enforcement hooks, skills, commands, hybrid KB retrieval, shared memory and project templates. v0.1.x MIT preserved at tag v0.1.0; v0.2.0+ BSL 1.1 (Change Date 2030-05-25 → MIT).",
+  "description": "Sulde — dual-host engineering life system for Claude Code or Codex. Either runtime independently powers intent supervision, knowledge recall, memory, L2/L3/L4, governance and constrained evolution across Android, iOS, Flutter and HarmonyOS. Includes Skill/MCP/tool supervision, enforcement hooks, skills, commands, hybrid KB retrieval, shared memory and project templates. Source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
   "author": {
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
   },
   "homepage": "https://github.com/EthanReedLabs/sulde-cc",
-  "license": "BUSL-1.1",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": [
     "claude-code",
     "codex",
