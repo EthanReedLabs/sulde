@@ -49,12 +49,15 @@ LICENSE_FILES = {
     "LICENSE-BSL-1.1-archive",
     "CONTRIBUTING.md",
     "docs/LICENSING.md",
+    "docs/LICENSING.zh-CN.md",
 }
 CLAUDE_FILES = LICENSE_FILES | {
     "CANON.md",
     "CHANGELOG.md",
     "README.md",
+    "README.zh-CN.md",
     "docs/DEVELOPMENT.md",
+    "docs/DEVELOPMENT.zh-CN.md",
     "docs/EXTENDING.md",
     "docs/KNOWLEDGE-KIT.md",
     "docs/PUBLIC-DATA-BOUNDARY.md",

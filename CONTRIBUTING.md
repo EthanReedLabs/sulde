@@ -18,6 +18,24 @@ that the material describes a recurring pattern, has a verified cause and preven
 contains no project, customer, credential, session, or commercial detail. Project incident libraries
 belong in the downstream project's `knowledge/` directory.
 
+## Documentation translations
+
+The project overview, development guide, and licensing guide are available in English and
+Simplified Chinese. English uses the unsuffixed filename (`README.md`, `docs/DEVELOPMENT.md`,
+`docs/LICENSING.md`); Simplified Chinese uses the `.zh-CN.md` suffix beside each original.
+
+Keep counterpart pages aligned when changing capabilities, commands, compatibility requirements,
+or licensing explanations. Each page links to the other available languages at the top and uses
+same-language guide links where a translation exists. Mark links to untranslated technical
+references with their actual language. Translations of the licensing guide are explanatory;
+the text of `LICENSE` remains authoritative and must not be translated or modified as part of
+a documentation translation.
+
+For another language, use its BCP 47 language tag in the filename, translate the whole page,
+add reciprocal navigation, and include it in the explicit packaging inventory where that page
+is distributed. Preserve command syntax and Mermaid node IDs while translating labels and
+example prose. Verify local links, heading anchors, and the resulting plugin artifacts.
+
 ## Maintainer-controlled areas
 
 Open an issue before changing:

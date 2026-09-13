@@ -55,6 +55,7 @@ class StagePluginTests(unittest.TestCase):
         license_paths = (
             "LICENSE", "NOTICE", "LICENSE-v0.1.0-MIT-archive",
             "LICENSE-BSL-1.1-archive", "CONTRIBUTING.md", "docs/LICENSING.md",
+            "docs/LICENSING.zh-CN.md",
         )
         paths = (
             "spec/task-authoring.md", "spec/task-contract.md",
@@ -342,6 +343,12 @@ class StagePluginTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertTrue((claude / ".claude-plugin" / "plugin.json").is_file())
             self.assert_distributed_task_inputs(claude)
+            for relative in (
+                "README.md", "README.zh-CN.md",
+                "docs/DEVELOPMENT.md", "docs/DEVELOPMENT.zh-CN.md",
+            ):
+                with self.subTest(translated_document=relative):
+                    self.assertEqual((claude / relative).read_bytes(), (ROOT / relative).read_bytes())
             self.assertTrue((claude / "knowledge" / "MANIFEST.json").is_file())
             self.assertTrue((claude / "knowledge" / "HISTORY.json").is_file())
             self.assertTrue(

@@ -6,6 +6,9 @@ All notable changes to sulde-cc (Community Edition) are recorded here. The forma
 
 ### Changed
 
+- Publish the project overview, development guide, and licensing guide in English
+  and Simplified Chinese, with reciprocal language navigation. English is the
+  default documentation entry; plugin packages retain the translated guides.
 - Current source licensing changes to PolyForm Noncommercial 1.0.0. Commercial
   use is not granted, including internal commercial development and paid client
   work; the standard license's express organizational permissions remain intact.

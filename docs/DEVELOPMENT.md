@@ -1,10 +1,14 @@
-# 开发与构建
+# Development and packaging
 
-本文面向维护者和宿主集成开发者。用户入口见[项目首页](../README.md)。
+**English** | [简体中文](DEVELOPMENT.zh-CN.md)
 
-## 环境与发布件
+This guide is for maintainers and host integration developers. Start with the
+[project overview](../README.md) for user-facing entry points.
 
-从已完整提交、无本机数据的干净源码 checkout 构建独立插件包，输出目录必须是新目录：
+## Environment and artifacts
+
+Build self-contained plugin packages from a clean Git checkout with all intended source files
+committed and no machine-specific data. Each output directory must be new:
 
 ```sh
 python3 -B scripts/release/stage_plugin.py --target claude --output ../sulde-claude-candidate
@@ -12,36 +16,41 @@ python3 -B scripts/release/stage_plugin.py --target codex --platform posix --out
 python3 -B scripts/release/stage_plugin.py --target codex --platform windows --output ../sulde-codex-windows-candidate
 ```
 
-构建包含许可文件与宿主所需运行代码。Codex 的裸 `integrations/codex/plugins/sulde`
-目录用于适配器开发，正式接入应使用完整 staged 包。
+Packages include license files and the runtime code required by the host. The raw Codex directory
+at `integrations/codex/plugins/sulde` is for adapter development; use a complete staged package
+for integration.
 
-Hook 依赖见 `hooks/requirements.txt`。KB 初始化脚本声明 `fastembed`、`jieba`、
-`cryptography` 和 `pyyaml`；数值计算与模型依赖由 FastEmbed 提供，没有单独的 KB
-requirements 文件。测试时使用独立数据根，不连接已有生产数据目录。
+Hook dependencies are listed in `hooks/requirements.txt`. KB bootstrap declares `fastembed`,
+`jieba`, `cryptography`, and `pyyaml`; FastEmbed supplies its numerical and model dependencies.
+There is no separate KB requirements file. Use a separate data root for testing and keep it away
+from existing production data.
 
-Codex 安装入口为 `scripts/release/install_codex_plugin.py`，通过 `--codex` 选择实际
-可执行文件，并绑定绝对路径、版本、文件摘要和协议观察。当前源码审计的 CLI 协议版本为
-`codex-cli 0.154.0`；变更可执行文件需重新完成安装验证。受管任务不会通过 PATH 或
-`SULDE_CODEX_EXE` 重选 CLI，也不会静默把 v1 部署身份升级为 v2。
+The Codex installer is `scripts/release/install_codex_plugin.py`. Its `--codex` input selects an
+executable and binds its absolute path, version, file digest, and observed protocol. This source
+revision audits `codex-cli 0.154.0`. Changing the executable requires a new verified installation.
+Managed tasks do not reselect the CLI through PATH or `SULDE_CODEX_EXE`, and do not silently upgrade
+a v1 deployment identity to v2.
 
-真实 CLI 回归检查需要显式设置 `SULDE_TEST_CODEX_EXECUTABLE` 的绝对路径。
-缺少该输入的检查记为未验证；该测试参数不能选择生产任务的执行器。
+Real CLI regression gates require `SULDE_TEST_CODEX_EXECUTABLE` to be set to an explicit absolute
+path. Without that input, the gates remain unverified. This test parameter cannot select the
+executable used for production tasks.
 
-打包检查不替代宿主安装、原生权限确认、Hook 执行和调度器的现场验收。
-Windows 包构建成功不等于 Windows 运行验证通过。
+Packaging checks do not replace on-host verification of installation, native permission handling,
+hook execution, or scheduling. Building a Windows package is not evidence of execution on Windows.
 
-`tests/test_control_composition_architecture.py` 和
-`tests/test_control_composition_performance.py` 中的历史基线用例依赖私有提交或报告，
-不属于可直接在公开仓库运行的通用回归检查；缺失输入时不能报告通过，也不能为运行它们
-导入私有历史。SELF 模板不携带操作者目标、历史批准或已经验证的本机能力状态。
+Historical baseline cases in `tests/test_control_composition_architecture.py` and
+`tests/test_control_composition_performance.py` depend on private commits or reports. They are not
+portable public regression gates. Missing inputs must not be reported as a pass, and private
+history must not be imported to run them. The SELF template carries no operator objectives,
+historical approvals, or verified local capability state.
 
-
-## 本地检查
+## Local checks
 
 ```sh
 python3 -B scripts/sulde.py doctor --strict
 git diff --check
 ```
 
-修改后运行受影响模块的回归检查。打包变更还需从干净源码副本验证实际产物，
-检查许可文件、入口和运行依赖完整。贡献要求见[贡献指南](../CONTRIBUTING.md)。
+Run regression checks for the modules affected by a change. Packaging changes also require
+verification of actual artifacts from a clean source copy, including license files, entry points,
+and runtime dependencies. See the [contribution guidelines](../CONTRIBUTING.md).

@@ -2,75 +2,83 @@
 
 **Agent Harness for Claude Code and Codex**
 
+**English** | [简体中文](README.zh-CN.md)
+
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue)](LICENSE)
 [![Python 3.10–3.14](https://img.shields.io/badge/python-3.10%E2%80%933.14-3776AB)](docs/DEVELOPMENT.md)
 [![Status: Source Candidate](https://img.shields.io/badge/status-source%20candidate-orange)](docs/DEVELOPMENT.md)
 
-Sulde 为 AI 编程 Agent 提供意图监督、任务执行与验收、知识检索和跨会话记忆。
-它通过宿主适配器、Hooks、Skills 和 MCP 服务，将任务目标、工具操作与交付证据连接成
-可追踪的工程工作流。
+Sulde provides intent supervision, task execution and verification, knowledge retrieval,
+and cross-session memory for AI coding agents. Host adapters, hooks, skills, and MCP services
+connect task objectives, tool operations, and delivery evidence in a traceable engineering workflow.
 
-**源码可见，限非商业使用。** 具体授权与历史版本边界见[许可证说明](docs/LICENSING.md)。
+**Source available for noncommercial use.** See the [licensing guide](docs/LICENSING.md)
+for permitted uses and historical license rights.
 
-[特性](#特性) · [架构](#架构) · [快速开始](#快速开始) · [使用示例](#使用示例) · [文档](#文档) · [贡献](#贡献) · [许可证](#许可证)
+[Features](#features) · [Architecture](#architecture) · [Quick start](#quick-start) · [Examples](#examples) · [Documentation](#documentation) · [Contributing](#contributing) · [License](#license)
 
-## 概述
+## Overview
 
-Sulde 面向需要持续上下文、明确执行范围和可验证交付的 Agent 工作流。它把用户目标与
-验收标准保存为任务契约，在执行过程中记录可观察的操作与结果，并为后续任务提供可溯源的
-工程知识和会话记忆。
+Sulde supports agent workflows that need persistent context, explicit execution boundaries,
+and verifiable deliverables. It records user objectives and acceptance criteria as task contracts,
+tracks observable actions and outcomes during execution, and makes engineering knowledge and
+session history available as traceable references for future work.
 
-Claude Code 与 Codex 可各自独立接入同一套核心实现；同时使用时，可通过配置共享本地
-知识与记忆。框架保留 Android、iOS、Flutter 和 HarmonyOS 项目模板，核心监督与知识机制
-可以用于其他工程项目。
+Claude Code and Codex can each use the same core implementation independently. When both are
+configured, they can share local knowledge and memory. The framework includes project templates
+for Android, iOS, Flutter, and HarmonyOS; its core supervision and knowledge mechanisms can also
+support other engineering projects.
 
-当前仓库提供完整 Harness 的**源码候选版本**。各宿主的安装、权限机制与后台调度需要
-在目标环境中分别验证；兼容范围和验收要求见[开发与构建](docs/DEVELOPMENT.md)。
+This repository contains a **source candidate** of the full Harness. Host installation, permission
+handling, and background scheduling must be verified in each target environment. See
+[Development and packaging](docs/DEVELOPMENT.md) for compatibility and acceptance requirements.
 
-## 特性
+## Features
 
-- **意图监督** — Guardian 维护可修订的目标、执行范围与验收条件，记录用户纠正和越界处理。
-- **可验证执行** — 任务契约、隔离 worktree、工具结果回读和交付报告共同支撑任务验收。
-- **工程知识检索** — 通过关键词与向量检索召回相关知识，保留原文路径和适用条件供核验。
-- **跨会话记忆** — 保存、检索与整理项目及会话信息，为后续任务恢复必要背景。
-- **受约束自动化** — LIFE 提供后台任务与分层治理，在已配置的权限和验收条件下推进工作。
-- **双宿主支持** — Claude Code 与 Codex 分别使用原生适配入口，共用核心运行机制。
-- **可扩展工具箱** — 提供项目诊断、Skill/Hook 生成器、知识容器和多端项目脚手架。
+- **Intent supervision** — Guardian maintains revisable objectives, execution boundaries, and acceptance criteria, with records of user corrections and boundary violations.
+- **Verifiable execution** — Task contracts, isolated worktrees, tool-result readbacks, and delivery reports support task acceptance.
+- **Engineering knowledge retrieval** — Keyword and vector search retrieve relevant knowledge while retaining source paths and applicability conditions for verification.
+- **Cross-session memory** — Store, retrieve, and organize project and session information to recover the context needed for later tasks.
+- **Constrained automation** — LIFE provides background tasks and layered governance within configured permissions and acceptance conditions.
+- **Two independent hosts** — Claude Code and Codex use their native adapters and share the core runtime mechanisms.
+- **Extensible project toolkit** — Project diagnostics, skill and hook generators, knowledge containers, and templates for multiple platforms.
 
-## 架构
+## Architecture
 
 ```mermaid
 flowchart TB
-    Claude[Claude Code] --> Adapters[宿主适配器 · Hooks · Skills · MCP]
+    Claude[Claude Code] --> Adapters[Host adapters · Hooks · Skills · MCP]
     Codex[Codex] --> Adapters
-    Adapters --> Guardian[Guardian · 意图与执行范围]
-    Guardian --> Execution[任务执行 · 工具调用 · LIFE]
-    Execution --> Evidence[结果回读 · 验收证据 · 交付报告]
+    Adapters --> Guardian[Guardian · Intent and scope]
+    Guardian --> Execution[Task execution · Tools · LIFE]
+    Execution --> Evidence[Result readback · Verification · Reports]
     Evidence --> Guardian
-    Knowledge[工程知识 · 本地检索] --> Guardian
-    Memory[项目与会话记忆] --> Guardian
-    Evidence --> Review[经验整理与审核]
+    Knowledge[Engineering knowledge · Local retrieval] --> Guardian
+    Memory[Project and session memory] --> Guardian
+    Evidence --> Review[Experience review and curation]
     Review --> Knowledge
 ```
 
-宿主适配层负责接入原生事件和工具能力，核心层维护任务与执行状态，知识和记忆层提供
-历史依据。检索结果需回读原文，工具调用需验证实际结果；状态与权限不会因切换宿主而
-自动继承。详细接口见[双宿主契约](docs/dual-runtime-contract.md)和[意图监督](docs/intent-guardian.md)。
+The adapter layer integrates native host events and tools. The core maintains task and execution
+state, while knowledge and memory provide historical references. Search results require checking
+the original sources, and tool calls require verification of their effects. Switching hosts does
+not automatically transfer state or authority. See the [host contract](docs/dual-runtime-contract.md)
+and [intent supervision reference](docs/intent-guardian.md), both currently in Chinese.
 
-## 快速开始
+## Quick start
 
-### 环境要求
+### Requirements
 
-| 组件 | 要求 |
+| Component | Requirement |
 | --- | --- |
 | Python | 3.10–3.14 |
-| 基础工具 | Git、PyYAML 6.0+ |
-| Agent 宿主 | Claude Code 或 Codex，接入完整 Harness 时选择其一 |
-| 知识与记忆引擎 | 另需索引依赖与模型，由初始化脚本配置 |
+| Basic tools | Git and PyYAML 6.0+ |
+| Agent host | Claude Code or Codex; choose one when integrating the full Harness |
+| Knowledge and memory engines | Additional indexing dependencies and models configured during bootstrap |
 
-独立项目工具箱可直接运行，无需启动 Agent 宿主、模型或 MCP 服务。
+The standalone project toolkit runs without starting an agent host, model, or MCP service.
 
-### 安装源码工具箱
+### Install the source toolkit
 
 ```sh
 git clone https://github.com/EthanReedLabs/sulde-cc.git
@@ -78,7 +86,7 @@ cd sulde-cc
 python3 -m venv .venv
 ```
 
-激活环境并检查安装：
+Activate the environment and check the installation:
 
 ```sh
 # macOS / Linux
@@ -95,29 +103,33 @@ python3 -B scripts/sulde.py doctor --strict
 .venv\Scripts\python.exe -B scripts/sulde.py doctor --strict
 ```
 
-后续示例中的 `python3` 在 Windows 上替换为 `.venv\Scripts\python.exe`。
+On Windows, replace `python3` in the following examples with `.venv\Scripts\python.exe`.
 
 </details>
 
-`doctor` 验证源码布局、基础依赖、插件清单和项目工具箱。以下示例可在仓库根目录直接运行。
+`doctor` checks the source layout, basic dependencies, plugin manifests, and project toolkit.
+Run the examples below from the repository root.
 
-### 接入 Agent 宿主
+### Integrate an agent host
 
-完整 Harness 需要构建对应宿主的插件，并初始化知识与记忆运行环境：
+The full Harness requires a package for the selected host and initialization of the knowledge
+and memory runtime:
 
-| 宿主 | 接入说明 |
+| Host | Integration |
 | --- | --- |
-| Claude Code | 构建 Claude 插件包，按[双宿主契约](docs/dual-runtime-contract.md)配置对应运行环境 |
-| Codex | 构建 POSIX 或 Windows 插件包，使用仓库安装器绑定并验证 Codex 可执行文件 |
+| Claude Code | Build the Claude plugin package and configure its runtime using the [host contract](docs/dual-runtime-contract.md) (Chinese) |
+| Codex | Build a POSIX or Windows plugin package and use the repository installer to bind and verify the Codex executable |
 
-构建命令、运行依赖、CLI 兼容版本与验证要求统一维护在[开发与构建](docs/DEVELOPMENT.md)。
-初始化可能下载模型并写入本地数据；首次接入应使用独立测试环境。
+Build commands, runtime dependencies, audited CLI versions, and verification requirements are
+maintained in [Development and packaging](docs/DEVELOPMENT.md). Initialization can download
+models and write local data; use a separate test environment for the first integration.
 
-## 使用示例
+## Examples
 
-### 创建项目知识库
+### Create a project knowledge base
 
-在独立示例目录初始化空知识容器，检查文档格式并生成索引：
+Initialize empty knowledge containers in a separate example directory, validate their format,
+and generate an index:
 
 ```sh
 mkdir -p .tmp/sulde-demo
@@ -126,66 +138,80 @@ python3 -B scripts/sulde.py kb lint --root .tmp/sulde-demo
 python3 -B scripts/sulde.py kb index --root .tmp/sulde-demo
 ```
 
-知识库位于 `.tmp/sulde-demo/knowledge/`。初始容器为空，可按[知识工具箱指南](docs/KNOWLEDGE-KIT.md)
-添加经过审核的 Markdown 文档，再用症状描述检索：
+The knowledge base lives in `.tmp/sulde-demo/knowledge/`. Its containers start empty. Follow the
+[Knowledge Kit guide](docs/KNOWLEDGE-KIT.md) to add reviewed Markdown documents, then search by symptom:
 
 ```sh
-python3 -B scripts/sulde.py kb search --root .tmp/sulde-demo "缓存更新导致旧数据覆盖"
+python3 -B scripts/sulde.py kb search --root .tmp/sulde-demo "stale data overwrites newer data during cache refresh"
 ```
 
-该 CLI 使用本地词法匹配；完整 Harness 的混合检索引擎另行初始化。空知识库返回空结果。
+This CLI uses local lexical matching. The full Harness's hybrid retrieval engine is initialized
+separately. An empty knowledge base returns an empty result.
 
-### 定义可验收的 Agent 任务
+### Define a verifiable agent task
 
-接入宿主后，可以用以下结构描述任务，由意图监督与任务工具保存、执行和验证：
+After integrating a host, describe a task using this structure so intent supervision and task
+tooling can record, execute, and verify it:
 
 ```text
-目标：修复缓存刷新后旧数据覆盖新数据的问题。
-范围：缓存模块及其回归测试，保留现有公共接口。
-验收：并发刷新用例通过；已有测试通过；交付变更说明与命令结果。
-知识：检索相关案例并核对原文；结论有证据后整理为知识候选。
+Objective: Fix stale data overwriting newer data after a cache refresh.
+Scope: The cache module and its regression tests; preserve the public API.
+Acceptance: Concurrent refresh cases and existing tests pass; include a change summary and command results.
+Knowledge: Retrieve relevant cases and check their sources; draft a knowledge candidate once the conclusion has evidence.
 ```
 
-任务契约定义见[任务编写规范](spec/task-authoring.md)，工具与外部操作的结果验证见
-[事件观察](docs/event-observability.md)。
+See the [task authoring specification](spec/task-authoring.md) for the task contract and
+[event observability (Chinese)](docs/event-observability.md) for verifying tool and external effects.
 
-## 文档
+## Documentation
 
-| 主题 | 文档 |
+| Topic | References |
 | --- | --- |
-| 核心机制 | [意图监督](docs/intent-guardian.md) · [双宿主运行](docs/dual-runtime-contract.md) · [事件观察](docs/event-observability.md) |
-| 任务协议 | [任务编写规范](spec/task-authoring.md) · [任务契约](spec/task-contract.md) |
-| 知识与扩展 | [知识工具箱](docs/KNOWLEDGE-KIT.md) · [检索契约](docs/kb-retrieval-contract.md) · [扩展指南](docs/EXTENDING.md) |
-| 开发维护 | [开发与构建](docs/DEVELOPMENT.md) · [变更记录](CHANGELOG.md) · [贡献指南](CONTRIBUTING.md) |
-| 数据与许可 | [公开数据边界](docs/PUBLIC-DATA-BOUNDARY.md) · [许可说明](docs/LICENSING.md) · [版权声明](NOTICE) |
+| Core mechanisms (Chinese) | [Intent supervision](docs/intent-guardian.md) · [Host integration](docs/dual-runtime-contract.md) · [Event observability](docs/event-observability.md) |
+| Task protocol | [Task authoring](spec/task-authoring.md) · [Task contract](spec/task-contract.md) |
+| Knowledge and extensions | [Knowledge Kit](docs/KNOWLEDGE-KIT.md) · [Retrieval contract (Chinese)](docs/kb-retrieval-contract.md) · [Extension guide](docs/EXTENDING.md) |
+| Development | [Development and packaging](docs/DEVELOPMENT.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) |
+| Data and licensing | [Public data boundary](docs/PUBLIC-DATA-BOUNDARY.md) · [Licensing guide](docs/LICENSING.md) · [Notices](NOTICE) |
 
-历史 Community 指南描述独立工具箱，其中旧版能力清单不代表当前完整 Harness 的范围。
+The project overview, development guide, and licensing guide are available in English and
+Simplified Chinese. Other documents retain their original language, as indicated above.
+Documentation translations do not imply that CLI output or every skill is localized.
 
-## 数据与隐私
+Historical Community guides describe the standalone toolkit; their older capability inventories
+do not describe the current full Harness.
 
-仓库分发框架实现和空知识容器。工程知识、项目与会话记忆、索引与向量、生产日志、
-安装回执、内部报告、凭据和私有 Git 历史不随源码分发。运行数据保存在使用者配置的本地
-Sulde 目录中；模型调用和外部服务的数据边界由实际配置决定。
+## Data and privacy
 
-测试应使用合成数据。分享日志、提交问题或发布衍生包前，按[公开数据边界](docs/PUBLIC-DATA-BOUNDARY.md)
-检查并清理敏感内容。
+The repository distributes the framework and empty knowledge containers. Engineering knowledge,
+project and session memory, indexes and vectors, production logs, installation receipts, internal
+reports, credentials, and private Git history are not bundled. Runtime data lives in the user's
+configured local Sulde directory. Model calls and external services follow the actual deployment's
+data configuration.
 
-## 贡献
+Tests should use synthetic data. Before sharing logs, filing issues, or distributing a derived
+package, review the [public data boundary](docs/PUBLIC-DATA-BOUNDARY.md) and remove sensitive content.
 
-欢迎文档修正、可复现的问题报告、平台兼容性改进，以及通用框架和工具箱的改进。
+## Contributing
 
-1. 在 [Issues](https://github.com/EthanReedLabs/sulde-cc/issues) 描述问题、复现步骤与预期行为。
-2. 按[贡献指南](CONTRIBUTING.md)确定改动范围；涉及核心协议或许可时先讨论。
-3. 提交聚焦单一问题的 Pull Request，附上验证结果。
+Documentation fixes, reproducible bug reports, platform compatibility improvements, and
+improvements to the reusable framework and toolkit are welcome.
 
-涉及敏感信息的问题请勿直接公开原始材料，可通过
-[维护者邮箱](mailto:eric.gao.tech@gmail.com)联系。贡献保留作者版权，适用仓库贡献许可。
+1. Describe the issue, reproduction steps, and expected behavior in [Issues](https://github.com/EthanReedLabs/sulde-cc/issues).
+2. Follow the [contribution guidelines](CONTRIBUTING.md) to establish scope; discuss core protocol or license changes first.
+3. Submit a pull request focused on one issue and include verification results.
 
-## 许可证
+Do not post raw sensitive material in public issues. Contact the
+[maintainer](mailto:eric.gao.tech@gmail.com) when needed. Contributors retain their copyright;
+the repository's contribution licensing terms apply.
 
-当前新内容采用 [PolyForm Noncommercial License 1.0.0](LICENSE)，允许在其许可目的下
-使用、修改与再分发，**不授予商业使用权**。企业内部商业研发、收费交付、转售和商业托管
-不在授权范围内；标准条款对教育、公益等组织的明确许可保留。
+## License
 
-本项目属于 **source available（源码可见）**。历史 MIT / BSL 已授出的权利继续有效；
-新许可没有自动转为 MIT 的日期。完整范围见[许可与使用边界](docs/LICENSING.md)。
+New material released under the current terms uses the
+[PolyForm Noncommercial License 1.0.0](LICENSE). It allows use, modification, and redistribution
+for its permitted purposes and **does not grant commercial use**. Internal commercial development,
+paid client delivery, resale, and commercial hosting are outside that grant; the standard license's
+express permissions for educational, charitable, and other specified organizations remain intact.
+
+Sulde is **source available**. Previously granted MIT and BSL rights remain effective for historical
+material, and the new license has no automatic MIT conversion date. See the
+[licensing guide](docs/LICENSING.md) for the full scope.
