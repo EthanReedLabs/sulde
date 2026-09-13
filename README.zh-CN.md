@@ -1,6 +1,6 @@
 # Sulde
 
-**Agent Harness for Claude Code and Codex**
+**面向 AI Agent 工具的可扩展 Harness**
 
 [English](README.md) | **简体中文**
 
@@ -11,6 +11,7 @@
 Sulde 为 AI 编程 Agent 提供意图监督、任务执行与验收、知识检索和跨会话记忆。
 它通过宿主适配器、Hooks、Skills 和 MCP 服务，将任务目标、工具操作与交付证据连接成
 可追踪的工程工作流。
+实现兼容接口的工具可以复用相应能力；仓库目前提供 Claude Code 和 Codex 的宿主适配器。
 
 **源码可见，限非商业使用。** 具体授权与历史版本边界见[许可证说明](docs/LICENSING.zh-CN.md)。
 
@@ -22,8 +23,9 @@ Sulde 面向需要持续上下文、明确执行范围和可验证交付的 Agen
 验收标准保存为任务契约，在执行过程中记录可观察的操作与结果，并为后续任务提供可溯源的
 工程知识和会话记忆。
 
-Claude Code 与 Codex 可各自独立接入同一套核心实现；同时使用时，可通过配置共享本地
-知识与记忆。框架保留 Android、iOS、Flutter 和 HarmonyOS 项目模板，核心监督与知识机制
+项目按协议和宿主能力接入。兼容工具可调用已暴露的 MCP 与 CLI 接口，宿主适配器负责
+将生命周期事件、权限决策和执行结果连接到共享核心。现有 Claude Code 与 Codex 适配器
+均可独立运行，也可通过配置共享本地知识与记忆。框架保留 Android、iOS、Flutter 和 HarmonyOS 项目模板，核心监督与知识机制
 可以用于其他工程项目。
 
 当前仓库提供完整 Harness 的**源码候选版本**。各宿主的安装、权限机制与后台调度需要
@@ -36,7 +38,7 @@ Claude Code 与 Codex 可各自独立接入同一套核心实现；同时使用�
 - **工程知识检索** — 通过关键词与向量检索召回相关知识，保留原文路径和适用条件供核验。
 - **跨会话记忆** — 保存、检索与整理项目及会话信息，为后续任务恢复必要背景。
 - **受约束自动化** — LIFE 提供后台任务与分层治理，在已配置的权限和验收条件下推进工作。
-- **双宿主支持** — Claude Code 与 Codex 分别使用原生适配入口，共用核心运行机制。
+- **兼容协议接入** — 兼容工具可复用 MCP 与 CLI 能力，并通过扩展宿主适配器接入监督和执行流程；已提供 Claude Code 与 Codex 适配器。
 - **可扩展工具箱** — 提供项目诊断、Skill/Hook 生成器、知识容器和多端项目脚手架。
 
 ## 架构
@@ -45,6 +47,7 @@ Claude Code 与 Codex 可各自独立接入同一套核心实现；同时使用�
 flowchart TB
     Claude[Claude Code] --> Adapters[宿主适配器 · Hooks · Skills · MCP]
     Codex[Codex] --> Adapters
+    Compatible[其他兼容的 Agent 工具] -.-> Adapters
     Adapters --> Guardian[Guardian · 意图与执行范围]
     Guardian --> Execution[任务执行 · 工具调用 · LIFE]
     Execution --> Evidence[结果回读 · 验收证据 · 交付报告]
@@ -59,6 +62,21 @@ flowchart TB
 历史依据。检索结果需回读原文，工具调用需验证实际结果；状态与权限不会因切换宿主而
 自动继承。详细接口见[双宿主契约](docs/dual-runtime-contract.md)和[意图监督](docs/intent-guardian.md)。
 
+### 协议兼容范围
+
+兼容性按工具需要使用的能力判断：
+
+| 接入接口 | 兼容工具需要具备的能力 |
+| --- | --- |
+| 知识与记忆工具 | MCP 客户端支持本服务的 stdio 传输、初始化、工具发现和工具调用 |
+| 项目工具箱 | 能执行文档约定的 CLI 命令并读取输出 |
+| Skill 指令 | 能加载相应指令，并正确解析其引用的命令、工具和运行路径 |
+| 完整监督与受管执行 | 通过宿主适配器，将会话和工具事件、原生权限决策、执行结果及进程生命周期映射到 Sulde 契约 |
+
+现成宿主适配器与提供方选择器目前覆盖 Claude Code 和 Codex。其他工具可复用匹配的接口；
+完整接入需要补齐对应适配并验证。MCP 连接成功本身不代表完整监督流程已兼容。
+接入要求见[扩展兼容宿主](docs/DEVELOPMENT.zh-CN.md#扩展兼容宿主)。
+
 ## 快速开始
 
 ### 环境要求
@@ -67,7 +85,7 @@ flowchart TB
 | --- | --- |
 | Python | 3.10–3.14 |
 | 基础工具 | Git、PyYAML 6.0+ |
-| Agent 宿主 | Claude Code 或 Codex，接入完整 Harness 时选择其一 |
+| Agent 工具 | 使用部分能力需兼容对应 MCP/CLI 接口；完整 Harness 需已验证的宿主适配器。已提供 Claude Code、Codex 适配器 |
 | 知识与记忆引擎 | 另需索引依赖与模型，由初始化脚本配置 |
 
 独立项目工具箱可直接运行，无需启动 Agent 宿主、模型或 MCP 服务。
@@ -111,6 +129,7 @@ python3 -B scripts/sulde.py doctor --strict
 | --- | --- |
 | Claude Code | 构建 Claude 插件包，按[双宿主契约](docs/dual-runtime-contract.md)配置对应运行环境 |
 | Codex | 构建 POSIX 或 Windows 插件包，使用仓库安装器绑定并验证 Codex 可执行文件 |
+| 其他兼容工具 | 通过匹配的 MCP/CLI 接口接入；完整监督和执行流程按[宿主接入要求](docs/DEVELOPMENT.zh-CN.md#扩展兼容宿主)适配 |
 
 构建命令、运行依赖、CLI 兼容版本与验证要求统一维护在[开发与构建](docs/DEVELOPMENT.zh-CN.md)。
 初始化可能下载模型并写入本地数据；首次接入应使用独立测试环境。

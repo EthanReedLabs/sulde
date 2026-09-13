@@ -6,6 +6,9 @@ All notable changes to sulde-cc (Community Edition) are recorded here. The forma
 
 ### Changed
 
+- Describe Sulde as an extensible harness for tools with compatible protocols;
+  distinguish reusable MCP/CLI interfaces from full host integration, with
+  Claude Code and Codex as the currently included adapters.
 - Include an English and Chinese third-party dependency/model inventory in plugin
   packages. Staging now fails before creating output if a required license or
   notice file is untracked, missing, empty, or not a regular file.

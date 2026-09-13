@@ -65,3 +65,20 @@ git diff --check
 Run regression checks for the modules affected by a change. Packaging changes also require
 verification of actual artifacts from a clean source copy, including license files, entry points,
 and runtime dependencies. See the [contribution guidelines](../CONTRIBUTING.md).
+
+## Adding a compatible host
+
+Sulde exposes several integration surfaces. `tools/kb-mcp/server.py` implements stdio JSON-RPC
+initialization, tool discovery, and tool calls. The project toolkit exposes CLI commands through
+`scripts/sulde.py`. A tool implementing the matching interface can reuse those capabilities.
+
+Full host integration also needs mappings for lifecycle events, human permission decisions, and
+managed execution. Use `scripts/kb/host_capabilities.py` as the capability contract and the existing
+adapters as concrete examples. Current provider selectors and package targets accept `claude` and
+`codex`; another provider needs explicit adapter, registration, and packaging support.
+
+Validate the selected interface first, then session identity, tool/result correlation, permission
+decisions, and process completion where applicable. Distinguish packaged entry points, synthetic
+adapter checks, and observations from the actual host. Only claim the capabilities demonstrated
+in that environment. The [existing host contract](dual-runtime-contract.md) documents the shipped
+Claude Code and Codex adapters and their shared core boundaries.

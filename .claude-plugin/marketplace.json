@@ -1,6 +1,6 @@
 {
   "name": "sulde",
-  "description": "Sulde dual-host engineering knowledge, memory and constrained autonomy. Source available for noncommercial use.",
+  "description": "Sulde agent harness for tools with compatible protocols: knowledge, memory and verifiable execution. Source available for noncommercial use.",
   "owner": {
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
@@ -9,7 +9,7 @@
     {
       "name": "sulde-cc",
       "source": "./",
-      "description": "Sulde — Claude Code / Codex dual-host engineering life system with shared knowledge, memory and constrained autonomy. PolyForm Noncommercial 1.0.0; commercial use is not granted."
+      "description": "Sulde provides intent supervision, knowledge, memory and verifiable execution through compatible interfaces and host adapters. Includes Claude Code and Codex adapters. PolyForm Noncommercial 1.0.0; commercial use is not granted."
     }
   ]
 }

@@ -1,6 +1,6 @@
 # Sulde
 
-**Agent Harness for Claude Code and Codex**
+**An extensible harness for AI agent tools**
 
 **English** | [简体中文](README.zh-CN.md)
 
@@ -11,6 +11,8 @@
 Sulde provides intent supervision, task execution and verification, knowledge retrieval,
 and cross-session memory for AI coding agents. Host adapters, hooks, skills, and MCP services
 connect task objectives, tool operations, and delivery evidence in a traceable engineering workflow.
+Tools that implement compatible interfaces can reuse the corresponding capabilities. The repository
+currently provides host adapters for Claude Code and Codex.
 
 **Source available for noncommercial use.** See the [licensing guide](docs/LICENSING.md)
 for permitted uses and historical license rights.
@@ -24,8 +26,10 @@ and verifiable deliverables. It records user objectives and acceptance criteria 
 tracks observable actions and outcomes during execution, and makes engineering knowledge and
 session history available as traceable references for future work.
 
-Claude Code and Codex can each use the same core implementation independently. When both are
-configured, they can share local knowledge and memory. The framework includes project templates
+Integration follows protocols and host capabilities. Compatible tools can use the exposed MCP and
+CLI interfaces, while host adapters connect lifecycle events, permission decisions, and execution
+results to the shared core. The included Claude Code and Codex adapters each operate independently
+and can share local knowledge and memory when configured. The framework includes project templates
 for Android, iOS, Flutter, and HarmonyOS; its core supervision and knowledge mechanisms can also
 support other engineering projects.
 
@@ -40,7 +44,7 @@ handling, and background scheduling must be verified in each target environment.
 - **Engineering knowledge retrieval** — Keyword and vector search retrieve relevant knowledge while retaining source paths and applicability conditions for verification.
 - **Cross-session memory** — Store, retrieve, and organize project and session information to recover the context needed for later tasks.
 - **Constrained automation** — LIFE provides background tasks and layered governance within configured permissions and acceptance conditions.
-- **Two independent hosts** — Claude Code and Codex use their native adapters and share the core runtime mechanisms.
+- **Integration through compatible protocols** — Reuse MCP and CLI capabilities from compatible tools, and extend host adapters for supervision and execution. Claude Code and Codex adapters are included.
 - **Extensible project toolkit** — Project diagnostics, skill and hook generators, knowledge containers, and templates for multiple platforms.
 
 ## Architecture
@@ -49,6 +53,7 @@ handling, and background scheduling must be verified in each target environment.
 flowchart TB
     Claude[Claude Code] --> Adapters[Host adapters · Hooks · Skills · MCP]
     Codex[Codex] --> Adapters
+    Compatible[Other compatible agent tools] -.-> Adapters
     Adapters --> Guardian[Guardian · Intent and scope]
     Guardian --> Execution[Task execution · Tools · LIFE]
     Execution --> Evidence[Result readback · Verification · Reports]
@@ -65,6 +70,22 @@ the original sources, and tool calls require verification of their effects. Swit
 not automatically transfer state or authority. See the [host contract](docs/dual-runtime-contract.md)
 and [intent supervision reference](docs/intent-guardian.md), both currently in Chinese.
 
+### Protocol compatibility
+
+Compatibility is evaluated for the capabilities a tool uses:
+
+| Integration surface | What a compatible tool needs |
+| --- | --- |
+| Knowledge and memory tools | An MCP client supporting this server's stdio transport, initialization, tool discovery, and tool calls |
+| Project toolkit | Ability to invoke the documented CLI commands and consume their outputs |
+| Skill instructions | Ability to load the relevant instructions and resolve their referenced commands, tools, and runtime paths |
+| Full supervision and managed execution | A host adapter mapping session and tool events, native permission decisions, execution results, and process lifecycle to Sulde's contracts |
+
+The shipped host adapters and provider selectors currently cover Claude Code and Codex. Another
+tool can reuse matching interfaces; full host integration requires the corresponding adapter and
+validation. An MCP connection alone does not establish compatibility with the complete supervision
+workflow. See [Adding a compatible host](docs/DEVELOPMENT.md#adding-a-compatible-host).
+
 ## Quick start
 
 ### Requirements
@@ -73,7 +94,7 @@ and [intent supervision reference](docs/intent-guardian.md), both currently in C
 | --- | --- |
 | Python | 3.10–3.14 |
 | Basic tools | Git and PyYAML 6.0+ |
-| Agent host | Claude Code or Codex; choose one when integrating the full Harness |
+| Agent tool | Compatible MCP/CLI interfaces for selected capabilities; a validated host adapter for the full Harness. Claude Code and Codex adapters are included |
 | Knowledge and memory engines | Additional indexing dependencies and models configured during bootstrap |
 
 The standalone project toolkit runs without starting an agent host, model, or MCP service.
@@ -119,6 +140,7 @@ and memory runtime:
 | --- | --- |
 | Claude Code | Build the Claude plugin package and configure its runtime using the [host contract](docs/dual-runtime-contract.md) (Chinese) |
 | Codex | Build a POSIX or Windows plugin package and use the repository installer to bind and verify the Codex executable |
+| Other compatible tools | Connect through matching MCP/CLI interfaces; follow the [host integration requirements](docs/DEVELOPMENT.md#adding-a-compatible-host) for full supervision and execution |
 
 Build commands, runtime dependencies, audited CLI versions, and verification requirements are
 maintained in [Development and packaging](docs/DEVELOPMENT.md). Initialization can download
