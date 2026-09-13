@@ -45,8 +45,6 @@ CLAUDE_PREFIXES = (
 LICENSE_FILES = {
     "LICENSE",
     "NOTICE",
-    "LICENSE-v0.1.0-MIT-archive",
-    "LICENSE-BSL-1.1-archive",
     "CONTRIBUTING.md",
     "docs/LICENSING.md",
     "docs/LICENSING.zh-CN.md",

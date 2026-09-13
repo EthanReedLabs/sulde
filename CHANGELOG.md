@@ -17,8 +17,9 @@ All notable changes to sulde-cc (Community Edition) are recorded here. The forma
   work; the standard license's express organizational permissions remain intact.
 - README, contribution terms and host plugin metadata identify the noncommercial
   license. `docs/LICENSING.md` explains usage, redistribution and historical rights.
-- Preserve the previous BSL declaration in `LICENSE-BSL-1.1-archive` and the existing
-  MIT archive. Prior grants and BSL change-license rights remain effective for
+- Remove historical MIT and BSL license files from the current source tree and
+  plugin packages; retain pinned Git history links in both licensing guides.
+  Prior grants and BSL change-license rights remain effective for
   previously licensed material; the new license has no automatic MIT conversion.
 
 ## [0.3.0] — 2026-08-12 — Public skeleton completion (P0 + P1)

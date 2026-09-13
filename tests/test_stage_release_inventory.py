@@ -36,7 +36,7 @@ class ReleaseInventoryTests(unittest.TestCase):
             ("untracked", "THIRD_PARTY_NOTICES.zh-CN.md", "not tracked"),
             ("missing", "LICENSE", "unavailable"),
             ("empty", "NOTICE", "nonempty regular file"),
-            ("directory", "LICENSE-BSL-1.1-archive", "nonempty regular file"),
+            ("directory", "CONTRIBUTING.md", "nonempty regular file"),
         )
         for target, platform in targets:
             for kind, relative, error in cases:

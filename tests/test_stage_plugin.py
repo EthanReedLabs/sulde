@@ -53,8 +53,7 @@ class StagePluginTests(unittest.TestCase):
 
     def assert_distributed_task_inputs(self, runtime: Path) -> None:
         license_paths = (
-            "LICENSE", "NOTICE", "LICENSE-v0.1.0-MIT-archive",
-            "LICENSE-BSL-1.1-archive", "CONTRIBUTING.md", "docs/LICENSING.md",
+            "LICENSE", "NOTICE", "CONTRIBUTING.md", "docs/LICENSING.md",
             "docs/LICENSING.zh-CN.md",
             "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_NOTICES.zh-CN.md",
         )
@@ -76,6 +75,10 @@ class StagePluginTests(unittest.TestCase):
         for relative in license_paths:
             with self.subTest(plugin_license_input=relative):
                 self.assertEqual((plugin / relative).read_bytes(), (ROOT / relative).read_bytes())
+        for relative in ("LICENSE-v0.1.0-MIT-archive", "LICENSE-BSL-1.1-archive"):
+            with self.subTest(retired_license=relative):
+                self.assertFalse((runtime / relative).exists())
+                self.assertFalse((plugin / relative).exists())
         spec = runtime / "spec/task-authoring.md"
         for relative in re.findall(r"\]\(([^)]+)\)", spec.read_text(encoding="utf-8")):
             target = (spec.parent / relative).resolve()

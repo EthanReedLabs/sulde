@@ -21,8 +21,9 @@ at `integrations/codex/plugins/sulde` is for adapter development; use a complete
 for integration.
 
 Staging requires every license and notice file in `LICENSE_FILES` to be tracked, present, and
-a nonempty regular file before creating output. The set includes the historical license archives,
+a nonempty regular file before creating output. The set includes the current license, notices,
 contribution terms, and both languages of the licensing guide and [third-party inventory](../THIRD_PARTY_NOTICES.md).
+Historical license texts remain accessible through the licensing guide's pinned Git links.
 Claude packages carry them at the root; Codex packages carry them at both the plugin and runtime roots.
 
 For each release candidate, record the clean source commit (`git rev-parse HEAD`), target platform,
