@@ -191,6 +191,9 @@ workflow. See [Adding a compatible host](docs/DEVELOPMENT.md#adding-a-compatible
 
 ## Quick start
 
+For the standalone MCP release, see [Sulde MCP installation and tools](docs/MCP.md)
+and [download MCP 0.2.0](https://github.com/EthanReedLabs/sulde/releases/tag/mcp-v0.2.0).
+
 ### Requirements
 
 | Component | Requirement |

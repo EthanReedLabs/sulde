@@ -2,7 +2,30 @@
 
 All notable changes to sulde (Community Edition) are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) loosely; versions follow [SemVer](https://semver.org/).
 
-## [Unreleased]
+## [mcp-v0.2.0] — 2026-09-14 — First public MCP release
+
+### Added
+
+- Publish the local `sulde-kb` stdio MCP component as source archives with SHA-256
+  checksums, source revision, and a release validation manifest.
+- Add English and Simplified Chinese MCP setup guides and a dedicated dependency
+  list. The service exposes eight knowledge, memory, status, and event tools;
+  full task orchestration and supervision remain CLI/host-adapter capabilities.
+
+### Fixed
+
+- Negotiate the implemented MCP revision (`2024-11-05`) instead of echoing unknown
+  client revisions. Reject non-object initialization parameters.
+- Keep MCP stdin/stdout/stderr UTF-8 even when the parent environment selects ASCII.
+
+### Scope
+
+- MCP version `0.2.0` is independent of host plugin versions. No private corpus,
+  session data, model weights, or production runtime state is included.
+- Initial validation targets macOS arm64 and Python 3.10; full host installation
+  and supervision acceptance is outside this component release.
+
+## Framework changes awaiting a host release
 
 ### Changed
 

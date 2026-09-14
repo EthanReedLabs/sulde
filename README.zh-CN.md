@@ -177,6 +177,9 @@ flowchart TB
 
 ## 快速开始
 
+独立 MCP 发布版见 [Sulde MCP 安装与工具说明](docs/MCP.zh-CN.md)，可直接
+[下载 MCP 0.2.0](https://github.com/EthanReedLabs/sulde/releases/tag/mcp-v0.2.0)。
+
 ### 环境要求
 
 | 组件 | 要求 |

@@ -691,12 +691,16 @@ def dispatch(message: Any) -> dict[str, Any] | None:
     request_id = message["id"]
     method = message.get("method")
     if method == "initialize":
+        params = message.get("params") or {}
+        if not isinstance(params, dict):
+            return rpc_error(request_id, -32602, "initialize params must be an object")
         _observe_initialize(message)
-        client_version = (message.get("params") or {}).get("protocolVersion")
         return rpc_result(
             request_id,
             {
-                "protocolVersion": client_version or PROTOCOL_VERSION,
+                # Negotiate only the revision implemented by this server. An
+                # unknown client revision is not evidence that we support it.
+                "protocolVersion": PROTOCOL_VERSION,
                 "capabilities": {"tools": {}},
                 "serverInfo": {"name": SERVER_NAME, "version": SERVER_VERSION},
             },
@@ -716,6 +720,10 @@ def write_message(message: dict[str, Any]) -> None:
 
 
 def main() -> int:
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            reconfigure(encoding="utf-8", errors="strict")
     for raw_line in sys.stdin:
         if not raw_line.strip():
             continue

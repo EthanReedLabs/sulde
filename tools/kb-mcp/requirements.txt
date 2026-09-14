@@ -1,0 +1,5 @@
+# Dependencies for indexed knowledge and memory tools; no agent host is required.
+# The stdio handshake, tool discovery and event/status reads use the Python stdlib.
+fastembed
+jieba
+PyYAML>=6.0

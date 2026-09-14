@@ -43,6 +43,50 @@ def minimal_environment(home: Path) -> dict[str, str]:
 
 
 class KbMcpEntryTests(unittest.TestCase):
+    def test_initialize_negotiates_only_the_implemented_protocol(self) -> None:
+        server = runpy.run_path(str(ROOT / "tools" / "kb-mcp" / "server.py"))
+        for version in ("2024-11-05", "2099-01-01"):
+            with self.subTest(version=version):
+                response = server["dispatch"]({
+                    "jsonrpc": "2.0", "id": 1, "method": "initialize",
+                    "params": {"protocolVersion": version},
+                })
+                self.assertEqual(response["result"]["protocolVersion"], "2024-11-05")
+        response = server["dispatch"]({
+            "jsonrpc": "2.0", "id": 2, "method": "initialize", "params": ["invalid"],
+        })
+        self.assertEqual(response["error"]["code"], -32602)
+
+    def test_stdio_remains_utf8_with_an_ascii_parent_environment(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            home = Path(temp_dir) / "kb-home"
+            home.mkdir()
+            python = create_venv(home)
+            environment = minimal_environment(home)
+            environment["PYTHONIOENCODING"] = "ascii"
+            requests = [
+                {"jsonrpc": "2.0", "id": 1, "method": "initialize",
+                 "params": {"protocolVersion": "2024-11-05"}},
+                {"jsonrpc": "2.0", "method": "notifications/initialized"},
+                {"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
+                {"jsonrpc": "2.0", "id": 3, "method": "tools/call",
+                 "params": {"name": "不存在的工具", "arguments": {}}},
+                {"jsonrpc": "2.0", "id": 4, "method": "ping"},
+            ]
+            completed = subprocess.run(
+                [str(python), str(ENTRY)],
+                input="".join(json.dumps(row, ensure_ascii=False) + "\n" for row in requests),
+                capture_output=True, text=True, encoding="utf-8", env=environment,
+                timeout=20, check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            responses = [json.loads(line) for line in completed.stdout.splitlines()]
+            self.assertEqual([row["id"] for row in responses], [1, 2, 3, 4])
+            self.assertEqual(len(responses[1]["result"]["tools"]), 8)
+            self.assertIn("不存在的工具", responses[2]["result"]["content"][0]["text"])
+            self.assertTrue(responses[2]["result"]["isError"])
+            self.assertEqual(responses[3]["result"], {})
+
     def test_search_uses_persistent_in_process_backend_without_cli_spawn(self) -> None:
         server = runpy.run_path(str(ROOT / "tools" / "kb-mcp" / "server.py"))
         calls: list[tuple[str, int]] = []
