@@ -331,3 +331,7 @@ Sulde 目录中；模型调用和外部服务的数据边界由实际配置决�
 
 本项目属于 **source available（源码可见）**。历史 MIT / BSL 已授出的权利继续有效；
 新许可没有自动转为 MIT 的日期。完整范围见[许可与使用边界](docs/LICENSING.zh-CN.md)。
+
+## Star 历史
+
+[![Star 历史图](https://api.star-history.com/svg?repos=EthanReedLabs/sulde&type=Date)](https://www.star-history.com/#EthanReedLabs/sulde&Date)

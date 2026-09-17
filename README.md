@@ -361,3 +361,7 @@ express permissions for educational, charitable, and other specified organizatio
 Sulde is **source available**. Previously granted MIT and BSL rights remain effective for historical
 material, and the new license has no automatic MIT conversion date. See the
 [licensing guide](docs/LICENSING.md) for the full scope.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=EthanReedLabs/sulde&type=Date)](https://www.star-history.com/#EthanReedLabs/sulde&Date)
