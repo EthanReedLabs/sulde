@@ -42,7 +42,7 @@ class SchedulerEntrypointTests(unittest.TestCase):
             hook_lib = fixture_root / "hooks" / "lib"
             scripts.mkdir(parents=True)
             hook_lib.mkdir(parents=True)
-            for name in ("auto-distill.py", "command_template.py"):
+            for name in ("auto-distill.py", "command_template.py", "llm_diagnostics.py"):
                 shutil.copy2(ROOT / "scripts" / "kb" / name, scripts / name)
             shutil.copy2(ROOT / "hooks" / "lib" / "kb_cli.py", hook_lib / "kb_cli.py")
             launchagent_home = Path(temp_dir) / "home"

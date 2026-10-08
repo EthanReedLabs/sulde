@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T23-current-lane-readiness",
+  "kind": "task_report",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-29520e7a7b23276c16fbdd20",
+  "verdict": "pass",
+  "summary": "T23 implemented mutually exclusive current, other-lane, historical and terminal readiness scopes.",
+  "facts": [
+    "Worker commit 74061a6 changes only T23-owned paths and remains unmerged.",
+    "The rejected approval-row schema expansion was removed without creating a task or ownership exception."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T23-current-lane-readiness.md",
+      "sha256": "0045897ec6e27e329213c585e0a53900e827e4e187caae9c0ab482c76ca2449c"
+    }
+  ]
+}

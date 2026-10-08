@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "task_report",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "T31 exact-audits Codex CLI 0.149.1 and fixes the installed authority loader's post-seal self-mutation without widening the six-path task boundary.",
+  "facts": [
+    "The controlled worker produced candidate f6ef03d; after the coordinator control commit it is serialized byte-for-byte as 5cf2454 on the T31 branch.",
+    "The report records F31-001, the worker-side full-suite topology limitation and all still-unexecuted production release steps without claiming premature acceptance; coordinator evidence separately records the corrected 1368-test official gate."
+  ],
+  "requirements": [],
+  "findings": ["F31-001"],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T31-codex-0149-1-host-audit.md",
+      "sha256": "96787202c46f21c239f839df4ca52c0ef1733491515699d7162706259ee681d5"
+    }
+  ]
+}

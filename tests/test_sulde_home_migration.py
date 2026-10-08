@@ -168,6 +168,24 @@ class SuldeHomeMigrationTests(unittest.TestCase):
             str(upgraded["contract_identity_map_sha256"]), r"^[0-9a-f]{64}$"
         )
 
+    def test_read_only_identity_validation_never_upgrades_pointer(self) -> None:
+        apply(self.source, self.destination, self.receipt)
+        pointer_path = self.destination.control / "current-home.json"
+        identity_path = self.destination.control / CONTRACT_IDENTITY_FILE
+        before = (pointer_path.read_bytes(), identity_path.read_bytes())
+        self.assertIsNotNone(ensure_contract_identity_map(self.destination, allow_upgrade=False))
+        self.assertEqual(before, (pointer_path.read_bytes(), identity_path.read_bytes()))
+        pointer = json.loads(before[0])
+        pointer.pop("contract_identity_map_sha256")
+        pointer_path.write_text(json.dumps(pointer), encoding="utf-8")
+        pointer_path.chmod(0o600)
+        identity_path.unlink()
+        old = pointer_path.read_bytes()
+        with self.assertRaisesRegex(MigrationError, "separately authorized upgrade"):
+            ensure_contract_identity_map(self.destination, allow_upgrade=False)
+        self.assertEqual(pointer_path.read_bytes(), old)
+        self.assertFalse(identity_path.exists())
+
     def test_legacy_pointer_upgrade_allows_unrelated_runtime_state_drift(self) -> None:
         apply(self.source, self.destination, self.receipt)
         pointer_path = self.destination.control / "current-home.json"

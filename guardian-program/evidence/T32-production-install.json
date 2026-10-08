@@ -1,0 +1,27 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "production_install",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "The official transactional installer deployed the single approved T32 cachebuster and independently read back one immutable runtime generation.",
+  "facts": [
+    "Official cachebuster helper generated 0.2.5+codex.20260824145354-ce28ce210c and release commit 60995fc synchronized it to dev and main; no second cachebuster was generated.",
+    "The transactional installer exited zero and committed generation 0.2.5+codex.20260824145354-ce28ce210c:51871da47829fc47ec66978207d40e44c4c2df99580c266826753f2c19b52484.",
+    "Stable launcher and executing module root resolve to the installed runtime, whose tree digest is 51871da47829fc47ec66978207d40e44c4c2df99580c266826753f2c19b52484.",
+    "The stale pre-commit grant was rejected before installation; only the resealed current-tree one-shot grant changed production state."
+  ],
+  "requirements": ["WP56-D", "DERIVED-SPLIT"],
+  "findings": ["F32-001", "F32-003", "F32-004"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/release/install_codex_plugin.py", "--json"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

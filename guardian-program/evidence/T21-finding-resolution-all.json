@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T21-authority-ledger-compat",
+  "kind": "finding_resolution",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-c4d6a18cabdc0a254f1a2eb5",
+  "verdict": "pass",
+  "summary": "All T21 findings F21-001 through F21-005 are covered by typed replay, exact-once recovery, timeout-refresh and composed architecture evidence.",
+  "facts": [
+    "F21-001 through F21-004 are verified by 79 ledger and journal tests plus seven focused transaction journeys.",
+    "F21-005 is verified by the 2999-line architecture check and the composed 134-test gate."
+  ],
+  "requirements": [],
+  "findings": ["F21-001", "F21-002", "F21-003", "F21-004", "F21-005"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "T21-and-T22-composed-134-test-gate"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

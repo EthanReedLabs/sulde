@@ -1,0 +1,28 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H03-recovery-supervisor.md",
+      "sha256": "ccbd376477e02cc5fb3770ecf78afe47641a0d7924b33b6aa998fe7eed9d0c55"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "H03 implements a strict local RecoverySupervisor and descriptor-pinned append-only state journal with typed heartbeat, progress, process, lease, resource, scheduler, generation, recommendation, authorization, prepare, reprobe, verifier and terminal receipt boundaries.",
+    "The repair2 report records FR2-H03-001 through FR2-H03-009, both repair rounds, exact four-path scope, 5/30/10-second SLAs, bounded restart/intervention behavior and explicit H04-H06 limits without claiming live scheduler or external adapter completion."
+  ],
+  "findings": [
+    "FR2-H03-001", "FR2-H03-002", "FR2-H03-003",
+    "FR2-H03-004", "FR2-H03-005", "FR2-H03-006",
+    "FR2-H03-007", "FR2-H03-008", "FR2-H03-009"
+  ],
+  "kind": "task_report",
+  "requirements": [],
+  "run_id": "run-gpe-911f4018e20b6c8d699f94e3",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H03 report binds the active recovery protocol, two repair rounds, nine finding dispositions, exact scope, evidence and downstream limits.",
+  "task_id": "H03-recovery-supervisor",
+  "verdict": "pass"
+}

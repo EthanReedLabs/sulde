@@ -765,6 +765,95 @@ except PermissionError:
             self.assertEqual(second["catchup_bytes"], 0)
             self.assertEqual(third["catchup_bytes"], len(appended))
 
+    def test_os_boundary_canonicalizes_alias_for_each_backend(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            real = root / 'physical directory'
+            real.mkdir()
+            alias = root / 'alias'
+            alias.symlink_to(real, target_is_directory=True)
+            for platform, executable in (('darwin', '/usr/bin/sandbox-exec'),
+                                          ('linux', '/usr/bin/bwrap')):
+                with self.subTest(platform=platform), \
+                        mock.patch.object(module.sys, 'platform', platform), \
+                        mock.patch.object(module.shutil, 'which', return_value=executable):
+                    command = module.os_isolated_test_command(['fixture'], alias)
+                    if platform == 'darwin':
+                        self.assertIn(f'(subpath "{real.resolve()}")', command[2])
+                        self.assertNotIn(str(alias), command[2])
+                    else:
+                        index = command.index('--ro-bind')
+                        self.assertEqual(command[index + 1:index + 3], [str(real.resolve())] * 2)
+                    self.assertEqual(command[-1], 'fixture')
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'Seatbelt path identity is macOS-specific')
+    def test_real_os_boundary_denies_alias_and_symlink_targets(self) -> None:
+        module = load_module()
+        # Keep tempfile's raw spelling: resolving here would hide the regression.
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            protected = root / 'protected'
+            protected.mkdir()
+            alias = root / 'symbolic'
+            alias.symlink_to(protected.resolve(), target_is_directory=True)
+            env = module.isolated_environment(root / 'isolated', production_kb=protected)
+            try:
+                module.preflight_os_test_isolation(protected, env)
+            except RuntimeError as error:
+                # Skip only unavailable nested Seatbelt, never a policy escape.
+                unavailable = {
+                    'OS test isolation backend did not prove write denial: '
+                    f'sandbox-exec: {operation}: Operation not permitted'
+                    for operation in ('sandbox_init', 'sandbox_apply')
+                }
+                if (str(error) not in unavailable
+                        or os.environ.get('SULDE_REQUIRE_NATIVE_OS_EVIDENCE') == '1'):
+                    raise
+                self.skipTest('outer launcher prevents child Seatbelt initialization')
+            for index, policy_root in enumerate((protected, protected.resolve(), alias)):
+                for spelling in (protected, alias):
+                    with self.subTest(policy=str(policy_root), target=str(spelling)):
+                        target = spelling / f'denied-{index}'
+                        command = module.os_isolated_test_command([
+                            sys.executable, '-S', '-c',
+                            'import sys; from pathlib import Path; Path(sys.argv[1]).write_text("bad")',
+                            str(target),
+                        ], policy_root)
+                        result = subprocess.run(command, env=env, capture_output=True, text=True,
+                                                encoding="utf-8", errors="replace", timeout=15, check=False)
+                        self.assertNotEqual(result.returncode, 0, result.stdout)
+                        self.assertIn('PermissionError', result.stderr)
+                        self.assertFalse(target.exists())
+            # Positive control under the same profile: interpreter is runnable,
+            # an unrelated fixture path is still writable (not a blanket deny).
+            allowed = root / 'allowed'
+            command = module.os_isolated_test_command([
+                sys.executable, '-S', '-c',
+                'import sys; from pathlib import Path; Path(sys.argv[1]).write_text("ok")',
+                str(allowed),
+            ], alias)
+            result = subprocess.run(command, env=env, capture_output=True, text=True,
+                                    encoding="utf-8", errors="replace", timeout=15, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(allowed.read_text(), 'ok')
+
+    def test_preflight_write_escape_is_a_hard_failure(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as name:
+            protected = Path(name) / 'protected'
+            protected.mkdir()
+            env = {'SULDE_ISOLATED_TEST_RUN_ID': 'a' * 32}
+            probe = protected / ('.sulde-isolation-probe-' + 'a' * 32)
+            def escaped(*_args, **_kwargs):
+                probe.write_bytes(b'proof of write')
+                return subprocess.CompletedProcess([], 9, '', '')
+            with mock.patch.object(module.subprocess, 'run', side_effect=escaped), \
+                    mock.patch.object(module, 'os_isolated_test_command', return_value=['fixture']):
+                with self.assertRaisesRegex(RuntimeError, 'allowed a production write'):
+                    module.preflight_os_test_isolation(protected, env)
+            self.assertFalse(probe.exists())
+
     def test_os_boundary_blocks_non_python_write_before_file_appears(self) -> None:
         module = load_module()
         with tempfile.TemporaryDirectory() as directory_name:

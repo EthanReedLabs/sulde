@@ -8,6 +8,9 @@ from typing import Any
 
 SCHEMA = "sulde-memory-annotation-v2"
 RECEIPT_SCHEMA = "sulde-memory-annotation-receipt-v2"
+# Wire protocol. A conflict is a property of one sample, not a backend failure;
+# callers crossing a process boundary need to tell those two apart.
+CONFLICT_EXIT_CODE = 3
 MAX_ENTITIES = 6
 MAX_EDGES = 3
 MAX_TEXT = 512

@@ -35,7 +35,8 @@ class NativeControlCompositionTests(unittest.TestCase):
                 installed = installer._registry_add(codex, prepared.marketplace, runner,
                     expected_version=generation["plugin_version"])
                 kb = Path(env["SULDE_KB_HOME"])
-                installer._install_launchers(installed, kb, runner, platform="posix")
+                candidate._prepare_isolated_hook_launchers(installed, kb, runner,
+                    platform="posix", environment=env)
                 installer._smoke_installed(installed, kb, codex=codex,
                     expected_tree_sha256=prepared.plugin_tree_sha256, runner=runner)
                 workspace = Path(env["SULDE_HOME"]) / "composition-canary"
@@ -43,6 +44,10 @@ class NativeControlCompositionTests(unittest.TestCase):
                 self.assertEqual(runner(["git", "init", str(workspace)], environment=env, timeout=10).returncode, 0)
                 preserved = workspace / "preserved"
                 preserved.mkdir()
+                undeclared = workspace.parent / "undeclared-sibling"
+                undeclared.mkdir()
+                escape = workspace / "sibling-link"
+                escape.symlink_to(undeclared, target_is_directory=True)
                 guardian = Path(env["SULDE_HOME"]) / "bin/intent-guardian"
                 quoted = shlex.quote(str(guardian))
                 outputs = {}
@@ -77,7 +82,22 @@ class NativeControlCompositionTests(unittest.TestCase):
                         f"{quoted} --help && touch after-negative.txt",
                         f"{quoted} show --contract missing.json && touch must-not-run.txt ; {quoted} show --contract {shlex.quote(str(contract))} > observed.json",
                     ]
+                    # This negative proves the actual native sandbox, not a
+                    # Guardian denial. Outer production-only isolation is a
+                    # different boundary and cannot supply this evidence.
+                    if not externally_isolated:
+                        commands.extend([
+                            'touch ' + shlex.quote(str(undeclared / 'direct-marker')),
+                            'touch ' + shlex.quote(str(escape / 'symlink-marker')),
+                        ])
                     items = host.execute(commands)
+                    if not externally_isolated:
+                        for index, marker in ((5, 'direct-marker'), (6, 'symlink-marker')):
+                            output = outputs.get(f'candidate_native_{index}', '')
+                            self.assertIn('Process exited with code 1', output, outputs)
+                            self.assertTrue('Operation not permitted' in output or 'Permission denied' in output,
+                                            output)
+                            self.assertFalse((undeclared / marker).exists())
                     if not (workspace / "after-negative.txt").is_file():
                         print("NATIVE_COMPOSITION_DIAGNOSTIC=" + json.dumps({
                             "outputs": outputs,
@@ -136,4 +156,6 @@ class NativeControlCompositionTests(unittest.TestCase):
                         "safe_batches_completed": 4, "destructive_pre_denials": 1,
                         "post_denial_write_succeeded": True, "short_circuit_preserved": True,
                         "per_step_success_inferred": False, "external_model_requests": 0,
+                        "sandbox_policy": host.sandbox_policy,
+                        "undeclared_sibling_and_symlink_denied": not externally_isolated,
                     }, sort_keys=True), flush=True)

@@ -1,0 +1,64 @@
+{
+  "acceptance": [
+    {
+      "clause": "一次当前会话原生 Allow 形成 provider、session、task epoch、subject、effect、constraints、world state 与 verifier 全绑定的单次 HumanGrantV2",
+      "fact": "H02 binds the readable question and typed human receipt to H01's complete HumanGrantV2 identity, consumes that CAS once, then derives the dispatch, effect receipt and verifier receipt from the same transaction without treating timeout, silence, chat or fixed text as authority.",
+      "requirement_id": "R2-HUMAN-GRANT"
+    },
+    {
+      "clause": "同一 grant 获准后普通默认策略不得对同一未漂移 effect 二次 deny",
+      "fact": "The atomic dispatch winner receives default_policy_recheck_required=false exactly once; same-consumer retry, losing consumers and every public/native readback receive only a non-executable dispatch-ID reprobe rather than another policy decision or reusable authority.",
+      "requirement_id": "R2-HUMAN-GRANT"
+    },
+    {
+      "clause": "PermissionRequest 展示和授权结算先于普通 task/tool guard，paused 或 degraded lane 不得遮蔽恢复卡",
+      "fact": "H02 seals narrow question and recovery control routes and the approvals adapter evaluates only those typed routes before ordinary tool policy; malformed, forged, stale or foreign routes deny without broadening ordinary authority.",
+      "requirement_id": "R2-GRANT-BROKER"
+    },
+    {
+      "clause": "crash、retry、reprobe 与 abort 按 transaction id 幂等推进且不重放人类决定或外部效果",
+      "fact": "All durable-boundary, concurrency and replay tests prove one transaction, one grant consumption and one executable dispatch; recovery exposes a stable non-executable dispatch ID for downstream reprobe, while effect execution remains delegated to H04's typed adapter.",
+      "requirement_id": "R2-GRANT-BROKER"
+    },
+    {
+      "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并",
+      "fact": "H02 changed exactly six frozen paths; the initial candidate and repair1 were held after four independently reproduced findings, repair2 passed targeted, failure-injection and isolated-system review, and all findings have append-only fixed_current dispositions before promotion.",
+      "requirement_id": "PROGRAM-GOVERNANCE"
+    },
+    {
+      "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写",
+      "fact": "H02 was developed in a preserved full clone from the frozen dev baseline and integrated only into the R2 coordinator branch after accepted H01; predecessor events, accepted evidence, dev/main, installed runtime and production state were not rewritten.",
+      "requirement_id": "PROGRAM-GOVERNANCE"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H02-grant-broker.md",
+      "sha256": "29cb6a2b2e8ccdd56f4d550e5d2160789402a441d7c51b57ad29070061934208"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "Every acceptance clause assigned to H02's R2-HUMAN-GRANT, R2-GRANT-BROKER and PROGRAM-GOVERNANCE requirements is mapped exactly once.",
+    "The mapping claims the local typed broker and recovery-control protocol only; typed external adapters, active supervisor behavior, installation and dual-host live acceptance remain assigned to H03-H06."
+  ],
+  "findings": [
+    "FR2-H02-001",
+    "FR2-H02-002",
+    "FR2-H02-003",
+    "FR2-H02-004"
+  ],
+  "kind": "requirement_traceability",
+  "requirements": [
+    "R2-HUMAN-GRANT",
+    "R2-GRANT-BROKER",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "run_id": "run-gpe-142abf817c36c4687d1480b1",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H02 traces all assigned HumanGrantV2, GrantBroker and governance clauses without claiming downstream adapter, supervisor or live-host completion.",
+  "task_id": "H02-grant-broker",
+  "verdict": "pass"
+}

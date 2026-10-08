@@ -1,0 +1,45 @@
+{
+  "acceptance": [
+    {
+      "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并",
+      "fact": "Seven tasks are registered with explicit dependencies and path sets; guardian-r2-independent-reviewer is frozen, and no merge or install is authorized by H00.",
+      "requirement_id": "PROGRAM-GOVERNANCE"
+    },
+    {
+      "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写",
+      "fact": "H00 references the predecessor only through its immutable final-check projection, accepted report and frozen source digest; the predecessor event chain was not appended or rewritten.",
+      "requirement_id": "PROGRAM-GOVERNANCE"
+    },
+    {
+      "clause": "I01-I19、并发、进程死亡、receipt tamper、world-state drift、只读账本、scheduler degraded 与 rollback 全部通过",
+      "fact": "H00 freezes all nineteen cases and thirteen hostile axes as mandatory H06 inputs; it explicitly does not claim that their execution outcomes have passed yet.",
+      "requirement_id": "R2-LIVE-ACCEPTANCE"
+    },
+    {
+      "clause": "Codex 与 Claude 真实宿主、macOS 与 Windows 证据齐全前不得宣称 R2 完成或 production accepted",
+      "fact": "Codex and macOS baselines are frozen, Claude live is deferred/unknown, Windows remains required, allow_human_deferred is false, and no completion or production acceptance is claimed.",
+      "requirement_id": "R2-LIVE-ACCEPTANCE"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "briefs/SULDE-R2-HALG-20260825.md",
+      "sha256": "8c5c41522ee4b6457555ae1f778bcfc4e62c8ad851ec0eda6c78bf5b17f416ed"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "H00 covers only the first PROGRAM-GOVERNANCE clause; R2 live acceptance and remaining clauses intentionally stay uncovered for H06.",
+    "The completed G0-G6/T32 history is referenced by frozen digest and independent final-check rather than replayed or rewritten."
+  ],
+  "findings": [],
+  "kind": "requirement_traceability",
+  "requirements": ["PROGRAM-GOVERNANCE", "R2-LIVE-ACCEPTANCE"],
+  "run_id": "run-gpe-f128db6f4146d085f1391fa8",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H00 provides precise governance traceability without prematurely satisfying the deferred live-host completion clauses.",
+  "task_id": "H00-fixture-baseline",
+  "verdict": "pass"
+}

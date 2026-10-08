@@ -38,7 +38,7 @@ AUDIT_INSTRUCTIONS = """\
 - uncertain：原文信息不足以可靠判断、指代不清，或只能弱推断。
 - temporal_modal 独立核查时间/模态：目标、计划、提案、反事实、PLANNED/NOT_READY 不能判为当前已达成事实。
 - predicate_object 独立核查完整谓词及宾语：因果结果的关键限定不可丢失，词语重合不等于关系成立。
-- 例如 SyntheticApplication —定位为→ 示例检索系统，来源末尾为 PLANNED/NOT_READY，temporal_modal 必须 unsupported。
+- 例如 Apollo —定位为→ 顶尖教练系统，来源末尾为 PLANNED/NOT_READY，temporal_modal 必须 unsupported。
 - 例如 stale build —导致→ iOS walkthrough probe，来源为旧 app 让 probe 未携带最新 marker，宾语丢失关键谓词，predicate_object 必须 unsupported 或 uncertain。
 - verdict 只有两个独立维度都 supported 才能 supported；任一 unsupported 则 unsupported，否则 uncertain。
 - 关键词启发式只产生 inconclusive 待审提示，不代表人工裁决，也不可据此隐藏边。\n- 不使用外部知识补足证据；宁可 uncertain，不把推测判为 supported。

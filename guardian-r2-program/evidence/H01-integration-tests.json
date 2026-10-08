@@ -1,0 +1,42 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H01-human-grant-v2.md",
+      "sha256": "362e67f6719be687de43b8ef6676660ad3220bad7ba5696cc286f5f63765828f"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-q",
+        "tests.test_human_grant",
+        "tests.test_approval_cas_schema",
+        "tests.test_approval_timeout_policy",
+        "tests.test_approval_invariant"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The exact H01 blobs were integrated onto the coordinator branch before this 116-test run.",
+    "The standalone protocol imports and composes with existing approval CAS, timeout and invariant modules without modifying them."
+  ],
+  "findings": [],
+  "kind": "integration_tests",
+  "requirements": [],
+  "run_id": "run-gpe-81c4eb66edd2ae4588c2648d",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H01 composes with existing approval CAS, timeout and invariant modules on the integrated commit.",
+  "task_id": "H01-human-grant-v2",
+  "verdict": "pass"
+}

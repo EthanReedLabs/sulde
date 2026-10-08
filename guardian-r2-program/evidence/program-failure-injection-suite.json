@@ -1,0 +1,8 @@
+{
+  "schema":"sulde-guardian-program-evidence-v1","scope":"program","task_id":"","kind":"failure_injection_suite",
+  "baseline":"program:guardian-human-authority-lifeform-r2","run_id":"program-h06h-a009","verdict":"pass",
+  "summary":"H06H hostile replay mutations and accepted boundary failure matrices fail closed while the complete local composition remains green.",
+  "facts":["missing incident and axis, authority drift, duplicate gate and synthetic live PASS are rejected","198-test composition passes"],"requirements":[],"findings":[],"acceptance":[],
+  "commands":[{"argv":["python3","-B","-m","unittest","-v","tests.test_r2_guardian_integration"],"exit_code":0,"result":"pass"}],
+  "artifacts":[{"path":"evidence/H06H-a009-failure-injection.json","sha256":"b2028c4fc52af67eb92fbaaa2f00283c26fd7a8db32753563980e9c05900a5a7"}]
+}

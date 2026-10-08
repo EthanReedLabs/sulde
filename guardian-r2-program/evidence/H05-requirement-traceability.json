@@ -1,0 +1,25 @@
+{
+  "acceptance": [
+    {"requirement_id": "R2-GRANT-BROKER", "clause": "PermissionRequest 展示和授权结算先于普通 task/tool guard，paused 或 degraded lane 不得遮蔽恢复卡", "fact": "H05 classifies sealed recovery cards and read routes before ordinary task policy, so paused, unavailable and launcher-degraded states cannot hide status, doctor or the typed recovery decision surface."},
+    {"requirement_id": "R2-GRANT-BROKER", "clause": "crash、retry、reprobe 与 abort 按 transaction id 幂等推进且不重放人类决定或外部效果", "fact": "Durable dispatch identity, one apply, bounded reprobe and independent verifier receipts make crash-after-adapter recovery idempotent without replaying the native decision or effect."},
+    {"requirement_id": "R2-RECOVERY-SUPERVISOR", "clause": "生命体在 5 秒内报告卡顿并在能力边界内处理孤儿锁、退出 actor、冲突 lane 与 runtime drift", "fact": "H05 exposes H03 recovery events through a visible 5/30-second projection while preserving minimal-lane ownership and exact generation facts."},
+    {"requirement_id": "R2-RECOVERY-SUPERVISOR", "clause": "干预有预算、有终态、有 receipt，不能扩大 allowed paths、静默换宿主或无限重试", "fact": "Capabilities bind provider, session, generation, action, target and verifier; apply/reprobe is capped at two, terminal is singular, and no generic shell or do-anything route exists."},
+    {"requirement_id": "R2-RECOVERY-LANE", "clause": "status、doctor、repair、uninstall、rollback 与 pending decision 在普通 lane 不可用时仍可达", "fact": "Read routes bypass ordinary broken state, while each write recovery action requires one sealed native card and exact adapter/verifier identity before it can execute."},
+    {"requirement_id": "R2-RECOVERY-LANE", "clause": "等待使用可更新状态卡和本地完整日志，满足 5/30 秒进度 SLA 且不重复输出轮询文案", "fact": "Identical waiting stages are suppressed, first no-progress appears at 5 seconds, 30-second windows emit bounded progress, and the owner-only journal retains full detail while default output remains a stage summary."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并", "fact": "H05 integrated exactly eight frozen paths after four managed repairs, records FR2-H05-001..014, and passes strict run verification plus 57, 12, 149 and 484-test gates."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写", "fact": "H05 developed in an isolated full clone and integrated only on the R2 coordinator; predecessor events, accepted evidence, dev/main, installed runtime and production state were not rewritten."}
+  ],
+  "artifacts": [{"path": "reports/H05-recovery-lane.md", "sha256": "7ed793f24d4965b11888426fb37790d8c1f89dd86b3ecc9daab993c55f5ba6e8"}],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": ["All eight acceptance clauses assigned to H05 are mapped exactly once to executed and independently reviewed facts; H06-only installation and live-host clauses are excluded."],
+  "findings": ["FR2-H05-001", "FR2-H05-002", "FR2-H05-003", "FR2-H05-004", "FR2-H05-005", "FR2-H05-006", "FR2-H05-007", "FR2-H05-008", "FR2-H05-009", "FR2-H05-010", "FR2-H05-011", "FR2-H05-012", "FR2-H05-013", "FR2-H05-014"],
+  "kind": "requirement_traceability",
+  "requirements": ["R2-GRANT-BROKER", "R2-RECOVERY-SUPERVISOR", "R2-RECOVERY-LANE", "PROGRAM-GOVERNANCE"],
+  "run_id": "run-gpe-f0547c16e9416c1a0ef60559",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H05 traces every assigned broker, supervisor, recovery-lane and governance clause without claiming H06 install or live acceptance.",
+  "task_id": "H05-recovery-lane",
+  "verdict": "pass"
+}

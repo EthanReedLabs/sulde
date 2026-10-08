@@ -1,0 +1,24 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H06B-codex-0150-authority.md", "sha256": "27b52eb201865503691830f436ecb5538a73bd95b875ea72e9a4c8fe85ef2a5c"}],
+  "baseline": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "commands": [
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_agent_runtime.AgentRuntimeTests.test_audited_codex_0150_real_cli_contract"], "exit_code": 0, "result": "pass"},
+    {"argv": ["task_report_verdict", "reports/H06B-codex-0150-authority.md"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "FR2-H06-001 is fixed by one staged Codex CLI contract imported by runtime and installer, exact 0.150.1 identity, and integrated real-authority proof.",
+    "FR2-H06B-001 is fixed by explicit temporary-projection, restore and post-restore time/source binding; FR2-H06B-002 is fixed by full staged authority seal/readback/preflight plus physical drift rejection.",
+    "FR2-H06B-003 is fixed for this report by independent semantic review and source/time-separated durable evidence; FR2-H06B-004 is fixed by the five-root multi-suffix production literal guard with a non-Python injection negative.",
+    "FR2-H06B-005 remains open and is intentionally excluded from fixed findings; it will be linked to the final H06 successor."
+  ],
+  "findings": ["FR2-H06-001", "FR2-H06B-001", "FR2-H06B-002", "FR2-H06B-003", "FR2-H06B-004"],
+  "kind": "finding_resolution",
+  "requirements": ["R2-LIVE-ACCEPTANCE", "PROGRAM-GOVERNANCE"],
+  "run_id": "run-gpe-be866b2fa440a994860b63a9",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06B supplies current implementation and executed proof for the Codex authority and four repair findings while retaining the separate fleet-safe finding.",
+  "task_id": "H06B-codex-0150-authority",
+  "verdict": "pass"
+}

@@ -1,0 +1,76 @@
+{
+  "allow_human_deferred": false,
+  "coordinator": "guardian-r2-coordinator",
+  "objective": "建立 HumanGrantV2、GrantBroker、RecoverySupervisor、typed resource adapters 与独立 RecoveryLane，关闭 I01-I19 的真实误拦、自锁和无干预问题",
+  "program_evidence_required": [
+    "final_traceability",
+    "full_isolated_suite",
+    "failure_injection_suite",
+    "incident_fixture_matrix",
+    "installed_generation",
+    "scheduler_owner",
+    "live_host_canary_codex",
+    "live_host_canary_claude",
+    "rollback_evidence"
+  ],
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "requirements": [
+    {
+      "acceptance": [
+        "一次当前会话原生 Allow 形成 provider、session、task epoch、subject、effect、constraints、world state 与 verifier 全绑定的单次 HumanGrantV2",
+        "同一 grant 获准后普通默认策略不得对同一未漂移 effect 二次 deny"
+      ],
+      "id": "R2-HUMAN-GRANT",
+      "title": "人工决定成为可消费的一次性执行权威"
+    },
+    {
+      "acceptance": [
+        "PermissionRequest 展示和授权结算先于普通 task/tool guard，paused 或 degraded lane 不得遮蔽恢复卡",
+        "crash、retry、reprobe 与 abort 按 transaction id 幂等推进且不重放人类决定或外部效果"
+      ],
+      "id": "R2-GRANT-BROKER",
+      "title": "原生授权事务与执行桥统一"
+    },
+    {
+      "acceptance": [
+        "生命体在 5 秒内报告卡顿并在能力边界内处理孤儿锁、退出 actor、冲突 lane 与 runtime drift",
+        "干预有预算、有终态、有 receipt，不能扩大 allowed paths、静默换宿主或无限重试"
+      ],
+      "id": "R2-RECOVERY-SUPERVISOR",
+      "title": "生命体主动拥有 liveness 与恢复"
+    },
+    {
+      "acceptance": [
+        "Git、worktree、文件删除、跨项目、Figma、设备与 Skill/runtime 操作均使用可验证的强类型资源身份",
+        "空 target、unknown effect 或已隔离历史债务不得级联阻断无关 subject"
+      ],
+      "id": "R2-TYPED-RESOURCES",
+      "title": "资源级 capability 与精确 verifier"
+    },
+    {
+      "acceptance": [
+        "status、doctor、repair、uninstall、rollback 与 pending decision 在普通 lane 不可用时仍可达",
+        "等待使用可更新状态卡和本地完整日志，满足 5/30 秒进度 SLA 且不重复输出轮询文案"
+      ],
+      "id": "R2-RECOVERY-LANE",
+      "title": "独立恢复通道与可见进度"
+    },
+    {
+      "acceptance": [
+        "I01-I19、并发、进程死亡、receipt tamper、world-state drift、只读账本、scheduler degraded 与 rollback 全部通过",
+        "Codex 与 Claude 真实宿主、macOS 与 Windows 证据齐全前不得宣称 R2 完成或 production accepted"
+      ],
+      "id": "R2-LIVE-ACCEPTANCE",
+      "title": "真实事件、双宿主与发布闭环"
+    },
+    {
+      "acceptance": [
+        "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并",
+        "G0-G6/T32 accepted 历史不被重建、重放或改写"
+      ],
+      "id": "PROGRAM-GOVERNANCE",
+      "title": "单写者任务图与证据治理"
+    }
+  ],
+  "schema": "sulde-guardian-program-manifest-v1"
+}

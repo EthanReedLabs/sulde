@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "integration_tests",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-158084839fe31c2cea3d4be9",
+  "verdict": "pass",
+  "summary": "The corrected dev candidate passes release, bootstrap, broker and full-clone topology integration gates except the separately disclosed real-host version probe.",
+  "facts": [
+    "Dev merge d133292 is reproduced in a standalone clone with a real lexical .git directory, eliminating all 13 linked-worktree broker errors and six launcher/bootstrap false failures.",
+    "The clean integration selection passes 68 tests with one platform-condition skip in 10.402 seconds, including release inventory and native broker modules.",
+    "A separate 69-test calibration has one intentional non-pass: the real-host probe observes Codex 0.149.1 while installed Sulde authority audits exactly 0.149.0; it is not concealed by this component verdict."
+  ],
+  "requirements": [],
+  "findings": ["F30-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "T30-full-clone-68-test-integration-selection"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

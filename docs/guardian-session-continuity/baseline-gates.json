@@ -1,0 +1,27 @@
+{
+  "schema": "guardian-continuity-baseline-gates-v1",
+  "baseline_head": "1b38b304b3fe22fffb30bf6fc13988bbd82d9f32",
+  "baseline_worktree_clean": true,
+  "isolated_reproduction": {
+    "test_count": 3,
+    "failure_count": 2,
+    "elapsed_seconds": 1.898,
+    "status": "failed"
+  },
+  "findings": [
+    {
+      "test": "tests.test_export_community.ExportCommunityTest.test_checked_in_manifest_pins_every_copy_source",
+      "source": "template/_project/docs-hub/00_shared-rules/model-strategy.md.template",
+      "expected_sha256": "f13096a7fd261e25cc60bd835282d9ee6406d4ad6fe761b089e0b49cac9102d4",
+      "actual_sha256": "13b7665564e9e9ce9e1436d6b46a85145b12443ac1cfa1e63ccb6918194be0f2",
+      "status": "preexisting_unresolved"
+    },
+    {
+      "test": "tests.test_subprocess_text_encoding_guard.SubprocessTextEncodingGuardTests.test_all_text_subprocess_calls_fix_encoding_and_errors",
+      "source_files": ["tests/test_doctor_session_contract.py", "tests/test_hook_observer_closure.py", "tests/test_python_environment_preflight.py", "tests/test_runtime_provider.py"],
+      "affected_calls": 7,
+      "status": "preexisting_unresolved"
+    }
+  ],
+  "scope_note": "Existing dev gate failures are not silently waived, fixed or declared production acceptance by this task."
+}

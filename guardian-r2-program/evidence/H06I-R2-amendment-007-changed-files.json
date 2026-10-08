@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-bd3a9c0923125f655fd9ccf3",
+  "verdict": "pass",
+  "kind": "changed_files",
+  "summary": "Amendment-007 remains within the exact five H06I-R2 owned paths and preserves the frozen broker behavior while updating only the approved identity repair, regression assertion and current report.",
+  "facts": [
+    "Candidate production hashes are native_agent_broker.py=9bd98acb7f257885c435be91b5fe2c586bf98684b52c421247a15395d37274a0 and agent-runtime.py=043ea7f0bb207c2a20903aba4e698d96bb67be87c0cc137acd36bae86c6a20b2.",
+    "Candidate test hashes are test_native_agent_broker.py=0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850 and test_agent_runtime.py=3ee43da49763eb2bbc3efd233e5b94867c63fe061c2bea32ad2d825ff068cbe5.",
+    "The report hash is cd373e9eca838cab5c7e7d26cf2d567e01da475c6759974ea36d78df6c322a16 and all five paths remain byte-bound to the candidate closure artifact.",
+    "No provider invocation, integration, installation, push or H06J start occurred."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-016"],
+  "acceptance": [],
+  "commands": [
+    {"argv": ["shasum", "-a", "256", "<five owned paths>"], "exit_code": 0, "result": "pass"}
+  ],
+  "artifacts": [
+    {"path": "H06I-R2-AMENDMENT-007-CLOSURE.json", "sha256": "f9caa247e1b1e704ece4106bd29b081d1057e251f3f26d2ec1613281e6b44e6d"}
+  ]
+}

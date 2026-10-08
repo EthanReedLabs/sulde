@@ -1,0 +1,27 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H01-human-grant-v2.md",
+      "sha256": "362e67f6719be687de43b8ef6676660ad3220bad7ba5696cc286f5f63765828f"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "H01 implements the pure HumanGrantV2 protocol, closed four-class risk taxonomy, immutable canonical identities, world-state drift result and versioned one-shot CAS projection.",
+    "The report records FR2-H01-002 repair1, exact test counts, three changed paths, known pure-layer limits and no H02, install, live-host, push or release claim."
+  ],
+  "findings": [
+    "FR2-H01-001",
+    "FR2-H01-002"
+  ],
+  "kind": "task_report",
+  "requirements": [],
+  "run_id": "run-gpe-81c4eb66edd2ae4588c2648d",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H01 report binds the implemented HumanGrantV2 slice, repair result, limits and exact three-path scope.",
+  "task_id": "H01-human-grant-v2",
+  "verdict": "pass"
+}

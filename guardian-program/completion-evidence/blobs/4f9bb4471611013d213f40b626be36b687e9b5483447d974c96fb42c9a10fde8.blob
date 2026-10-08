@@ -1,0 +1,32 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "integration_tests",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "The T32 source and cachebuster were serialized through dev and main, and the canonical T31 evidence later merged through the same dev-first path with live Git attribution enforced.",
+  "facts": [
+    "dev and main both contained 6c3ef24, 8881570 and release commit 60995fc before installation.",
+    "T31 evidence commit e65c83c merged to dev as b807de6 and main fast-forwarded to the same tree after evidence verification.",
+    "The T32 branch then fast-forwarded to the canonical T31 head and added only the scope-restoration commit c7fd29a plus control evidence.",
+    "No failed or experimental candidate was merged as product source."
+  ],
+  "requirements": ["PROGRAM-GOVERNANCE"],
+  "findings": ["F32-001", "F32-005"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "-C", "<dev-worktree>", "merge", "--no-ff", "--no-edit", "release/t31-live-acceptance"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "-C", "<main-worktree>", "merge", "--ff-only", "dev"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

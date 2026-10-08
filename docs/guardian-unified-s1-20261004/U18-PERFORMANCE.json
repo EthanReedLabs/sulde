@@ -1,0 +1,432 @@
+{
+  "scope": "normalization only, not installer or whole Agent latency",
+  "baseline_product": "ef5e7d6 (42a8495 changes tests/docs only)",
+  "candidate": "09fbb9b",
+  "budget_rule": "pre-existing S1 paired P50 +max(0.15ms,20%); P95 +max(0.30ms,30%)",
+  "method": "serial alternating baseline/candidate, 20 warmups and 150 samples per shape, uncontrolled other machine load",
+  "results": [
+    {
+      "label": "baseline",
+      "chunk_id": "215fe4",
+      "exit_code": 0,
+      "cache": "20 warmups per case",
+      "measurements": {
+        "datetime": {
+          "p50_ms": 4.5526040000000005,
+          "p95_ms": 4.922625
+        },
+        "denied_shape": {
+          "p50_ms": 4.912561999999999,
+          "p95_ms": 5.484375
+        },
+        "help": {
+          "p50_ms": 5.358854,
+          "p95_ms": 5.932875
+        },
+        "ordinary_read": {
+          "p50_ms": 4.8536874999999995,
+          "p95_ms": 5.296667
+        },
+        "ordinary_write": {
+          "p50_ms": 3.5403545,
+          "p95_ms": 3.922459
+        },
+        "ssh_probe": {
+          "p50_ms": 6.788167,
+          "p95_ms": 7.184584
+        }
+      },
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "samples_per_case": 150,
+      "source_root": "/Users/eric/ClaudePlugin/sulde-pro/.worktrees/guardian-u18-tests-20261004"
+    },
+    {
+      "label": "candidate",
+      "chunk_id": "2e8c3c",
+      "exit_code": 0,
+      "cache": "20 warmups per case",
+      "measurements": {
+        "datetime": {
+          "p50_ms": 4.472270999999999,
+          "p95_ms": 4.840667
+        },
+        "denied_shape": {
+          "p50_ms": 5.2183744999999995,
+          "p95_ms": 5.600541
+        },
+        "help": {
+          "p50_ms": 5.430896000000001,
+          "p95_ms": 5.714958
+        },
+        "ordinary_read": {
+          "p50_ms": 4.786312499999999,
+          "p95_ms": 5.302708
+        },
+        "ordinary_write": {
+          "p50_ms": 3.509979,
+          "p95_ms": 3.9065
+        },
+        "ssh_probe": {
+          "p50_ms": 6.5216665,
+          "p95_ms": 6.998209
+        }
+      },
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "samples_per_case": 150,
+      "source_root": "/Users/eric/ClaudePlugin/sulde-pro/.worktrees/guardian-unified-s1-20261004"
+    },
+    {
+      "label": "baseline",
+      "chunk_id": "1ec0ea",
+      "exit_code": 0,
+      "cache": "20 warmups per case",
+      "measurements": {
+        "datetime": {
+          "p50_ms": 4.398396,
+          "p95_ms": 4.825
+        },
+        "denied_shape": {
+          "p50_ms": 5.017229,
+          "p95_ms": 6.019917
+        },
+        "help": {
+          "p50_ms": 5.7764165,
+          "p95_ms": 6.327958
+        },
+        "ordinary_read": {
+          "p50_ms": 5.029271,
+          "p95_ms": 5.573375
+        },
+        "ordinary_write": {
+          "p50_ms": 4.1622085,
+          "p95_ms": 4.820333
+        },
+        "ssh_probe": {
+          "p50_ms": 6.6634795,
+          "p95_ms": 7.1095
+        }
+      },
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "samples_per_case": 150,
+      "source_root": "/Users/eric/ClaudePlugin/sulde-pro/.worktrees/guardian-u18-tests-20261004"
+    },
+    {
+      "label": "candidate",
+      "chunk_id": "e22877",
+      "exit_code": 0,
+      "cache": "20 warmups per case",
+      "measurements": {
+        "datetime": {
+          "p50_ms": 4.4715,
+          "p95_ms": 4.832416
+        },
+        "denied_shape": {
+          "p50_ms": 4.9218335,
+          "p95_ms": 5.358084
+        },
+        "help": {
+          "p50_ms": 5.4566255,
+          "p95_ms": 5.888208
+        },
+        "ordinary_read": {
+          "p50_ms": 4.735229,
+          "p95_ms": 5.280042
+        },
+        "ordinary_write": {
+          "p50_ms": 3.4611875000000003,
+          "p95_ms": 3.701958
+        },
+        "ssh_probe": {
+          "p50_ms": 6.508042,
+          "p95_ms": 6.951375
+        }
+      },
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "samples_per_case": 150,
+      "source_root": "/Users/eric/ClaudePlugin/sulde-pro/.worktrees/guardian-unified-s1-20261004"
+    }
+  ],
+  "checks": [
+    {
+      "round": 1,
+      "case": "datetime",
+      "metric": "p50_ms",
+      "baseline": 4.5526040000000005,
+      "candidate": 4.472270999999999,
+      "ceiling": 5.463124800000001,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "datetime",
+      "metric": "p95_ms",
+      "baseline": 4.922625,
+      "candidate": 4.840667,
+      "ceiling": 6.3994125,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "denied_shape",
+      "metric": "p50_ms",
+      "baseline": 4.912561999999999,
+      "candidate": 5.2183744999999995,
+      "ceiling": 5.8950743999999995,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "denied_shape",
+      "metric": "p95_ms",
+      "baseline": 5.484375,
+      "candidate": 5.600541,
+      "ceiling": 7.1296875,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "help",
+      "metric": "p50_ms",
+      "baseline": 5.358854,
+      "candidate": 5.430896000000001,
+      "ceiling": 6.4306248,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "help",
+      "metric": "p95_ms",
+      "baseline": 5.932875,
+      "candidate": 5.714958,
+      "ceiling": 7.7127375,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "ordinary_read",
+      "metric": "p50_ms",
+      "baseline": 4.8536874999999995,
+      "candidate": 4.786312499999999,
+      "ceiling": 5.824425,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "ordinary_read",
+      "metric": "p95_ms",
+      "baseline": 5.296667,
+      "candidate": 5.302708,
+      "ceiling": 6.8856671,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "ordinary_write",
+      "metric": "p50_ms",
+      "baseline": 3.5403545,
+      "candidate": 3.509979,
+      "ceiling": 4.2484254,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "ordinary_write",
+      "metric": "p95_ms",
+      "baseline": 3.922459,
+      "candidate": 3.9065,
+      "ceiling": 5.0991967,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "ssh_probe",
+      "metric": "p50_ms",
+      "baseline": 6.788167,
+      "candidate": 6.5216665,
+      "ceiling": 8.145800399999999,
+      "passed": true
+    },
+    {
+      "round": 1,
+      "case": "ssh_probe",
+      "metric": "p95_ms",
+      "baseline": 7.184584,
+      "candidate": 6.998209,
+      "ceiling": 9.3399592,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "datetime",
+      "metric": "p50_ms",
+      "baseline": 4.398396,
+      "candidate": 4.4715,
+      "ceiling": 5.2780752,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "datetime",
+      "metric": "p95_ms",
+      "baseline": 4.825,
+      "candidate": 4.832416,
+      "ceiling": 6.2725,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "denied_shape",
+      "metric": "p50_ms",
+      "baseline": 5.017229,
+      "candidate": 4.9218335,
+      "ceiling": 6.0206748,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "denied_shape",
+      "metric": "p95_ms",
+      "baseline": 6.019917,
+      "candidate": 5.358084,
+      "ceiling": 7.825892100000001,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "help",
+      "metric": "p50_ms",
+      "baseline": 5.7764165,
+      "candidate": 5.4566255,
+      "ceiling": 6.9316998,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "help",
+      "metric": "p95_ms",
+      "baseline": 6.327958,
+      "candidate": 5.888208,
+      "ceiling": 8.2263454,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "ordinary_read",
+      "metric": "p50_ms",
+      "baseline": 5.029271,
+      "candidate": 4.735229,
+      "ceiling": 6.0351251999999995,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "ordinary_read",
+      "metric": "p95_ms",
+      "baseline": 5.573375,
+      "candidate": 5.280042,
+      "ceiling": 7.2453875000000005,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "ordinary_write",
+      "metric": "p50_ms",
+      "baseline": 4.1622085,
+      "candidate": 3.4611875000000003,
+      "ceiling": 4.994650200000001,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "ordinary_write",
+      "metric": "p95_ms",
+      "baseline": 4.820333,
+      "candidate": 3.701958,
+      "ceiling": 6.2664329,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "ssh_probe",
+      "metric": "p50_ms",
+      "baseline": 6.6634795,
+      "candidate": 6.508042,
+      "ceiling": 7.9961754,
+      "passed": true
+    },
+    {
+      "round": 2,
+      "case": "ssh_probe",
+      "metric": "p95_ms",
+      "baseline": 7.1095,
+      "candidate": 6.951375,
+      "ceiling": 9.24235,
+      "passed": true
+    }
+  ],
+  "excluded_overlapped_run": {
+    "reason": "orchestration mistakenly yielded before completion and launched probes concurrently; not used in acceptance",
+    "samples": [
+      {
+        "label": "baseline",
+        "chunk_id": "2c0cbe",
+        "wall_time_seconds": 1.00216875,
+        "session_id": 20294,
+        "original_token_count": 0,
+        "output": "",
+        "completion": {
+          "chunk_id": "ad140f",
+          "wall_time_seconds": 0.000006083,
+          "exit_code": 0,
+          "original_token_count": 151,
+          "output": "{\"cache\": \"20 warmups per case\", \"measurements\": {\"datetime\": {\"p50_ms\": 5.316167, \"p95_ms\": 5.944875}, \"denied_shape\": {\"p50_ms\": 7.3057705, \"p95_ms\": 8.135209}, \"help\": {\"p50_ms\": 6.1730415, \"p95_ms\": 6.931125}, \"ordinary_read\": {\"p50_ms\": 4.8072705, \"p95_ms\": 5.253833}, \"ordinary_write\": {\"p50_ms\": 3.6502915, \"p95_ms\": 4.117625}, \"ssh_probe\": {\"p50_ms\": 8.178437500000001, \"p95_ms\": 9.015791}}, \"python\": \"3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]\", \"samples_per_case\": 150, \"source_root\": \"/Users/eric/ClaudePlugin/sulde-pro/.worktrees/guardian-u18-tests-20261004\"}\n"
+        }
+      },
+      {
+        "label": "candidate",
+        "chunk_id": "ff662d",
+        "wall_time_seconds": 1.001653875,
+        "session_id": 81043,
+        "original_token_count": 0,
+        "output": "",
+        "completion": {
+          "chunk_id": "3ba306",
+          "wall_time_seconds": 0.000005125,
+          "exit_code": 0,
+          "original_token_count": 153,
+          "output": "{\"cache\": \"20 warmups per case\", \"measurements\": {\"datetime\": {\"p50_ms\": 5.929437500000001, \"p95_ms\": 6.744166}, \"denied_shape\": {\"p50_ms\": 6.3712295, \"p95_ms\": 7.059584}, \"help\": {\"p50_ms\": 7.1380005, \"p95_ms\": 7.766792}, \"ordinary_read\": {\"p50_ms\": 5.531875, \"p95_ms\": 6.229417}, \"ordinary_write\": {\"p50_ms\": 4.2727085, \"p95_ms\": 4.787708}, \"ssh_probe\": {\"p50_ms\": 8.379250500000001, \"p95_ms\": 9.573209}}, \"python\": \"3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]\", \"samples_per_case\": 150, \"source_root\": \"/Users/eric/ClaudePlugin/sulde-pro/.worktrees/guardian-unified-s1-20261004\"}\n"
+        }
+      },
+      {
+        "label": "baseline",
+        "chunk_id": "3da9ef",
+        "wall_time_seconds": 1.001738834,
+        "session_id": 48861,
+        "original_token_count": 0,
+        "output": "",
+        "completion": {
+          "chunk_id": "763ef6",
+          "wall_time_seconds": 0.000005792,
+          "exit_code": 0,
+          "original_token_count": 151,
+          "output": "{\"cache\": \"20 warmups per case\", \"measurements\": {\"datetime\": {\"p50_ms\": 5.602062500000001, \"p95_ms\": 6.247916}, \"denied_shape\": {\"p50_ms\": 5.64725, \"p95_ms\": 6.188834}, \"help\": {\"p50_ms\": 7.670083, \"p95_ms\": 8.595}, \"ordinary_read\": {\"p50_ms\": 6.408813, \"p95_ms\": 7.263792}, \"ordinary_write\": {\"p50_ms\": 4.912646, \"p95_ms\": 5.766417}, \"ssh_probe\": {\"p50_ms\": 7.371062500000001, \"p95_ms\": 8.406833}}, \"python\": \"3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]\", \"samples_per_case\": 150, \"source_root\": \"/Users/eric/ClaudePlugin/sulde-pro/.worktrees/guardian-u18-tests-20261004\"}\n"
+        }
+      },
+      {
+        "label": "candidate",
+        "chunk_id": "2804e8",
+        "wall_time_seconds": 1.001134917,
+        "session_id": 91493,
+        "original_token_count": 0,
+        "output": "",
+        "completion": {
+          "chunk_id": "3d448d",
+          "wall_time_seconds": 0.00000525,
+          "exit_code": 0,
+          "original_token_count": 152,
+          "output": "{\"cache\": \"20 warmups per case\", \"measurements\": {\"datetime\": {\"p50_ms\": 5.0184999999999995, \"p95_ms\": 5.537709}, \"denied_shape\": {\"p50_ms\": 4.89375, \"p95_ms\": 5.382875}, \"help\": {\"p50_ms\": 7.040770500000001, \"p95_ms\": 7.716084}, \"ordinary_read\": {\"p50_ms\": 7.370875, \"p95_ms\": 8.150167}, \"ordinary_write\": {\"p50_ms\": 4.600854, \"p95_ms\": 5.331375}, \"ssh_probe\": {\"p50_ms\": 6.916375, \"p95_ms\": 7.803042}}, \"python\": \"3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]\", \"samples_per_case\": 150, \"source_root\": \"/Users/eric/ClaudePlugin/sulde-pro/.worktrees/guardian-unified-s1-20261004\"}\n"
+        }
+      }
+    ]
+  }
+}

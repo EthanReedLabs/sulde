@@ -1,0 +1,373 @@
+{
+  "schema": "sulde-r12-release-acceptance-v1",
+  "observed_at": "2026-09-13T02:51:24Z",
+  "verdict": {
+    "documentation_handoff": "verified",
+    "installation": "verified",
+    "current_session_interactive": "ready",
+    "background_scheduler": "degraded",
+    "overall_release_acceptance": "blocked"
+  },
+  "baseline": {
+    "source_commit": "ee5caa9fd1ecae0fdf72a8bb8f8e67ec633ef148",
+    "source_tree": "9b3b4fe24e02943e069385f093584e1734c96b6a",
+    "main": "bd216b3d29e37b1aaf0e6be0c930b5221a925562",
+    "origin_dev": "11c8f9063da32606caeccd4355be8d8d5b44b9c8"
+  },
+  "candidate": {
+    "status": "promoted",
+    "promotion_consumed": true,
+    "promotion_error": null,
+    "receipt_sha256": "f49e0fa352866c88090bb7f4a434a5691afcccd8f5a0d953c87699d6d9a4ccea",
+    "source": {
+      "commit": "ee5caa9fd1ecae0fdf72a8bb8f8e67ec633ef148",
+      "plugin_version": "0.2.5+codex.20260913012848-c721a575c1",
+      "tree": "9b3b4fe24e02943e069385f093584e1734c96b6a"
+    },
+    "timings_ms": {
+      "prepare_total": 1218.368,
+      "promote_total": 36968.503,
+      "verify_total": 19452.151
+    },
+    "install_status": "generation_verified",
+    "original_scheduler_probe": null
+  },
+  "receipt": {
+    "status": "verified",
+    "receipt_sha256": "f49e0fa352866c88090bb7f4a434a5691afcccd8f5a0d953c87699d6d9a4ccea",
+    "source": {
+      "commit": "ee5caa9fd1ecae0fdf72a8bb8f8e67ec633ef148",
+      "plugin_version": "0.2.5+codex.20260913012848-c721a575c1",
+      "tree": "9b3b4fe24e02943e069385f093584e1734c96b6a"
+    },
+    "verified_at": "2026-09-13T01:43:56.085940+00:00",
+    "timings_ms": {
+      "prepare_total": 1218.368,
+      "verify_total": 19452.151
+    },
+    "verifications": {
+      "artifact": {
+        "status": "ready",
+        "reason": null
+      },
+      "doctor": {
+        "status": "ready",
+        "reason": null
+      },
+      "hooks": {
+        "status": "ready",
+        "reason": null
+      },
+      "isolated_registry": {
+        "status": "ready",
+        "reason": null
+      },
+      "mcp": {
+        "status": "ready",
+        "reason": null
+      },
+      "native_permission_ui": {
+        "status": "unobserved",
+        "reason": "isolated CLI has no attachable current-session PermissionRequest surface"
+      },
+      "preexecution_chain": {
+        "status": "ready",
+        "reason": null
+      },
+      "scheduler_entrypoint": {
+        "status": "ready",
+        "reason": null
+      },
+      "scheduler_host": {
+        "status": "unobserved",
+        "reason": "candidate must not load production launchd labels before promotion"
+      }
+    }
+  },
+  "canonical_receipt_matches": true,
+  "artifact_installed_recursive_diff_exit_code": 0,
+  "integration": {
+    "status": "passed",
+    "mode": "unit",
+    "exit_code": 0,
+    "seconds": 1.184,
+    "detail": {
+      "tests_run": 28,
+      "skipped": 0,
+      "production_write_violations": 0,
+      "cli_unchanged": true,
+      "log_sha256": "e596aac57f6a3d2ff71a41136c1473a13c3c7f8854768357cf35e1ccba0e3382"
+    },
+    "cli_sha256": "4f85982624b3898c8991cb80c0981b2aa71070e3537046c9a95950318a95afcc",
+    "test_targets": [
+      "tests.test_memory_empty_startup",
+      "tests.test_task_authoring_contract",
+      "tests.test_model_dispatch_contract",
+      "tests.test_sedimentation_search_eval",
+      "tests.test_codex_executable_binding",
+      "tests.test_p0_transaction_integration"
+    ],
+    "external_model_calls": 0,
+    "production_install_performed": false
+  },
+  "installation_effects": {
+    "revision": 11,
+    "uses": [
+      {
+        "profile_id": "codex-plugin-cachebuster-v2",
+        "grant_id": "ef26df323283911bfdb50f34973952e012955a8812f1bd2e87f1aefb4bb39f91",
+        "used_at": "2026-09-13T01:36:52.197382+00:00"
+      },
+      {
+        "profile_id": "codex-plugin-install-v2",
+        "grant_id": "c263859a72973218b983d0fcf03cf853d206160cbfd519de5a6135253466ed0e",
+        "used_at": "2026-09-13T01:44:32.448225+00:00"
+      }
+    ],
+    "verified": [
+      {
+        "attempt_id": "att-3815fff89e1e29c132a29f43",
+        "verified_at": "2026-09-13T01:36:52.814533+00:00",
+        "verified_by_capability": "tool:codex_plugin_cachebuster_verify",
+        "evidence_source": "local_codex_cachebuster_read"
+      },
+      {
+        "attempt_id": "att-ed72fd2a8b17e28a4afc9470",
+        "verified_at": "2026-09-13T01:46:26.274457+00:00",
+        "verified_by_capability": "tool:codex_plugin_install_verify",
+        "evidence_source": "local_codex_install_read"
+      }
+    ],
+    "pending": 0,
+    "open": 0
+  },
+  "original_installed_mcp": {
+    "schema": "sulde-installed-corpus-mcp-acceptance-v1",
+    "status": "passed",
+    "route_source": "codex mcp get sulde_kb --json",
+    "transport": "stdio",
+    "server_process": "fresh",
+    "existing_conversation_reconnected": false,
+    "plugin_version": "0.2.5+codex.20260913012848-c721a575c1",
+    "generation": "0.2.5+codex.20260913012848-c721a575c1:fec56d3657e7aebf618bb4a6d0aede3dbdcac44cac7842befe955cb6b62646bf",
+    "requests": 17,
+    "search_passed": 8,
+    "get_passed": 8,
+    "documents": [
+      {
+        "doc_id": "ap-0250",
+        "rank": 1,
+        "source_path": "knowledge/anti-patterns/0250-method-name-risk-without-receiver-proof.md",
+        "content_sha256": "475b56b17f87b00f972693f93b77a612aa4b4fe96af17c2db66c7f95473d975e",
+        "source_runtime_mcp_bytes_equal": true
+      },
+      {
+        "doc_id": "work-model/idempotent-registration-verifier-contract",
+        "rank": 1,
+        "source_path": "knowledge/work-model/idempotent-registration-verifier-contract.md",
+        "content_sha256": "8dc6c7afceb4007d191b24b1d27242230bf8e4d4286f36181fc0f21cbb36a3ba",
+        "source_runtime_mcp_bytes_equal": true
+      },
+      {
+        "doc_id": "ap-0251",
+        "rank": 1,
+        "source_path": "knowledge/anti-patterns/0251-optional-enrichment-invalidates-unrelated-approval.md",
+        "content_sha256": "1b0754a76e8ebae2b437e89668cca18bdc214cfcfcdff4126100a6e5abc36ba9",
+        "source_runtime_mcp_bytes_equal": true
+      },
+      {
+        "doc_id": "work-model/session-isolation-explicit-continuation",
+        "rank": 1,
+        "source_path": "knowledge/work-model/session-isolation-explicit-continuation.md",
+        "content_sha256": "1e63e3a8d0c4a49b862461122f3fe8ea9951fe558c6c99ef4bb8273bb16d7f5c",
+        "source_runtime_mcp_bytes_equal": true
+      },
+      {
+        "doc_id": "work-model/ownership-aware-receipt-locks",
+        "rank": 1,
+        "source_path": "knowledge/work-model/ownership-aware-receipt-locks.md",
+        "content_sha256": "81ad2c56e63aa49aae54603bc1626505010f2bbcf74d419f1c11c71bcc6d3e37",
+        "source_runtime_mcp_bytes_equal": true
+      },
+      {
+        "doc_id": "ap-0252",
+        "rank": 1,
+        "source_path": "knowledge/anti-patterns/0252-test-interpreter-preflight-too-late.md",
+        "content_sha256": "c917963810f443966c5c693ecb8b210d978676a9ca691f75dad1291ade867b97",
+        "source_runtime_mcp_bytes_equal": true
+      },
+      {
+        "doc_id": "work-model/canonical-byte-authority-self-hosted-verification",
+        "rank": 1,
+        "source_path": "knowledge/work-model/canonical-byte-authority-self-hosted-verification.md",
+        "content_sha256": "1522797445e09ea8ba5de74ffcb0b66ea7805781be8a09ec19a6cd7d06009c6e",
+        "source_runtime_mcp_bytes_equal": true
+      },
+      {
+        "doc_id": "work-model/evidence-gate-contract",
+        "rank": 1,
+        "source_path": "knowledge/work-model/evidence-gate-contract.md",
+        "content_sha256": "419e7ecf966bb8f8db8d4f6f2c8b34bf8ec18e2cf72f2549438b2525dcea0f30",
+        "source_runtime_mcp_bytes_equal": true
+      }
+    ],
+    "stderr_sha256": "8e1c0c869399922e30830e87bfce23090e3bc821d2f06d9a84bea22944696d6a",
+    "elapsed_seconds": 2.051
+  },
+  "current_session": {
+    "intent_revision": 194,
+    "doctor_status": "ready",
+    "operational_status": "ready",
+    "readiness_scope": "interactive",
+    "domains": {
+      "artifact_generation": {
+        "status": "ready",
+        "reasons": []
+      },
+      "effect_debt": {
+        "status": "clear",
+        "reasons": []
+      },
+      "interactive": {
+        "status": "ready",
+        "reasons": []
+      },
+      "native_decision_pairing": {
+        "status": "not_required",
+        "reasons": []
+      },
+      "pre_execution_safety": {
+        "status": "verified",
+        "reasons": []
+      },
+      "recovery": {
+        "status": "diagnosis_available",
+        "reasons": []
+      },
+      "scheduler": {
+        "status": "degraded",
+        "reasons": [
+          "scheduler_process_ready",
+          "scheduler_probe:managed_actor_last_exit_nonzero"
+        ]
+      }
+    },
+    "host_capabilities": {
+      "host_approval": "live_verified",
+      "mcp_initialize": "unobserved",
+      "prompt_control": "live_verified",
+      "session_context": "live_verified",
+      "tool_guard": "live_verified",
+      "tool_result": "live_verified",
+      "turn_reconcile": "live_verified"
+    },
+    "effect_debt": {
+      "authoritative_blocking": 0,
+      "authoritative_settled_pending": 0,
+      "blocking": 0,
+      "error": null,
+      "interventions_open": 0,
+      "pending_verifications": 0,
+      "pending_verifications_total": 0,
+      "status": "clear",
+      "terminal_quarantined": 0,
+      "terminal_quarantined_pending": 0
+    },
+    "negative_proof": {
+      "artifact_generation": "0.2.5+codex.20260913012848-c721a575c1:fec56d3657e7aebf618bb4a6d0aede3dbdcac44cac7842befe955cb6b62646bf",
+      "decision_fingerprint": "0add7ca4e56bb5f33807c5bd9102c4a12a5c4ca3d93d2aaf2ea00797d2958872",
+      "gaps_cleared": 0,
+      "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+      "prepared_at": "2026-09-13T02:48:11.387656+00:00",
+      "probe_id": "6fce061fd5cf1bf3aaa1cb2ae6380e02",
+      "proof_id": "0f58c963585620b9e930a8006baf9b261cfe7cb51f37b9c5b48fb8b09d0a84e9",
+      "provider": "codex",
+      "runtime_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+      "schema": "sulde-pre-execution-proof-v2",
+      "started_event_id": "14a72f94c4f541c231de51b9",
+      "verified_at": "2026-09-13T02:48:34.039062+00:00"
+    },
+    "canary_marker_absent_after_finalize": true,
+    "scheduler": {
+      "authority": "launchctl_list_process_truth",
+      "failed_labels": {
+        "com.sulde.auto-sediment": "2"
+      },
+      "inventory_sha256": "0d9ac79c5e5f65d6addb283348516f8f6b6683b5d12893859590b2d7b2f51c7f",
+      "loaded": 16,
+      "managed": 16,
+      "missing_labels": [],
+      "missing_observed": true,
+      "probe_status": "observed",
+      "reasons": [
+        "managed_actor_last_exit_nonzero"
+      ],
+      "retired_loaded_labels": [],
+      "status": "degraded"
+    },
+    "mcp_status_call": {
+      "transport_call_succeeded": true,
+      "status": "degraded",
+      "scope": "background_runtime",
+      "snapshot_status": "fresh",
+      "note": "Successful current-conversation transport is not a claim of fresh MCPInitialize or complete background health."
+    }
+  },
+  "finding": {
+    "id": "R12-F01",
+    "status": "open",
+    "label": "com.sulde.auto-sediment",
+    "last_exit_code": 2,
+    "log_modified_at": "2026-09-13T10:30:04+0800",
+    "log_tail": "auto-sediment: cannot locate git common directory: not a git repository",
+    "read_only_git_probe_exit_code": 128,
+    "root_cause": "auto-sediment defaults REPO_ROOT to installed runtime and invokes git common-dir discovery there before candidate processing; the distribution artifact is not a Git checkout.",
+    "source_locations": [
+      "scripts/kb/auto-sediment.py:26",
+      "scripts/kb/auto-sediment.py:151",
+      "scripts/kb/auto-sediment.py:478",
+      "scripts/kb/auto-sediment.py:1592"
+    ],
+    "repair_performed": false,
+    "job_replayed": false
+  },
+  "retained_sources": [
+    {
+      "root": "dev-worktree",
+      "path": ".sulde/public-export/R12-install-report.md",
+      "sha256": "58b9b2c76f5daae44bc29f7ae2cb366c67cbc6cc71b3f9171261a3772b0174d6"
+    },
+    {
+      "root": "dev-worktree",
+      "path": ".sulde/public-export/R12-installed-mcp.json",
+      "sha256": "dd239a2797a4973d6af613bef7bb2ab9c7f289113a38e5beb49d9077af1284ce"
+    },
+    {
+      "root": "dev-worktree",
+      "path": ".sulde/public-export/r12-candidates/pro-public-harness-20260913-bound-python/verification-receipt.json",
+      "sha256": "94f33b39f5526fc58d01b020874d3269fc153ff9f81f6e9202a576c60f327119"
+    },
+    {
+      "root": "dev-worktree",
+      "path": ".sulde/public-export/r12-candidates/pro-public-harness-20260913-bound-python/state.json",
+      "sha256": "ea7b93816ed8eea7fcca2c2be805fd527652c1c3b835fe36e1416a8035f2f247"
+    },
+    {
+      "root": "public-harness-export-worktree",
+      "path": ".sulde/public-export/r12-integration-001/tests.log",
+      "sha256": "e596aac57f6a3d2ff71a41136c1473a13c3c7f8854768357cf35e1ccba0e3382"
+    }
+  ],
+  "boundaries": {
+    "reinstalled": false,
+    "scheduler_reloaded": false,
+    "source_modified": false,
+    "remote_push": false,
+    "main_modified": false,
+    "original_ledger_edited": false,
+    "new_full_suite_run": false,
+    "windows_native": "not_verified",
+    "claude_live": "not_verified",
+    "private_raw_evidence_retained": true
+  }
+}

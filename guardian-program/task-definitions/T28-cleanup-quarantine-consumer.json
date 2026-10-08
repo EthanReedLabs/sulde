@@ -1,0 +1,35 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "title": "修正 cleanup 对 effect quarantine 的全局误阻断",
+  "owner": "release-recovery-worker",
+  "capability_tier": "balanced",
+  "base_commit": "f8c830b02a814cf40c541ef861569882062174c0",
+  "depends_on": [
+    "T25-release-gate-closure",
+    "T23-current-lane-readiness",
+    "T00-control-plane"
+  ],
+  "supersedes": [],
+  "owned_paths": [
+    "scripts/kb/self-repair.py",
+    "tests/test_self_repair.py",
+    "guardian-program/reports/T28-cleanup-quarantine-consumer.md"
+  ],
+  "requirements": [
+    "DERIVED-READINESS",
+    "DERIVED-RESOURCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "acceptance": [
+    "self-repair cleanup 不再把 terminal abort quarantine 当作全局 worktree 清理阻断，并在删除前归档 append-only intervention truth",
+    "归档后的 abort unknown 仍保留在权威同资源阻断集合中，open、acknowledged、retry、reprobe 和未处置 unknown 仍拒绝 cleanup",
+    "T27 与 self-repair 定向、故障注入和正确依赖解释器下的完整隔离套件通过，且不修改生产账本、安装缓存或 scheduler"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"]
+  }
+}

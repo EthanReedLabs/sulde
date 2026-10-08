@@ -1,0 +1,81 @@
+{
+  "project": {
+    "name": "项目名称",
+    "platform": "android 或 ios",
+    "package": "包名",
+    "language": "Kotlin 或 Swift",
+    "architecture": "MVI 或 TCA",
+    "architecture_rule": "两层终止架构规则描述"
+  },
+
+  "developers": {
+    "A": {
+      "name": "开发者 A 姓名",
+      "email": "a@company.com",
+      "alias": "git as-a",
+      "domain": "架构 / 模块甲 / 模块乙",
+      "commit_style": "带技术细节",
+      "commit_example": "feat: 基于 ViewPager2 实现通用分页容器"
+    },
+    "B": {
+      "name": "开发者 B 姓名",
+      "email": "b@company.com",
+      "alias": "git as-b",
+      "domain": "核心业务功能",
+      "commit_style": "简洁",
+      "commit_example": "feat: 配置模块"
+    },
+    "C": {
+      "name": "开发者 C 姓名",
+      "email": "c@company.com",
+      "alias": "git as-c",
+      "domain": "基础设施 / 通用能力",
+      "commit_style": "偏基础设施",
+      "commit_example": "feat: 搭建网络层 + Token 拦截器"
+    }
+  },
+
+  "branches": {
+    "main": "main",
+    "dev": "dev",
+    "pattern": "dev/{用户名}/{模块名}",
+    "merge_strategy": "--no-ff",
+    "release_manager": "A"
+  },
+
+  "directories": {
+    "source": "项目源码目录结构，按实际项目填写",
+    "docs": "$(pwd)/../docs/",
+    "workspace": ".ai-workspace/",
+    "reviews": ".ai-workspace/reviews/",
+    "bug_reports": ".ai-workspace/bug-reports/",
+    "logs": ".ai-workspace/logs/"
+  },
+
+  "references": {
+    "project_rules": "$(pwd)/CLAUDE.md",
+    "architecture": "架构规范文档路径",
+    "platform_design": "平台设计文档路径",
+    "performance": "性能决策文档路径",
+    "implementation": "实施文档路径"
+  },
+
+  "log_commands": {
+    "android": {
+      "realtime": "adb logcat -s AppTag",
+      "by_package": "adb logcat --pid=$(adb shell pidof {package})",
+      "crash": "adb logcat -b crash",
+      "anr": "adb shell cat /data/anr/traces.txt",
+      "export": "adb logcat -d > $(pwd)/.ai-workspace/logs/{name}.log",
+      "ide": "Android Studio Logcat 面板"
+    },
+    "ios": {
+      "realtime": "log stream --predicate 'subsystem == \"{package}\"' --level debug",
+      "history": "log show --predicate 'subsystem == \"{package}\"' --last 1h",
+      "crash": "~/Library/Logs/DiagnosticReports/",
+      "device": "idevicesyslog（brew install libimobiledevice）",
+      "export": "log show --predicate 'subsystem == \"{package}\"' --last 30m > $(pwd)/.ai-workspace/logs/{name}.log",
+      "ide": "Xcode Console Debug Area"
+    }
+  }
+}

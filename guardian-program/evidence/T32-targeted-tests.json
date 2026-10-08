@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "targeted_tests",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "The final scope-clean candidate passes all 263 command, resource, state, journal and local-file operation tests.",
+  "facts": [
+    "CPython 3.10.7 ran 263 tests in 11.864 seconds with zero failure or skip.",
+    "The suite covers literal add parsing, linked worktree identity, safe commit/merge metadata, hostile path and option cases, nested native decision card aliases and the resources split.",
+    "The rerun occurred after c7fd29a restored the unowned duplicate test to baseline."
+  ],
+  "requirements": ["WP56-D"],
+  "findings": ["F32-001", "F32-002", "F32-003", "F32-005"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "-m", "unittest", "T32-seven-scoped-modules"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

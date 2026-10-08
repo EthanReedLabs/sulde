@@ -1,0 +1,67 @@
+{
+  "acceptance": [
+    "I01-I19 and all thirteen required failure axes pass on exact integrated commit 10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2, with every inherited and new finding receiving one append-only disposition and active resolution evidence",
+    "Allow-to-dispatch P95, second-deny count, card visibility, orphan-lock recovery, progress SLA, repeated-output count and effect exactly-once metrics all satisfy the frozen hard gates through real public boundaries rather than fixture self-validation",
+    "the supported full clone has a local main branch and required Python dependencies, and isolated full-suite plus fleet-state attribution complete in a quiet window without concurrent production writers",
+    "historical replay, failure injection, installer rollback, scheduler, Codex live, Claude live and native Windows gates each have independent evidence rather than synthetic substitution",
+    "source, staged tree, installed runtime, scheduler owner, Codex and Claude observations are the same generation before any dev/main merge or program acceptance",
+    "all nine manifest program evidence kinds exist, and native Windows artifact identity is bound in both system_tests and final_traceability before completion"
+  ],
+  "base_commit": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H00-fixture-baseline",
+    "H01-human-grant-v2",
+    "H02-grant-broker",
+    "H03-recovery-supervisor",
+    "H04-typed-resource-adapters",
+    "H05-recovery-lane",
+    "H06A2-integration-hygiene",
+    "H06B-codex-0150-authority",
+    "H06E-codex-help-authority",
+    "H06G-release-inventory-authority"
+  ],
+  "supersedes": ["H06D-r2-final-acceptance"],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "guardian-program/MASTER.md",
+    "tests/fixtures/r2-guardian-incidents/replay-cases.json",
+    "tests/test_r2_guardian_integration.py",
+    "guardian-r2-program/evidence/H06H-task-report.json",
+    "guardian-r2-program/evidence/H06H-changed-files.json",
+    "guardian-r2-program/evidence/H06H-targeted-tests.json",
+    "guardian-r2-program/evidence/H06H-failure-injection.json",
+    "guardian-r2-program/evidence/H06H-integration-tests.json",
+    "guardian-r2-program/evidence/H06H-system-tests.json",
+    "guardian-r2-program/evidence/H06H-finding-resolution.json",
+    "guardian-r2-program/evidence/H06H-requirement-traceability.json",
+    "guardian-r2-program/reports/H06H-r2-final-acceptance.md",
+    "guardian-r2-program/evidence/program-final-traceability.json",
+    "guardian-r2-program/evidence/program-full-isolated-suite.json",
+    "guardian-r2-program/evidence/program-failure-injection-suite.json",
+    "guardian-r2-program/evidence/program-incident-fixture-matrix.json",
+    "guardian-r2-program/evidence/program-installed-generation.json",
+    "guardian-r2-program/evidence/program-scheduler-owner.json",
+    "guardian-r2-program/evidence/program-live-host-canary-codex.json",
+    "guardian-r2-program/evidence/program-live-host-canary-claude.json",
+    "guardian-r2-program/evidence/program-rollback-evidence.json"
+  ],
+  "owner": "guardian-r2-coordinator",
+  "requirements": [
+    "R2-HUMAN-GRANT",
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-TYPED-RESOURCES",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06H-r2-final-acceptance",
+  "title": "在统一控制边完成 R2 最终总纲验收"
+}

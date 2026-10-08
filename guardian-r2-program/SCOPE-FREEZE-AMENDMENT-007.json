@@ -1,0 +1,68 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-amendment-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-007",
+  "parent_chain": [
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-006.json",
+      "sha256": "873050a9588d864e2c09cd1cb61e1125135e388d574c50849c1c164b4e0edaa6"
+    }
+  ],
+  "frozen_controller_event_head_sha256": "e49762523ba3bb61555339b6f5b8344ba88cf4524c3b3f549f1e1ab0e916dc7c",
+  "frozen_coordinator_commit": "2379de8",
+  "authority": "human-confirmed-h06i-r2-amendment-007-2026-08-28-current-session",
+  "authority_scope": "repair only the two production validators that compare lexical /var/folders with physical /private/var/folders, add exact regression coverage, then rerun the previously blocked coordinator matrix",
+  "task": {
+    "task_id": "H06I-R2-interruption-authority",
+    "task_definition_path": "guardian-r2-program/task-definitions/H06I-R2-interruption-authority.json",
+    "owned_paths": [
+      "scripts/kb/native_agent_broker.py",
+      "scripts/kb/agent-runtime.py",
+      "tests/test_native_agent_broker.py",
+      "tests/test_agent_runtime.py",
+      "guardian-r2-program/reports/H06I-R2-interruption-authority.md"
+    ],
+    "candidate_base_commit": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2"
+  },
+  "finding": {
+    "finding_id": "FR2-H06I-R2-016",
+    "evidence_path": "guardian-r2-program/H06I-R2-COORDINATOR-MATRIX-FAIL.json",
+    "evidence_sha256": "e429343ed8103b4384eaefc49b4ec1ad0b0217723e8dd9ac1b64a6665d0664c2"
+  },
+  "change_budget": {
+    "candidate_invocations": 1,
+    "provider_invocations": 0,
+    "behavior_paths_allowed": [
+      "scripts/kb/agent-runtime.py",
+      "scripts/kb/native_agent_broker.py"
+    ],
+    "test_paths_allowed": [
+      "tests/test_agent_runtime.py",
+      "tests/test_native_agent_broker.py"
+    ],
+    "report_path": "guardian-r2-program/reports/H06I-R2-interruption-authority.md",
+    "automatic_retry": false,
+    "integration": false,
+    "installation": false,
+    "push": false,
+    "h06j_start": false
+  },
+  "required_fix": [
+    "canonicalize the comparison root and resolved owned-path anchors through one shared macOS physical identity function before relative_to",
+    "allow the normal /var -> /private/var alias while continuing to reject unrelated path escapes and symlink attacks",
+    "add regression tests for owned-path parsing and full-clone validation under the host default macOS TMPDIR",
+    "preserve strict fail-closed behavior for non-macOS aliases, external roots and hostile swaps"
+  ],
+  "required_verification": [
+    "focused 11-test boundary set",
+    "tests/test_agent_runtime.py",
+    "tests/test_native_agent_broker.py",
+    "combined runtime and broker modules",
+    "default host TMPDIR with no override",
+    "explicit TMPDIR=/private/tmp",
+    "fresh no-hardlink full clone",
+    "root-swap, parent-swap, post-read replacement and report fail-closed checks",
+    "only after all coordinator checks pass, stage-two self-host verification"
+  ],
+  "terminal_rule": "any candidate diff outside the five owned paths, test failure, report mismatch or matrix failure stops without retry, integration, installation or H06J"
+}

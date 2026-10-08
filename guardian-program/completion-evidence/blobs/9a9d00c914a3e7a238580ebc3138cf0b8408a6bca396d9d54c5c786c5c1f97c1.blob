@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "finding_resolution",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-158084839fe31c2cea3d4be9",
+  "verdict": "pass",
+  "summary": "Transferred remedies remain unchanged and F30-001 is fixed within the original T30 release-stager scope.",
+  "facts": [
+    "F26-001 through F26-003 retain accepted T27/T28 implementations; F27-002 retains the Sulde-owned acceptance boundary; none of their paths changed in T30.",
+    "F29-001 is source-covered by packaged history and remains subject to official install plus scheduler 15/15 system proof.",
+    "F30-001 is fixed by removing the now-tracked history module from the legacy explicit-untracked list while preserving its tools/kb-index artifact location; 67 scoped and 68 full-clone integration tests pass."
+  ],
+  "requirements": [],
+  "findings": ["F26-001", "F26-002", "F26-003", "F27-002", "F29-001", "F30-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "T30-r2-expanded-suite"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

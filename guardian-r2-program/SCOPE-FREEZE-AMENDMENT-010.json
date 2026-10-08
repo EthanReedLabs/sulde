@@ -1,0 +1,34 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-amendment-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-010",
+  "parent_chain": [
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-009.json",
+      "sha256": "b093e033c6ccb4cbe53eed8534ed90eab3c57cf6ba627da11f56aebbad0183d8"
+    }
+  ],
+  "authority": "human-authorized-autonomous-r2-completion-current-session",
+  "authority_scope": "close FR2-H06I-R2-017 inside the existing H06I test ownership and verify the already frozen H06I plus H06H combined candidate without creating another task or expanding production behavior",
+  "finding": {
+    "finding_id": "FR2-H06I-R2-017",
+    "root_cause": "the official isolated runner intentionally exports SULDE_TEST_MODE=1 while the production-path regression asserted that the parent process did not contain it",
+    "repair": "remove SULDE_TEST_MODE only inside a mock.patch.dict scope that encloses the production-path module load and broker round trip, then restore the isolated runner environment"
+  },
+  "candidate": {
+    "root": "/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/r2-h06ij-integration",
+    "branch": "task/r2-h06ij-integration",
+    "commit": "809e9cd5fcf925a1196707a336e1bf96a406761e",
+    "test_file_sha256": "0934cce32ec8c24d0679ea8dd86422c128827e7c9ceef12ef992bcca6f83e68f"
+  },
+  "owned_paths": [
+    "tests/test_agent_runtime.py"
+  ],
+  "required_verification": [
+    "focused production-path regression under inherited SULDE_TEST_MODE=1",
+    "direct combined H06I plus H06H suite",
+    "official isolated combined suite in a production-KB quiet window",
+    "no production implementation delta after the H06I candidate commit"
+  ],
+  "terminal_rule": "any production-code change, non-owned path change, test failure, skipped gate or concurrent production-KB warning prevents integration evidence"
+}

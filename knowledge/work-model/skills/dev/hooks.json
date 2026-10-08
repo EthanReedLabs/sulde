@@ -1,0 +1,79 @@
+{
+  "_comment": "团队运行时自动化 hooks，复制到项目的 .claude/settings.local.json 的 hooks 字段中",
+
+  "SessionStart": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "cat CLAUDE.md",
+          "statusMessage": "加载项目规则"
+        }
+      ]
+    }
+  ],
+
+  "UserPromptSubmit": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '规则提醒：1.修改后不要自动提交 2.非源码文件放 .ai-workspace/ 3.提交用 git as-a/as-b/as-c 4.commit message 用中文'",
+          "statusMessage": "规则提醒"
+        }
+      ]
+    }
+  ],
+
+  "PreToolUse": [
+    {
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "INPUT=$(echo $TOOL_INPUT | tr -d '\\n'); if echo \"$INPUT\" | grep -qE 'git commit ' && ! echo \"$INPUT\" | grep -qE 'git as-|git merge|git revert'; then echo 'BLOCKED: 禁止使用 git commit，必须使用 git as-a / as-b / as-c'; exit 2; fi",
+          "if": "Bash(git commit*)",
+          "statusMessage": "检查 git 提交规则"
+        }
+      ]
+    }
+  ],
+
+  "PostCompact": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "cat CLAUDE.md",
+          "statusMessage": "重新加载项目规则"
+        }
+      ]
+    }
+  ],
+
+  "TaskCompleted": [
+    {
+      "hooks": [
+        {
+          "type": "agent",
+          "prompt": "一个队友刚完成了任务。执行以下检查：\n\n1. 检查该队友所在分支的最近提交，确认：\n   - 提交者身份是否与 CLAUDE.md 的分支→作者映射一致\n   - commit message 是否是中文\n   - 是否有 Co-Authored-By 行\n\n2. 检查是否有非源码文件泄漏到源码目录（应该在 .ai-workspace/ 里）\n\n3. 快速扫描改动的代码文件，确认没有 AI / Claude / generated / auto-generated 等字样\n\n如果全部通过，输出：'✅ 任务完成，检查通过，等待确认合并到 dev'\n如果有问题，列出具体问题并创建修复任务分配给该队友。",
+          "timeout": 30,
+          "model": "claude-haiku-4-5-20251001",
+          "statusMessage": "任务完成自动检查"
+        }
+      ]
+    }
+  ],
+
+  "TeammateIdle": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '队友即将空闲。检查是否还有未完成的任务。'",
+          "statusMessage": "检查剩余任务"
+        }
+      ]
+    }
+  ]
+}

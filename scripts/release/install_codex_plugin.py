@@ -55,8 +55,10 @@ from host_capabilities import (  # noqa: E402
 from install_transaction_journal import (  # noqa: E402
     JournalError,
     Transaction,
+    ReverseTransaction,
     begin_transaction,
     load_active_transaction,
+    load_transaction,
 )
 from knowledge_history import HistoryError, load_history  # noqa: E402
 from sulde_paths import (  # noqa: E402
@@ -98,6 +100,7 @@ LAUNCHER_NAMES = (
     "intent-guardian",
     ".sulde-launchers.json",
     ".sulde-command-effects.json",
+    "sulde-codex-hook",
 )
 LIVE_SESSION_BRIDGE_FILES = (
     Path("scripts/run-hook.sh"),
@@ -105,6 +108,8 @@ LIVE_SESSION_BRIDGE_FILES = (
 )
 DEPLOYMENT_LOCK_NAME = ".deployment.lock"
 DEPLOYMENT_GENERATION_NAME = "deployment-generation.json"
+GENERATION_SWITCH_FENCE_NAME = ".generation-switch-fence.json"
+GENERATION_SWITCH_FENCE_SCHEMA = "sulde-generation-switch-fence-v1"
 RUNTIME_OWNER_NAME = "runtime-owner.json"
 INSTALL_RECOVERY_NAME = ".install-recovery"
 DELIVERY_GENERATION_SCHEMA = "sulde-delivery-generation-v1"
@@ -128,6 +133,10 @@ RETIRED_SCHEDULER_LABELS = frozenset(
 
 class InstallError(RuntimeError):
     """The install transaction failed or its evidence is incomplete."""
+
+
+class CommittedCleanupError(InstallError):
+    """The verified generation committed; cleanup failure cannot authorize rollback."""
 
 
 @dataclass(frozen=True)
@@ -1646,6 +1655,22 @@ def _legacy_memory_database(kb_home: Path) -> Path | None:
     return None
 
 
+def _maintenance_migration_preflight(kb_home: Path) -> None:
+    """Retained archives are allowed; maintenance never acquires migration authority."""
+    if _legacy_home_migration_source(kb_home) is not None:
+        raise InstallError("maintenance cannot silently include home or memory migration")
+    legacy = _legacy_memory_database(kb_home)
+    if legacy is None:
+        return
+    try:
+        memory_plan = plan_memory_reconciliation(legacy, kb_home / "memory.db")
+    except (MemoryReconcileError, OSError, sqlite3.Error, ValueError) as error:
+        raise InstallError("maintenance memory preflight failed: " + str(error)) from error
+    if (not isinstance(memory_plan, dict) or memory_plan.get("ready") is not True
+            or memory_plan.get("reconcile_required") is not False):
+        raise InstallError("maintenance cannot silently include home or memory migration")
+
+
 def _delivery_generation(plugin: Path, *, expected_version: str) -> dict[str, Any]:
     path = plugin / ".codex-plugin" / DELIVERY_GENERATION_NAME
     payload = _read_json(path)
@@ -1851,6 +1876,202 @@ def current_plugin_installation(codex: str, runner: Runner) -> tuple[str, Path] 
     if result.returncode != 0:
         raise InstallError("cannot inspect the current Codex plugin installation")
     return _plugin_installation(result.stdout)
+
+
+def _stable_registry_installation(codex: str, runner: Runner) -> tuple[str, Path] | None:
+    """Strict current CLI JSON protocol; absence is not a text parse failure."""
+    result = runner([codex, "plugin", "list", "--json"], check=False, timeout=30)
+    try:
+        document = json.loads(result.stdout)
+        if result.returncode != 0 or not isinstance(document, dict) or not isinstance(document.get("installed"), list):
+            raise ValueError("invalid installed inventory")
+        rows = document["installed"]
+        if any(not isinstance(row, dict) or not isinstance(row.get("name"), str)
+               or not isinstance(row.get("pluginId"), str) or row.get("installed") is not True for row in rows):
+            raise ValueError("invalid installed row")
+        matches = [row for row in rows if row["name"] == "sulde" or row["pluginId"].startswith("sulde@")]
+        if not matches:
+            return None
+        if len(matches) != 1:
+            raise ValueError("ambiguous Sulde registration")
+        row = matches[0]
+        source = row.get("source")
+        version = row.get("version")
+        if (row["pluginId"] != "sulde@sulde-local" or row["name"] != "sulde"
+                or row.get("marketplaceName") != MARKETPLACE_NAME
+                or not isinstance(version, str) or not version.strip()
+                or not isinstance(source, dict) or source.get("source") != "local"
+                or not isinstance(source.get("path"), str) or not Path(source["path"]).is_absolute()):
+            raise ValueError("incomplete Sulde registration")
+        return version, Path(source["path"])
+    except (ValueError, TypeError) as error:
+        raise InstallError("migration_required: installed registry is not authoritative") from error
+
+
+def _stable_entry_migration_gate(
+    candidate: Path, kb_home: Path, codex: str, runner: Runner, *, platform: str,
+    maintenance_context=None, maintenance_claimed: bool = False,
+) -> dict[str, Any]:
+    """Prove only the cache paths this installation may prune, not session drain.
+
+    Legacy candidates retain their legacy lifecycle without gaining a stable
+    migration claim. New-protocol candidates may start on an empty cache root
+    or continue an independently verified fresh-origin stable lineage. There is
+    deliberately no force flag, user-authored drain receipt or session-age rule.
+    """
+    from codex_hook_registration import is_stable_hook_document, validate_registration
+
+    if platform != "posix":
+        if maintenance_context is not None:
+            raise InstallError("migration_required: maintenance supports POSIX only")
+        return {"status": "legacy_unverified", "coverage": "not_assessed"}
+    manifest = candidate / "hooks/hooks.json"
+    if manifest.is_file():
+        protocol = validate_registration(candidate).get("protocol")
+    else:
+        # Direct CLI staging has not happened yet. This read-only template
+        # check is repeated against the exact artifact before active mutation.
+        template = ROOT / "integrations/codex/plugins/sulde/hooks.posix.json"
+        document = _read_json(template)
+        protocol = ("stable-v1" if is_stable_hook_document(document) else
+                    "legacy" if "PLUGIN_ROOT" in json.dumps(document) else "unknown")
+    if maintenance_context is not None and protocol != "stable-v1":
+        raise InstallError("migration_required: maintenance requires a stable-v1 candidate")
+    if protocol == "legacy":
+        deployment_path = kb_home / DEPLOYMENT_GENERATION_NAME
+        if deployment_path.exists() and _read_json(deployment_path).get("stable_hook_entry") is not None:
+            raise InstallError("migration_required: stable Hook transport cannot downgrade to a legacy command")
+        return {"status": "legacy_unverified", "coverage": "not_assessed"}
+    if protocol != "stable-v1":
+        raise InstallError("migration_required: candidate Hook registration is unknown")
+
+    if maintenance_context is not None:
+        from legacy_maintenance import MaintenanceContext, LiveHandoffContext, TrustedLiveHandoffContext, MaintenanceError
+        if type(maintenance_context) not in {MaintenanceContext, LiveHandoffContext, TrustedLiveHandoffContext}:
+            raise InstallError("migration_required: invalid internal maintenance context")
+        try:
+            return maintenance_context.check(candidate=candidate, kb_home=kb_home,
+                codex=codex, runner=runner, claimed=maintenance_claimed)
+        except (MaintenanceError, OSError, ValueError) as error:
+            raise InstallError("migration_required: " + str(error)) from error
+
+    installation = _stable_registry_installation(codex, runner)
+    cache_root = _canonical_cache_root()
+    try:
+        if cache_root.is_symlink() or (cache_root.exists() and not cache_root.is_dir()):
+            raise InstallError("migration_required: cache inventory identity is unknown")
+        paths = sorted(cache_root.iterdir()) if cache_root.exists() else []
+    except OSError as error:
+        raise InstallError("migration_required: cache inventory cannot be read") from error
+    if installation is None and not paths:
+        public_home = launcher_home(kb_home)
+        retirement_root = default_codex_home() / "plugins/retired" / MARKETPLACE_NAME / "sulde"
+        residues = (kb_home / DEPLOYMENT_GENERATION_NAME,
+                    public_home / "bin/sulde-codex-hook")
+        try:
+            if (any(path.exists() or path.is_symlink() for path in residues)
+                    or retirement_root.is_symlink()
+                    or (retirement_root.exists() and
+                        (not retirement_root.is_dir() or any(retirement_root.iterdir())))
+                    or current_marketplace_root(codex, runner) is not None):
+                raise InstallError("migration_required: empty registry cannot erase prior deployment provenance")
+            launcher_manifest = public_home / "bin/.sulde-launchers.json"
+            if launcher_manifest.exists() or launcher_manifest.is_symlink():
+                launcher = _read_json(launcher_manifest)
+                source = Path(str(launcher.get("source_root") or ""))
+                # Shared Claude launchers are normal, not evidence that Codex
+                # has held a cache command. An unreadable/ambiguous manifest
+                # cannot be silently relabelled as a fresh Codex installation.
+                claude_source = (source / ".claude-plugin/plugin.json").is_file()
+                if launcher.get("provider") == "codex" or not (
+                    launcher.get("provider") == "claude" or
+                    (launcher.get("provider") is None and source.is_absolute() and claude_source)
+                ):
+                    raise InstallError("migration_required: prior launcher Codex provenance is unknown")
+        except (OSError, InstallError) as error:
+            raise InstallError("migration_required: prior deployment provenance cannot be read") from error
+        # This is not proof that all host sessions ended. No existing cache
+        # path is a deletion target in this first-install transaction.
+        return {"status": "fresh_install", "lineage_origin": "fresh-cache-root",
+                "coverage": "cache-paths-only", "cache_paths": [], "cache_bindings": [],
+                "registry_installation": None}
+
+    try:
+        deployment = _read_json(kb_home / DEPLOYMENT_GENERATION_NAME)
+        entry = deployment.get("stable_hook_entry")
+        retired_legacy = set()
+        if isinstance(entry, dict) and entry.get("lineage_origin") in {"maintenance-window", "atomic-cache-handoff"}:
+            from legacy_maintenance import verify_origin
+            origin_descriptor = verify_origin(kb_home, entry, deployment.get("maintenance_origin_transaction"))
+            _verify_retirement_descriptors(origin_descriptor["expected_postconditions"].get("retirements", []))
+            retired_legacy = {row["alias"] for row in origin_descriptor["expected_postconditions"].get("retirements", [])}
+        sources = {str(row.target.absolute()): row for row in _legacy_install_sources(())}
+        for path in paths:
+            source = sources.get(str(path.absolute()))
+            if source is None or source.mode not in {"existing_cache", "controlled_retired_alias"}:
+                raise InstallError("migration_required: cached Hook provenance is unknown")
+            if validate_registration(source.source).get("protocol") != "stable-v1":
+                if source.mode != "controlled_retired_alias" or str(path) not in retired_legacy:
+                    raise InstallError("migration_required: a legacy cached Hook command remains")
+        if installation is None:
+            raise InstallError("migration_required: stable registry lineage is missing")
+        installed = _canonical_cache_path(installation[0])
+        if validate_registration(installed).get("protocol") != "stable-v1":
+            raise InstallError("migration_required: active registry is still legacy")
+        if (
+            not isinstance(entry, dict)
+            or entry.get("lineage_origin") not in {"fresh-cache-root", "maintenance-window", "atomic-cache-handoff"}
+            or not isinstance(entry.get("descriptor"), dict)
+            or deployment.get("plugin_tree_sha256") != tree_digest(installed)
+            or deployment.get("installed_plugin") != str(installed.resolve())
+        ):
+            raise InstallError("migration_required: no verified fresh-origin stable lineage")
+        from codex_hook_entry import verify
+        if verify(launcher_home(kb_home), expected=entry["descriptor"]).get("healthy") is not True:
+            raise InstallError("migration_required: stable bootstrap identity is unverified")
+        if entry["lineage_origin"] == "atomic-cache-handoff":
+            if installation[0] == plugin_version():
+                raise InstallError("migration_required: live update requires a distinct candidate version")
+            from atomic_cache_handoff import probe
+            probe(default_codex_home().resolve() / "plugins")
+    except InstallError as error:
+        if str(error).startswith("migration_required:"):
+            raise
+        raise InstallError("migration_required: cached Hook provenance cannot be verified") from error
+    except (OSError, ValueError, RuntimeError) as error:
+        raise InstallError("migration_required: stable route coverage is unknown") from error
+    return {"status": "stable_update", "lineage_origin": entry["lineage_origin"],
+            "coverage": "cache-paths-only", "cache_paths": [str(path) for path in paths],
+            "cache_bindings": _stable_cache_bindings(paths),
+            "registry_installation": [installation[0], str(installation[1])],
+            **({"maintenance_origin": entry["maintenance_origin"],
+                "maintenance_origin_transaction": deployment["maintenance_origin_transaction"]}
+               if entry["lineage_origin"] in {"maintenance-window", "atomic-cache-handoff"} else {})}
+
+
+def _stable_cache_bindings(paths: Sequence[Path]) -> list[dict[str, str]]:
+    return [{"path": str(path), "target": str(path.resolve()),
+             "sha256": warm_tree_state(path.resolve()).normalized_tree_sha256}
+            for path in paths]
+
+
+def _recheck_stable_entry_before_prune(
+    projection: dict[str, Any], codex: str, runner: Runner,
+) -> None:
+    if projection.get("status") == "legacy_maintenance":
+        raise InstallError("maintenance prune requires the internal context recheck")
+    if projection.get("lineage_origin") not in {"fresh-cache-root", "maintenance-window", "atomic-cache-handoff"}:
+        return
+    root = _canonical_cache_root()
+    try:
+        paths = sorted(root.iterdir()) if root.exists() else []
+        installation = _stable_registry_installation(codex, runner)
+        observed = [installation[0], str(installation[1])] if installation else None
+        if (root.is_symlink() or _stable_cache_bindings(paths) != projection["cache_bindings"]
+                or observed != projection["registry_installation"]):
+            raise InstallError("migration_required: cached Hook routes changed before prune")
+    except (OSError, ValueError) as error:
+        raise InstallError("migration_required: cache coverage unavailable before prune") from error
 
 
 def deployment_cas_snapshot(
@@ -2697,6 +2918,21 @@ def _retirement_descriptors(
     ]
 
 
+def _retained_output_identities(plans: Sequence[CacheRetirement]) -> dict[str, str]:
+    """Seal only outputs which readers may resolve during this transaction."""
+    from install_transaction_journal import content_identity, _canonical
+    identities = {}
+    for plan in plans:
+        identities[str(plan.target)] = content_identity(plan.source)
+        record = {"schema": "sulde-retired-codex-cache-v1", "schema_version": 1,
+            "alias": str(plan.alias), "target": str(plan.target.resolve()),
+            "version": plan.alias.name, "tree_sha256": plan.expected_tree_sha256}
+        raw = (json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+        identities[str(plan.record)] = hashlib.sha256(_canonical({"state": "file",
+            "mode": 0o600, "sha256": hashlib.sha256(raw).hexdigest()})).hexdigest()
+    return identities
+
+
 def _publish_retirement_targets(plans: Sequence[CacheRetirement]) -> None:
     for plan in plans:
         _failure_boundary("retirement.before_publish")
@@ -2715,17 +2951,46 @@ def _publish_retirement_targets(plans: Sequence[CacheRetirement]) -> None:
         _failure_boundary("retirement.after_publish")
 
 
-def _publish_retirement_aliases(plans: Sequence[CacheRetirement]) -> None:
+def _publish_retirement_aliases(plans: Sequence[CacheRetirement], *, gap_free=False) -> None:
     for plan in plans:
         _failure_boundary("alias.before_publish")
         if plan.alias.is_symlink():
-            plan.alias.unlink()
+            permitted_targets = {plan.target.resolve()}
+            if plan.alias_preexisting and plan.preexisting_target is not None:
+                permitted_targets.add(plan.preexisting_target.resolve())
+            if plan.alias.resolve() not in permitted_targets:
+                raise InstallError(f"retired cache alias drifted before publication: {plan.alias}")
         elif plan.alias.is_dir():
-            shutil.rmtree(plan.alias)
+            # POSIX cannot atomically replace a non-empty directory with a
+            # symlink. Running wrappers must pin their fallback dependencies;
+            # do not claim this first migration is a gap-free path handoff.
+            if gap_free:
+                if warm_tree_state(plan.alias) != plan.prestate:
+                    raise InstallError(f"cache directory drifted before atomic handoff: {plan.alias}")
+            else:
+                shutil.rmtree(plan.alias)
         elif plan.alias.exists():
             raise InstallError(f"retired cache alias path has an unsupported item: {plan.alias}")
+        elif gap_free:
+            raise InstallError(f"cache path disappeared before atomic handoff: {plan.alias}")
         plan.alias.parent.mkdir(parents=True, exist_ok=True)
-        plan.alias.symlink_to(plan.target, target_is_directory=True)
+        # Build outside cache enumeration, then replace the directory entry in
+        # one operation. Existing aliases stay usable until publication; an
+        # exception before replace preserves the old link. Never unlink first.
+        temporary = plan.record.with_name(f".{plan.record.name}.{uuid.uuid4().hex}.link")
+        try:
+            temporary.symlink_to(plan.target, target_is_directory=True)
+            if gap_free and not plan.alias.is_symlink():
+                from atomic_cache_handoff import exchange
+                exchange(temporary, plan.alias)
+                # The displaced directory remains outside enumeration until
+                # transaction cleanup. Never unlink a path a host may hold.
+            else:
+                os.replace(temporary, plan.alias)
+        finally:
+            if temporary.is_symlink():
+                temporary.unlink()
+        _failure_boundary("alias.after_exchange")
         record = {
             "schema": "sulde-retired-codex-cache-v1",
             "schema_version": 1,
@@ -2791,7 +3056,7 @@ def _remove_transaction_aliases(descriptor: dict[str, Any]) -> None:
         alias.unlink()
 
 
-def _restore_preexisting_retirement_aliases(descriptor: dict[str, Any]) -> None:
+def _restore_preexisting_retirement_aliases(descriptor: dict[str, Any], *, gap_free=False) -> None:
     rows = descriptor.get("expected_postconditions", {}).get("retirements", [])
     for row in rows if isinstance(rows, list) else []:
         if not isinstance(row, dict) or row.get("alias_preexisting") is not True:
@@ -2809,8 +3074,20 @@ def _restore_preexisting_retirement_aliases(descriptor: dict[str, Any]) -> None:
             ) from error
         if target_state.tree_sha256 != row.get("prestate_tree_sha256"):
             raise InstallError(f"preexisting retirement target differs: {alias}")
+        if gap_free and alias.is_symlink():
+            if alias.resolve() not in {target.resolve(), Path(str(row["target"])).resolve()}:
+                raise InstallError(f"rollback alias drifted: {alias}")
+            temporary = target.parent / f".rollback-{uuid.uuid4().hex}.link"
+            try:
+                temporary.symlink_to(target, target_is_directory=True)
+                os.replace(temporary, alias)
+            finally:
+                temporary.unlink(missing_ok=True)
+            continue
         if alias.exists() or alias.is_symlink():
             raise InstallError(f"cannot restore preexisting retirement alias: {alias}")
+        if gap_free:
+            raise InstallError(f"rollback alias disappeared: {alias}")
         alias.parent.mkdir(parents=True, exist_ok=True)
         alias.symlink_to(target, target_is_directory=True)
 
@@ -2941,14 +3218,43 @@ def _publish_verified_candidate_artifact(
     *,
     platform: str,
     runner: Runner,
+    copy_verified: bool = False,
 ) -> PreparedArtifact:
     """Publish candidate-equivalent bytes to the canonical immutable store."""
 
-    published = _stage_artifact(
-        default_artifact_root(),
-        platform=platform,
-        runner=runner,
-    )
+    if copy_verified:
+        # The independently approved maintenance worker executes held source.
+        # Do not spawn a mutable source-tree stager after that approval. Publish
+        # only the already verified candidate bytes, then validate the copy.
+        target = default_artifact_root()
+        if target.is_symlink():
+            raise InstallError("candidate publication target is aliased")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if not target.exists():
+            temporary = Path(tempfile.mkdtemp(prefix=".sulde-maintenance-stage-", dir=target.parent))
+            try:
+                shutil.copytree(candidate.marketplace, temporary, dirs_exist_ok=True, symlinks=True)
+                if any(path.is_symlink() for path in temporary.rglob("*")):
+                    raise InstallError("verified candidate copy contains linked input")
+                copied = PreparedArtifact(temporary,
+                    validate_staged_marketplace(temporary, expected_version=plugin_version()),
+                    tree_digest(temporary / "plugins/sulde"))
+                if (_candidate_descriptor_identity(copied) != _candidate_descriptor_identity(candidate)
+                        or copied.plugin_tree_sha256 != candidate.plugin_tree_sha256):
+                    raise InstallError("verified candidate changed while copying")
+                os.rename(temporary, target)
+            finally:
+                if temporary.exists():
+                    shutil.rmtree(temporary)
+        published = PreparedArtifact(target.resolve(),
+            validate_staged_marketplace(target, expected_version=plugin_version()),
+            tree_digest(target / "plugins/sulde"))
+    else:
+        published = _stage_artifact(
+            default_artifact_root(),
+            platform=platform,
+            runner=runner,
+        )
     if (
         _candidate_descriptor_identity(published)
         != _candidate_descriptor_identity(candidate)
@@ -3034,6 +3340,49 @@ def _registry_remove(codex: str, runner: Runner) -> None:
         check=False,
         timeout=60,
     )
+
+
+def _registry_detach_marketplace(codex: str, runner: Runner) -> None:
+    """Keep cache aliases: plugin remove recursively deletes the cache root."""
+    runner([codex, "plugin", "marketplace", "remove", MARKETPLACE_NAME, "--json"],
+           check=True, timeout=60)
+
+
+def _gap_free_transaction(descriptor: dict[str, Any]) -> bool:
+    return descriptor.get("expected_postconditions", {}).get("cache_handoff") == "atomic-v1"
+
+
+def _retain_failed_candidate_path(descriptor: dict[str, Any]) -> None:
+    """Keep a failed new cache callable but out of CLI version enumeration.
+
+    Official plugin add rewrites even an existing selected cache. Rollback
+    instead restores the old marketplace and old real directory, retaining
+    this transaction's new version as a verified alias. No registry forgery.
+    """
+    expected = descriptor["expected_postconditions"]
+    version = descriptor["registry"]["new_version"]
+    alias = _canonical_cache_path(version)
+    if not alias.exists() and not alias.is_symlink():
+        return
+    source = Path(expected["artifact"]) / "plugins/sulde"
+    state = warm_tree_state(source)
+    if state.bytecode_inventory or tree_digest(source) != expected["plugin_tree_sha256"]:
+        raise InstallError("failed candidate sealed source drifted")
+    safe_version = re.sub(r"[^0-9A-Za-z._-]+", "-", version)
+    target = default_codex_home() / "plugins/retired" / MARKETPLACE_NAME / "sulde" / f"{safe_version}-{state.tree_sha256[:20]}"
+    if alias.is_symlink():
+        if alias.resolve() != target.resolve():
+            raise InstallError("failed candidate cache alias drifted")
+    elif warm_tree_state(alias).normalized_tree_sha256 != state.normalized_tree_sha256:
+        raise InstallError("failed candidate cache bytes are unproven; recovery retained")
+    plan = CacheRetirement(alias=alias, target=target, source=source,
+        prestate=warm_tree_state(alias.resolve()), expected_tree_sha256=state.tree_sha256,
+        record=target.with_name(f"{target.name}.retirement.json"),
+        alias_preexisting=alias.is_symlink(),
+        preexisting_target=target if alias.is_symlink() else None)
+    _publish_retirement_targets((plan,))
+    _publish_retirement_aliases((plan,), gap_free=True)
+    _verify_retirement_descriptors(_retirement_descriptors((plan,)))
 
 
 def _registry_add(
@@ -4187,7 +4536,9 @@ def _smoke_promoted_candidate(
         raise InstallError("Codex plugin list did not verify the promoted candidate")
     hook_trust = _codex_hook_trust_observation(Path(codex), cwd=ROOT)
     if hook_trust.get("status") != "ready":
-        raise InstallError("promoted candidate Hooks are not live, unique, and trusted")
+        error = InstallError("promoted candidate Hooks are not live, unique, and trusted")
+        error.hook_trust = hook_trust
+        raise error
     return {
         "candidate_receipt_sha256": candidate_receipt["receipt_sha256"],
         "observation_source": "promotion_canary",
@@ -4238,6 +4589,204 @@ def _file_sha256(path: Path) -> str | None:
         return hashlib.sha256(path.read_bytes()).hexdigest()
     except OSError:
         return None
+
+
+def _generation_fence_state(kb_home: Path) -> dict[str, Any] | None:
+    from generation_fence import read_fence
+
+    return read_fence(kb_home)
+
+
+def _generation_fence_path(kb_home: Path) -> Path:
+    from generation_fence import fence_path
+
+    return fence_path(kb_home)
+
+
+def _write_generation_fence(
+    kb_home: Path,
+    *,
+    from_generation: str | None,
+    to_generation: str,
+    transaction_id: str | None = None,
+    transaction_descriptor_sha256: str | None = None,
+) -> None:
+    """Publish the in-switch fence UNDER THE FENCE LOCK (R3 followup 2).
+
+    Holding the shared fence lock across the write makes the write and the
+    scope re-check one critical section, mutually exclusive with run-side
+    lease admission ([fence check + lease publication]).  The fence carries
+    the transaction identity so recovery can match and clear it."""
+    from generation_fence import write_fence
+
+    if os.path.lexists(_generation_fence_path(kb_home)):
+        raise InstallError("an unresolved generation fence already exists; explicit recovery is required")
+
+    # The CALLER holds the fence lock (the write+recheck critical section in
+    # _install_locked); acquiring it here again would self-deadlock.
+    write_fence(
+        kb_home,
+        from_generation=from_generation,
+        to_generation=to_generation,
+        transaction_id=transaction_id,
+        transaction_descriptor_sha256=transaction_descriptor_sha256,
+    )
+
+
+def _remove_generation_fence(kb_home: Path) -> bool:
+    from generation_fence import clear_fence
+
+    return clear_fence(kb_home)
+
+
+def _bound_transaction_fence(kb_home: Path, transaction: Transaction) -> dict[str, Any] | None:
+    """A legacy ID alone never proves the journal this fence was published for."""
+    fence = _generation_fence_state(kb_home)
+    if not isinstance(fence, dict):
+        return None
+    descriptor = transaction.descriptor
+    if (fence.get("schema_version") != 1 or type(fence.get("schema_version")) is not int
+            or fence.get("state") != "in-switch"
+            or not re.fullmatch(r"[0-9a-f]{32}", str(fence.get("token") or ""))
+            or fence.get("transaction_id") != transaction.transaction_id
+            or fence.get("transaction_descriptor_sha256") != transaction.descriptor_sha256
+            or fence.get("from_generation") != descriptor.get("old_generation")
+            or fence.get("to_generation") != descriptor.get("new_generation")):
+        return None
+    return fence
+
+
+def _clear_verified_generation_fence(kb_home: Path, expected: dict[str, Any] | None) -> bool:
+    """CAS only after independent terminal verification; caller holds deployment lock."""
+    if expected is None:
+        return False
+    from generation_fence import fence_lock
+    with fence_lock(kb_home):
+        if _generation_fence_state(kb_home) != expected:
+            return False
+        _failure_boundary("fence.before_clear")
+        cleared = _remove_generation_fence(kb_home)
+        _failure_boundary("fence.after_clear")
+        return cleared
+
+
+def _finish_verified_transaction_cleanup(
+    kb_home: Path, transaction: Transaction, expected_fence: dict[str, Any] | None,
+    *, detached: bool = False,
+) -> bool:
+    """Retain real active authority until the fence removal is durably complete."""
+    try:
+        cleared = _clear_verified_generation_fence(kb_home, expected_fence)
+        if expected_fence is not None and not cleared:
+            raise InstallError("verified transaction fence changed before cleanup")
+        if not detached:
+            transaction.clear_active()
+        return cleared
+    except Exception as error:
+        raise InstallError(
+            f"verified recovery cleanup incomplete; retained transaction={transaction.transaction_id}; "
+            f"run --recover-only after resolving cleanup failure: {error}"
+        ) from error
+
+
+def _staged_target_generation(artifact: Path) -> str:
+    """Target delivery generation of the staged artifact (version:runtime tree)."""
+    return (
+        f"{plugin_version()}:"
+        f"{tree_digest(artifact / 'plugins' / 'sulde' / 'runtime')}"
+    )
+
+
+def _generation_switch_projection(new_generation: str) -> dict[str, Any]:
+    """Project in-flight managed-run generations before a switch (R1-06).
+
+    Scope is explicit and opt-in: ``SULDE_ACTIVE_LEASES_DIRS`` (``os.pathsep``
+    separated) lists the managed-run lease directories this installation must
+    respect.  Nothing here claims global workspace coverage.  Policy:
+    ``observe`` (default) records the report in the transaction evidence;
+    ``SULDE_GENERATION_SWITCH_POLICY=block`` fails the install while any
+    scoped lease references an incompatible generation.  This complements the
+    observe-only peer-session authority and the live-session bridges; it does
+    not replace them and never terminates anything.
+    """
+    raw_dirs = os.environ.get("SULDE_ACTIVE_LEASES_DIRS") or ""
+    policy = (os.environ.get("SULDE_GENERATION_SWITCH_POLICY") or "observe").strip()
+    scopes: list[dict[str, Any]] = []
+    compatible: bool | None = True
+    for raw_dir in raw_dirs.split(os.pathsep):
+        candidate_dir = raw_dir.strip()
+        if not candidate_dir:
+            continue
+        leases_dir = Path(candidate_dir)
+        # R2-04: a missing or unreadable scope cannot prove safety.  It is
+        # UNKNOWN coverage — never compatible, and in block policy it refuses
+        # the switch outright.
+        if not leases_dir.is_dir():
+            scopes.append(
+                {
+                    "leases_dir": candidate_dir,
+                    "status": "missing",
+                    "compatible": None,
+                    "coverage": "unknown",
+                }
+            )
+            compatible = None
+            continue
+        try:
+            from generation_guard import assert_switch_allowed
+
+            report = assert_switch_allowed(
+                leases_dir,
+                target_generation=new_generation,
+                policy="observe",
+            )
+        except Exception as error:  # noqa: BLE001 - projection must not crash install
+            scopes.append(
+                {
+                    "leases_dir": candidate_dir,
+                    "status": "unavailable",
+                    "error": str(error)[:200],
+                    "compatible": None,
+                    "coverage": "unknown",
+                }
+            )
+            compatible = None
+            continue
+        scopes.append(
+            {
+                "leases_dir": candidate_dir,
+                "status": "observed",
+                "active_generations": report["active_generations"],
+                "incompatible_active": report["incompatible_active"],
+                "compatible": report["compatible"],
+                "coverage": "observed",
+            }
+        )
+        if compatible is True:
+            compatible = report["compatible"]
+    if not scopes:
+        # No scopes declared at all: reference coverage is unknown.  Observe
+        # continues but must display "unverified", never "safe".
+        compatible = None
+    if policy == "block" and compatible is not True:
+        raise InstallError(
+            "generation switch blocked by SULDE_GENERATION_SWITCH_POLICY: "
+            "an active managed run references an incompatible generation, or "
+            "reference coverage is not proven (missing/unreadable/undeclared "
+            "lease scopes)"
+        )
+    return {
+        "new_generation": new_generation,
+        "policy": policy,
+        "scope": "explicit-SULDE_ACTIVE_LEASES_DIRS",
+        "coverage": (
+            "declared-scopes-observed"
+            if scopes and compatible is not None
+            else "unknown"
+        ),
+        "compatible": compatible,
+        "scopes": scopes,
+    }
 
 
 def _transaction_descriptor(
@@ -4420,6 +4969,9 @@ def _verify_new_postconditions(
     installed_path = installed_path.resolve()
     if tree_digest(installed_path) != expected["plugin_tree_sha256"]:
         raise InstallError("recovery postcondition installed tree differs")
+    if expected.get("hook_trust") is not None:
+        from codex_hook_trust import verify as verify_hook_trust
+        verify_hook_trust(expected["hook_trust"], codex=codex, cwd=ROOT, plugin_root=installed_path)
     sealed = _delivery_generation(installed_path, expected_version=str(registry["new_version"]))
     if (
         sealed.get("generation") != expected["generation"]
@@ -4429,6 +4981,19 @@ def _verify_new_postconditions(
     ):
         raise InstallError("recovery postcondition installed generation differs")
     deployment = _read_json(Path(expected["deployment"]))
+    expected_entry = expected.get("stable_hook_entry")
+    if expected_entry is not None:
+        from codex_hook_entry import verify
+        if (deployment.get("stable_hook_entry") != expected_entry
+                or verify(Path(expected["launcher"]).parent.parent,
+                          expected=expected_entry["descriptor"]).get("healthy") is not True):
+            raise InstallError("recovery postcondition stable Hook entry differs")
+        if expected_entry.get("lineage_origin") in {"maintenance-window", "atomic-cache-handoff"}:
+            proof = {"transaction_id": descriptor["transaction_id"],
+                     "descriptor_sha256": hashlib.sha256(
+                         (json.dumps(descriptor, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode()).hexdigest()}
+            if deployment.get("maintenance_origin_transaction") != proof:
+                raise InstallError("recovery postcondition maintenance transaction identity differs")
     launcher = _read_json(Path(expected["launcher"]))
     runtime = str((installed_path / "runtime").resolve())
     if (
@@ -4498,7 +5063,18 @@ def _recover_transaction(
     *,
     codex: str,
     runner: Runner,
+    detached: bool = False,
 ) -> dict[str, Any]:
+    """Verify/recover generation facts; the caller then durably cleans the fence
+    before releasing active authority with _finish_verified_transaction_cleanup.
+    """
+    if isinstance(transaction, ReverseTransaction):
+        from first_migration_reversal import recover
+        try:
+            return recover(transaction, installer=sys.modules[__name__], codex=codex,
+                           runner=runner, detached=detached)
+        except (ValueError, OSError) as error:
+            raise InstallError(f"exact reversal recovery retained: {error}") from error
     descriptor = transaction.descriptor
     supplied_identity = _codex_command_identity(codex)
     registry = descriptor["registry"]
@@ -4507,16 +5083,19 @@ def _recover_transaction(
             "recovery caller does not match the sealed Codex command identity"
         )
     stage = transaction.stage
+    if detached and stage not in {"committed", "rolled_back", "cleanup_complete"}:
+        raise InstallError("a detached fence journal is not terminal; recovery authority remains unresolved")
     if stage in {"postconditions_verified", "committed", "cleanup_complete"}:
         installed_path = _verify_new_postconditions(descriptor, runner=runner)
         if stage == "postconditions_verified":
             transaction.append("committed")
         # Independent journal and postcondition readback precedes active cleanup.
-        readback = load_active_transaction(transaction.recovery_root)
+        readback = (load_transaction(transaction.recovery_root, transaction.transaction_id,
+                                    expected_descriptor_sha256=transaction.descriptor_sha256)
+                    if detached else load_active_transaction(transaction.recovery_root))
         if readback is None or readback.stage not in {"committed", "cleanup_complete"}:
             raise InstallError("committed recovery journal did not read back independently")
         _verify_new_postconditions(readback.descriptor, runner=runner)
-        readback.clear_active()
         return {
             "status": "recovered_new_generation",
             "operational_status": "scheduler_ready_live_host_unverified",
@@ -4526,18 +5105,49 @@ def _recover_transaction(
             "transaction_id": transaction.transaction_id,
             "recovery_evidence": str(transaction.transaction_root),
         }
+    # Trust has its own per-key compensation. It is deliberately excluded from
+    # filesystem snapshots so concurrent unrelated user settings survive.
+    from codex_hook_trust import restore as restore_hook_trust, verify_previous as verify_old_hook_trust
+    old_trust_plan = descriptor["expected_postconditions"].get("hook_trust")
     if stage in {"rolled_back"}:
+        # Terminal replay is observational; a later user re-trust is not ours
+        # to undo, even if it happens to equal this transaction's desired value.
+        if old_trust_plan is not None:
+            verify_old_hook_trust(old_trust_plan, codex=codex, cwd=ROOT)
         if not transaction.verify_restored_snapshot() or not _verify_old_registry(
             descriptor, runner=runner
         ):
             raise InstallError("rolled-back transaction no longer matches old generation")
-        transaction.clear_active()
     else:
+        restore_hook_trust(transaction, codex=codex, cwd=ROOT)
         if stage != "rollback_started":
             transaction.append("rollback_started")
+        gap_free = _gap_free_transaction(descriptor)
+        if gap_free:
+            _retain_failed_candidate_path(descriptor)
+            # Restore identities while aliases are still valid, before the
+            # official CLI sees the old version as its selected cache entry.
+            _restore_preexisting_retirement_aliases(descriptor, gap_free=True)
+            rows = descriptor["expected_postconditions"].get("retirements", [])
+            for row in rows:
+                alias = Path(row["alias"])
+                if not row["alias_preexisting"]:
+                    if alias.is_symlink():
+                        if alias.resolve() != Path(row["target"]).resolve():
+                            raise InstallError("atomic rollback alias identity drifted")
+                    elif warm_tree_state(alias).tree_sha256 != row["prestate_tree_sha256"]:
+                        raise InstallError("atomic rollback directory identity drifted")
+            transaction.restore_snapshot(
+                atomic_directories=[Path(row["alias"]) for row in rows if not row["alias_preexisting"]]
+                    + [Path(row["target"]) for row in rows],
+                staging_parent=default_codex_home() / "plugins")
         if not _verify_old_registry(descriptor, runner=runner):
             sealed_codex = str(registry["codex_command"])
-            _registry_remove(sealed_codex, runner)
+            if gap_free:
+                if current_marketplace_root(sealed_codex, runner) is not None:
+                    _registry_detach_marketplace(sealed_codex, runner)
+            else:
+                _registry_remove(sealed_codex, runner)
             old_marketplace = registry.get("old_marketplace")
             old_version = registry.get("old_version")
             if isinstance(old_marketplace, str):
@@ -4549,18 +5159,25 @@ def _recover_transaction(
                     raise InstallError(
                         "sealed old marketplace bytes drifted before registry recovery"
                     )
-                _restore_registry(
-                    sealed_codex,
-                    Path(old_marketplace),
-                    str(old_version) if old_version is not None else None,
-                    runner,
-                )
-        _remove_transaction_aliases(descriptor)
-        transaction.restore_snapshot()
+                if gap_free:
+                    _registry_add_marketplace(sealed_codex, Path(old_marketplace), runner)
+                else:
+                    _restore_registry(
+                        sealed_codex,
+                        Path(old_marketplace),
+                        str(old_version) if old_version is not None else None,
+                        runner,
+                    )
+        if not gap_free:
+            _remove_transaction_aliases(descriptor)
+            transaction.restore_snapshot()
         _restore_scheduler_process_state(descriptor, runner=runner)
-        _restore_preexisting_retirement_aliases(descriptor)
+        if not gap_free:
+            _restore_preexisting_retirement_aliases(descriptor)
         if not _verify_old_registry(descriptor, runner=runner):
             raise InstallError("old registry generation did not verify after recovery")
+        if old_trust_plan is not None:
+            verify_old_hook_trust(old_trust_plan, codex=codex, cwd=ROOT)
         transaction.append("rolled_back")
         readback = load_active_transaction(transaction.recovery_root)
         if (
@@ -4570,7 +5187,9 @@ def _recover_transaction(
             or not _verify_old_registry(readback.descriptor, runner=runner)
         ):
             raise InstallError("rolled-back recovery authority did not read back independently")
-        readback.clear_active()
+        if old_trust_plan is not None:
+            verify_old_hook_trust(readback.descriptor["expected_postconditions"]["hook_trust"],
+                codex=codex, cwd=ROOT)
     return {
         "status": "recovered_old_generation",
         "operational_status": "degraded",
@@ -4596,6 +5215,8 @@ def _install_locked(
     candidate_receipt: dict[str, Any] | None = None,
     expected_live_state: dict[str, Any] | None = None,
     runner: Runner = run_command,
+    generation_switch_gate: dict[str, Any] | None = None,
+    maintenance_context=None,
 ) -> dict[str, Any]:
     if expected_live_state is not None:
         # Close the gap between the outer locked CAS and the actual transaction.
@@ -4615,6 +5236,12 @@ def _install_locked(
         phase_timings[name] = round(now - phase_started, 3)
         phase_started = now
 
+    stable_migration = _stable_entry_migration_gate(
+        artifact / "plugins/sulde", kb_home, codex, runner, platform=platform,
+        maintenance_context=maintenance_context, maintenance_claimed=maintenance_context is not None,
+    )
+    stable_entry: dict[str, Any] | None = None
+    stable_interpreter: Path | None = None
     peer_session_observation = _observe_peer_session_safety()
     previous_marketplace = current_marketplace_root(codex, runner)
     previous_installation = current_plugin_installation(codex, runner)
@@ -4642,6 +5269,8 @@ def _install_locked(
     transaction: Transaction | None = None
     switched = False
     rollback_errors: list[str] = []
+    published_fence: dict[str, Any] | None = None
+    commit_verified = False
     try:
         previous_snapshots = _snapshot_previous_install_paths(
             previous_install_paths,
@@ -4717,7 +5346,7 @@ def _install_locked(
             preparation_root=previous_snapshot_root / "normalized-retirements",
         )
         descriptor = _transaction_descriptor(
-            transaction_id=uuid.uuid4().hex,
+            transaction_id=maintenance_context.operation_id if maintenance_context is not None else uuid.uuid4().hex,
             artifact=artifact,
             kb_home=kb_home,
             codex=codex,
@@ -4729,6 +5358,33 @@ def _install_locked(
             retirements=retirements,
             actor_preflight=actor_preflight,
         )
+        if stable_migration.get("lineage_origin") in {"fresh-cache-root", "maintenance-window", "atomic-cache-handoff"}:
+            from codex_hook_entry import describe
+            from launcher_contract import runtime_interpreter
+            stable_interpreter = runtime_interpreter(kb_home).absolute()
+            stable_entry = {"descriptor": describe(artifact_plugin, launcher_home(kb_home),
+                                                    interpreter=stable_interpreter),
+                            "lineage_origin": stable_migration["lineage_origin"],
+                            "coverage": "cache-paths-only"}
+            if stable_migration["lineage_origin"] in {"maintenance-window", "atomic-cache-handoff"}:
+                stable_entry["maintenance_origin"] = (
+                    maintenance_context.claim_record() if maintenance_context is not None
+                    else stable_migration["maintenance_origin"])
+            descriptor["expected_postconditions"]["stable_hook_entry"] = stable_entry
+        if stable_migration.get("lineage_origin") == "atomic-cache-handoff":
+            descriptor["expected_postconditions"]["cache_handoff"] = "atomic-v1"
+            descriptor["expected_postconditions"]["retained_outputs"] = _retained_output_identities(retirements)
+        if maintenance_context is not None:
+            from legacy_maintenance import TrustedLiveHandoffContext
+            if type(maintenance_context) is TrustedLiveHandoffContext:
+                descriptor["expected_postconditions"]["hook_trust"] = maintenance_context.plan["hook_trust"]
+        # Publish complete rollback authority before any admission fence or
+        # production mutation. Snapshot work deliberately stays outside the
+        # short fence lock. A pre-journal crash therefore cannot strand a fence;
+        # an active/prepared crash has durable positive recovery evidence.
+        if maintenance_context is not None:
+            maintenance_context.check(candidate=artifact_plugin, kb_home=kb_home,
+                codex=codex, runner=runner, claimed=True)
         transaction = begin_transaction(
             kb_home / INSTALL_RECOVERY_NAME,
             descriptor,
@@ -4737,20 +5393,100 @@ def _install_locked(
                 previous_install_paths=previous_install_paths,
                 legacy_tree_paths=legacy_tree_paths,
                 retirements=retirements,
-                scheduler_labels=tuple(
-                    str(value) for value in actor_preflight.get("desired_labels", [])
-                ),
+                scheduler_labels=tuple(str(value) for value in actor_preflight.get("desired_labels", [])),
             ),
             failpoint=_failure_boundary,
         )
         transaction.append("prepared")
+        if stable_entry is not None:
+            from codex_hook_entry import prepare, publish, verify
+            prepared_entry = prepare(artifact_plugin, launcher_home(kb_home),
+                                     interpreter=stable_interpreter)
+            if prepared_entry != stable_entry["descriptor"]:
+                raise InstallError("stable Hook bundle drifted after transaction sealing")
         finish_phase("snapshot_and_prepare")
+        # Fence publication and the final lease recheck remain one critical
+        # section, excluding admission until both have completed.
+        from generation_fence import fence_lock
+
+        previous_generation = None
+        try:
+            deployment = _read_json(kb_home / DEPLOYMENT_GENERATION_NAME)
+            previous_generation = deployment.get("generation")
+        except InstallError:
+            previous_generation = None
+        with fence_lock(kb_home):
+            # R3 closeout A2: only a BLOCK-policy switch publishes the
+            # admission fence.  Observe records the re-check evidence and
+            # never creates a blocking marker, so ordinary old-generation
+            # admission is not obstructed by an observe-mode install.
+            block_policy = (
+                generation_switch_gate is not None
+                and generation_switch_gate.get("policy") == "block"
+            )
+            if block_policy:
+                _write_generation_fence(
+                    kb_home,
+                    from_generation=(
+                        str(previous_generation)
+                        if previous_generation is not None
+                        else None
+                    ),
+                    to_generation=str(sealed_generation["generation"]),
+                    transaction_id=str(descriptor["transaction_id"]),
+                    transaction_descriptor_sha256=transaction.descriptor_sha256,
+                )
+                published_fence = _bound_transaction_fence(kb_home, transaction)
+                if published_fence is None:
+                    raise InstallError("new generation fence did not bind its durable transaction")
+                _failure_boundary("fence.after_publish")
+            generation_switch_recheck = _generation_switch_projection(
+                str(sealed_generation["generation"])
+            )
+            fence_state = None
+            fence_file = _generation_fence_path(kb_home)
+            if fence_file.is_file():
+                try:
+                    fence_state = json.loads(
+                        fence_file.read_text(encoding="utf-8")
+                    ).get("state")
+                except (OSError, UnicodeError, json.JSONDecodeError):
+                    fence_state = "damaged"
+        generation_switch_recheck["fence_state_at_recheck"] = fence_state
+        generation_switch_recheck["fence_transaction_id"] = str(
+            descriptor["transaction_id"]
+        )
+        if (
+            generation_switch_recheck.get("policy") == "block"
+            and generation_switch_recheck.get("compatible") is not True
+        ):
+            raise InstallError(
+                "generation switch blocked at re-check before the first "
+                "production mutation: a new incompatible managed run "
+                "appeared or coverage became unproven"
+            )
         _failure_boundary("normalization.before_publish")
         _publish_retirement_targets(retirements)
         _failure_boundary("normalization.after_publish")
+        if maintenance_context is not None:
+            maintenance_context.check(candidate=artifact_plugin, kb_home=kb_home,
+                codex=codex, runner=runner, claimed=True)
+        else:
+            _recheck_stable_entry_before_prune(stable_migration, codex, runner)
+        if stable_entry is not None:
+            _failure_boundary("hook_entry.before_publish")
+            publish(launcher_home(kb_home), prepared_entry)
+            if verify(launcher_home(kb_home), expected=prepared_entry).get("healthy") is not True:
+                raise InstallError("stable Hook entry did not verify before registry mutation")
+            _failure_boundary("hook_entry.after_publish")
         transaction.append("registry_remove_started")
         _failure_boundary("registry.before_remove")
-        _registry_remove(codex, runner)
+        if _gap_free_transaction(descriptor):
+            _publish_retirement_aliases(retirements, gap_free=True)
+            _verify_retirement_descriptors(descriptor["expected_postconditions"]["retirements"])
+            _registry_detach_marketplace(codex, runner)
+        else:
+            _registry_remove(codex, runner)
         _failure_boundary("registry.after_remove")
         switched = True
         transaction.append("registry_removed")
@@ -4795,6 +5531,9 @@ def _install_locked(
                 "stable launcher is not bound to the installed delivery generation"
             )
         global_rules_evidence = _install_global_rules(installed_path, kb_home, runner)
+        if transaction.descriptor["expected_postconditions"].get("hook_trust") is not None:
+            from codex_hook_trust import apply as apply_hook_trust
+            apply_hook_trust(transaction, codex=codex, cwd=ROOT, plugin_root=installed_path)
         if candidate_receipt is None:
             smoke = _smoke_installed(
                 installed_path,
@@ -4861,6 +5600,12 @@ def _install_locked(
             raise InstallError("deployment descriptor and stable launcher generations differ")
         transaction.append("deployment_publish_started")
         _failure_boundary("deployment.before_publish")
+        if stable_entry is not None:
+            deployment_generation["stable_hook_entry"] = stable_entry
+            if stable_entry["lineage_origin"] in {"maintenance-window", "atomic-cache-handoff"}:
+                deployment_generation["maintenance_origin_transaction"] = {
+                    "transaction_id": transaction.transaction_id,
+                    "descriptor_sha256": transaction.descriptor_sha256}
         _write_deployment_generation(kb_home, deployment_generation)
         _failure_boundary("deployment.after_publish")
         transaction.append("deployment_published")
@@ -4925,6 +5670,11 @@ def _install_locked(
             "legacy_cache_restorations": legacy_cache_restorations,
             "live_session_bridges": live_session_bridges,
             "peer_session_observation": peer_session_observation,
+            "hook_entry_migration": stable_migration,
+            "generation_switch": {
+                "gate": generation_switch_gate,
+                "recheck": generation_switch_recheck,
+            },
             "deployment_generation": deployment_generation,
             "scheduler_actor_preflight": actor_preflight,
             "codex_host_preflight": host_preflight,
@@ -5004,8 +5754,13 @@ def _install_locked(
             raise InstallError("committed install journal did not read back independently")
         if committed.descriptor != transaction.descriptor:
             raise InstallError("committed install journal descriptor changed on readback")
-        committed.clear_active()
+        commit_verified = True
         finish_phase("postconditions_and_commit")
+        # R3 closeout A2: commit complete — release the admission fence ONLY
+        # when it belongs to this transaction.  An observe install writes no
+        # fence, and a pre-existing historical fence (unrecovered protection)
+        # must survive an observe install.
+        _finish_verified_transaction_cleanup(kb_home, committed, published_fence)
         result["install_timings_seconds"] = {
             **phase_timings,
             "locked_total": round(sum(phase_timings.values()), 3),
@@ -5013,6 +5768,32 @@ def _install_locked(
         shutil.rmtree(previous_snapshot_root, ignore_errors=True)
         return result
     except Exception as error:
+        if transaction is not None and getattr(error, "hook_trust", None) is not None:
+            from codex_hook_trust import record as record_hook_trust
+            record_hook_trust(transaction, "readiness-failure", error.hook_trust)
+        if commit_verified:
+            # This is a cleanup failure, not permission for an unfenced reverse
+            # generation switch. The outer home-migration handler must preserve
+            # the same committed generation as well.
+            raise CommittedCleanupError(
+                f"installation committed but post-commit cleanup incomplete; "
+                f"transaction={transaction.transaction_id}; operational readiness not claimed; "
+                f"run --recover-only: {error}"
+            ) from error
+        if transaction is not None and _gap_free_transaction(transaction.descriptor):
+            try:
+                recovered = _recover_transaction(transaction, codex=codex, runner=runner)
+                readback = load_active_transaction(kb_home / INSTALL_RECOVERY_NAME)
+                _finish_verified_transaction_cleanup(kb_home, readback, published_fence)
+            except Exception as recovery_error:
+                raise InstallError(
+                    f"live install failed; recovery retained: {error}; {recovery_error}"
+                ) from error
+            if recovered["status"] == "recovered_new_generation":
+                raise CommittedCleanupError(
+                    f"live installation independently recovered new generation after: {error}"
+                ) from error
+            raise InstallError(f"live install failed and atomically restored old generation: {error}") from error
         if transaction is not None and transaction.stage not in {
             "rollback_started",
             "rolled_back",
@@ -5075,7 +5856,7 @@ def _install_locked(
                         or not _verify_old_registry(readback.descriptor, runner=runner)
                     ):
                         raise InstallError("rollback journal did not read back independently")
-                    readback.clear_active()
+                    _finish_verified_transaction_cleanup(kb_home, readback, published_fence)
             except Exception as rollback_error:
                 rollback_errors.append(f"durable transaction rollback: {rollback_error}")
         shutil.rmtree(previous_snapshot_root, ignore_errors=True)
@@ -5093,6 +5874,7 @@ def install(
     candidate_receipt: dict[str, Any] | None = None,
     expected_live_state: dict[str, Any] | None = None,
     runner: Runner = run_command,
+    maintenance_context=None,
 ) -> dict[str, Any]:
     install_started = time.perf_counter()
     host_preflight_started = install_started
@@ -5100,6 +5882,19 @@ def install(
     # stopped host must observe zero registry, descriptor, cache, launcher, or
     # temporary transaction-marker changes.
     host_preflight = _codex_host_preflight(runner)
+    try:
+        pending = load_active_transaction(kb_home / INSTALL_RECOVERY_NAME)
+    except JournalError as error:
+        raise InstallError(f"ambiguous durable install recovery state was retained: {error}") from error
+    if isinstance(pending, ReverseTransaction):
+        raise InstallError("an exact reversal owns recovery; use --recover-only, not install")
+    # A pending transaction has its own exact recovery authority. Otherwise a
+    # refused migration must precede even deployment-lock creation/home work.
+    if not (kb_home / INSTALL_RECOVERY_NAME / "active.json").exists():
+        _stable_entry_migration_gate(
+            artifact / "plugins/sulde", kb_home, codex, runner, platform=platform,
+            maintenance_context=maintenance_context,
+        )
     try:
         python_preflight = invoking_environment()
         from launcher_contract import runtime_interpreter
@@ -5120,6 +5915,7 @@ def install(
     outer_timings = {
         "host_preflight": round(time.perf_counter() - host_preflight_started, 3)
     }
+    generation_switch_gate: dict[str, Any] | None = None
     lock_started = time.perf_counter()
     with _deployment_lock(kb_home) as deployment_lock_token:
         try:
@@ -5132,7 +5928,12 @@ def install(
                 f"ambiguous durable install recovery state was retained: {error}"
             ) from error
         if active is not None:
+            if isinstance(active, ReverseTransaction):
+                raise InstallError("an exact reversal owns recovery; use --recover-only, not install")
+            if maintenance_context is not None and active.transaction_id != maintenance_context.operation_id:
+                raise InstallError("maintenance recovery belongs to another transaction")
             try:
+                expected_fence = _bound_transaction_fence(kb_home, active)
                 recovered = _recover_transaction(
                     active,
                     codex=codex,
@@ -5145,6 +5946,11 @@ def install(
                     time.perf_counter() - install_started, 3
                 )
                 recovered["install_timings_seconds"] = outer_timings
+                # R3 followup 3: recovery independently succeeded — clear the
+                # fence only when its transaction identity matches; a foreign
+                # or unresolvable fence is never cleared blind.
+                if _finish_verified_transaction_cleanup(kb_home, active, expected_fence):
+                    recovered["fence"] = {"cleared": True}
                 return recovered
             except (JournalError, InstallError) as error:
                 raise InstallError(
@@ -5168,6 +5974,9 @@ def install(
             )
         if candidate_receipt is not None and candidate_receipt.get("python") != python_preflight:
             raise InstallError("installation must use the verified candidate Python environment")
+        if maintenance_context is not None:
+            if candidate_receipt is None or candidate_receipt.get("receipt_sha256") != maintenance_context.plan["receipt_sha256"]:
+                raise InstallError("maintenance requires the exact verified candidate receipt")
         test_prepared = (
             os.environ.get("SULDE_TEST_MODE") == "1"
             and os.environ.get("SULDE_TEST_PREPARED_ARTIFACT") == "1"
@@ -5220,10 +6029,21 @@ def install(
                 runner=runner,
             )
             candidate_evidence = prepared_artifact
+            if maintenance_context is not None:
+                _maintenance_migration_preflight(kb_home)
+                try:
+                    ensure_contract_identity_map(
+                        sulde_layout(home=launcher_home(kb_home)), allow_upgrade=False)
+                except HomeMigrationError as error:
+                    raise InstallError("maintenance identity preflight: " + str(error)) from error
+                maintenance_context.check(candidate=artifact / "plugins/sulde", kb_home=kb_home,
+                    codex=codex, runner=runner)
+                maintenance_context.claim(kb_home)
             prepared_artifact = _publish_verified_candidate_artifact(
                 candidate_evidence,
                 platform=platform,
                 runner=runner,
+                **({"copy_verified": True} if maintenance_context is not None else {}),
             )
             artifact = prepared_artifact.marketplace
         outer_timings["artifact_stage_and_validation"] = round(
@@ -5231,11 +6051,20 @@ def install(
         )
         pre_install_started = time.perf_counter()
         staged_plugin = artifact / "plugins" / "sulde"
+        _stable_entry_migration_gate(
+            staged_plugin, kb_home, codex, runner, platform=platform,
+            maintenance_context=maintenance_context,
+            maintenance_claimed=maintenance_context is not None,
+        )
         actor_preflight = _scheduler_actor_preflight(
             staged_plugin / "runtime",
             runner,
         )
         migration_source = _legacy_home_migration_source(kb_home)
+        if maintenance_context is not None:
+            if migration_source is not None:
+                raise InstallError("maintenance cannot silently include home or memory migration")
+            _maintenance_migration_preflight(kb_home)
         migration_activation: dict[str, object] | None = None
         memory_reconciliation: dict[str, Any] | None = None
         writers_quiesced = False
@@ -5291,7 +6120,10 @@ def install(
                 )
                 raise InstallError(f"legacy Sulde home migration failed: {error}") from error
         legacy_memory = _legacy_memory_database(kb_home)
-        if legacy_memory is not None:
+        if maintenance_context is not None:
+            # Even a later state change cannot route maintenance into the writer.
+            _maintenance_migration_preflight(kb_home)
+        elif legacy_memory is not None:
             try:
                 memory_plan = plan_memory_reconciliation(
                     legacy_memory,
@@ -5315,7 +6147,8 @@ def install(
         try:
             try:
                 identity_activation = ensure_contract_identity_map(
-                    sulde_layout(home=launcher_home(kb_home))
+                    sulde_layout(home=launcher_home(kb_home)),
+                    **({"allow_upgrade": False} if maintenance_context is not None else {}),
                 )
             except HomeMigrationError as error:
                 raise InstallError(
@@ -5325,6 +6158,29 @@ def install(
                 time.perf_counter() - pre_install_started,
                 3,
             )
+            # R2-03: the switch-protection gate runs BEFORE the first
+            # production mutation.  Everything above this line only stages
+            # and inspects; a block refusal here changes zero active state.
+            generation_switch_gate = _generation_switch_projection(
+                _staged_target_generation(artifact)
+            )
+            if (
+                generation_switch_gate.get("policy") == "block"
+                and generation_switch_gate.get("compatible") is not True
+            ):
+                raise InstallError(
+                    "generation switch blocked before any production change: "
+                    "an active managed run references an incompatible "
+                    "generation, or reference coverage is not proven"
+                )
+            # R3 followup 3: the fence itself is written inside
+            # _install_locked AFTER the transaction identity exists (the
+            # fence carries the transaction_id so recovery can match it);
+            # this level only performs the pre-mutation gate and the
+            # failure-path cleanup.
+            if maintenance_context is not None:
+                maintenance_context.check(candidate=staged_plugin, kb_home=kb_home,
+                    codex=codex, runner=runner, claimed=True)
             result = _install_locked(
                 artifact=artifact,
                 kb_home=kb_home,
@@ -5339,7 +6195,12 @@ def install(
                 candidate_receipt=candidate_receipt,
                 expected_live_state=expected_live_state,
                 runner=runner,
+                generation_switch_gate=generation_switch_gate,
+                maintenance_context=maintenance_context,
             )
+            # R3 closeout A2: the identity-checked clear above already
+            # released THIS transaction's fence; a pre-existing historical
+            # fence (foreign identity) is never touched here.
             locked_timings = result.get("install_timings_seconds", {})
             result["install_timings_seconds"] = {
                 **outer_timings,
@@ -5359,6 +6220,10 @@ def install(
             if memory_reconciliation is not None:
                 result["memory_reconciliation"] = memory_reconciliation
             return result
+        except CommittedCleanupError:
+            # Home migration is already part of the committed generation's
+            # dependencies; a fence cleanup error cannot undo it either.
+            raise
         except Exception:
             if migration_activation is not None:
                 loaded = _loaded_sulde_labels(runner)
@@ -5374,6 +6239,10 @@ def install(
                     sulde_layout(home=launcher_home(kb_home)),
                     allow_quiesced_managed_drift=True,
                 )
+            # R3 closeout A1/A2: fence cleanup on failure is identity-checked
+            # inside _install_locked (only a fence THIS transaction wrote is
+            # removed); a failure before the fence was written leaves every
+            # pre-existing fence (historical protection) intact.
             raise
         finally:
             if receipt is not None:
@@ -5407,16 +6276,71 @@ def recover_only(
                 f"ambiguous durable install recovery state was retained: {error}"
             ) from error
         if active is None:
-            return {
-                "status": "no_recovery_required",
-                "kb_home": str(kb_home.resolve()),
-            }
+            # New installations publish journal authority before the fence.
+            # Missing authority is therefore never proof of no prior mutation.
+            # A terminal journal can outlive active cleanup; only its exact
+            # descriptor binding and current postconditions permit fence CAS.
+            fence_file = _generation_fence_path(kb_home)
+            fence_state = _generation_fence_state(kb_home)
+            if os.path.lexists(fence_file) and fence_state is None:
+                return {
+                    "status": "recovery_required",
+                    "kb_home": str(kb_home.resolve()),
+                    "fence": {
+                        "cleared": False,
+                        "diagnosis": "fence file is damaged or unparsable",
+                    },
+                }
+            if fence_state is None:
+                return {
+                    "status": "no_recovery_required",
+                    "kb_home": str(kb_home.resolve()),
+                }
+            fence_transaction = fence_state.get("transaction_id")
+            try:
+                terminal = load_transaction(kb_home / INSTALL_RECOVERY_NAME, fence_transaction,
+                    expected_descriptor_sha256=fence_state.get("transaction_descriptor_sha256"))
+                expected_fence = _bound_transaction_fence(kb_home, terminal)
+                if expected_fence is None or terminal.stage not in {"committed", "rolled_back", "cleanup_complete"}:
+                    raise InstallError("fence lacks matching terminal transaction evidence")
+                result = _recover_transaction(terminal, codex=codex, runner=runner, detached=True)
+                result["fence"] = {"cleared": _finish_verified_transaction_cleanup(
+                                       kb_home, terminal, expected_fence, detached=True),
+                                   "state": fence_state.get("state")}
+                return result
+            except (JournalError, InstallError) as error:
+                return {
+                    "status": "recovery_required",
+                    "kb_home": str(kb_home.resolve()),
+                    "fence": {"cleared": False, "transaction_id": fence_transaction,
+                              "diagnosis": "bound terminal recovery evidence unavailable: " + str(error)},
+                }
+        expected_fence = _bound_transaction_fence(kb_home, active)
         try:
-            return _recover_transaction(active, codex=codex, runner=runner)
+            result = _recover_transaction(active, codex=codex, runner=runner)
+            if isinstance(active, ReverseTransaction):
+                # A crash immediately after durable start can precede fence
+                # publication. The inverse recovery creates its bound fence;
+                # cleanup must observe that identity, not the prior absence.
+                expected_fence = _bound_transaction_fence(kb_home, active)
+            fence_cleared = _finish_verified_transaction_cleanup(kb_home, active, expected_fence)
         except (JournalError, InstallError) as error:
+            # A1: recovery failed — the fence is retained with its
+            # transaction; admission guarantees are not expanded.
             raise InstallError(
                 f"durable install recovery failed closed and evidence was retained: {error}"
             ) from error
+        # A1: recovery independently succeeded (commit or rollback) — clear
+        # the fence only when its transaction identity matches the recovered
+        # transaction; mismatched, damaged, or unresolvable fences are kept.
+        fence_state = _generation_fence_state(kb_home)
+        result["fence"] = {
+            "cleared": fence_cleared,
+            "state": (
+                fence_state.get("state") if isinstance(fence_state, dict) else None
+            ),
+        }
+        return result
 
 
 def _parser() -> argparse.ArgumentParser:

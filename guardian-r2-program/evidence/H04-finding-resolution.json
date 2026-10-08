@@ -1,0 +1,31 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H04-typed-resource-adapters.md",
+      "sha256": "692a0e4a5e7657dabd0f2f6b9fc7f6c638e688ea069a2bebeb0a3741f0300698"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "tests.test_resource_adapters", "tests.test_intent_guardian.H04TypedResourceHookRoutingTests", "tests.test_intent_guardian_resources", "-v"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "FR2-H01-001 transferred product-level linked-worktree and typed resource authority closure to H04 instead of treating isolated runtime bootstrap as the product fix.",
+    "H04 now canonicalizes linked-worktree gitdir/common/index/ref/HEAD identity, consumes HumanGrantV2 and H02 dispatch bindings, rejects broad pathspec and direct control writes, and passes the 22-test resource and hook matrix.",
+    "This evidence resolves only the incoming H01 obligation; installed-runtime positive-sample replay remains explicitly assigned to H06."
+  ],
+  "findings": ["FR2-H01-001"],
+  "kind": "finding_resolution",
+  "requirements": ["R2-HUMAN-GRANT", "R2-TYPED-RESOURCES"],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H04 closes its incoming H01 linked-worktree and typed-resource authority obligation with exact implementation and executed tests.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

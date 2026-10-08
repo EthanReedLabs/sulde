@@ -1,7 +1,7 @@
 """check_task_md_baseline — coordinator task contract Write/Edit guard.
 
 Blocks task-md drafts that omit a `§baseline` evidence section. Catches the
-"draft from memory instead of grepping the repo" anti-pattern (SyntheticProject
+"draft from memory instead of grepping the repo" anti-pattern (Freebeat
 ADR §0100). New full writes must also carry a provider-neutral
 ``capability_tier`` and must not reintroduce provider-specific runtime fields.
 

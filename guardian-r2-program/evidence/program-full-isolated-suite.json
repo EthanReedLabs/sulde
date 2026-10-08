@@ -1,0 +1,35 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "full_isolated_suite",
+  "baseline": "program:guardian-human-authority-lifeform-r2",
+  "run_id": "program-r2-release-20260828",
+  "verdict": "pass",
+  "summary": "The final combined H06I plus H06H source candidate passes the quiet-window OS-isolated 214-test R2 suite with no concurrent production-state warning.",
+  "facts": [
+    "214 tests passed in 61.956 seconds with no failure, error, skip or concurrent production-KB warning.",
+    "The combined source is H06I commit 2c7316d, H06H candidate cb2955a, isolated-harness repair 809e9cd and release cachebuster 920fd4c.",
+    "A separate release-level nine-module matrix passed 524 tests in 220.449 seconds with one explicit native Windows PowerShell conditional skip; its unrelated concurrent production-KB observation is not used as the quiet-window proof."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-B", "scripts/kb/run-isolated-tests.py", "tests.test_human_grant", "tests.test_grant_broker", "tests.test_recovery_supervisor", "tests.test_resource_adapters", "tests.test_recovery_lane", "tests.test_agent_runtime", "tests.test_native_agent_broker", "tests.test_r2_guardian_integration"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "evidence/H06I-R2-a010-integration-tests.json",
+      "sha256": "c16970e661d72efb7678d15d8b1978a6eeed462f6cfbaab20b9b57975b001104"
+    },
+    {
+      "path": "evidence/H06H-a009-system-tests.json",
+      "sha256": "d5bf9f07bf11e4ad2910ca8078d88695eac12b529b6a4c950e9ad24f7cf89828"
+    }
+  ]
+}

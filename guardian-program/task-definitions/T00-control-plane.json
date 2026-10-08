@@ -1,0 +1,27 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T00-control-plane",
+  "title": "建立单写者控制面、任务证据包和总纲验收器",
+  "owner": "guardian-coordinator",
+  "capability_tier": "deep",
+  "base_commit": "34dcbd0d6ea81ba330c701bc755f1f557978f515",
+  "depends_on": [],
+  "owned_paths": [
+    "scripts/kb/guardian_program.py",
+    "tests/test_guardian_program.py",
+    "guardian-program/**"
+  ],
+  "requirements": ["PROGRAM-GOVERNANCE"],
+  "acceptance": [
+    "追加式哈希链事件是状态真值",
+    "worker 不能自行进入 task_verified 或 accepted",
+    "未解决 finding、缺失证据和证据漂移阻断验收",
+    "最终门禁覆盖全部 requirement、task、finding 和 program evidence"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests"]
+  }
+}

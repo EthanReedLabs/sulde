@@ -1,0 +1,41 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H04-typed-resource-adapters.md",
+      "sha256": "692a0e4a5e7657dabd0f2f6b9fc7f6c638e688ea069a2bebeb0a3741f0300698"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "cb8d806cc1facba561bd957cf9b0620c2320d2fe"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "diff", "--exit-code", "9cb8fb85a6906c06b30fc0c7c5e049cb47a1cb15", "cb8d806cc1facba561bd957cf9b0620c2320d2fe", "--", "<seven-owned-paths>"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["agent-runtime.py", "commit", "<coordinator>", "--expected-head", "cb8d806cc1facba561bd957cf9b0620c2320d2fe", "--path", "<eight-control-evidence-paths>"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Worker commit 9cb8fb85 has parent 0eb4fb65 and contains exactly the seven frozen H04 paths.",
+    "Coordinator integration commit cb8d806c has parent ea741771; all seven integrated blobs are byte-identical to the worker commit and no H05 path is present.",
+    "Coordinator follow-up be211258 has parent cb8d806c and changes only append-only events, H04 evidence documents and the H04 report; it adds no implementation source path."
+  ],
+  "findings": ["FR2-H04-011", "FR2-H04-012"],
+  "kind": "changed_files",
+  "requirements": [],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H04 changed-files v2 separates the exact seven-path implementation integration from the append-only report and evidence follow-up.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

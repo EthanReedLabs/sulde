@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T22-material-cas-lane-binding",
+  "kind": "finding_resolution",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-656b9b20b4b4882b1199d002",
+  "verdict": "pass",
+  "summary": "The transferred F00-002 obligation and T22 integration finding F22-001 are both covered by exact-path and session-isolated composed evidence.",
+  "facts": [
+    "F00-002 is fixed by exact literal compatibility-target validation without a broad directory allowlist.",
+    "F22-001 is fixed by binding only the test fixture session while production validation remains fail closed."
+  ],
+  "requirements": [],
+  "findings": ["F00-002", "F22-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "T21-and-T22-composed-134-test-gate"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

@@ -1,0 +1,36 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H03-recovery-supervisor.md",
+      "sha256": "ccbd376477e02cc5fb3770ecf78afe47641a0d7924b33b6aa998fe7eed9d0c55"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-B", "-m", "unittest",
+        "tests.test_human_grant", "tests.test_grant_broker", "tests.test_native_decision_journal",
+        "tests.test_approval_cas_schema", "tests.test_approval_timeout_policy", "tests.test_approval_invariant",
+        "tests.test_recovery_supervisor", "tests.test_sulde_supervisor", "tests.test_runtime_provider",
+        "tests.test_operational_readiness", "tests.test_terminal_invariants"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The integrated H01+H02+H03 coordinator tree ran 282 tests in 4.845 seconds with exit 0.",
+    "The run composes HumanGrantV2, GrantBroker/native journal, approval invariants and RecoverySupervisor with existing runtime/readiness/terminal behavior on the exact integrated commit."
+  ],
+  "findings": [],
+  "kind": "integration_tests",
+  "requirements": [],
+  "run_id": "run-gpe-911f4018e20b6c8d699f94e3",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H03 composes with accepted H01/H02 and existing supervisor, provider, readiness and terminal modules.",
+  "task_id": "H03-recovery-supervisor",
+  "verdict": "pass"
+}

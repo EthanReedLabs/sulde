@@ -1,0 +1,22 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "commands": [
+    {"argv": ["python3", "-B", "-m", "unittest", "<eight-H06A2-focused-tests>"], "exit_code": 0, "result": "pass"},
+    {"argv": ["python3", "-B", "-m", "unittest", "<H01-H05-affected-composition>"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The integrated coordinator tree ran eight architecture, UTF-8 and CLI-drift focused tests with zero failures or errors.",
+    "The integrated coordinator tree ran 333 affected H01-H05 composition tests with zero failures or errors."
+  ],
+  "findings": ["FR2-H06-003", "FR2-H06-004", "FR2-H06A2-002"],
+  "kind": "targeted_tests",
+  "requirements": [],
+  "run_id": "run-gpe-ee80c2b587197cdd2fa57479",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06A2 focused guards and affected predecessor composition pass on the exact integrated coordinator tree.",
+  "task_id": "H06A2-integration-hygiene",
+  "verdict": "pass"
+}

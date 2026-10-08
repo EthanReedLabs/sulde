@@ -1,0 +1,78 @@
+def _ssh_effect(tokens: list[str]) -> str | None:
+    """Respect the remote execution boundary; never resolve remote paths locally.
+
+    This proves effects for literal commands only, not host identity or read
+    safety (SSH configuration can execute local helpers). Unknown shapes remain
+    unknown. No SSH connection or config evaluation is performed here.
+    """
+    readonly = ssh_readonly_probe(tokens)
+    wrappers = {"env", "sudo", "doas", "command", "exec", "nohup", "timeout"}
+    # Unwrap only executable/option positions, never search inside argv data.
+    for _ in range(8):
+        if not tokens:
+            return None
+        wrapper = Path(tokens[0]).name.lower()
+        if wrapper not in wrappers:
+            break
+        original = tokens
+        tokens = tokens[1:]
+        if wrapper == "command" and tokens and tokens[0] in {"-v", "-V"}:
+            return None  # command lookup, not remote dispatch
+        while tokens:
+            word = tokens[0]
+            if word == "--":
+                tokens = tokens[1:]
+                break
+            if wrapper == "env" and re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", word):
+                tokens = tokens[1:]
+                continue
+            if not word.startswith("-"):
+                break
+            noarg = {"env": {"-i", "--ignore-environment"}, "sudo": {"-n", "-E", "-H", "-S", "-b"},
+                     "doas": {"-n"}, "command": {"-p"}, "exec": {"-c", "-l"}}
+            witharg = {"env": {"-u", "--unset"}, "sudo": {"-u", "-g", "-h", "-p", "-C", "-T", "-R", "-D"},
+                       "doas": {"-u"}, "exec": {"-a"}, "timeout": {"-s", "-k", "--signal", "--kill-after"}}
+            if word in noarg.get(wrapper, set()):
+                tokens = tokens[1:]
+            elif word in witharg.get(wrapper, set()) and len(tokens) >= 2:
+                tokens = tokens[2:]
+            else:
+                # Unknown wrapper options cannot justify local-path treatment.
+                return "unknown" if any(Path(item).name.lower() in {"ssh", "ssh.exe"} for item in original[1:]) else None
+        if wrapper == "timeout" and tokens:
+            tokens = tokens[1:]
+    if not tokens or Path(tokens[0]).name.lower() not in {"ssh", "ssh.exe"}:
+        return None
+    index = 1
+    while index < len(tokens) and tokens[index].startswith("-"):
+        option = tokens[index]
+        if option == "--":
+            index += 1
+            break
+        if len(option) < 2:
+            return "unknown"
+        if option[1] in "BbcDEeFIiJLlmOopQRSWw":
+            index += 1 if len(option) > 2 else 2
+        elif all(letter in "46AaCfGgKkMNnqsTtVvXxYy" for letter in option[1:]):
+            index += 1
+        else:
+            return "unknown"
+    if index >= len(tokens) - 1:
+        return "unknown"
+    remote = " ".join(tokens[index + 1:])
+    # Only interpret shell payloads syntactically; local script manifests and
+    # local cwd facts cannot establish what exists on a remote machine.
+    for _ in range(8):
+        payload = _shell_wrapper_payload(remote)
+        if payload is None:
+            break
+        remote = payload
+    if _composition_has_destructive_segment(remote):
+        return "destructive"
+    domains = _execution_domain_commands(remote)
+    if domains and any(domain in {"mkdir", "touch", "cp", "install", "tee", "deploy", "scp", "rsync"}
+                       for domain, _ in domains):
+        return "external_write"
+    if readonly:
+        return "read"
+    return "unknown"

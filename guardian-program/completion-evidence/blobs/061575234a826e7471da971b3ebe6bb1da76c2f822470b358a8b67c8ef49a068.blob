@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T21-authority-ledger-compat",
+  "kind": "integration_tests",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-c4d6a18cabdc0a254f1a2eb5",
+  "verdict": "pass",
+  "summary": "The T21 component-budget correction and the composed T21 plus T22 gate passed without changing recovery behavior.",
+  "facts": [
+    "Correction commit 5ff7c52 was cherry-picked as 26b4627 and reduced recovery.py from 3017 to 2999 lines.",
+    "The composed gate passed all 134 authority, journal, CAS lane, split architecture and critic tests."
+  ],
+  "requirements": [],
+  "findings": ["F21-005"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "T21-and-T22-composed-134-test-gate"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

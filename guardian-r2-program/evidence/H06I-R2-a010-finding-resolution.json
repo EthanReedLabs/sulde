@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-8604a20166ecf047ad18291d",
+  "verdict": "pass",
+  "kind": "finding_resolution",
+  "summary": "FR2-H06I-R2-017 is fixed in the existing test ownership by a restoring local environment scope and is proven by focused, direct and official isolated runs.",
+  "facts": [
+    "The isolated runner continues to export SULDE_TEST_MODE=1 globally for containment.",
+    "Only the production-path regression temporarily removes the variable, loads the runtime, executes the broker round trip, and then restores the runner environment.",
+    "Official isolated 214/214 completed without failure, skip, production write attempt or concurrent production-KB warning."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-017"],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "SCOPE-FREEZE-AMENDMENT-010.json",
+      "sha256": "34ff43ad468d8ea9d7372c7f522428c20627068282cade64d3f24846491cfa70"
+    }
+  ]
+}

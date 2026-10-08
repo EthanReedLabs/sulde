@@ -1,18 +1,15 @@
 {
   "name": "sulde",
-  "version": "0.2.5+codex.20260911043115-19fde00701",
-  "description": "Codex adapter for Sulde, a task orchestration and engineering delivery framework for AI agents. Supports task definition and assignment, execution supervision, engineering checks, result verification, acceptance and rework, with knowledge and memory as context. Independently developed; source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
+  "version": "0.2.5+codex.20261007132614-423ac8f6e0",
+  "description": "Self-contained Codex host for Sulde intent supervision, knowledge, memory and constrained L2/L3/L4 lifecycle automation.",
   "author": {
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
   },
-  "homepage": "https://github.com/EthanReedLabs/sulde",
-  "repository": "https://github.com/EthanReedLabs/sulde",
-  "license": "PolyForm-Noncommercial-1.0.0",
+  "homepage": "https://github.com/EthanReedLabs/sulde-pro",
+  "repository": "https://github.com/EthanReedLabs/sulde-pro",
+  "license": "BUSL-1.1",
   "keywords": [
-    "task-orchestration",
-    "engineering-delivery",
-    "verification",
     "knowledge-base",
     "memory",
     "context-injection",
@@ -21,8 +18,8 @@
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Sulde",
-    "shortDescription": "Orchestrate AI agent tasks and verify engineering delivery.",
-    "longDescription": "Connects Codex to Sulde's task orchestration and engineering delivery core: task owners, dependencies and scope, host-aware dispatch, approved managed execution in isolated worktrees, engineering checks, result verification, acceptance and rework. Guardian supervises observable actions; knowledge retrieval and cross-session memory provide context. Compatible tools can reuse MCP/CLI capabilities. Claude Code and Codex adapters are included; full supervision requires host adaptation and validation. Independently developed; English and Simplified Chinese overview docs. Source available under PolyForm Noncommercial 1.0.0; commercial use is not granted.",
+    "shortDescription": "Guard intent and recall Sulde knowledge in every Codex turn.",
+    "longDescription": "Maintains a shared intent contract, supervises observable Skill/MCP/tool actions, shows Sulde health, recalls relevant knowledge and memory, and ships the self-contained runtime used by constrained L2/L3/L4 lifecycle automation.",
     "developerName": "eric.gao.tech",
     "category": "Engineering",
     "capabilities": [
@@ -31,7 +28,7 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Help define and assign this task, supervise execution, and check the evidence for acceptance or rework, using relevant knowledge and memory as context."
+      "Guard my intent and recall relevant Sulde knowledge for this task."
     ]
   }
 }

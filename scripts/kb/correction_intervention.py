@@ -32,25 +32,40 @@ contract_identity_digest = runpy.run_path(
 )["contract_identity_digest"]
 
 
-EVENT_SCHEMA = "sulde-correction-intervention-event-v1"
-PROJECTION_SCHEMA = "sulde-correction-intervention-projection-v1"
+EVENT_SCHEMA = "sulde-correction-intervention-event-v2"
+EVENT_SCHEMA_V1 = "sulde-correction-intervention-event-v1"
+EVENT_SCHEMAS = {EVENT_SCHEMA, EVENT_SCHEMA_V1}
+PROJECTION_SCHEMA = "sulde-correction-intervention-projection-v2"
 STATES = {
     "proposed",
     "queued",
     "applied",
+    "acknowledged",
+    "verified",
+    "closed",
     "rejected",
     "unsupported",
     "cancelled",
 }
-TERMINAL_STATES = {"applied", "rejected", "unsupported", "cancelled"}
+# B3 lifecycle: applied keeps its exact delivered-or-interrupted meaning;
+# acknowledged = the executor reports handling (may be wrong); verified =
+# a supervisor independently read back the actual result (human/system
+# actor + verification evidence digest required); closed is terminal.
+# The executor can never settle its own correction.
+TERMINAL_STATES = {"closed", "rejected", "unsupported", "cancelled"}
 TRANSITIONS = {
     "proposed": {"queued", "rejected", "unsupported", "cancelled"},
     "queued": {"applied", "rejected", "unsupported", "cancelled"},
-    "applied": set(),
+    "applied": {"acknowledged", "cancelled"},
+    "acknowledged": {"verified", "rejected", "cancelled"},
+    "verified": {"closed", "rejected"},
+    "closed": set(),
     "rejected": set(),
     "unsupported": set(),
     "cancelled": set(),
 }
+_SETTLEMENT_ACTORS = {"human", "system"}
+_EVIDENCE_RE = re.compile(r"^[0-9a-f]{16,64}$")
 HUMAN_SOURCES = {"user_prompt", "human_terminal"}
 AGENT_SOURCES = {"agent_monitor", "policy_engine"}
 BOUNDARIES = {
@@ -157,7 +172,7 @@ def _safe_reason(value: Any) -> str:
 
 
 def _validate_base(row: Any, expected_contract: str) -> dict[str, Any]:
-    if not isinstance(row, dict) or row.get("schema") != EVENT_SCHEMA:
+    if not isinstance(row, dict) or row.get("schema") not in EVENT_SCHEMAS:
         raise CorrectionInterventionError("unsupported correction event row")
     if row.get("contract_sha256") != expected_contract:
         raise CorrectionInterventionError(
@@ -268,6 +283,23 @@ def _apply_event(projection: dict[str, Any], row: dict[str, Any]) -> None:
             raise CorrectionInterventionError(
                 "correction transition actor is invalid"
             )
+        if state in {"verified", "closed"} and transition_actor not in _SETTLEMENT_ACTORS:
+            raise CorrectionInterventionError(
+                "replay: only a human or the system supervisor can verify or "
+                "close a correction"
+            )
+        if state == "verified":
+            replay_summary = str(row.get("verification_summary") or "").strip()
+            replay_digest = str(row.get("evidence_sha256") or "")
+            expected_digest = _verification_evidence_digest(
+                intervention_id, replay_summary)
+            if (not replay_summary
+                    or not _EVIDENCE_RE.fullmatch(replay_digest)
+                    or replay_digest != expected_digest):
+                raise CorrectionInterventionError(
+                    "replay: verification evidence does not bind to this "
+                    "intervention and its result"
+                )
         intervention["state"] = state
         intervention["updated_at"] = row["at"]
         intervention["boundary"] = boundary
@@ -485,6 +517,11 @@ def propose_correction(
     return dict(projection["interventions"][selected_id])
 
 
+def _verification_evidence_digest(intervention_id: str, summary: str) -> str:
+    return hashlib.sha256(
+        f"{intervention_id}\0{summary}".encode("utf-8")).hexdigest()
+
+
 def transition_correction(
     contract_path: Path,
     intervention_id: str,
@@ -493,11 +530,32 @@ def transition_correction(
     boundary: str,
     reason_code: str,
     actor: str = "system",
+    evidence_sha256: str = "",
+    verification_summary: str = "",
 ) -> dict[str, Any]:
     if state not in STATES - {"proposed"}:
         raise CorrectionInterventionError(
             f"unsupported correction target state: {state}"
         )
+    verification_summary = str(verification_summary or "").strip()
+    if state in {"verified", "closed"}:
+        if actor not in _SETTLEMENT_ACTORS:
+            raise CorrectionInterventionError(
+                "only a human or the system supervisor can verify or close a "
+                "correction; the executor cannot settle its own fix"
+            )
+        if state == "verified":
+            if not verification_summary:
+                raise CorrectionInterventionError(
+                    "verified requires a verification_summary of the actual result"
+                )
+            expected_digest = _verification_evidence_digest(
+                intervention_id, verification_summary)
+            if evidence_sha256 != expected_digest:
+                raise CorrectionInterventionError(
+                    "verification evidence must bind to this intervention and its "
+                    "result: evidence_sha256 = sha256(id + \\0 + summary)"
+                )
     if boundary not in BOUNDARIES:
         raise CorrectionInterventionError(
             f"unsupported correction boundary: {boundary}"
@@ -525,6 +583,8 @@ def transition_correction(
                 "boundary": boundary,
                 "reason_code": clean_reason,
                 "actor": actor,
+                "evidence_sha256": evidence_sha256,
+                "verification_summary": verification_summary,
             }
         ], intervention_id
 

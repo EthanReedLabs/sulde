@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "kind": "integration_tests",
+  "baseline": "f8c830b02a814cf40c541ef861569882062174c0",
+  "run_id": "run-gpe-f218f0c4044547ecb9513656",
+  "verdict": "pass",
+  "summary": "T28 is integrated after T27 on dev and the composed component set remains green.",
+  "facts": [
+    "Dev commit 1908872 serializes T28 after T27 commit f8c830b.",
+    "All 159 composed consumer and projection tests pass on the integrated source."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "T28-159-component-tests"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

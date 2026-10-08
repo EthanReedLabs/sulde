@@ -1,0 +1,60 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "scheduler_acceptance",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "The official generation-fenced reconciliation activated all 15 Codex launchd actors on the installed runtime and the host process probe reports scheduler ready with zero failed or missing labels.",
+  "facts": [
+    "The official installed install-agents.sh accepted the previously granted redacted-local-context egress scope, silently validated all 15 definitions, activated all 15 definitions and recorded runtime-owner status active with retired=0.",
+    "Host-level operational readiness reports scheduler status ready, managed=15, loaded=15, missing_labels empty and failed_labels empty.",
+    "runtime-owner, deployment-generation and all LaunchAgent arguments bind generation 0.2.5+codex.20260824084717:dbeaf8ce5708729998ffd79cfc0a367e216476d9cad756146212ce1b22d84b39.",
+    "com.sulde.kb-aging is loaded on the installed runtime and LastExitStatus=0, proving the packaged no-.git provenance correction in production topology.",
+    "The two previously failing actors com.sulde.codex-harvest and com.sulde.status-notify are loaded and each reports LastExitStatus=0.",
+    "Operational effect-debt readiness is clear with blocking=0, pending_verifications=0 and interventions_open=0."
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-READINESS",
+    "DERIVED-DELIVERY"
+  ],
+  "findings": [
+    "F29-001",
+    "F30-002"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "/Users/eric/.codex/plugins/cache/sulde-local/sulde/0.2.5+codex.20260824084717/runtime/scripts/kb/install-agents.sh",
+        "--runtime-root",
+        "/Users/eric/.codex/plugins/cache/sulde-local/sulde/0.2.5+codex.20260824084717/runtime",
+        "--provider",
+        "codex",
+        "--accept-llm-data-egress"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "sulde-status.py",
+        "--json"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "launchctl",
+        "list",
+        "com.sulde.kb-aging"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

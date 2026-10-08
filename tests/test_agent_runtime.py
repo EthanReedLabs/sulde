@@ -154,19 +154,134 @@ REPORT = """## 结果
 无已知风险。
 """
 
-H06H_RUN_LEDGER = b'{"at": "2000-01-01T00:00:00+00:00", "command_sha256": "4a8b09a3e804e920a9802fdb85d5ce29287cf5936d0f34b21c4b6666cc2cb104", "execution_binding_sha256": "6e8f5a6f80d2c1c672f2608a2413464eae8bcb38c16af26f9014a4e7b85225d9", "parent_death_watchdog": true, "provider": "codex", "run_id": "run-111111111111111111111111", "schema": "sulde-run-event-v1", "type": "execution.requested", "workspace_id": "sha256:963e56ac345cfb66855dff09"}\n{"at": "2000-01-01T00:00:01+00:00", "parent_death_watchdog": true, "pid": 4242, "provider": "codex", "run_id": "run-111111111111111111111111", "schema": "sulde-run-event-v1", "tree_scope": "posix-process-group", "type": "execution.started"}\n{"at": "2000-01-01T00:00:02+00:00", "provider": "codex", "reason": "external_effect_outcome_unknown", "run_id": "run-111111111111111111111111", "schema": "sulde-run-event-v1", "type": "execution.interrupt_requested"}\n{"at": "2000-01-01T00:00:03+00:00", "output_present": false, "output_sha256": null, "provider": "codex", "returncode": 0, "run_id": "run-111111111111111111111111", "schema": "sulde-run-event-v1", "stop_reason": "awaiting_human", "type": "execution.result"}\n{"at": "2000-01-01T00:00:04+00:00", "error_count": 0, "errors_sha256": null, "provider": "codex", "quiescent": true, "run_id": "run-111111111111111111111111", "schema": "sulde-run-event-v1", "tree_scope": "posix-process-group", "type": "execution.disposed"}\n'
+H06H_RUN_LEDGER = (
+    b'{"at": "2026-08-27T13:25:31.367588+00:00", "command_sha256": "a157d1129bf498d966ca0609784d41f43fd4c8a9f3356c8a2660cd3809dbb4b0", "execution_binding_sha256": "3db6bc47fe16cd15af56cc88c9f07fbe9a97e9966702d6d8a280cb5c35180545", "parent_death_watchdog": true, "provider": "codex", "run_id": "run-1c18f868428c471e959e751a", "schema": "sulde-run-event-v1", "type": "execution.requested", "workspace_id": "sha256:b84f0fa06b784bc9c93eabda"}\n'
+    b'{"at": "2026-08-27T13:25:31.369862+00:00", "parent_death_watchdog": true, "pid": 26837, "provider": "codex", "run_id": "run-1c18f868428c471e959e751a", "schema": "sulde-run-event-v1", "tree_scope": "posix-process-group", "type": "execution.started"}\n'
+    b'{"at": "2026-08-27T13:29:30.336465+00:00", "provider": "codex", "reason": "external_effect_outcome_unknown", "run_id": "run-1c18f868428c471e959e751a", "schema": "sulde-run-event-v1", "type": "execution.interrupt_requested"}\n'
+    b'{"at": "2026-08-27T13:29:30.373722+00:00", "output_present": false, "output_sha256": null, "provider": "codex", "returncode": 0, "run_id": "run-1c18f868428c471e959e751a", "schema": "sulde-run-event-v1", "stop_reason": "awaiting_human", "type": "execution.result"}\n'
+    b'{"at": "2026-08-27T13:29:30.374582+00:00", "error_count": 0, "errors_sha256": null, "provider": "codex", "quiescent": true, "run_id": "run-1c18f868428c471e959e751a", "schema": "sulde-run-event-v1", "tree_scope": "posix-process-group", "type": "execution.disposed"}\n'
+)
 H06H_STDERR = (
     b"managed local interruption: awaiting_human\n"
     b"AgentRuntimeError: local interruption evidence is mismatched, out of order, or not quiescent\n"
 )
-H06H_EVENTS_SUMMARY = {'line_count': 48, 'valid_json_line_count': 48, 'sha256': '4927cd668f68e80761b75f47fa0e822baa729f1f47dc347de04aa43d4c687839', 'terminal_event': 'none', 'terminal_event_count': 0}
+H06H_EVENTS_SUMMARY = {
+    "line_count": 48,
+    "sha256": "cec437d7a1d35307c90f2ceb9d333de7e556fa685c559010221e39e48fc6a62e",
+    "terminal_event": "none",
+    "terminal_event_count": 0,
+    "valid_json_line_count": 48,
+}
 
 
-# Private release clone audit is retained only in the private source.
+def run_h06i_fresh_clone_gate() -> None:
+    base = "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2"
+    candidate_paths = [
+        "scripts/kb/native_agent_broker.py",
+        "scripts/kb/agent-runtime.py",
+        "tests/test_native_agent_broker.py",
+        "tests/test_agent_runtime.py",
+        "guardian-r2-program/reports/H06I-R2-interruption-authority.md",
+    ]
+    control_paths = [
+        "guardian-program/briefs/H06I-R2-interruption-authority-replacement.md",
+        "guardian-program/task-definitions/H06I-R2-interruption-authority.json",
+        "guardian-r2-program/SCOPE-FREEZE.json",
+        "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-001.json",
+        "guardian-r2-program/briefs/H06I-R2-interruption-authority-replacement.md",
+        "guardian-r2-program/task-definitions/H06I-R2-interruption-authority.json",
+    ]
+    with tempfile.TemporaryDirectory() as directory_name:
+        clone = Path(directory_name) / "clone"
+        subprocess.run(
+            ["git", "clone", "--no-local", "--no-checkout", str(ROOT), str(clone)],
+            check=True,
+        )
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(clone),
+                "-c",
+                "advice.detachedHead=false",
+                "switch",
+                "--detach",
+                base,
+            ],
+            check=True,
+        )
+        for relative in candidate_paths + control_paths:
+            source = ROOT / relative
+            if not source.is_file():
+                raise AssertionError(f"fresh clone gate source is missing: {relative}")
+            destination = clone / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
+        if (clone / ".codex-agent").exists():
+            raise AssertionError("fresh clone unexpectedly contains .codex-agent")
+        if (clone / ".worktrees/r2-h06h-final-fullclone").exists():
+            raise AssertionError("fresh clone unexpectedly contains H06H sibling")
+        hardlinks = [
+            str(path.relative_to(clone))
+            for path in clone.rglob("*")
+            if path.is_file() and path.stat().st_nlink != 1
+        ]
+        if hardlinks:
+            raise AssertionError(f"fresh clone contains hardlinks: {hardlinks[:5]}")
+        environment = os.environ.copy()
+        environment.pop("SULDE_TEST_MODE", None)
+        environment["PYTHONDONTWRITEBYTECODE"] = "1"
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                "-m",
+                "unittest",
+                "tests/test_agent_runtime.py",
+                "tests/test_native_agent_broker.py",
+            ],
+            cwd=clone,
+            env=environment,
+            check=False,
+        )
+        if completed.returncode != 0:
+            raise AssertionError("fresh clone two-module verification failed")
+    print("FRESH FULL CLONE PASS: exact base plus 5 candidate paths and 6 controls")
 
-SYNTHETIC_BRIEF_SHA256 = '85465da8d519f3f5b5747b5ebdbb0f6649936ac888fe301e81fd3adeb6bc6edb'
-SYNTHETIC_CURRENT_BASE_COMMIT = '2222222222222222222222222222222222222222'
-SYNTHETIC_LEGACY_TASK_V1 = {'schema': 'sulde-guardian-program-task-v1', 'task_id': 'synthetic-legacy-task', 'title': 'Synthetic legacy schema boundary', 'owner': 'synthetic-worker', 'capability_tier': 'deep', 'base_commit': '1111111111111111111111111111111111111111', 'depends_on': [], 'supersedes': [], 'owned_paths': ['scripts/kb/agent-runtime.py', 'tests/test_agent_runtime.py'], 'requirements': [], 'acceptance': ['Reject a mismatched base binding', 'Preserve exact owned paths'], 'evidence_gates': {'implemented': ['task_report', 'changed_files'], 'task_verified': ['targeted_tests', 'failure_injection'], 'integrated': ['integration_tests'], 'system_verified': ['system_tests']}}
+REPAIR6_BRIEF_SHA256 = (
+    "8f4aef4481a060cc9561434087a24c4cf26307f87755723c9d55a759b21b1db7"
+)
+CURRENT_BASE_COMMIT = "ebd9c2ed27fba48f314bed1584c27f95cc69b9d0"
+HISTORICAL_T04_TASK_V1 = {
+    "schema": "sulde-guardian-program-task-v1",
+    "task_id": "T04-audit-isolation",
+    "title": "建立持久审计 cursor、测试隔离和受管任务证据边界",
+    "owner": "worker-audit",
+    "capability_tier": "deep",
+    "base_commit": "2f4593090e13aacdde9fab2f74927d48e77cd85d",
+    "depends_on": ["T00-control-plane"],
+    "supersedes": [],
+    "owned_paths": [
+        "scripts/kb/agent-runtime.py",
+        "scripts/kb/run-isolated-tests.py",
+        "scripts/kb/audit_cursor.py",
+        "tests/test_agent_runtime.py",
+        "tests/test_isolated_test_runner.py",
+        "tests/test_audit_cursor.py",
+    ],
+    "requirements": [],
+    "acceptance": [
+        "普通 Hook 通过持久 cursor 增量重放，不随历史长度线性增长",
+        "测试子进程不能写生产 KB，父宿主并发事件只按窄协议归因",
+        "cursor 损坏、截断、竞争更新和 crash 边界都有 fail-closed 恢复测试",
+    ],
+    "evidence_gates": {
+        "implemented": ["task_report", "changed_files"],
+        "task_verified": ["targeted_tests", "failure_injection"],
+        "integrated": ["integration_tests"],
+        "system_verified": ["system_tests"],
+    },
+}
 
 
 @unittest.skipIf(os.name == "nt", "POSIX executable fixtures")
@@ -216,7 +331,7 @@ class AgentRuntimeTests(unittest.TestCase):
     def test_runtime_imports_exact_shared_codex_cli_authority(self) -> None:
         module = load_runtime_module()
         contract = sys.modules[module.successful_version_identity.__module__]
-        self.assertEqual(module.AUDITED_CODEX_VERSION, "codex-cli 0.154.0")
+        self.assertEqual(module.AUDITED_CODEX_VERSION, "codex-cli 0.160.0")
         self.assertEqual(
             module.NATIVE_AUTHORITY_SPEC_VERSION,
             contract.NATIVE_AUTHORITY_SPEC_VERSION,
@@ -338,7 +453,7 @@ class AgentRuntimeTests(unittest.TestCase):
         if not os.environ.get("SULDE_TEST_CODEX_EXECUTABLE"):
             self.skipTest("set SULDE_TEST_CODEX_EXECUTABLE for the real CLI gate")
         if not Path(os.environ["SULDE_TEST_CODEX_EXECUTABLE"]).is_file():
-            self.skipTest("audited codex-cli 0.154.0 is not installed")
+            self.skipTest("audited codex-cli 0.160.0 is not installed")
 
         nonpty = observe_audited_codex_help_from_parent(pseudo_terminal=False)
         try:
@@ -346,8 +461,8 @@ class AgentRuntimeTests(unittest.TestCase):
         except PermissionError as error:
             self.skipTest(f"managed environment denies real pseudo-terminal: {error}")
 
-        self.assertEqual(nonpty["version"], "codex-cli 0.154.0")
-        self.assertEqual(pty["version"], "codex-cli 0.154.0")
+        self.assertEqual(nonpty["version"], "codex-cli 0.160.0")
+        self.assertEqual(pty["version"], "codex-cli 0.160.0")
         self.assertEqual(nonpty, pty)
 
     def git(self, root: Path, *arguments: str) -> str:
@@ -2004,33 +2119,33 @@ class AgentRuntimeTests(unittest.TestCase):
                 self.assertFalse((worktree / f".codex-agent/{case}.status").exists())
                 self.assertFalse((worktree / f".codex-agent/{case}.brief.md").exists())
 
-    def test_synthetic_legacy_schema_is_separate_from_current_execution_authority(self) -> None:
+    def test_historical_t04_schema_is_separate_from_current_execution_authority(self) -> None:
         module = load_runtime_module()
         historical_payload = (
-            json.dumps(SYNTHETIC_LEGACY_TASK_V1, ensure_ascii=False) + "\n"
+            json.dumps(HISTORICAL_T04_TASK_V1, ensure_ascii=False) + "\n"
         ).encode("utf-8")
         with mock.patch.object(
             module,
             "_expected_base_commit",
-            return_value=SYNTHETIC_LEGACY_TASK_V1["base_commit"],
+            return_value=HISTORICAL_T04_TASK_V1["base_commit"],
         ):
             historical, historical_owned = module._parse_task_definition(
                 historical_payload,
                 ROOT,
-                expected_task_id="synthetic-legacy-task",
+                expected_task_id="T04-audit-isolation",
                 test_mode=False,
             )
-        self.assertEqual(historical["base_commit"], SYNTHETIC_LEGACY_TASK_V1["base_commit"])
-        self.assertEqual(historical_owned, SYNTHETIC_LEGACY_TASK_V1["owned_paths"])
+        self.assertEqual(historical["base_commit"], HISTORICAL_T04_TASK_V1["base_commit"])
+        self.assertEqual(historical_owned, HISTORICAL_T04_TASK_V1["owned_paths"])
 
         with self.temporary_directory() as directory_name:
             current_root = Path(directory_name) / "current-worktree"
             (current_root / "scripts/kb").mkdir(parents=True)
             (current_root / "tests").mkdir()
             current_task = {
-                **SYNTHETIC_LEGACY_TASK_V1,
-                "task_id": "synthetic-current-task",
-                "base_commit": SYNTHETIC_CURRENT_BASE_COMMIT,
+                **HISTORICAL_T04_TASK_V1,
+                "task_id": "T23-runtime-host-parity-r121",
+                "base_commit": CURRENT_BASE_COMMIT,
                 "depends_on": [],
                 "owned_paths": [
                     "scripts/kb/agent-runtime.py",
@@ -2045,7 +2160,7 @@ class AgentRuntimeTests(unittest.TestCase):
             with mock.patch.object(
                 module,
                 "_expected_base_commit",
-                return_value=SYNTHETIC_CURRENT_BASE_COMMIT,
+                return_value=CURRENT_BASE_COMMIT,
             ):
                 with self.assertRaisesRegex(
                     module.AgentRuntimeError,
@@ -2054,20 +2169,20 @@ class AgentRuntimeTests(unittest.TestCase):
                     module._parse_task_definition(
                         historical_payload,
                         current_root,
-                        expected_task_id="synthetic-legacy-task",
+                        expected_task_id="T04-audit-isolation",
                         test_mode=False,
                     )
                 task, owned_paths = module._parse_task_definition(
                     current_payload,
                     current_root,
-                    expected_task_id="synthetic-current-task",
+                    expected_task_id="T23-runtime-host-parity-r121",
                     test_mode=False,
                 )
             binding = module.execution_binding_envelope(
                 task_payload=current_payload,
                 task=task,
-                brief_relative_path="briefs/synthetic-current-brief.md",
-                brief_sha256=SYNTHETIC_BRIEF_SHA256,
+                brief_relative_path="briefs/T23-runtime-host-parity-r121-repair2.md",
+                brief_sha256=REPAIR6_BRIEF_SHA256,
                 root=current_root,
                 owned_paths=owned_paths,
                 test_mode=True,
@@ -2075,7 +2190,7 @@ class AgentRuntimeTests(unittest.TestCase):
             artifact, digest = module.execution_binding_artifact(binding)
 
         self.assertEqual(owned_paths, current_task["owned_paths"])
-        self.assertEqual(binding["base_commit"], SYNTHETIC_CURRENT_BASE_COMMIT)
+        self.assertEqual(binding["base_commit"], CURRENT_BASE_COMMIT)
         self.assertEqual(binding["worktree"]["path"], str(current_root.resolve()))
         self.assertEqual(module.parse_execution_binding_artifact(artifact)[1], digest)
 
@@ -3858,7 +3973,7 @@ class AgentRuntimeTests(unittest.TestCase):
         module = load_runtime_module()
         with self.assertRaisesRegex(
             module.AgentRuntimeError,
-            "installation-bound audited codex-cli 0.154.0 target",
+            "installation-bound audited codex-cli 0.160.0 target",
         ):
             self.synthetic_preflight(module,
                 "codex",
@@ -3871,11 +3986,17 @@ class AgentRuntimeTests(unittest.TestCase):
             "codex-cli 0.152.0\n",
             "codex-cli 0.153.0\n",
             "codex-cli 0.153.4\n",
+            "codex-cli 0.154.0\n",
             "codex-cli 0.155.0\n",
-            "wrapper codex-cli 0.154.0\n",
-            "codex-cli 0.154.0 future\n",
-            " codex-cli 0.154.0\n",
-            "codex-cli 0.154.0\n\n",
+            "codex-cli 0.156.0\n",
+            "codex-cli 0.155.1\n",
+            "codex-cli 0.159.0\n",
+            "codex-cli 0.160.1\n",
+            "codex-cli 0.161.0\n",
+            "wrapper codex-cli 0.160.0\n",
+            "codex-cli 0.160.0 future\n",
+            " codex-cli 0.160.0\n",
+            "codex-cli 0.160.0\n\n",
         ):
             with (
                 self.subTest(surface=surface),
@@ -3891,7 +4012,7 @@ class AgentRuntimeTests(unittest.TestCase):
                 ) as run,
                 self.assertRaisesRegex(
                     module.AgentRuntimeError,
-                    "exactly audited codex-cli 0.154.0",
+                    "exactly audited codex-cli 0.160.0",
                 ),
             ):
                 self.synthetic_preflight(module,
@@ -4163,7 +4284,7 @@ class AgentRuntimeTests(unittest.TestCase):
             mock.patch.object(module.subprocess, "run", return_value=old) as run,
             self.assertRaisesRegex(
                 module.AgentRuntimeError,
-                "exactly audited codex-cli 0.154.0",
+                "exactly audited codex-cli 0.160.0",
             ),
         ):
             self.synthetic_preflight(module,
@@ -4600,7 +4721,7 @@ class H06HSelfContainedEvidenceTests(unittest.TestCase):
             "report_relative_path": ".codex-agent/h06h.last.md",
             "model_reasoning_effort": "high",
             "codex_executable": "/opt/codex/bin/codex",
-            "codex_version": "codex-cli 0.154.0",
+            "codex_version": "codex-cli 0.160.0",
             "codex_executable_sha256": hashlib.sha256(b"codex").hexdigest(),
             "broker_generation": 2,
             "broker_sha256": hashlib.sha256(b"broker").hexdigest(),
@@ -4654,10 +4775,10 @@ class H06HSelfContainedEvidenceTests(unittest.TestCase):
             "sha256": hashlib.sha256(b"").hexdigest(),
         }
         return {
-            "started_at": "2000-01-01T00:00:00Z",
-            "terminated_at": "2000-01-01T00:00:04Z",
-            "provider_pid": 4242,
-            "provider_run_id": "run-111111111111111111111111",
+            "started_at": "2026-08-27T13:25:31Z",
+            "terminated_at": "2026-08-27T13:29:30Z",
+            "provider_pid": 26837,
+            "provider_run_id": "run-1c18f868428c471e959e751a",
             "terminal_status": "interrupted",
             "termination_domain": "local_interruption",
             "termination_reason": "awaiting_human",
@@ -4674,12 +4795,12 @@ class H06HSelfContainedEvidenceTests(unittest.TestCase):
             "execution_prevented": False,
         }
 
-    def test_synthetic_interruption_runtime_to_production_broker_round_trip(self) -> None:
-        self.assertEqual(len(H06H_RUN_LEDGER), 1399)
+    def test_frozen_h06h_bytes_runtime_to_production_broker_round_trip(self) -> None:
+        self.assertEqual(len(H06H_RUN_LEDGER), 1435)
         self.assertEqual(H06H_RUN_LEDGER.count(b"\n"), 5)
         self.assertEqual(
             hashlib.sha256(H06H_RUN_LEDGER).hexdigest(),
-            "057d6dc1da4b89c3ae59ce2ecb34b920a5ae2b39623601cc725b9b668d67a30c",
+            "8f32a901dc01221376b13cae56ed328e4729d21dac91f5ac29b25b363f63b67a",
         )
         self.assertEqual(len(H06H_STDERR), 136)
         self.assertEqual(H06H_STDERR.count(b"\n"), 2)
@@ -4703,7 +4824,7 @@ class H06HSelfContainedEvidenceTests(unittest.TestCase):
                 ledger.write_bytes(H06H_RUN_LEDGER)
                 evidence = module._run_ledger_local_interruption_evidence(
                     ledger,
-                    run_id="run-111111111111111111111111",
+                    run_id="run-1c18f868428c471e959e751a",
                 )
                 workspace = directory / "workspace"
                 workspace.mkdir()
@@ -4978,7 +5099,7 @@ class H06HSelfContainedEvidenceTests(unittest.TestCase):
             ledger.write_bytes(H06H_RUN_LEDGER)
             valid = module._run_ledger_local_interruption_evidence(
                 ledger,
-                run_id="run-111111111111111111111111",
+                run_id="run-1c18f868428c471e959e751a",
             )
             workspace = directory / "workspace"
             workspace.mkdir()
@@ -5008,7 +5129,7 @@ class H06HSelfContainedEvidenceTests(unittest.TestCase):
                     with self.assertRaises(module.AgentRuntimeError):
                         module._run_ledger_local_interruption_evidence(
                             ledger,
-                            run_id="run-111111111111111111111111",
+                            run_id="run-1c18f868428c471e959e751a",
                         )
 
             broker_cases = {}

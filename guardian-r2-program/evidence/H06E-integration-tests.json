@@ -1,0 +1,56 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06E-codex-help-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-c6a54d6965683d2d8f39c3d0",
+  "verdict": "pass",
+  "kind": "integration_tests",
+  "summary": "H06E composes byte-identically with the accepted coordinator tree and passes integrated runtime and installer suites.",
+  "facts": [
+    "The six reviewed blobs were serialized after accepted H06B into coordinator commit 45cf8c75.",
+    "The exact integrated tree passed all 60 agent-runtime tests with no skip and all 42 installer tests.",
+    "The real authority roundtrip staged 605 files and verified 366 corpus documents without production installation or scheduler mutation."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06E-001",
+    "FR2-H06E-002",
+    "FR2-H06E-003"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_agent_runtime"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_codex_plugin_install"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

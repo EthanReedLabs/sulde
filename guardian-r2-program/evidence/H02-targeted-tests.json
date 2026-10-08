@@ -1,0 +1,44 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_human_grant",
+        "tests.test_grant_broker",
+        "tests.test_native_decision_journal",
+        "tests.test_approval_cas_schema",
+        "tests.test_approval_timeout_policy",
+        "tests.test_approval_invariant",
+        "tests.test_terminal_invariants"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The integrated coordinator tree ran 195 tests in 2.727 seconds with exit 0.",
+    "The run covers H01 grant binding, H02 broker transactions, native journal compatibility, approval CAS, timeout, approval invariants and terminal invariants on the exact integrated blobs."
+  ],
+  "findings": [
+    "FR2-H02-001",
+    "FR2-H02-002",
+    "FR2-H02-003",
+    "FR2-H02-004"
+  ],
+  "kind": "targeted_tests",
+  "requirements": [],
+  "run_id": "run-gpe-142abf817c36c4687d1480b1",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H01, H02 and approval/native-journal regression suites pass on the integrated coordinator tree.",
+  "task_id": "H02-grant-broker",
+  "verdict": "pass"
+}

@@ -1,0 +1,59 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T32-codex-worktree-git-trace",
+  "title": "修复 Codex worktree Git 归因并收口历史验收迁移",
+  "owner": "guardian-coordinator",
+  "capability_tier": "deep",
+  "base_commit": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "depends_on": [
+    "T31-codex-0149-1-host-audit",
+    "T00-control-plane",
+    "T21-authority-ledger-compat",
+    "T24-p0-transaction-integration"
+  ],
+  "supersedes": [],
+  "owned_paths": [
+    "scripts/kb/command_template.py",
+    "scripts/kb/local_file_operations.py",
+    "scripts/kb/intent_guardian_parts/resources.py",
+    "scripts/kb/native_decision_journal.py",
+    "tests/test_intent_guardian.py",
+    "tests/test_native_decision_journal.py",
+    "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+    "guardian-program/reports/T32-codex-worktree-git-trace.md"
+  ],
+  "requirements": [
+    "WP56-B",
+    "WP56-D",
+    "WP56-E",
+    "DERIVED-CRITIC",
+    "DERIVED-SPLIT",
+    "DERIVED-TIMEOUT",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "acceptance": [
+    "git -C 对受控 linked worktree 的精确 add、commit 和 merge 归因为实际仓库与 local_write；模糊 add、选项注入、链接逃逸、路径越界和非受控仓库全部 fail closed",
+    "native approval 机器别名只读取决策卡顶层规范展示字段；嵌套续行步骤文案可共存，篡改顶层动作仍 fail closed",
+    "旧分支五项 accepted requirement 仅经共同切点、事件哈希、证据内容和源码祖先核验后迁入当前 append-only 事实，不重放或改写历史",
+    "WP56-D 使用安装后的真实 worktree Git 流程验证，六项需求形成当前 T32 requirement traceability",
+    "候选依次通过 scoped、failure-injection、完整 isolated、dev integration 和 main release 验证，失败候选不合并",
+    "通过官方 helper 和事务 installer 发布唯一 generation；安装后同会话 hooks、scheduler 15/15、doctor 与 program final-check 全部 ready"
+  ],
+  "evidence_gates": {
+    "implemented": [
+      "task_report",
+      "changed_files"
+    ],
+    "task_verified": [
+      "targeted_tests",
+      "failure_injection"
+    ],
+    "integrated": [
+      "integration_tests"
+    ],
+    "system_verified": [
+      "system_tests",
+      "requirement_traceability"
+    ]
+  }
+}

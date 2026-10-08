@@ -1,0 +1,114 @@
+{
+  "schema": "sulde-h06i-r2-review-repair-stage1-fail-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "task_id": "H06I-R2-interruption-authority",
+  "created_at": "2026-08-28T04:07:00Z",
+  "decision": "fail",
+  "authority": {
+    "amendment_path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-004.json",
+    "amendment_sha256": "cba930bbed31506408109a524bf75f93962db8f9dbcae78479468c6a8355d4ba",
+    "repair_brief_sha256": "266f40ec9e45233c3a717b80918d43fd515d358f54136f9f9892675500f365e1",
+    "provider_invocations_authorized": 1,
+    "provider_invocations_consumed": 1,
+    "automatic_retry": false
+  },
+  "managed_run": {
+    "slug": "r2-h06i-r2-final-review-repair",
+    "run_id": "run-3b10f12f936241a2813841c0",
+    "execution_binding_sha256": "adde102aead61682b75d686b590c1cd8651c240dff57d907ab0813fabfa517a5",
+    "timeout_seconds": 2400,
+    "status": "failed",
+    "status_reason": "AgentRuntimeError",
+    "observed_interruption_reason": "timeout",
+    "provider_returncode": 0,
+    "provider_terminal_event_count": 0,
+    "thread_started": 1,
+    "turn_started": 1,
+    "turn_completed": 0,
+    "turn_failed": 0,
+    "item_started": 144,
+    "item_completed": 154,
+    "agent_messages": 8,
+    "output_present": false,
+    "output_last_message_present": false,
+    "cleanup_quiescent": true,
+    "parent_error": "Codex output-last-message cannot be opened without symlink traversal"
+  },
+  "artifacts": {
+    "events": {
+      "sha256": "9dc5c5407a9759f49f7f6478458a3f2c2ecbb5b9bc450ee1a0774e503bb88a9b",
+      "bytes": 1289068,
+      "lines": 300
+    },
+    "status": {
+      "sha256": "1676335d7ce1f8d7707d2238ddc361dd5812d2e7c1238b75e53c9835c08da28f",
+      "bytes": 253
+    },
+    "stderr": {
+      "sha256": "07fc1964ddd7a985b6627d3488cf120467488e2963ec426577cc113151bdefa6",
+      "bytes": 124
+    },
+    "run_ledger": {
+      "sha256": "5d7f0869d38b0b330570d80813b3f13eead30cad77128244ad438c72ec93e6d4",
+      "bytes": 1402,
+      "interrupt_requested": "timeout",
+      "result_stop_reason": "error",
+      "disposed_quiescent": true
+    },
+    "heartbeat": {
+      "sha256": "dfacf44260b0175acf50aca2278a7f573483a140287aa71a6199093fc704ccdf",
+      "terminal_phase": "run_finalized",
+      "terminal_reason": "failed:AgentRuntimeError"
+    }
+  },
+  "candidate_after_timeout_sha256": {
+    "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+    "scripts/kb/agent-runtime.py": "9effefc5f477dc7d78a985ad028e9dcf790b548b1d846c7c6a2c46870fb7e740",
+    "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "tests/test_agent_runtime.py": "a637b37445adad801ae865d83852890b1c40bd24706823ed5c1525d7a40b2b76",
+    "guardian-r2-program/reports/H06I-R2-interruption-authority.md": "f76718d8fb90b94205afc24971b69b0e5f85f94683b1e039d617eda550b7310a"
+  },
+  "partial_positive_facts_not_accepted": [
+    "11 focused review-repair tests passed",
+    "tests/test_agent_runtime.py ran 74 tests successfully with one existing conditional skip",
+    "frozen tests/test_native_agent_broker.py ran 52 tests successfully",
+    "combined runtime and broker modules ran 126 tests successfully with one existing conditional skip",
+    "broker and broker test hashes remained frozen",
+    "git diff --check remained clean"
+  ],
+  "missing_acceptance": [
+    "provider natural terminal and final agent message",
+    "canonical output-last-message and run-ledger byte equality",
+    "rewritten unique current evidence report",
+    "fresh no-hardlink full-clone verification",
+    "outer default macOS TMPDIR verification",
+    "explicit /private/tmp control verification",
+    "stage boundary artifact",
+    "self-hosted verification ordinal 3",
+    "independent final review"
+  ],
+  "environment_observation": {
+    "managed_default_tmpdir": "workspace-scoped native command scratch",
+    "outer_macos_tmpdir_attempt": "the child sandbox could not create any directory under /var/folders, /tmp or /var/tmp and failed before test logic",
+    "adjudication": "environment boundary evidence only; never projected as a passing or failing code assertion"
+  },
+  "finding": {
+    "finding_id": "FR2-H06I-R2-014",
+    "title": "single repair provider exhausted its execution budget before a natural terminal",
+    "root_cause_status": "verified_execution_fact_root_cause_not_yet_adjudicated",
+    "impact": "the candidate contains partial code and test changes but no canonical provider output, corrected report, stage boundary or authority for self-host verification"
+  },
+  "control_disposition": {
+    "task_transition": "running_to_blocked",
+    "accepted": false,
+    "integration_allowed": false,
+    "stage_two_allowed": false,
+    "automatic_retry": false,
+    "authorized_repair_remaining": 0,
+    "candidate_bytes_preserved_as_red_evidence": true,
+    "production_install": false,
+    "merge_or_push": false,
+    "h06j_started": false
+  },
+  "terminal_rule": "record this timeout and stop; do not rerun the provider, edit the partial candidate, create the stage boundary, start self-host verification, integrate, install or start H06J under Amendment-004"
+}

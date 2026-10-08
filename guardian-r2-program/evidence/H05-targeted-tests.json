@@ -1,0 +1,22 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {"argv": ["python3", "-m", "unittest", "tests.test_recovery_lane", "tests.test_operational_readiness", "tests.test_sulde_statusline", "-v"], "exit_code": 0, "result": "pass"},
+    {"argv": ["python3", "-m", "unittest", "tests.test_sulde_supervisor", "-v"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The exact H05 focused command ran 57 tests with zero failures or errors after repair4.",
+    "The adjacent H03 supervisor bridge command ran 12 tests with zero failures or errors; independent coordinator replay repeated all 69 successfully."
+  ],
+  "findings": ["FR2-H05-008", "FR2-H05-010", "FR2-H05-013"],
+  "kind": "targeted_tests",
+  "requirements": [],
+  "run_id": "run-gpe-f0547c16e9416c1a0ef60559",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H05 targeted and adjacent tests validate typed recovery, fail-closed readiness and statusline compatibility.",
+  "task_id": "H05-recovery-lane",
+  "verdict": "pass"
+}

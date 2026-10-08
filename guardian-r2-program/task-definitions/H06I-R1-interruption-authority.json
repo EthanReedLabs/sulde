@@ -1,0 +1,44 @@
+{
+  "acceptance": [
+    "agent-runtime and native_agent_broker consume one shared exact local-interruption reason authority, with external_effect_outcome_unknown mapping only to awaiting_human and no duplicated production map",
+    "the real H06H ordered ledger is parsed by agent-runtime and then accepted by the production native broker receipt build/validate path without SULDE_TEST_MODE or a synthetic broker substitute",
+    "missing, duplicate, reordered, reason/stop mismatch, non-integer returncode, non-quiescent disposal and unknown reason cases still fail closed at both runtime and broker boundaries",
+    "the managed awaiting-human terminal preserves one provider invocation, one interrupt/result/disposed sequence, one intervention identity, zero human decisions, zero blind retry and zero external-effect replay",
+    "the candidate report byte-binds H06H events/stderr and H06I failed events, records only literally executable passing checks, distinguishes worker evidence from coordinator evidence and claims neither task acceptance nor H06J/R2 completion"
+  ],
+  "base_commit": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H06A2-integration-hygiene",
+    "H06B-codex-0150-authority",
+    "H06E-codex-help-authority",
+    "H06G-release-inventory-authority"
+  ],
+  "supersedes": [
+    "H06I-agent-runtime-interruption-terminal"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/native_agent_broker.py",
+    "scripts/kb/agent-runtime.py",
+    "tests/test_native_agent_broker.py",
+    "tests/test_agent_runtime.py",
+    "guardian-r2-program/reports/H06I-R1-interruption-authority.md"
+  ],
+  "owner": "guardian-r2-worker-h06i-r1",
+  "requirements": [
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06I-R1-interruption-authority",
+  "title": "统一 runtime 与 broker 的 awaiting-human 中断 authority"
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T27-release-blocker-remediation",
+  "kind": "failure_injection",
+  "baseline": "0dce1005d244af7e5b509513226bcfe8a2f11b4f",
+  "run_id": "run-gpe-75da4f180a9fb984f67db91a",
+  "verdict": "pass",
+  "summary": "Abort, open, acknowledged, retry, reprobe, detached/missing/multi-upstream and serious-status fault boundaries fail closed as designed.",
+  "facts": [
+    "Abort is excluded only from global readiness; the same typed resource remains blocked across sessions and archived truth remains authoritative.",
+    "Runtime, scheduler and non-waiting generation/authority/effect faults remain red; mem-sync never reaches pull for invalid upstream configuration."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "T27-focused-failure-matrix"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

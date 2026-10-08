@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "task_report",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-158084839fe31c2cea3d4be9",
+  "verdict": "pass",
+  "summary": "T30 r2 packages corpus-bound history and corrects the release inventory omission found by the first full-suite attempt.",
+  "facts": [
+    "The source candidate is dbaf5b4 plus the bounded 5ef399c correction, integrated on dev as d133292; all implementation changes remain inside the original ten owned paths.",
+    "The report separates the fixed F30-001 release omission, linked-worktree false negatives and the still-open Codex 0.149.1 system blocker; it does not claim production acceptance."
+  ],
+  "requirements": [],
+  "findings": ["F30-001"],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T30-packaged-kb-aging-provenance.md",
+      "sha256": "fbf9c5634e97c77e23169445da1560d067f8608710d618c394e133929fb205c2"
+    }
+  ]
+}

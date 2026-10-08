@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T23-current-lane-readiness",
+  "title": "按当前 lane 投影 native decision readiness",
+  "owner": "worker-t23",
+  "capability_tier": "balanced",
+  "base_commit": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "depends_on": ["T00-control-plane"],
+  "owned_paths": [
+    "scripts/kb/operational_readiness.py",
+    "tests/test_operational_readiness.py"
+  ],
+  "requirements": ["DERIVED-READINESS"],
+  "acceptance": [
+    "只有精确当前 binding 的活动事务可计入 current CAS mismatch",
+    "历史、终态和其他 lane 事务分别报告且不冒充当前阻断",
+    "现有历史事务数量不会线性放大当前 readiness mismatch"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests"]
+  }
+}

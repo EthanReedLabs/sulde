@@ -1,0 +1,224 @@
+{
+  "schema": "sulde-public-export-content-review-v1",
+  "date": "2026-09-12",
+  "scope": "R5 exact scanner findings and identified embedded runtime task material only",
+  "reviewed_by": "agent-content-review",
+  "human_publication_approval": false,
+  "release_ready": false,
+  "source_revision": "8f53c58221199db768c67a5419820388e74c7120",
+  "public_revision": "c966bae1477423ee3a64fd2a6d02fdcb91a43913",
+  "policy_version": 4,
+  "manifest_sha256": "3b3d7ecdfdd29c86ec2c2b72e73fe12cb5f68960f634692efa8c57de194be147",
+  "generator_sha256": "001bc11cc3e5722138c1320e1d16fae042c2c933937d50a2d1ca5c43e04bae86",
+  "candidate_review_sha256": "8608a663be53e3c0e210073222471531217528a0d4907869284bd7169b4bcea9",
+  "raw_findings_preserved": true,
+  "raw_finding_count": 15,
+  "dispositions": [
+    {
+      "kind": "private-key-material",
+      "line": 30,
+      "path": "scripts/sulde_knowledge.py",
+      "file_sha256": "a3484c2e4b578c22385b889a873180c2e95be58008bd6762c9e1bbebd5da2bfb",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "redaction-placeholder",
+      "reason": "Redacted PEM header replacement literal, with no key body; public toolkit redaction implementation.",
+      "verification_cases": [
+        "test_public_toolkit"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 34,
+      "path": "scripts/sulde_knowledge.py",
+      "file_sha256": "a3484c2e4b578c22385b889a873180c2e95be58008bd6762c9e1bbebd5da2bfb",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "redaction-detector",
+      "reason": "Generic home-directory matching regular expression, not a user's actual path.",
+      "verification_cases": [
+        "test_public_toolkit"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 40,
+      "path": "tests/test_agent_experience.py",
+      "file_sha256": "190ea0b564e42114a8b0cb9e46588ed00ad566c15687479bf50e400d342066a5",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-negative-input",
+      "reason": "Constructed private-path input inside a temporary Agent experience test; validates redaction.",
+      "verification_cases": [
+        "test_agent_experience"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 63,
+      "path": "tests/test_agent_experience.py",
+      "file_sha256": "190ea0b564e42114a8b0cb9e46588ed00ad566c15687479bf50e400d342066a5",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "negative-output-assertion",
+      "reason": "Asserts that the synthetic private-path prefix does not survive redaction.",
+      "verification_cases": [
+        "test_agent_experience"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 84,
+      "path": "tests/test_agent_experience.py",
+      "file_sha256": "190ea0b564e42114a8b0cb9e46588ed00ad566c15687479bf50e400d342066a5",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-negative-input",
+      "reason": "Constructed hostile raw-output path; verifies bypassed redaction contracts are rejected.",
+      "verification_cases": [
+        "test_agent_experience"
+      ]
+    },
+    {
+      "kind": "embedded-operational-record-review",
+      "line": 157,
+      "path": "tests/test_agent_runtime.py",
+      "file_sha256": "91a7d1de60878b37e13a2ed2774189c76588e87373cb1c82ab58d8e9a536d5df",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "generated-synthetic-ledger",
+      "reason": "Exporter independently generates five interruption events and synthetic summary inputs; not copied production event bytes.",
+      "verification_cases": [
+        "targeted-test-1",
+        "source-exporter-regression"
+      ]
+    },
+    {
+      "kind": "credential-like-value",
+      "line": 161,
+      "path": "tests/test_auto_sediment.py",
+      "file_sha256": "712e6275b516366e85a549f8834d8ba3771f24dc2c73a6867db91e145d8e930a",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-negative-input",
+      "reason": "Alphabet/digit-only fake credential supplied by the test LLM fixture; required to exercise actual secret rejection.",
+      "verification_cases": [
+        "targeted-test-5"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 82,
+      "path": "tests/test_command_template_split.py",
+      "file_sha256": "30045083be38b34d4f2ff9f71b06d0d7bb93b7d33ed5fb3196ddacdb0a1c2625",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-parser-input",
+      "reason": "Constructed Windows command path, parsed as a string without opening a user directory.",
+      "verification_cases": [
+        "targeted-test-2"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 88,
+      "path": "tests/test_command_template_split.py",
+      "file_sha256": "30045083be38b34d4f2ff9f71b06d0d7bb93b7d33ed5fb3196ddacdb0a1c2625",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-parser-assertion",
+      "reason": "Expected Windows parser output for the same constructed command path.",
+      "verification_cases": [
+        "targeted-test-2"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 108,
+      "path": "tests/test_event_observer.py",
+      "file_sha256": "203a728516b8767521f6ffa28ad72e3f3b379298944957c0ce50555e1ae974b2",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-negative-input",
+      "reason": "Constructed absolute event source must raise EventContractError.",
+      "verification_cases": [
+        "targeted-test-3"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 1151,
+      "path": "tests/test_event_observer.py",
+      "file_sha256": "203a728516b8767521f6ffa28ad72e3f3b379298944957c0ce50555e1ae974b2",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-negative-input",
+      "reason": "Temporary queue record uses a constructed private source to exercise public projection redaction.",
+      "verification_cases": [
+        "targeted-test-4"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 1254,
+      "path": "tests/test_event_observer.py",
+      "file_sha256": "203a728516b8767521f6ffa28ad72e3f3b379298944957c0ce50555e1ae974b2",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "negative-output-assertion",
+      "reason": "Asserts that the constructed private path is absent from the final projection.",
+      "verification_cases": [
+        "targeted-test-4"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 228,
+      "path": "tests/test_public_toolkit.py",
+      "file_sha256": "3657a4d4755cda7c16aa2554cb7af80db89eaaadcacabe67863f2e124c9e45a3",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-negative-input",
+      "reason": "Existing public toolkit test constructs an incident in a temporary directory to test explicit redaction.",
+      "verification_cases": [
+        "test_public_toolkit"
+      ]
+    },
+    {
+      "kind": "absolute-user-path",
+      "line": 236,
+      "path": "tests/test_public_toolkit.py",
+      "file_sha256": "3657a4d4755cda7c16aa2554cb7af80db89eaaadcacabe67863f2e124c9e45a3",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "negative-output-assertion",
+      "reason": "Checks the constructed path is removed while preserving original input bytes.",
+      "verification_cases": [
+        "test_public_toolkit"
+      ]
+    },
+    {
+      "kind": "possible-production-id",
+      "line": 148,
+      "path": "tests/test_user_prompt_control_plane.py",
+      "file_sha256": "631436353cb44497fdf8bfd476164a4602030d6ffb8a9a6ad735855fb2936804",
+      "disposition": "reviewed-non-sensitive-keep",
+      "classification": "synthetic-control-id",
+      "reason": "Mock observation contains a deterministic digit-pattern intervention ID; no lookup of a production intervention occurs.",
+      "verification_cases": [
+        "test_user_prompt_control_plane"
+      ]
+    }
+  ],
+  "supplemental_projection_review": {
+    "path": "tests/test_agent_runtime.py",
+    "input_sha256": "620390b4c3b2e237d31e88996599a0927f3153b44ba5dfd9fbddcdc4dfeb4e1b",
+    "output_sha256": "91a7d1de60878b37e13a2ed2774189c76588e87373cb1c82ab58d8e9a536d5df",
+    "removed_from_public_only": [
+      "private legacy task definition and acceptance text",
+      "private base/brief pins and current task identity",
+      "unused private fresh-clone release-audit helper"
+    ],
+    "replacement": "Independently constructed legacy/current task inputs; real parser and mismatched-base rejection assertions retained.",
+    "source_test_methods_preserved": true,
+    "private_source_unchanged": true,
+    "verification_cases": [
+      "source-exporter-regression",
+      "targeted-test-0",
+      "targeted-test-1"
+    ]
+  },
+  "validation_results": ".sulde/public-export/validation-010/results.json",
+  "validation_results_sha256": "15a5737886c0c66b5ba0669f3887d49ff129b09fc8e392c979efda950bf62c57",
+  "limitations": [
+    "No global path/kind waiver; changed finding set or reviewed file bytes requires re-review.",
+    "Content review is not a complete 600-file privacy certification or authorization to publish.",
+    "Does not establish full-suite, installation, live host Hook or Windows execution acceptance."
+  ]
+}

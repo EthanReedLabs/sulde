@@ -1,0 +1,299 @@
+{
+  "schema": "life-r1-native-posttool-v1",
+  "codex": "codex-cli 0.153.4",
+  "platform": "darwin",
+  "tool_executions": 4,
+  "external_model_requests": 0,
+  "delivery": "native Hook command -> recorder -> native Stop consumer -> independent CLI/SQLite read",
+  "ingest_calls": 0,
+  "guardian_installed": false,
+  "sessions": [
+    {
+      "phase": "new",
+      "tool_exit_code": 0,
+      "sources": [
+        "project",
+        "sulde",
+        "third_party"
+      ],
+      "facts_count": 4,
+      "problems": [
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.452222+00:00",
+          "id": "3f6bd2c24191719e0f01fb68a70cc2e1fad8d9a480535fefe34f46347e2f6e8c",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "94ce85d0cf8c528acc728dc378b5d1f50a99d9d0608cb419340051a4fad03438",
+          "last_seen": "2026-09-07T16:10:42.452222+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "nonzero_exit",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.452348+00:00",
+          "id": "9a8385a36bd1fe4b950d50193e1627de417066850d5b14738677f7cfec04294a",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "07d65fc64418d85571cd62efe7c02a20f9d9feb1cb73b8089de9d74d5f8343bf",
+          "last_seen": "2026-09-07T16:10:42.452348+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.502290+00:00",
+          "id": "d9afc43756c2e62b73954f6fef8927fe16d9b9bb4e95f3b2125248e62dbed258",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "1246a5c58c584f8464424a16aa3c7d7422cb5e5537ddb17720607214e1865376",
+          "last_seen": "2026-09-07T16:10:42.502290+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        }
+      ]
+    },
+    {
+      "phase": "resume",
+      "tool_exit_code": 0,
+      "sources": [
+        "project",
+        "sulde",
+        "third_party"
+      ],
+      "facts_count": 8,
+      "problems": [
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.452222+00:00",
+          "id": "3f6bd2c24191719e0f01fb68a70cc2e1fad8d9a480535fefe34f46347e2f6e8c",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "bb89b6a57ad7013d24cb5e912f8e04892bce323ec2d9e5ee5ec6248cd70cbf8a",
+          "last_seen": "2026-09-07T16:10:43.426394+00:00",
+          "occurrences": 2,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "nonzero_exit",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.452348+00:00",
+          "id": "9a8385a36bd1fe4b950d50193e1627de417066850d5b14738677f7cfec04294a",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "d5074655c97e1db24de75e0e4643f34f35790f181eff2c84fcdef78c6a797bef",
+          "last_seen": "2026-09-07T16:10:43.426446+00:00",
+          "occurrences": 2,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.502290+00:00",
+          "id": "d9afc43756c2e62b73954f6fef8927fe16d9b9bb4e95f3b2125248e62dbed258",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "bf6cfbd62e8be1af3702fedd510ebdbb3d1f43f37534608ffed48df52bee98eb",
+          "last_seen": "2026-09-07T16:10:43.464132+00:00",
+          "occurrences": 2,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        }
+      ]
+    },
+    {
+      "phase": "worktree_switch",
+      "tool_exit_code": 0,
+      "sources": [
+        "project",
+        "sulde",
+        "third_party"
+      ],
+      "facts_count": 12,
+      "problems": [
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:44.385543+00:00",
+          "id": "1986c1f02c9c7786c115c4265487eb37aceb1f3bc2e73c5074287d577772c1d3",
+          "lane_id": "d002a94c151efe91f86fed23e76eda5141da07c99a7826f06c2f11cb4758a55a",
+          "last_event": "d05979c13c33c01590abca6de9e56ff4416de2263ba6009d2bf921b4406829b9",
+          "last_seen": "2026-09-07T16:10:44.385543+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.452222+00:00",
+          "id": "3f6bd2c24191719e0f01fb68a70cc2e1fad8d9a480535fefe34f46347e2f6e8c",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "bb89b6a57ad7013d24cb5e912f8e04892bce323ec2d9e5ee5ec6248cd70cbf8a",
+          "last_seen": "2026-09-07T16:10:43.426394+00:00",
+          "occurrences": 2,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "nonzero_exit",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:44.385670+00:00",
+          "id": "8470a38dfb8e8c9fb98859b88fd716108af09bf8638592616cded5dc84036018",
+          "lane_id": "d002a94c151efe91f86fed23e76eda5141da07c99a7826f06c2f11cb4758a55a",
+          "last_event": "7da249a106cd2b800c75ba223605c73b39965ade5431dbeab3a3b90faa21adea",
+          "last_seen": "2026-09-07T16:10:44.385670+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "nonzero_exit",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.452348+00:00",
+          "id": "9a8385a36bd1fe4b950d50193e1627de417066850d5b14738677f7cfec04294a",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "d5074655c97e1db24de75e0e4643f34f35790f181eff2c84fcdef78c6a797bef",
+          "last_seen": "2026-09-07T16:10:43.426446+00:00",
+          "occurrences": 2,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.502290+00:00",
+          "id": "d9afc43756c2e62b73954f6fef8927fe16d9b9bb4e95f3b2125248e62dbed258",
+          "lane_id": "0a159cf7cd0713a592781bcd2f5d411e4e54421d116ce6e3c9db75095fc0ce4a",
+          "last_event": "bf6cfbd62e8be1af3702fedd510ebdbb3d1f43f37534608ffed48df52bee98eb",
+          "last_seen": "2026-09-07T16:10:43.464132+00:00",
+          "occurrences": 2,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:44.423374+00:00",
+          "id": "fb2358de826092c7473dbdf694414d0399a693212fe372f65f7c515b84bd31cd",
+          "lane_id": "d002a94c151efe91f86fed23e76eda5141da07c99a7826f06c2f11cb4758a55a",
+          "last_event": "ba559182f66d4c56a838a55b1231e465849891b96b151a1f26d460db4ab852be",
+          "last_seen": "2026-09-07T16:10:44.423374+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        }
+      ]
+    },
+    {
+      "phase": "new_isolated_session",
+      "tool_exit_code": 0,
+      "sources": [
+        "project",
+        "sulde",
+        "third_party"
+      ],
+      "facts_count": 16,
+      "problems": [
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:44.385543+00:00",
+          "id": "1986c1f02c9c7786c115c4265487eb37aceb1f3bc2e73c5074287d577772c1d3",
+          "lane_id": "d002a94c151efe91f86fed23e76eda5141da07c99a7826f06c2f11cb4758a55a",
+          "last_event": "d05979c13c33c01590abca6de9e56ff4416de2263ba6009d2bf921b4406829b9",
+          "last_seen": "2026-09-07T16:10:44.385543+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.452222+00:00",
+          "id": "3f6bd2c24191719e0f01fb68a70cc2e1fad8d9a480535fefe34f46347e2f6e8c",
+          "lane_id": "9af30784dfc6712590fa1cd95631a896a279d2752882f661f2cecb60843cdc6e",
+          "last_event": "d6de839585a7ae74a8177e3d2cacbb7e3d92462e664a1eef5dc00a9e8e5a5021",
+          "last_seen": "2026-09-07T16:10:45.363976+00:00",
+          "occurrences": 3,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "nonzero_exit",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:44.385670+00:00",
+          "id": "8470a38dfb8e8c9fb98859b88fd716108af09bf8638592616cded5dc84036018",
+          "lane_id": "d002a94c151efe91f86fed23e76eda5141da07c99a7826f06c2f11cb4758a55a",
+          "last_event": "7da249a106cd2b800c75ba223605c73b39965ade5431dbeab3a3b90faa21adea",
+          "last_seen": "2026-09-07T16:10:44.385670+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "nonzero_exit",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.452348+00:00",
+          "id": "9a8385a36bd1fe4b950d50193e1627de417066850d5b14738677f7cfec04294a",
+          "lane_id": "9af30784dfc6712590fa1cd95631a896a279d2752882f661f2cecb60843cdc6e",
+          "last_event": "8ed9c84a68c39c93cd02034dbd9e50a6253ff178fd937c78029d1d377eba41f0",
+          "last_seen": "2026-09-07T16:10:45.364207+00:00",
+          "occurrences": 3,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:42.502290+00:00",
+          "id": "d9afc43756c2e62b73954f6fef8927fe16d9b9bb4e95f3b2125248e62dbed258",
+          "lane_id": "9af30784dfc6712590fa1cd95631a896a279d2752882f661f2cecb60843cdc6e",
+          "last_event": "7512cb37df44e67a6afc01d4dc0f57c5d92a36ba6cd2ed951b7325f8904465dc",
+          "last_seen": "2026-09-07T16:10:45.401714+00:00",
+          "occurrences": 3,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        },
+        {
+          "error_category": "internal_exception",
+          "evidence_status": "observed",
+          "first_seen": "2026-09-07T16:10:44.423374+00:00",
+          "id": "fb2358de826092c7473dbdf694414d0399a693212fe372f65f7c515b84bd31cd",
+          "lane_id": "d002a94c151efe91f86fed23e76eda5141da07c99a7826f06c2f11cb4758a55a",
+          "last_event": "ba559182f66d4c56a838a55b1231e465849891b96b151a1f26d460db4ab852be",
+          "last_seen": "2026-09-07T16:10:44.423374+00:00",
+          "occurrences": 1,
+          "repair_commit": null,
+          "status": "open",
+          "verification": null
+        }
+      ]
+    }
+  ],
+  "blind_spots": [
+    "unwrapped foreign Hooks",
+    "Desktop ingress unavailable",
+    "observer pre-start failure"
+  ]
+}

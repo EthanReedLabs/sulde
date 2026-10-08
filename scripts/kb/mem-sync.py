@@ -42,8 +42,10 @@ MIGRATION_NAME = "mem-sync-legacy-migration.json"
 EXPORT_JOURNAL_NAME = "mem-sync-export-transaction.json"
 SYNC_LOCK_NAME = "sulde-mem-sync.lock"
 SCHEDULED_EXIT_TEMPORARY_FAILURE = 75
-SCHEDULED_MAX_ATTEMPTS = 3
-SCHEDULED_BACKOFF_SECONDS = 0.1
+# The envelope must outlast a real opposite-phase run (seconds, not
+# milliseconds): 6 attempts back off 2+4+8+16+32 = 62s in total.
+SCHEDULED_MAX_ATTEMPTS = 6
+SCHEDULED_BACKOFF_SECONDS = 2.0
 
 _file_lock = SimpleNamespace(
     **runpy.run_path(str(Path(__file__).resolve().with_name("file_lock.py")))

@@ -1,0 +1,4 @@
+{"case_id":"floating-tab-route-apply","kind":"route","query":"ArkUI 把导航条浮在全屏列表上以后，翻到最下面的操作被盖住，固定悬浮按钮也按不到","expected_doc_id":"platform-kb/harmony/arkui-layout-scroll-shell","expected":"apply","note":"独立改写：全屏导航覆盖内容消费点，应召回共享预算"}
+{"case_id":"floating-tab-route-skip","kind":"route","query":"一个不带底部导航的独立页面，系统已经预留非重叠栏位且布局滚动完全正常，还需要额外给内容底部留出悬浮条空间吗","expected_doc_id":"platform-kb/harmony/arkui-layout-scroll-shell","expected":"skip","note":"独立改写：无overlay且无其他页面壳异常，应排除额外预算"}
+{"case_id":"floating-tab-outcome-pass","kind":"outcome","query":"让父容器把导航遮挡范围统一传给子页，减掉列表已有末尾空白并另行抬高固定操作，实际滚动到底点击打开目标，同时保留背后内容供模糊采样","expected_doc_id":"platform-kb/harmony/arkui-layout-scroll-shell","expected":"pass","note":"独立改写：预算、消费点、真实命中及动态背景均保留"}
+{"case_id":"floating-tab-outcome-fail","kind":"outcome","query":"所有路由都硬编码同一个手机算出的底距，导航动画看着正常就验收了，却没滚到最后一项，也没有点击被覆盖的固定按钮","expected_doc_id":"platform-kb/harmony/arkui-layout-scroll-shell","expected":"fail","note":"独立改写：固定预算与只看底栏的假阳性"}

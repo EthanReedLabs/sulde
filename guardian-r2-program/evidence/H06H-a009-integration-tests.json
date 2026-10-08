@@ -1,0 +1,7 @@
+{
+  "schema":"sulde-guardian-program-evidence-v1","scope":"task","task_id":"H06H-r2-final-acceptance",
+  "baseline":"10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2","run_id":"run-gpe-4efe615231a4f18a96ee09f8","verdict":"pass","kind":"integration_tests",
+  "summary":"The fresh H06H candidate composes all accepted R2 public boundaries in a 198-test matrix without predecessor artifacts.",
+  "facts":["198 tests pass in 46.036 seconds","candidate is commit 21b5c8c0a2ac4fe5c43102b19d31c00d491619ca"],"requirements":[],"findings":["FR2-H06H-003"],"acceptance":[],
+  "commands":[{"argv":["python3","-B","-m","unittest","-v","tests.test_human_grant","tests.test_grant_broker","tests.test_recovery_supervisor","tests.test_resource_adapters","tests.test_recovery_lane","tests.test_agent_runtime","tests.test_native_agent_broker","tests.test_r2_guardian_integration"],"exit_code":0,"result":"pass"}],"artifacts":[]
+}

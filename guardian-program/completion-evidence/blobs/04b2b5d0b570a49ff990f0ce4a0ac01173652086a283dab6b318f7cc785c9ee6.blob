@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T00-control-plane",
+  "kind": "targeted_tests",
+  "baseline": "34dcbd0d6ea81ba330c701bc755f1f557978f515",
+  "run_id": "run-gpe-5902ccbd79317bd597055811",
+  "verdict": "pass",
+  "summary": "The complete control-plane unit suite passed on the final reviewed source SHA.",
+  "facts": [
+    "56 tests passed with no failures or errors.",
+    "The suite covers authority, transitions, evidence, findings, ownership and completion."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "tests.test_guardian_program"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

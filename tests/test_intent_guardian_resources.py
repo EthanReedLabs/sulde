@@ -13,7 +13,49 @@ sys.path.insert(0, str(ROOT / "scripts" / "kb"))
 
 from intent_guardian import IntentGuardianError, normalize_hook_event  # noqa: E402
 from intent_guardian_parts.events import _effect_resource_identity  # noqa: E402
+from intent_guardian_parts.resources import _command_effect  # noqa: E402
 from resource_adapters import figma_use_script_is_read_only  # noqa: E402
+
+
+class CommandArgumentEffectTests(unittest.TestCase):
+    def test_deploy_argument_does_not_claim_an_external_effect(self) -> None:
+        for command in (
+            "python3 -B -m unittest discover -s vpn-deploy/personal-fleet/tests -p test_chatgpt_trial.py -v",
+            "python3 -B vpn-deploy/personal-fleet/chatgpt_trial.py stage",
+            "python3 app.py --label deploy",
+            "./vpn-deploy/check.py",
+            "node app.js 'deploy --production'",
+        ):
+            with self.subTest(command=command):
+                self.assertEqual(_command_effect(command), "unknown")
+
+    def test_real_deployment_and_opaque_wrappers_keep_protection(self) -> None:
+        for command in (
+            "deploy production", "/usr/local/bin/deploy production",
+            "'deploy' production", "true && deploy production",
+            "true; deploy production", "false || deploy production",
+            "sh -c 'deploy production'", "env MODE=prod deploy production",
+            "MODE=prod deploy production", "sudo -u root deploy production",
+            "command deploy production", "timeout 30 deploy production",
+            "echo ready | deploy production",
+        ):
+            with self.subTest(command=command):
+                self.assertEqual(_command_effect(command), "external_write")
+
+    def test_other_mutations_are_not_weakened(self) -> None:
+        for command in (
+            "scp artifact root@example.test:/srv/artifact",
+            "curl -X POST https://example.test/api",
+            "npm publish", "gh pr create --title test",
+            "python3 vpn-deploy/check.py && scp artifact root@example.test:/srv/artifact",
+        ):
+            with self.subTest(command=command):
+                self.assertEqual(_command_effect(command), "external_write")
+        self.assertEqual(_command_effect("deploy production && rm -rf /tmp/example"), "destructive")
+
+    def test_read_search_and_unrecognized_tests_keep_their_effect(self) -> None:
+        self.assertEqual(_command_effect("rg deploy vpn-deploy/tests"), "read")
+        self.assertEqual(_command_effect("python3 -B -m unittest discover -s tests"), "unknown")
 
 
 class TypedResourceIdentityTests(unittest.TestCase):

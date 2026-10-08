@@ -1,0 +1,58 @@
+{
+  "schema": "sulde-h06i-r2-amendment-007-closure-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "task_id": "H06I-R2-interruption-authority",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-007",
+  "created_at": "2026-08-28T05:50:00Z",
+  "decision": "pass",
+  "authority": {
+    "amendment_sha256": "701a05f43feedf72bfb266707f2e24a0693bdae726bb9a2882422b742105987c",
+    "brief_sha256": "68abe0887b941baa9e492de97abda71a9fc33ac1e12c085a532144037af5032c",
+    "verification_run_id": "run-gpe-bd3a9c0923125f655fd9ccf3",
+    "execution_binding_sha256": "70ef6d7e290f0f9781e292adb9c1027e9e7d84ac2cd61b2d805a1dd89194fe77",
+    "candidate_base_commit": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2"
+  },
+  "repair": {
+    "finding_id": "FR2-H06I-R2-016",
+    "agent_runtime_change": "_validate_owned_path_against_worktree compares resolved anchor against resolved physical root",
+    "native_broker_change": "validate_supported_git_layout compares physical directory identities without rejecting the normal /var alias",
+    "regression_change": "execution binding test asserts physical canonical worktree identity"
+  },
+  "candidate_sha256": "b8494ede6a558620eb1ef83fc50807c06609f8f58ed61964ab1277104acdc4de",
+  "candidate_paths": {
+    "scripts/kb/native_agent_broker.py": "9bd98acb7f257885c435be91b5fe2c586bf98684b52c421247a15395d37274a0",
+    "scripts/kb/agent-runtime.py": "043ea7f0bb207c2a20903aba4e698d96bb67be87c0cc137acd36bae86c6a20b2",
+    "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "tests/test_agent_runtime.py": "3ee43da49763eb2bbc3efd233e5b94867c63fe061c2bea32ad2d825ff068cbe5",
+    "guardian-r2-program/reports/H06I-R2-interruption-authority.md": "cd373e9eca838cab5c7e7d26cf2d567e01da475c6759974ea36d78df6c322a16"
+  },
+  "verification": {
+    "focused_default_tmpdir": {"tests": 11, "failures": 0, "errors": 0, "exit_code": 0},
+    "runtime_default_tmpdir": {"tests": 74, "failures": 0, "errors": 0, "exit_code": 0},
+    "broker_default_tmpdir": {"tests": 52, "failures": 0, "errors": 0, "exit_code": 0},
+    "combined_default_tmpdir": {"tests": 126, "failures": 0, "errors": 0, "exit_code": 0},
+    "combined_private_tmpdir": {"tests": 126, "failures": 0, "errors": 0, "exit_code": 0},
+    "fresh_no_hardlink_default_tmpdir": {"tests": 126, "failures": 0, "errors": 0, "exit_code": 0, "clone": "/private/tmp/sulde-h06i-r2-a007.EL8msb/repo"},
+    "fresh_no_hardlink_private_tmpdir": {"tests": 126, "failures": 0, "errors": 0, "exit_code": 0, "clone": "/private/tmp/sulde-h06i-r2-a007.EL8msb/repo"}
+  },
+  "failure_injection": [
+    "root-swap read",
+    "parent-swap write",
+    "post-read replacement",
+    "production local interruption",
+    "duplicate/conflicting/bad-command-hash/missing-binding report rejection"
+  ],
+  "boundaries": {
+    "provider_invocations": 0,
+    "production_install": false,
+    "integration": false,
+    "push": false,
+    "h06j_started": false,
+    "r2_completion": false
+  },
+  "finding_resolution": {
+    "finding_id": "FR2-H06I-R2-016",
+    "status": "resolved_pending_evidence_registration",
+    "resolution": "all default/private TMPDIR and fresh no-hardlink matrices pass after physical identity normalization"
+  }
+}

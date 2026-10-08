@@ -1,0 +1,41 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06E-codex-help-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-c6a54d6965683d2d8f39c3d0",
+  "verdict": "pass",
+  "kind": "failure_injection",
+  "summary": "H06E rejects terminal-control, diagnostic, semantic, version and re-signed authority drift while preserving the one exact known warning.",
+  "facts": [
+    "Independent attacks rejected all 64 ASCII/C1 control codepoints except the single allowed LF, including NUL, BS, TAB, CR, ESC and U+009B.",
+    "Seven malformed PATH-warning variants, unknown stderr, nonzero return codes, arity errors, ANSI, semantic help drift and missing tokens fail closed.",
+    "Old, future, substring and alias versions plus re-signed help, profile, broker, shared-contract, runtime-tree and generation drift remain rejected."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06E-001",
+    "FR2-H06E-002"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "<H06E-control-warning-version-authority-attack-matrix>"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H06E-codex-help-authority.md",
+      "sha256": "9b7ddf86ae94d26a5c7a65f9523a11cf7f3410c459641467450af66ec5e28a2b"
+    }
+  ]
+}

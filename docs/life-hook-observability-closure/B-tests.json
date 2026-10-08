@@ -1,0 +1,59 @@
+{
+  "batch": "B",
+  "intent_id": "interactive:db613882e8d8ba05a196234d",
+  "base": "58c6b02",
+  "source_files": {
+    "scripts/kb/governance-report.py": "7ec465301a13409672a62bead29c9625c2f6304192f968ebfd1c85e35af96d66",
+    "scripts/kb/heartbeat.py": "f6351d7358a6d7df790505c309a1e3137b48396596a4ffb729210ac50c185db3",
+    "scripts/kb/life-cycle.py": "4a7584072754c1b39f330ec9e753edbf4df8ae62f46b98df72a182b2a7879961",
+    "scripts/kb/mem-sync.py": "e74f55cbb61cc357727a95d7704bec4ab0bbfe860b0b909e315ca04e9032861d",
+    "scripts/kb/operational_readiness.py": "5ea71bbbaad7d099b6e9e65edf6900798f038ac1afce7240bc05fd63e51d0ca4",
+    "scripts/kb/production_recovery_readiness.py": "bb5cf17fd50cd52900ba3199c8d7577b5a173684e44c506ef28551d3741c8a13",
+    "scripts/kb/sulde-status.py": "55a0f663ffec42288eeef578e57bd9b6c2742ffe4d4078d27ae5c8ddf51b24f0",
+    "scripts/kb/sulde_paths.py": "bcfd367a4362f9b2bc1459ed2e0779d76c94f5e51999cc968d12f6e25bd38084",
+    "tests/test_production_recovery_readiness.py": "fb9d44f7269058429e2c20e6ee7ed76d1128a75f50b0697f9c34534c4d53ae32",
+    "scripts/kb/life_health.py": "a4e0c21cc9e688da5fdaa5f86d087f1fd399907fbb525a0b16de9dd2d2bc23c1",
+    "scripts/kb/life-health.py": "644cdd21e80a6979f269243ff3b2f052e7a7d7534cda0c8397f34fe5725b796e",
+    "tests/test_life_health_closure.py": "d63d55b0dcd807f7e75176039adb433613bb8d4003e6c6e92b67bebeeb1e2963"
+  },
+  "sourceVersion": "629509faff3fbb25a900fa865e5cb0f8c946a32b9caf592f13eba4e38d49a3c5",
+  "generatorVersion": "manual-source-bound-v1",
+  "environment": {
+    "os": "Darwin",
+    "python": "3.14.6"
+  },
+  "suites": [
+    {
+      "tests": 128,
+      "seconds": 4.148,
+      "status": "passed",
+      "modules": [
+        "tests.test_life_health_closure",
+        "tests.test_production_recovery_readiness",
+        "tests.test_governance_report",
+        "tests.test_mem_sync",
+        "tests.test_life_cycle",
+        "tests.test_sulde_statusline",
+        "tests.test_operational_readiness"
+      ]
+    },
+    {
+      "tests": 16,
+      "seconds": 2.084,
+      "status": "passed",
+      "modules": [
+        "tests.test_life_health_closure",
+        "tests.test_production_recovery_readiness"
+      ]
+    },
+    {
+      "tests": 6,
+      "seconds": 0.99,
+      "status": "passed",
+      "reason": "final newline budget boundary recheck"
+    }
+  ],
+  "invalidation": "listed source/test/dependency/environment change; unrelated log changes excluded",
+  "windows": "pending",
+  "production": "not_modified"
+}

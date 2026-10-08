@@ -1,0 +1,85 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "requirement_traceability",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "T32 directly traces current worktree targeting and governance, and reasserts five legacy requirements only through verified post-fork migration evidence plus current source ancestry.",
+  "facts": [
+    "WP56-D is proved by the installed runtime's real T31 add/commit, dev merge and main ff-only canaries, not by an old fork fact.",
+    "WP56-B, WP56-E, DERIVED-CRITIC, DERIVED-SPLIT and DERIVED-TIMEOUT bind old accepted evidence bytes, accepted transitions, a valid completed chain and current source ancestry.",
+    "The 263-test final scoped gate and 1370-test official isolated gate cover the current product bytes; scheduler and live doctor cover production topology.",
+    "T32 stayed a single task, recorded F32-005 as blocked before correcting it, and does not hide the unsupported merge syntax or stale grant rejection."
+  ],
+  "requirements": ["WP56-B", "WP56-D", "WP56-E", "DERIVED-CRITIC", "DERIVED-SPLIT", "DERIVED-TIMEOUT", "PROGRAM-GOVERNANCE"],
+  "findings": ["F32-001", "F32-002", "F32-003", "F32-004", "F32-005"],
+  "acceptance": [
+    {
+      "requirement_id": "WP56-B",
+      "clause": "只读命令组合不会因参数中出现写入词汇而升级效果",
+      "fact": "Old T37 evidence hash and accepted transition are valid, d8169a2 is a current ancestor, and the current official suite preserves the structured classifier behavior."
+    },
+    {
+      "requirement_id": "WP56-D",
+      "clause": "Update、Add、Delete、Move、多文件和嵌套输入均按真实目标判定",
+      "fact": "The installed T32 Guardian attributes exact linked-worktree add operands to their files and safe commit/merge to the actual worktree; hostile and unsupported shapes fail closed before state change."
+    },
+    {
+      "requirement_id": "WP56-E",
+      "clause": "push 只有在独立 remote/ref/OID 对拍后进入 system_verified",
+      "fact": "Old T10 requirement bytes and accepted state are valid, their seq819 composition is in current ancestry, and no T32 local Git exception widens external push verification."
+    },
+    {
+      "requirement_id": "DERIVED-CRITIC",
+      "clause": "critic 只评估任务基线后的本轮增量并消费已登记验收证据",
+      "fact": "Old T18 requirement bytes and accepted state are valid, the accepted composition is in current ancestry, and T32 evidence binds only its frozen baseline, owned delta and registered artifacts."
+    },
+    {
+      "requirement_id": "DERIVED-SPLIT",
+      "clause": "状态、策略、审批、资源、审计、readiness 与 CLI 边界清晰且不存在反向依赖",
+      "fact": "Old T18 split evidence is valid and ancestral; T32 further moves file-operation helpers out of resources.py, keeps one-way imports and passes the 3000-line plus full isolated gates."
+    },
+    {
+      "requirement_id": "DERIVED-TIMEOUT",
+      "clause": "五分钟只触发重评估，不形成授权、不伪造过期，并有真实宿主 canary",
+      "fact": "Old T13 timeout evidence is valid and ancestral; the current native transaction completed through an actual PermissionRequest, while stale grant and unsupported command shapes produced no authority."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "每个任务有证据包和问题处置，总纲零遗漏后才能关闭",
+      "fact": "T32 has every frozen evidence gate, five explicit finding dispositions, production and history audits, one task only, and remains open until the separate final-check succeeds."
+    }
+  ],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["intent-guardian", "doctor", "--provider", "codex", "--session-id", "01a00d6f-65b3-7663-b51b-f88684ffa561"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "evidence/T32-system-tests.json",
+      "sha256": "0a369fc56810ceb5b2166229cb62496cc40ced8a4fc14ba5dd45478eea5aff21"
+    },
+    {
+      "path": "evidence/T32-history-migration.json",
+      "sha256": "938406c40a5094072aca3cb0c1e81daad4f7198f487be7902404e9164393e19f"
+    },
+    {
+      "path": "evidence/T32-live-host-canary.json",
+      "sha256": "21e6e13bfd0907d94e6ca8e00d2bf94e72c9139d8e501a4d823ffef6ca34a747"
+    },
+    {
+      "path": "reports/T32-codex-worktree-git-trace.md",
+      "sha256": "917722adc17a1774098fd8a73fea910c67487d1ad75aa8635ca17501baac5c5b"
+    }
+  ]
+}

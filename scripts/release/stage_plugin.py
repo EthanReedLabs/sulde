@@ -26,9 +26,11 @@ os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "kb-index"))
 sys.path.insert(0, str(ROOT / "scripts" / "kb"))
+sys.path.insert(0, str(ROOT / "scripts" / "release"))
 from corpus_manifest import load_manifest
 from knowledge_history import build_history, load_history, write_history
 from host_capabilities import validate_artifact
+from codex_hook_registration import is_stable_hook_document
 
 
 CLAUDE_PREFIXES = (
@@ -42,25 +44,11 @@ CLAUDE_PREFIXES = (
     "templates/",
     "tools/",
 )
-LICENSE_FILES = {
-    "LICENSE",
-    "NOTICE",
-    "CONTRIBUTING.md",
-    "docs/LICENSING.md",
-    "docs/LICENSING.zh-CN.md",
-    "THIRD_PARTY_NOTICES.md",
-    "THIRD_PARTY_NOTICES.zh-CN.md",
-}
-CLAUDE_FILES = LICENSE_FILES | {
+CLAUDE_FILES = {
     "CANON.md",
     "CHANGELOG.md",
+    "LICENSE",
     "README.md",
-    "README.zh-CN.md",
-    "docs/DEVELOPMENT.md",
-    "docs/DEVELOPMENT.zh-CN.md",
-    "docs/EXTENDING.md",
-    "docs/KNOWLEDGE-KIT.md",
-    "docs/PUBLIC-DATA-BOUNDARY.md",
     "docs/dual-runtime-contract.md",
     "docs/event-observability.md",
     "docs/intent-guardian.md",
@@ -87,8 +75,9 @@ RUNTIME_PREFIXES = (
     "tools/kb-index/",
     "tools/kb-mcp/",
 )
-RUNTIME_FILES = LICENSE_FILES | {
+RUNTIME_FILES = {
     "CANON.md",
+    "LICENSE",
     "docs/dual-runtime-contract.md",
     "docs/event-observability.md",
     "docs/intent-guardian.md",
@@ -173,6 +162,10 @@ WINDOWS_MCP_SERVER = {
     "cwd": ".",
 }
 PORTABLE_PATH_TOKENS = {
+    "/Users/eric/ClaudePlugin/sulde-cc-pro": "__SULDE_SOURCE_ROOT__",
+    "/Users/eric/.sulde/data/kb": "__SULDE_KB_HOME__",
+    "/Users/eric/.codex/sessions": "__SULDE_CODEX_SESSIONS__",
+    "/Users/eric/.local/bin": "__SULDE_USER_BIN__",
 }
 DELIVERY_GENERATION_SCHEMA = "sulde-delivery-generation-v1"
 DELIVERY_GENERATION_NAME = "generation.json"
@@ -279,23 +272,6 @@ def prepare_output(output: Path) -> None:
     if output.exists() and any(output.iterdir()):
         raise ValueError(f"output directory is not empty: {output}")
     output.mkdir(parents=True, exist_ok=True)
-
-
-def validate_license_sources(root: Path, entries: list[GitEntry]) -> None:
-    """Require the complete, tracked notice set before creating an artifact."""
-    tracked = {entry.path.as_posix() for entry in entries}
-    for relative in sorted(LICENSE_FILES):
-        if relative not in tracked:
-            raise ValueError(f"required license file is not tracked: {relative}")
-        source = root / relative
-        try:
-            metadata = source.lstat()
-        except OSError as error:
-            raise ValueError(f"required license file is unavailable: {relative}") from error
-        if not stat.S_ISREG(metadata.st_mode) or metadata.st_size == 0:
-            raise ValueError(f"required license file is not a nonempty regular file: {relative}")
-        if not source.resolve().is_relative_to(root.resolve()):
-            raise ValueError(f"required license file escapes repository: {relative}")
 
 
 def copy_entry(root: Path, output: Path, entry: GitEntry, destination: Path) -> None:
@@ -411,10 +387,8 @@ def write_delivery_generation(plugin_root: Path, platform: str) -> dict[str, str
 
 def stage_claude(root: Path, output: Path) -> Path:
     _validated_required_runtime_sources(root)
-    entries = release_entries(root)
-    validate_license_sources(root, entries)
     prepare_output(output)
-    for entry in entries:
+    for entry in release_entries(root):
         if is_claude_release_path(entry.path):
             copy_entry(root, output, entry, output / entry.path)
     neutralize_launchagent_paths(output)
@@ -432,9 +406,14 @@ def stage_codex(
     platform: Literal["posix", "windows"],
 ) -> Path:
     _validated_required_runtime_sources(root)
-    entries = release_entries(root)
-    validate_license_sources(root, entries)
+    if platform == "posix":
+        hook_document = json.loads(
+            (root / PLATFORM_TEMPLATES[platform]).read_text(encoding="utf-8")
+        )
+        if not is_stable_hook_document(hook_document):
+            raise ValueError("POSIX Codex requires the exact cache-independent Hook surface")
     prepare_output(output)
+    entries = release_entries(root)
     # The source tree keeps a root-level POSIX convenience copy, but Codex
     # discovers plugin hooks from hooks/hooks.json by convention.  Exclude all
     # source templates here so the staged plugin exposes exactly one discovery
@@ -464,7 +443,7 @@ def stage_codex(
 
     plugin_root = output / "plugins" / "sulde"
     for entry in entries:
-        if entry.path.as_posix() in LICENSE_FILES or any(
+        if any(
             entry.path.is_relative_to(Path("skills") / name)
             for name in CODEX_SKILLS
         ):

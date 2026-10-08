@@ -1,0 +1,22 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H04-typed-resource-adapters.md", "sha256": "692a0e4a5e7657dabd0f2f6b9fc7f6c638e688ea069a2bebeb0a3741f0300698"}],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {"argv": ["<kb-venv-python>", "-B", "-m", "unittest", "<H01-H05-system-composition-modules>"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The exact integrated coordinator tree ran 484 H01-H05 system-composition tests in 48.642 seconds with zero failures or errors under the supported KB interpreter and no-bytecode mode.",
+    "The suite includes intent routing, intervention replay, native journal, HumanGrant, GrantBroker, RecoverySupervisor, all five typed resources, RecoveryLane, operational readiness and statusline.",
+    "Codex 0.150.1 installation authority, live hosts and platform release gates remain H06 obligations and are not claimed by this H04 task evidence."
+  ],
+  "findings": ["FR2-H04-007"],
+  "kind": "system_tests",
+  "requirements": [],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H04 typed resources pass the supported integrated H01-H05 system composition while retaining H06 live and install gates.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

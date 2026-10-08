@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "failure_injection",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-f5c07f9049e7e2ba3dac7894",
+  "verdict": "pass",
+  "summary": "Packaged provenance and installer faults fail closed without VCS, mtime or source-checkout fallbacks.",
+  "facts": [
+    "Missing, malformed, self-digest-tampered, duplicate, incomplete and out-of-order history documents are rejected.",
+    "Invalid timezone/type data, NFC path collisions, corpus drift, document hash drift and staged file-content drift are rejected.",
+    "The installer rejects a tampered HISTORY.json even after an attacker recomputes the outer staged generation seal."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "tests.test_knowledge_history", "tests.test_kb_aging", "tests.test_codex_plugin_install.CodexPluginInstallTests.test_validation_rejects_tampered_packaged_history_after_reseal"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

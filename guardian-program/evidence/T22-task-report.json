@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T22-material-cas-lane-binding",
+  "kind": "task_report",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-656b9b20b4b4882b1199d002",
+  "verdict": "pass",
+  "summary": "T22 implemented allowed-only material CAS, exact Codex session/lane binding and the narrow F00-002 compatibility-path rule.",
+  "facts": [
+    "Worker commit ba98d33c990e57b0aebe2cf2393092a77b2eace7 is clean and changes only T22-owned paths.",
+    "The report preserves all cross-task seams and baseline-red tests as integration obligations rather than claiming acceptance."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T22-material-cas-lane-binding.md",
+      "sha256": "84960edf9d284b8919ff7e40d06a582e53ab7a0496d3eeb2b2892d87008ba013"
+    }
+  ]
+}

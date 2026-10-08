@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "failure_injection",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "T31 retains exact fail-closed host identity and rejects any post-seal loader mutation while allowing a bytecode-free real authority readback.",
+  "facts": [
+    "An injected runtime/scripts/kb/__pycache__/agent-runtime.cpython-313.pyc makes the installer reject the sealed tree and roll back instead of deleting or ignoring the mutation.",
+    "Future, substring, wrapper, executable alias, help, profile, broker, generation and recomputed-authority drift remain rejected before provider launch or successful install.",
+    "A production-mode runpy smoke must return the authority defined only inside the installed entrypoint and leaves zero __pycache__ or .pyc entries."
+  ],
+  "requirements": [],
+  "findings": ["F31-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "-m", "unittest", "T31-authority-loader-failure-matrix"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

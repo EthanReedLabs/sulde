@@ -1,0 +1,1057 @@
+{
+  "schema": "sulde-public-source-sync-handoff-v1",
+  "cut": "R6",
+  "date": "2026-09-12",
+  "status": "local-source-snapshot-ready-for-publication-decision",
+  "release_ready": false,
+  "public_write_authorized": false,
+  "scope": "Code snapshot with empty data; not an installable production release acceptance.",
+  "source_revision": "9eada17d7d81b3382d7fd9192b980c1acddbda33",
+  "public_revision": "c966bae1477423ee3a64fd2a6d02fdcb91a43913",
+  "manifest_sha256": "da222daa900e1a3ec71b7c40ff6ec2ba19bec788bbeb95fe19b88664773814ba",
+  "generator_sha256": "6da403b2dd03756a71682dffb0ca31939bb7943257f37718ec6535a94d66da08",
+  "policy_version": 5,
+  "candidate": ".sulde/public-export/review-010",
+  "review_file_sha256": "6fe1d5e178c34d48a390e4977a1ca73f99c3088075b4bb874f403456471cadfc",
+  "publication_target": {
+    "repository": "https://github.com/EthanReedLabs/sulde-cc.git",
+    "branch": "main",
+    "expected_baseline": "c966bae1477423ee3a64fd2a6d02fdcb91a43913",
+    "precondition": "Native approval for the exact snapshot and target, plus fresh remote/base and worktree checks. No force push or private history import."
+  },
+  "inventory": {
+    "files_verified": 600,
+    "python_files_parsed": 381,
+    "missing_local_import_candidates": [],
+    "external_import_candidates": {
+      "cryptography": 1,
+      "fastembed": 4,
+      "jieba": 4,
+      "numpy": 5,
+      "yaml": 13
+    },
+    "auditor": "docs/public-harness-export/R6-inventory.py",
+    "auditor_sha256": "bdada90ff67cc22beb8b6b2fe012bdefaa81bc4e51715d283128a0ec37f22460",
+    "limitations": [
+      "Static inventory, not dependency execution or complete privacy proof.",
+      "Literal references may describe user-created files; imports may be optional.",
+      "No network, installation, subprocess import, candidate mutation or publication."
+    ]
+  },
+  "comparison": {
+    "baseline": "review-009",
+    "added": [],
+    "removed": [],
+    "mode_changes": [],
+    "changed": [
+      "README.md",
+      "scripts/kb/governance-report.py",
+      "templates/SELF.md"
+    ],
+    "unchanged_files": 597,
+    "governance_ast_unchanged_except_decision_trace": true,
+    "self_authority_sections_unchanged": true,
+    "private_originals_unchanged": true
+  },
+  "privacy": {
+    "agent_review": true,
+    "raw_findings_preserved": true,
+    "raw_finding_count": 15,
+    "previous_review": "docs/public-harness-export/R5-privacy-review.json",
+    "reuse_basis": "Exact finding-set equality and all reviewed file SHA-256 values match; no path-wide waiver.",
+    "scanner_dispositions": [
+      {
+        "kind": "private-key-material",
+        "line": 30,
+        "path": "scripts/sulde_knowledge.py",
+        "file_sha256": "a3484c2e4b578c22385b889a873180c2e95be58008bd6762c9e1bbebd5da2bfb",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "redaction-placeholder",
+        "reason": "Redacted PEM header replacement literal, with no key body; public toolkit redaction implementation.",
+        "verification_cases": [
+          "test_public_toolkit"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 34,
+        "path": "scripts/sulde_knowledge.py",
+        "file_sha256": "a3484c2e4b578c22385b889a873180c2e95be58008bd6762c9e1bbebd5da2bfb",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "redaction-detector",
+        "reason": "Generic home-directory matching regular expression, not a user's actual path.",
+        "verification_cases": [
+          "test_public_toolkit"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 40,
+        "path": "tests/test_agent_experience.py",
+        "file_sha256": "190ea0b564e42114a8b0cb9e46588ed00ad566c15687479bf50e400d342066a5",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-negative-input",
+        "reason": "Constructed private-path input inside a temporary Agent experience test; validates redaction.",
+        "verification_cases": [
+          "test_agent_experience"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 63,
+        "path": "tests/test_agent_experience.py",
+        "file_sha256": "190ea0b564e42114a8b0cb9e46588ed00ad566c15687479bf50e400d342066a5",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "negative-output-assertion",
+        "reason": "Asserts that the synthetic private-path prefix does not survive redaction.",
+        "verification_cases": [
+          "test_agent_experience"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 84,
+        "path": "tests/test_agent_experience.py",
+        "file_sha256": "190ea0b564e42114a8b0cb9e46588ed00ad566c15687479bf50e400d342066a5",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-negative-input",
+        "reason": "Constructed hostile raw-output path; verifies bypassed redaction contracts are rejected.",
+        "verification_cases": [
+          "test_agent_experience"
+        ]
+      },
+      {
+        "kind": "embedded-operational-record-review",
+        "line": 157,
+        "path": "tests/test_agent_runtime.py",
+        "file_sha256": "91a7d1de60878b37e13a2ed2774189c76588e87373cb1c82ab58d8e9a536d5df",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "generated-synthetic-ledger",
+        "reason": "Exporter independently generates five interruption events and synthetic summary inputs; not copied production event bytes.",
+        "verification_cases": [
+          "targeted-test-1",
+          "source-exporter-regression"
+        ]
+      },
+      {
+        "kind": "credential-like-value",
+        "line": 161,
+        "path": "tests/test_auto_sediment.py",
+        "file_sha256": "712e6275b516366e85a549f8834d8ba3771f24dc2c73a6867db91e145d8e930a",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-negative-input",
+        "reason": "Alphabet/digit-only fake credential supplied by the test LLM fixture; required to exercise actual secret rejection.",
+        "verification_cases": [
+          "targeted-test-5"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 82,
+        "path": "tests/test_command_template_split.py",
+        "file_sha256": "30045083be38b34d4f2ff9f71b06d0d7bb93b7d33ed5fb3196ddacdb0a1c2625",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-parser-input",
+        "reason": "Constructed Windows command path, parsed as a string without opening a user directory.",
+        "verification_cases": [
+          "targeted-test-2"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 88,
+        "path": "tests/test_command_template_split.py",
+        "file_sha256": "30045083be38b34d4f2ff9f71b06d0d7bb93b7d33ed5fb3196ddacdb0a1c2625",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-parser-assertion",
+        "reason": "Expected Windows parser output for the same constructed command path.",
+        "verification_cases": [
+          "targeted-test-2"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 108,
+        "path": "tests/test_event_observer.py",
+        "file_sha256": "203a728516b8767521f6ffa28ad72e3f3b379298944957c0ce50555e1ae974b2",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-negative-input",
+        "reason": "Constructed absolute event source must raise EventContractError.",
+        "verification_cases": [
+          "targeted-test-3"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 1151,
+        "path": "tests/test_event_observer.py",
+        "file_sha256": "203a728516b8767521f6ffa28ad72e3f3b379298944957c0ce50555e1ae974b2",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-negative-input",
+        "reason": "Temporary queue record uses a constructed private source to exercise public projection redaction.",
+        "verification_cases": [
+          "targeted-test-4"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 1254,
+        "path": "tests/test_event_observer.py",
+        "file_sha256": "203a728516b8767521f6ffa28ad72e3f3b379298944957c0ce50555e1ae974b2",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "negative-output-assertion",
+        "reason": "Asserts that the constructed private path is absent from the final projection.",
+        "verification_cases": [
+          "targeted-test-4"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 228,
+        "path": "tests/test_public_toolkit.py",
+        "file_sha256": "3657a4d4755cda7c16aa2554cb7af80db89eaaadcacabe67863f2e124c9e45a3",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-negative-input",
+        "reason": "Existing public toolkit test constructs an incident in a temporary directory to test explicit redaction.",
+        "verification_cases": [
+          "test_public_toolkit"
+        ]
+      },
+      {
+        "kind": "absolute-user-path",
+        "line": 236,
+        "path": "tests/test_public_toolkit.py",
+        "file_sha256": "3657a4d4755cda7c16aa2554cb7af80db89eaaadcacabe67863f2e124c9e45a3",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "negative-output-assertion",
+        "reason": "Checks the constructed path is removed while preserving original input bytes.",
+        "verification_cases": [
+          "test_public_toolkit"
+        ]
+      },
+      {
+        "kind": "possible-production-id",
+        "line": 148,
+        "path": "tests/test_user_prompt_control_plane.py",
+        "file_sha256": "631436353cb44497fdf8bfd476164a4602030d6ffb8a9a6ad735855fb2936804",
+        "disposition": "reviewed-non-sensitive-keep",
+        "classification": "synthetic-control-id",
+        "reason": "Mock observation contains a deterministic digit-pattern intervention ID; no lookup of a production intervention occurs.",
+        "verification_cases": [
+          "test_user_prompt_control_plane"
+        ]
+      }
+    ],
+    "additional_identity_dispositions": [
+      {
+        "line": 5,
+        "line_sha256": "0865563be2da45d27ee661f86a0e2d386f88b079c4c1e09eb9266fdeeeaa451c",
+        "path": ".claude-plugin/marketplace.json",
+        "file_sha256": "816024cdcde57f636367d9e5523d977cbadcbeaa5104d84ca94667a68fcdacdd",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 6,
+        "line_sha256": "1815b05f374b8091438d050d0e11b3bed80b5513f8311d01b0e6a2dac76084cc",
+        "path": ".claude-plugin/marketplace.json",
+        "file_sha256": "816024cdcde57f636367d9e5523d977cbadcbeaa5104d84ca94667a68fcdacdd",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 6,
+        "line_sha256": "0865563be2da45d27ee661f86a0e2d386f88b079c4c1e09eb9266fdeeeaa451c",
+        "path": ".claude-plugin/plugin.json",
+        "file_sha256": "98d68bef8cfd940ec567b3abe0c868de8b48c0fc93637fb38d93a67218506bd2",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 7,
+        "line_sha256": "1815b05f374b8091438d050d0e11b3bed80b5513f8311d01b0e6a2dac76084cc",
+        "path": ".claude-plugin/plugin.json",
+        "file_sha256": "98d68bef8cfd940ec567b3abe0c868de8b48c0fc93637fb38d93a67218506bd2",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 4,
+        "line_sha256": "523bf1980f6c67cdbc1e0917d376ab554e5a05f6ed336f0109c129b9e697c9ed",
+        "path": "CANON.md",
+        "file_sha256": "d582cc9715304193b9735e2a20e88c65281d4057a4e47e3fbf5ffd13fd0cdc57",
+        "classification": "maintainer-rule-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Maintainer name in a distributed governance rule, not a session identity or execution approval; maintainer identity already appears in public license/metadata."
+      },
+      {
+        "line": 8,
+        "line_sha256": "1e6cb1b65ca08b1ef91389865e8e63ac8e26ad0b3c70bcec6b5c7a44909a9cb9",
+        "path": "LICENSE",
+        "file_sha256": "2e5dbc486579f803dd5496f611577d0e9cab70e1927a54ceaeddc06fc055c30a",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 3,
+        "line_sha256": "744a917386f12ecd3ab2d680fcef30399b680df632896b929643615086a95759",
+        "path": "LICENSE-v0.1.0-MIT-archive",
+        "file_sha256": "c931055aa62946f9b956ceb45d2a4364d3ca254cbb8c8c29cca4d06730905565",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 8,
+        "line_sha256": "8e679305733ee5db1e33c47522d1d0b2f9dfa91c2418aef3e3b5fdc06b1c0d80",
+        "path": "commands/sulde-add-team-member.md",
+        "file_sha256": "ca393b21453b881c9d01b16ec34f1e3a0b5abb19fd3914a782aa786a03f7eb34",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 60,
+        "line_sha256": "2eeddd95ab853d1c35bb2ac1589db352585f6ca24dcf94a25bd2260d6e92badd",
+        "path": "docs/GETTING_STARTED.md",
+        "file_sha256": "60c421422b95dfb4c56db5d71a71d379d4ec8a28a36b3a24e544ab494f8af9d9",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 6,
+        "line_sha256": "0865563be2da45d27ee661f86a0e2d386f88b079c4c1e09eb9266fdeeeaa451c",
+        "path": "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+        "file_sha256": "ae38853306924bb84fc2781f24c8812b409093163511f45152473056e3563220",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 7,
+        "line_sha256": "1815b05f374b8091438d050d0e11b3bed80b5513f8311d01b0e6a2dac76084cc",
+        "path": "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+        "file_sha256": "ae38853306924bb84fc2781f24c8812b409093163511f45152473056e3563220",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 23,
+        "line_sha256": "f04a5125d71209ad6e31e9987f657c7a8d5f14d911de609af573c45acd982ad1",
+        "path": "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+        "file_sha256": "ae38853306924bb84fc2781f24c8812b409093163511f45152473056e3563220",
+        "classification": "existing-public-publisher-attribution",
+        "disposition": "reviewed-keep",
+        "reason": "Publisher name/contact matches the frozen public baseline author/license; preserve attribution."
+      },
+      {
+        "line": 96,
+        "line_sha256": "90f068fa4039ee166347f5b45705fb65051bb4e026db44a9d3e5b8b776e3bd39",
+        "path": "skills/coordinator/configure-sulde/SKILL.md",
+        "file_sha256": "d6291144408013082f46542c995e3081a7a9fcd0f2cb0f2d59121f7e2e4b0387",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 103,
+        "line_sha256": "0a62f720fb5a37f411689a7bd6b1539bc0409251ae868c7b82810d06144de076",
+        "path": "skills/coordinator/configure-sulde/SKILL.md",
+        "file_sha256": "d6291144408013082f46542c995e3081a7a9fcd0f2cb0f2d59121f7e2e4b0387",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 110,
+        "line_sha256": "a67f5dae1543814edde44d41fcc135cf108b834d0357479ceb83b1f2d22954de",
+        "path": "skills/coordinator/configure-sulde/SKILL.md",
+        "file_sha256": "d6291144408013082f46542c995e3081a7a9fcd0f2cb0f2d59121f7e2e4b0387",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 134,
+        "line_sha256": "ee7bd00d65a1f69f2a76ad5cb1fcf4212f21a6c7f8286c2e07cad78b2c2211ae",
+        "path": "skills/dev/assign/SKILL.md",
+        "file_sha256": "2a6624a1d64e5a2e3322e4b9d0faf347e8399ff6d1d26de4f4978774e31fdbc9",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 138,
+        "line_sha256": "a26a3f8d2411ed489e4f3cf4d56f77ed210a771ae8079949478316658e81085b",
+        "path": "skills/dev/assign/SKILL.md",
+        "file_sha256": "2a6624a1d64e5a2e3322e4b9d0faf347e8399ff6d1d26de4f4978774e31fdbc9",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 76,
+        "line_sha256": "a3d86287d25946eed1eaab33f5e92113095019c4b167ae443b9e4e86c10ab7c1",
+        "path": "template/_project/.sulde-config.yaml.example",
+        "file_sha256": "e1b1b673d6b1b90e939c2a3f473b728f6fa15051c8988ec6ba452fd0cb523524",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 80,
+        "line_sha256": "156dd9014d04aa23a12c885ee99ef015f407758d8a7bcefebe739cb2557ed19d",
+        "path": "template/_project/.sulde-config.yaml.example",
+        "file_sha256": "e1b1b673d6b1b90e939c2a3f473b728f6fa15051c8988ec6ba452fd0cb523524",
+        "classification": "documented-synthetic-example",
+        "disposition": "reviewed-keep",
+        "reason": "Explicit team-identity example or commented empty project configuration, not installed operator state."
+      },
+      {
+        "line": 125,
+        "line_sha256": "7b51987b4dc0364fe8a1f63440c5db337a0b65f1563b45b87623eeb018c4fd9b",
+        "path": "tests/p1_hook_dryrun.py",
+        "file_sha256": "1705183bef9d5b3f891cf5cc024b261fd5e05098caf2122eaf34677f105453af",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 79,
+        "line_sha256": "9a8b5cc6dea16017d8039714fc782eb761fcda12679715744e6652c9a65dac9e",
+        "path": "tests/test_accepted_snapshot_protocol.py",
+        "file_sha256": "1621b14c73703926061f6baf629bfe96af5c7d01bdd6bb67ce0cf9d83351ee86",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 4270,
+        "line_sha256": "ef2c0a3858ca9224b8546c612cf2366adb019527671b85239fd790ab330afd37",
+        "path": "tests/test_agent_runtime.py",
+        "file_sha256": "91a7d1de60878b37e13a2ed2774189c76588e87373cb1c82ab58d8e9a536d5df",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 4478,
+        "line_sha256": "ef2c0a3858ca9224b8546c612cf2366adb019527671b85239fd790ab330afd37",
+        "path": "tests/test_agent_runtime.py",
+        "file_sha256": "91a7d1de60878b37e13a2ed2774189c76588e87373cb1c82ab58d8e9a536d5df",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 4551,
+        "line_sha256": "d0d7bf0a47559967c2a839eb4f9ec9e9313c688849e5d34dd8058140d2cf486d",
+        "path": "tests/test_agent_runtime.py",
+        "file_sha256": "91a7d1de60878b37e13a2ed2774189c76588e87373cb1c82ab58d8e9a536d5df",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 207,
+        "line_sha256": "b25cfc3db037ad2436884089e19e01d5113f4f9cc25e3f492633a86701886e86",
+        "path": "tests/test_auto_sediment.py",
+        "file_sha256": "712e6275b516366e85a549f8834d8ba3771f24dc2c73a6867db91e145d8e930a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 246,
+        "line_sha256": "2e6ed1362f9e500d15886a86461551a2797e92e9215eacdbb0918f0f3f47f950",
+        "path": "tests/test_command_policy.py",
+        "file_sha256": "f98c57380069693feb4a8cb5b6fb6315bf2bfc42f482f514ed853757f04d84b3",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 253,
+        "line_sha256": "c7e8845ea9742d5128bd1ffece35c5c023c71e64fc6cd2e9673af7dc877803e3",
+        "path": "tests/test_command_policy.py",
+        "file_sha256": "f98c57380069693feb4a8cb5b6fb6315bf2bfc42f482f514ed853757f04d84b3",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 254,
+        "line_sha256": "500718fc6d502ea25bbe0397ae837b729b128f0d3451bc57557151f045b535b9",
+        "path": "tests/test_command_policy.py",
+        "file_sha256": "f98c57380069693feb4a8cb5b6fb6315bf2bfc42f482f514ed853757f04d84b3",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 237,
+        "line_sha256": "9ee36510ee02a97be0bfd87404b3ed1172419d71062134737d100547fe7bb0fb",
+        "path": "tests/test_critic_checkpoint.py",
+        "file_sha256": "73ede38fb02989a1fa4b573600896b342ebf63e901f04689fdb38b92be77318d",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 172,
+        "line_sha256": "c827dbc298e7aec40efec693e60cae4d8dd7929744501cb0f3d5d942405fee38",
+        "path": "tests/test_intent_guardian.py",
+        "file_sha256": "c66836c124911b6924a9bf50b1949f7a9af2756b54e3ef9d1d3f2f2ce0aa4c16",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 266,
+        "line_sha256": "c827dbc298e7aec40efec693e60cae4d8dd7929744501cb0f3d5d942405fee38",
+        "path": "tests/test_intent_guardian.py",
+        "file_sha256": "c66836c124911b6924a9bf50b1949f7a9af2756b54e3ef9d1d3f2f2ce0aa4c16",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 1070,
+        "line_sha256": "f1ffd9e9cbd86e07145edd02f2d59aecd9c75165aadfb9b05c2eaf087322173e",
+        "path": "tests/test_intent_guardian.py",
+        "file_sha256": "c66836c124911b6924a9bf50b1949f7a9af2756b54e3ef9d1d3f2f2ce0aa4c16",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 4456,
+        "line_sha256": "b602b373565e984ab2d7eb9d67d05f49fddef0e0c8243eb6972cdd28b6f95958",
+        "path": "tests/test_intent_guardian.py",
+        "file_sha256": "c66836c124911b6924a9bf50b1949f7a9af2756b54e3ef9d1d3f2f2ce0aa4c16",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 6255,
+        "line_sha256": "a751c1b7b40e68e0034cc9d29f5f3512525c7857ca1616a68f8e57bc7765eedf",
+        "path": "tests/test_intent_guardian.py",
+        "file_sha256": "c66836c124911b6924a9bf50b1949f7a9af2756b54e3ef9d1d3f2f2ce0aa4c16",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 13940,
+        "line_sha256": "859183ecf5623680d6b00fa1d2375429e55e53467f3781b776a1c833e2b1b072",
+        "path": "tests/test_intent_guardian.py",
+        "file_sha256": "c66836c124911b6924a9bf50b1949f7a9af2756b54e3ef9d1d3f2f2ce0aa4c16",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 29,
+        "line_sha256": "4a83c26ed507ac3942a6c2456203e783c8c423f048899c8fa83f864fc42a6c4e",
+        "path": "tests/test_kb_aging.py",
+        "file_sha256": "d8a308ad2e478d1d3bbb35f295392acf7a63225b076ec6c2c80b39fdccff7ab2",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 45,
+        "line_sha256": "076bdd69ca7329a9641b1dac928b49dbf26e3077592fd6457d4f5f51a281cf27",
+        "path": "tests/test_knowledge_history.py",
+        "file_sha256": "eb72dfcf772de9b22386d4ba0f7ed40e16e382f37c666dcc91fea6d32c4524b1",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 106,
+        "line_sha256": "243d55791592317fe41e77466e9a5f51b10838271b73655899581530f80e473b",
+        "path": "tests/test_life_health_closure.py",
+        "file_sha256": "14ebdc608b910943fcc05c518ca682c69c1d3f96fc0fa58c5dde4b80b3e66ed5",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 398,
+        "line_sha256": "5d69c05cc901d5c3e40b49d73f1b7a89419a9930b416624d86168c5d309a7e0b",
+        "path": "tests/test_mem_sync.py",
+        "file_sha256": "5eede3235dfb4b4c737f5a60776277201d438c7d6cac579e01ee404c6aa35a9a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 468,
+        "line_sha256": "46b140f8a83f0180fa379401bbae0b5bebcf2bfe7f494afa1faa66ac7c7ed798",
+        "path": "tests/test_mem_sync.py",
+        "file_sha256": "5eede3235dfb4b4c737f5a60776277201d438c7d6cac579e01ee404c6aa35a9a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 502,
+        "line_sha256": "46b140f8a83f0180fa379401bbae0b5bebcf2bfe7f494afa1faa66ac7c7ed798",
+        "path": "tests/test_mem_sync.py",
+        "file_sha256": "5eede3235dfb4b4c737f5a60776277201d438c7d6cac579e01ee404c6aa35a9a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 101,
+        "line_sha256": "6c71db83432473c2c070191e575c3e3676235e184676bd6785daa10618347ed5",
+        "path": "tests/test_native_posttool_delivery.py",
+        "file_sha256": "e6ab84a0e252610315f9dfd52ce6e281121f2bd71be64799567398fcd55c541a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 49,
+        "line_sha256": "197ff31274fdc2426df0e2b3c92e828617b67131a1c709c528c2d97853fb097a",
+        "path": "tests/test_native_session_continuity.py",
+        "file_sha256": "7797647bff7c44aeaa558de90c04fc37841c0d8ef2655109a4e18da4966ad27f",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 134,
+        "line_sha256": "08be1280c8855d25a5079327c3a678eac0760f4ed8f2f2fbfe4e1267eeac9a6d",
+        "path": "tests/test_native_session_continuity.py",
+        "file_sha256": "7797647bff7c44aeaa558de90c04fc37841c0d8ef2655109a4e18da4966ad27f",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 114,
+        "line_sha256": "168c4bf9252067b3418d1bb39b95be80c2abbdd2d25f719ef1e357efdd3067e1",
+        "path": "tests/test_predecessor_composition.py",
+        "file_sha256": "6030c31e456cb47bf319fd9e6685003d2c9a92cf65ebd9190747fde0008f7d86",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 166,
+        "line_sha256": "3c84c5159f08aaf9b6991a86bdfbb01a4e0ca5bc88ec297b46bf406740d8323b",
+        "path": "tests/test_predecessor_composition.py",
+        "file_sha256": "6030c31e456cb47bf319fd9e6685003d2c9a92cf65ebd9190747fde0008f7d86",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 168,
+        "line_sha256": "e23debf6cabaee1579904f25d685e167394616c69512db949112e4bd559936cb",
+        "path": "tests/test_predecessor_composition.py",
+        "file_sha256": "6030c31e456cb47bf319fd9e6685003d2c9a92cf65ebd9190747fde0008f7d86",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 228,
+        "line_sha256": "3e1767a1c1199ddce1a41e53479814a92cd94c98844a6fce816f2ecf636f0d66",
+        "path": "tests/test_public_toolkit.py",
+        "file_sha256": "3657a4d4755cda7c16aa2554cb7af80db89eaaadcacabe67863f2e124c9e45a3",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 233,
+        "line_sha256": "b2bdda4b9bf9ef6ccd1599773ebdd330f77d8b503bac12cfc6e7f77494dec1f4",
+        "path": "tests/test_public_toolkit.py",
+        "file_sha256": "3657a4d4755cda7c16aa2554cb7af80db89eaaadcacabe67863f2e124c9e45a3",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 235,
+        "line_sha256": "1e906be96584ecc2a66ae015e6b0195dde7baaece2e8e6c2dd9e43a1a5ef4868",
+        "path": "tests/test_public_toolkit.py",
+        "file_sha256": "3657a4d4755cda7c16aa2554cb7af80db89eaaadcacabe67863f2e124c9e45a3",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 61,
+        "line_sha256": "859183ecf5623680d6b00fa1d2375429e55e53467f3781b776a1c833e2b1b072",
+        "path": "tests/test_resource_adapters.py",
+        "file_sha256": "c546c895face842188bd9275ebf16d4fe6834dcbeca6f4496bbfcc3d1962663a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 249,
+        "line_sha256": "b823a89ad41a7a00c9f4ca8bd3fbd24fb571afe8c343e3d8173c6c0398a536dd",
+        "path": "tests/test_resource_adapters.py",
+        "file_sha256": "c546c895face842188bd9275ebf16d4fe6834dcbeca6f4496bbfcc3d1962663a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 254,
+        "line_sha256": "f34bcd3fe4d302c244019ae44f2e8884d0726e6486a54f551b605ab76f1e57c0",
+        "path": "tests/test_resource_adapters.py",
+        "file_sha256": "c546c895face842188bd9275ebf16d4fe6834dcbeca6f4496bbfcc3d1962663a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 260,
+        "line_sha256": "489cdc7d62ea6851084c177884d44c59be5f845606db8e40fcfb70207fdb01c1",
+        "path": "tests/test_resource_adapters.py",
+        "file_sha256": "c546c895face842188bd9275ebf16d4fe6834dcbeca6f4496bbfcc3d1962663a",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 154,
+        "line_sha256": "793f5cf063a36e0d28b0a05a814080ea91f7aa83c421354f73a39297e047e8f7",
+        "path": "tests/test_self_repair.py",
+        "file_sha256": "4fd08dcb1418dc1b4de996c6b64f1da0edcc95ca85a88b4db8ef981104a2a00d",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 815,
+        "line_sha256": "6bffd0c73166ca628ee73d8427f522b9a1fc8a1b24f075140c943e67abb52bdd",
+        "path": "tests/test_self_repair.py",
+        "file_sha256": "4fd08dcb1418dc1b4de996c6b64f1da0edcc95ca85a88b4db8ef981104a2a00d",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 373,
+        "line_sha256": "35821f5aea9c94b2ad9905a5319352fd25aeb3e958785afa9907971d83226580",
+        "path": "tests/test_stage_release_inventory.py",
+        "file_sha256": "4e66704719f6fa833b1ea76b624b2607d609ea9ea80b6eacb2d546825b04327c",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 419,
+        "line_sha256": "35821f5aea9c94b2ad9905a5319352fd25aeb3e958785afa9907971d83226580",
+        "path": "tests/test_stage_release_inventory.py",
+        "file_sha256": "4e66704719f6fa833b1ea76b624b2607d609ea9ea80b6eacb2d546825b04327c",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      },
+      {
+        "line": 77,
+        "line_sha256": "45dcc0329571ea5505bd58f8036d609e122f0014f5becfc376265decac61bf0d",
+        "path": "tests/test_supervision_lifecycle_e2e.py",
+        "file_sha256": "22fe739197f85d2a212758fc72ba177c7ad3f2ef09143fc7b58f2489e6ab0198",
+        "classification": "constructed-test-input",
+        "disposition": "reviewed-keep",
+        "reason": "Reviewed input is a temporary Git identity, constructed branch/parser sample, or explicit redaction negative; no production resource is resolved."
+      }
+    ],
+    "operator_state_transformations": [
+      {
+        "input_sha256": "7ec465301a13409672a62bead29c9625c2f6304192f968ebfd1c85e35af96d66",
+        "kind": "operator-state-not-inherited",
+        "output_sha256": "2fe57c52bb81209b005cf092c60a77f9c548c41a1986e27852cb1e591259b071",
+        "path": "scripts/kb/governance-report.py"
+      },
+      {
+        "input_sha256": "8c31bf764ef1041cbb079a9eba2e6be388ce716c0f158bc535e50877a4dc6fdd",
+        "kind": "operator-state-not-inherited",
+        "output_sha256": "7b2a6562fd2c8d44c92c46d0cb1dc810ef3928db23e2072943b669c315b0aabd",
+        "path": "templates/SELF.md"
+      }
+    ],
+    "known_unresolved_content_findings": 0,
+    "not_a_complete_security_proof": true
+  },
+  "literal_dependency_dispositions": [
+    {
+      "line": 21,
+      "path": "docs/EXTENDING.md",
+      "reference": "skills/community/release-review/SKILL.md",
+      "classification": "generated-output",
+      "resolution": "EXTENDING explains that the add-skill command creates this file."
+    },
+    {
+      "line": 321,
+      "path": "docs/intent-guardian.md",
+      "reference": "scripts/run-hook.sh",
+      "classification": "artifact-relative",
+      "resolution": "Refers to Codex plugin cache-relative entrypoints; present in integrations/codex/plugins/sulde/scripts and validated packages."
+    },
+    {
+      "line": 321,
+      "path": "docs/intent-guardian.md",
+      "reference": "scripts/run-hook.ps1",
+      "classification": "artifact-relative",
+      "resolution": "Refers to Codex plugin cache-relative entrypoints; present in integrations/codex/plugins/sulde/scripts and validated packages."
+    },
+    {
+      "line": 57,
+      "path": "docs/kb-retrieval-contract.md",
+      "reference": "knowledge/anti-patterns/0142-xxx.md",
+      "classification": "synthetic-path-example",
+      "resolution": "Placeholder article path in the retrieval contract, not a bundled corpus dependency."
+    },
+    {
+      "line": 209,
+      "path": "docs/kb-retrieval-contract.md",
+      "reference": "scripts/kb-to-cognee.sh",
+      "classification": "legacy-optional-documentation",
+      "resolution": "The old Cognee mapping explicitly labels this shell entry as not implemented; scripts/kb/kb-to-cognee.py is included. Not used by the shipped local index/MCP path. Documentation modernization deferred."
+    },
+    {
+      "line": 45,
+      "path": "skills/coordinator/configure-sulde/SKILL.md",
+      "reference": "scripts/pre-commit-installer.sh",
+      "classification": "generated-project-relative",
+      "resolution": "Copied from template/<platform>/scripts/pre-commit-installer.sh into a user project."
+    }
+  ],
+  "source_tests": {
+    "run": 28,
+    "passed": 28,
+    "skipped": 0,
+    "seconds": 4.321,
+    "log": ".sulde/public-export/r6-exporter-tests.log",
+    "log_sha256": "fe5c6c238061b86fcf6e29195fd0bf256e12b319eef1f90a669a6b1631c37d2d"
+  },
+  "candidate_checks": {
+    "results": ".sulde/public-export/validation-011/results.json",
+    "results_sha256": "0526a4af80261517d9797b8799917146a57a8b6e87c8d159cb9701a7482ded83",
+    "verifier_sha256": "85c2f6e170dfb340c4333f7acf235db2ef447bef9eba5b7244adafe661a93f16",
+    "groups": 19,
+    "tests_run": 80,
+    "skips": 0,
+    "sum_probe_seconds": 8.256,
+    "cases": [
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "name": "git-init",
+        "passed": true,
+        "seconds": 0.009
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "name": "git-add",
+        "passed": true,
+        "seconds": 0.333
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "name": "git-commit",
+        "passed": true,
+        "seconds": 0.058
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "7d6e37e34ad040f715164ca904a09b3db0fcbe1ed1dba06d389aff1446af964c",
+        "name": "empty-index",
+        "passed": true,
+        "seconds": 0.468
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "a4799d956658bb8249b9aa9fec4e097aa61970b364d9d7948b893e2d5b5ccf52",
+        "name": "empty-memory-init",
+        "passed": true,
+        "seconds": 0.045
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "9b60ac833eb9669560d6b1a1f481034bc5ba86f94fa0429c684ba1caa019ed84",
+        "name": "mcp-stdio-empty-queries",
+        "passed": true,
+        "seconds": 0.647
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "ab56354c002a2f1d5d93527ee81236d2ae8a9dabd865f2082ec00b6c76a02563",
+        "name": "test_corpus_manifest",
+        "passed": true,
+        "seconds": 0.048,
+        "tests_run": 5,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "8881116fd95e847284e675a34d0a7371e620924f0bf1d932253978246f95cac9",
+        "name": "test_kb_index_common",
+        "passed": true,
+        "seconds": 0.109,
+        "tests_run": 8,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "9d41f126a3b10b0a4e3e2b313114d66a85c7fff35e2c56953240c148f9058663",
+        "name": "test_kb_mcp_entry",
+        "passed": true,
+        "seconds": 2.634,
+        "tests_run": 9,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "579cd4cce754e99031cf5b83035b192ff7de79086742f7a2b236dcd36f168a96",
+        "name": "test_knowledge_history",
+        "passed": true,
+        "seconds": 0.475,
+        "tests_run": 5,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "82ba20e5353cefaee90460ac186855a1c6389e6122fb3afa89ad2ed7fe28a964",
+        "name": "test_public_toolkit",
+        "passed": true,
+        "seconds": 1.745,
+        "tests_run": 10,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "ae7a07bd8d7c28fde582851ca0bbf518abf10cc9fc24f13952fa2b7da41d52b8",
+        "name": "test_governance_report",
+        "passed": true,
+        "seconds": 0.143,
+        "tests_run": 33,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "f5655db5a35c6a862cb38495df37d61560236616a62801f44b394c6ead619bbb",
+        "name": "test_sync_self",
+        "passed": true,
+        "seconds": 0.035,
+        "tests_run": 2,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "f4a94547d8a5a54af62968419cff31c21246cb6eb7f2e64512f408dbe6e2daca",
+        "name": "test_life_health_closure",
+        "passed": true,
+        "seconds": 0.769,
+        "tests_run": 8,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "5cca9d7811e979faaae85442edd0ea0b928ebf2126c86aac5c566da8e96c7a08",
+        "name": "artifact-claude",
+        "passed": true,
+        "seconds": 0.208
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "116ba3ed7e2f6363510fda86144443537838daafaafa94a4cbd8fb7c861655f0",
+        "name": "artifact-codex-posix",
+        "passed": true,
+        "seconds": 0.213
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "511d0eb64d591a3994f4d379947a7f713351a7cad20d9002bda5b93713486bc2",
+        "name": "plugin-validator-codex-posix",
+        "passed": true,
+        "seconds": 0.036
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "a5a22d80ce3be106bfd7e3b59d923186e89c25628907ffdf60f47f04af3fc80d",
+        "name": "artifact-codex-windows",
+        "passed": true,
+        "seconds": 0.244
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "260ad2bc9ab096eac2f737cb7de17b1ded0945411037f191c231228b7af2e6a8",
+        "name": "plugin-validator-codex-windows",
+        "passed": true,
+        "seconds": 0.037
+      }
+    ],
+    "full_suite_attempted": false
+  },
+  "independent_open_issue": {
+    "fact_status": "verified",
+    "root_cause_status": "inconclusive",
+    "symptom": "A compound read-only review invocation containing candidate bootstrap --dry-run --host codex was denied before execution as a high-risk maintenance action without a proposal-bound profile.",
+    "tool_chunk": "functions.exec PreToolUse rejection before result",
+    "effect": "not executed",
+    "possible_boundaries": [
+      "maintenance risk classification",
+      "compound invocation/profile matching"
+    ],
+    "action": "No alternate bootstrap execution or production Guardian modification. Keep as a separate diagnosis.",
+    "excluded_from_passed_checks": true
+  },
+  "unverified": [
+    "actual bootstrap installation",
+    "live host Hook and native approval",
+    "scheduler activation",
+    "upgrade/rollback",
+    "Windows native execution",
+    "new full-suite acceptance",
+    "earlier production Hook failure attribution"
+  ],
+  "historical_test_status": "R3 full-suite failures/skips and R4/R5 per-case retests retained; private-baseline audits are not public runtime gates or newly passed tests.",
+  "protected_branches": {
+    "main": "bd216b3d29e37b1aaf0e6be0c930b5221a925562",
+    "dev": "e61683c08aaf97db3e8e9d105ea3154ec217061c"
+  },
+  "installation_performed": false,
+  "merge_performed": false,
+  "public_push_performed": false
+}

@@ -1,0 +1,34 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-B", "-m", "unittest",
+        "tests.test_recovery_supervisor", "tests.test_sulde_supervisor",
+        "tests.test_runtime_provider", "tests.test_operational_readiness",
+        "tests.test_terminal_invariants"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The exact integrated coordinator tree ran 89 tests in 2.351 seconds with exit 0.",
+    "The run covers all 29 H03 focused cases plus existing supervisor, provider, readiness and terminal invariants using bytecode-disabled current-host Python."
+  ],
+  "findings": [
+    "FR2-H03-001", "FR2-H03-002", "FR2-H03-003",
+    "FR2-H03-004", "FR2-H03-005", "FR2-H03-006",
+    "FR2-H03-007", "FR2-H03-008", "FR2-H03-009"
+  ],
+  "kind": "targeted_tests",
+  "requirements": [],
+  "run_id": "run-gpe-911f4018e20b6c8d699f94e3",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H03 focused and adjacent liveness/runtime regressions pass on the exact integrated coordinator tree.",
+  "task_id": "H03-recovery-supervisor",
+  "verdict": "pass"
+}

@@ -1,0 +1,51 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {"path": "reports/H06B-codex-0150-authority.md", "sha256": "27b52eb201865503691830f436ecb5538a73bd95b875ea72e9a4c8fe85ef2a5c"},
+    {"path": "task-definitions/H06C-r2-final-acceptance.json", "sha256": "fbf01c6d1a18e5016436eb3f071f06cebc85bc628dc64b5643c6fb631dbb76c0"},
+    {"path": "briefs/H06C-r2-final-acceptance.md", "sha256": "e652fa0a39768798bfd408fe664a96106f42dda4e0ab8ca89a11fae35b2869ef"}
+  ],
+  "baseline": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "commands": [
+    {"argv": ["guardian_program.py", "task-add", "H06C-r2-final-acceptance"], "exit_code": 0, "result": "pass"},
+    {"argv": ["guardian_program.py", "status", "guardian-r2-program"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "FR2-H06-001 and FR2-H06B-001 through 004 are fixed by the shared exact Codex 0.150.1 contract, full staged authority roundtrip, corrected temporal report and expanded production literal guard.",
+    "FR2-H06B-006 is fixed by the manifest-exact fourteen-clause traceability document accepted at sequence 291.",
+    "FR2-H04-007, FR2-H05-007, FR2-H05-011 and the fleet-safe FR2-H06B-005 remain honest release obligations; FR2-H06B-007 and 008 reissue them to registered H06C rather than claiming task-local completion.",
+    "FR2-H06B-009 preserves the rejected promotion and explicit obligation repair; FR2-H06B-010 is closed by making this document the single active finding-resolution identity while superseding both prior records append-only."
+  ],
+  "findings": [
+    "FR2-H04-007",
+    "FR2-H05-007",
+    "FR2-H05-011",
+    "FR2-H06-001",
+    "FR2-H06B-001",
+    "FR2-H06B-002",
+    "FR2-H06B-003",
+    "FR2-H06B-004",
+    "FR2-H06B-005",
+    "FR2-H06B-006",
+    "FR2-H06B-007",
+    "FR2-H06B-008",
+    "FR2-H06B-009",
+    "FR2-H06B-010"
+  ],
+  "kind": "finding_resolution",
+  "requirements": [
+    "R2-HUMAN-GRANT",
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-TYPED-RESOURCES",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "run_id": "run-gpe-be866b2fa440a994860b63a9",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06B has one consolidated finding-resolution identity covering every fix, inherited obligation, explicit H06C transfer and control-plane repair without weakening final gates.",
+  "task_id": "H06B-codex-0150-authority",
+  "verdict": "pass"
+}

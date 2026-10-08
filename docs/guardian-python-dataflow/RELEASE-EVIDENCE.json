@@ -1,0 +1,227 @@
+{
+  "schema": "guardian-python-dataflow-release-v1",
+  "latest_host_observed_at": "2026-09-11T02:45:41.890151+00:00",
+  "source_commit": "09cfdb5aa1af7953d763b83f15415b5c16a8ecc0",
+  "source_tree": "2f3706358ef3b266df0ad3d7e95580afe82f9065",
+  "version": "0.2.5+codex.20260911023102-9ad36bd2ad",
+  "generation": "0.2.5+codex.20260911023102-9ad36bd2ad:ad3d6842a02bf6d617ac74f62586f634536edff9735ad26c43144c956b637897",
+  "candidate": {
+    "id": "guardian-python-dataflow-20260911",
+    "status": "promoted",
+    "receipt_sha256": "a8240ed9482fce0591bcfc1186664440c66c13f5bcfeca4fa31ebcaebc73ebb5",
+    "timings_ms": {
+      "prepare_total": 2243.543,
+      "verify_total": 18253.647,
+      "promote_total": 39846.061
+    }
+  },
+  "generation_file_sha256": "e1b52199b46711f69a22185d2dd71bcfa2c6a0523daf9801179811586b71f339",
+  "source_artifact_installed_bytes_identical": {
+    "scripts/kb/python_data_methods.py": "44a7de284f441f9d2e6200c684b3b84dd228bc2fa2d559249c972a4961e410c6",
+    "scripts/kb/python_string_flow.py": "c1aecda927dabdd6b8249a211684926c552176f2711695e6972179bfb12219e3"
+  },
+  "native_receipt_id": "a34cef7202e60642bc4f6005f17895ac16af8d048619fed6a10f18e0e0c80a71",
+  "grants": [
+    {
+      "id": "6a291860ab5f43e0f4f88a0fab009e623c27f62e6ec50bf04a074f200099c158",
+      "uses": 1,
+      "profile": "codex-plugin-cachebuster-v2"
+    },
+    {
+      "id": "69ca90f52cd421ab7ac230b690ac5fbbb48bbfe6ad9ad37f19ca09bfd5bcd980",
+      "uses": 1,
+      "profile": "codex-plugin-install-v2"
+    }
+  ],
+  "verified_effects": [
+    {
+      "attempt_id": "att-fcb289a80a1b98882df672ef",
+      "compensates_attempt_ids": [],
+      "evidence_source": "local_codex_cachebuster_read",
+      "target": "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+      "verification_source": "system_verification",
+      "verified_at": "2026-09-11T02:35:21.377695+00:00",
+      "verified_by_capability": "tool:codex_plugin_cachebuster_verify",
+      "verified_by_event": "597ff6143a45f16e7d58c99b",
+      "write_capability": "tool:Bash",
+      "write_fingerprint": "4bf3c05c2c325df48b341a69dd1e1799b96ef741c2585ef2b50e4cdd293fca18"
+    },
+    {
+      "attempt_id": "att-0dab140f03a95047af5af72a",
+      "compensates_attempt_ids": [],
+      "evidence_source": "local_codex_install_read",
+      "target": "[host-local:codex-plugin]",
+      "verification_source": "system_verification",
+      "verified_at": "2026-09-11T02:44:27.746966+00:00",
+      "verified_by_capability": "tool:codex_plugin_install_verify",
+      "verified_by_event": "f90715f07d186293efecf8c5",
+      "write_capability": "tool:Bash",
+      "write_fingerprint": "a8116759c5380f95d20390955ad1c6d6a5c1fbcb3b26488e7cea216c0612f9a4"
+    }
+  ],
+  "live": {
+    "proof": {
+      "artifact_generation": "0.2.5+codex.20260911023102-9ad36bd2ad:ad3d6842a02bf6d617ac74f62586f634536edff9735ad26c43144c956b637897",
+      "decision_fingerprint": "1736bf68edb903462720e7e96fe566728ec12dc753cbd9425cbbc4d93b588dfe",
+      "gaps_cleared": 0,
+      "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+      "prepared_at": "2026-09-11T02:44:42.525104+00:00",
+      "probe_id": "ebf4b00cec45401b191e522d5bf02700",
+      "proof_id": "81d98737f9f54fd790b666a0ee79b5a522f1afdf60d9abc2aa7f06ab05e855c8",
+      "provider": "codex",
+      "runtime_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+      "schema": "sulde-pre-execution-proof-v2",
+      "session_id": "01a04634-318f-7203-ba2d-26fa6ac442b0",
+      "started_call_id": "exec-e6a2dc63-41b8-4ff1-b458-72fe29dd2e59",
+      "started_event_id": "bedc0d762c615ec7fe5f42a2",
+      "verified_at": "2026-09-11T02:45:01.892047+00:00"
+    },
+    "positive": [
+      {
+        "event": {
+          "event_id": "53eda778f380a6bcfca272a0",
+          "phase": "started",
+          "at": "2026-09-11T02:45:23.569637+00:00",
+          "call_id": "exec-386b735b-bff5-400d-bcff-0bc8769eb41a",
+          "effect": "local_write",
+          "provider": "codex",
+          "session_id": "01a04634-318f-7203-ba2d-26fa6ac442b0",
+          "supervision_status": "live_verified",
+          "artifact_generation": "0.2.5+codex.20260911023102-9ad36bd2ad:ad3d6842a02bf6d617ac74f62586f634536edff9735ad26c43144c956b637897",
+          "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+          "arguments_digest": "4b52389d47029b6e62e1303dff2489349c552aaf670062996710f4a13ffe3ff9"
+        },
+        "decision": {
+          "action": "allow",
+          "authority": "task",
+          "awaiting_human": false,
+          "decision_stage": "policy",
+          "dispatch": "allow",
+          "evidence_state": "observed",
+          "fingerprint": "40077a39fd6f0fb947eb2f25dc4b4e55a5a510fb486a72a7b3704168649dcc21",
+          "lifecycle": "continue",
+          "reason": "事件符合当前意图契约",
+          "reason_code": "event_allowed",
+          "schema": "sulde-intent-decision-v2",
+          "secondary_reasons": [],
+          "severity": "info",
+          "verification": "none",
+          "verification_required": false,
+          "would_action": "allow",
+          "would_dispatch": "allow"
+        }
+      },
+      {
+        "event": {
+          "event_id": "53eda778f380a6bcfca272a0",
+          "phase": "completed",
+          "at": "2026-09-11T02:45:24.440189+00:00",
+          "call_id": "exec-386b735b-bff5-400d-bcff-0bc8769eb41a",
+          "effect": "local_write",
+          "provider": "codex",
+          "session_id": "01a04634-318f-7203-ba2d-26fa6ac442b0",
+          "supervision_status": "live_verified",
+          "artifact_generation": "0.2.5+codex.20260911023102-9ad36bd2ad:ad3d6842a02bf6d617ac74f62586f634536edff9735ad26c43144c956b637897",
+          "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+          "arguments_digest": "4b52389d47029b6e62e1303dff2489349c552aaf670062996710f4a13ffe3ff9"
+        },
+        "decision": {
+          "action": "allow",
+          "authority": "task",
+          "awaiting_human": false,
+          "decision_stage": "policy",
+          "dispatch": "allow",
+          "evidence_state": "observed",
+          "fingerprint": "40077a39fd6f0fb947eb2f25dc4b4e55a5a510fb486a72a7b3704168649dcc21",
+          "lifecycle": "continue",
+          "reason": "事件符合当前意图契约",
+          "reason_code": "event_allowed",
+          "schema": "sulde-intent-decision-v2",
+          "secondary_reasons": [],
+          "severity": "info",
+          "verification": "none",
+          "verification_required": false,
+          "would_action": "allow",
+          "would_dispatch": "allow"
+        }
+      }
+    ],
+    "positive_exit_code": 0,
+    "positive_file_content": "after\n",
+    "positive_keys": [
+      "verified-count",
+      "string-replace"
+    ],
+    "negative_pre_denied": true,
+    "negative_marker_absent_after_finalize": true
+  },
+  "readiness": {
+    "status": "ready",
+    "interactive": "ready",
+    "effect_debt": {
+      "authoritative_blocking": 0,
+      "authoritative_settled_pending": 0,
+      "blocking": 0,
+      "error": null,
+      "interventions_open": 0,
+      "pending_verifications": 0,
+      "pending_verifications_total": 0,
+      "status": "clear",
+      "terminal_quarantined": 0,
+      "terminal_quarantined_pending": 0
+    },
+    "pre_execution_safety": "verified",
+    "scheduler": {
+      "authority": "launchctl_list_process_truth",
+      "failed_labels": {},
+      "inventory_sha256": "0d9ac79c5e5f65d6addb283348516f8f6b6683b5d12893859590b2d7b2f51c7f",
+      "loaded": 16,
+      "managed": 16,
+      "missing_labels": [],
+      "missing_observed": true,
+      "probe_status": "observed",
+      "reasons": [],
+      "retired_loaded_labels": [],
+      "status": "ready"
+    },
+    "hook_failures": {
+      "authority": "telemetry_only_not_effect_truth",
+      "callback_recovered_total": 0,
+      "current_lane": [],
+      "current_lane_total": 0,
+      "invalid_observations": 0,
+      "invalid_receipts": 0,
+      "other_lanes_total": 0,
+      "schema": "sulde-host-hook-failure-projection-v1",
+      "status": "clear"
+    },
+    "open_events": 0,
+    "integrity_breaches": 0,
+    "pre_execution_gaps": 0
+  },
+  "background_kb": {
+    "schema": "sulde-kb-status-readiness-v1",
+    "status": "degraded",
+    "ok": false,
+    "warn": true,
+    "authority": "bounded_background_status_snapshot",
+    "line": "sulde \u001b[33m●\u001b[0m kb:381·边200 mem:45.2k(+14) 待嵌:1 收割:17m前 蒸馏:1d前 L2:r/L3:r/L4:r/E",
+    "healthy": false,
+    "snapshot_status": "fresh",
+    "snapshot_age_seconds": 87,
+    "generated_at": "2026-09-11T02:44:41.443019+00:00",
+    "scope": "background_runtime"
+  },
+  "scope": {
+    "remote_push": false,
+    "main_modified": false,
+    "business_projects_modified": false,
+    "full_test_rerun": false,
+    "scope_tests_reused": {
+      "passed": 373,
+      "skipped": 17,
+      "failed": 0
+    },
+    "shared_knowledge_write": false
+  }
+}

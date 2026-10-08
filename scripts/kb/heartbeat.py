@@ -36,6 +36,7 @@ STATE_NAME = "heartbeat-state.json"
 LOG_NAMES = ("recall-log.jsonl", "auto-distill.log", "auto-sediment.log")
 DEFAULT_LLM_CMD = _command_template["default_llm_command"]()
 MAX_SELF_CHARS = 8_000
+VARIABLE_SECTIONS = ("目标栈", "观察清单", "自评")
 
 
 class HeartbeatError(RuntimeError):
@@ -318,13 +319,28 @@ def self_budget(text: str) -> dict[str, int]:
             "variable_budget": max(0, MAX_SELF_CHARS - fixed - 1)}
 
 
+def validate_variable(text: str) -> None:
+    """Accept only the three ordered mutable sections, never a second SELF."""
+    headings = re.findall(r"(?m)^[ \t]{0,3}(#{1,2})(?:[ \t]+([^\n]*)|$)", text)
+    if (not text.startswith("## 目标栈\n")
+            or [(level, title.strip()) for level, title in headings]
+            != [("##", title) for title in VARIABLE_SECTIONS]):
+        raise HeartbeatError("self_variable_sections_invalid")
+
+
+def variable_self(text: str) -> str:
+    variable = text[len(fixed_self(text)):]
+    validate_variable(variable)
+    return variable
+
+
 def compression_prompt(current: str, candidate: dict[str, str]) -> str:
-    fixed = fixed_self(current)
-    variable = candidate["self_md"][len(fixed_self(candidate["self_md"])):]
-    return ("执行唯一一次有界压缩。固定部分逐字保留，不得截断；仅压缩目标栈、观察清单、自评。"
-            f"可变预算 {self_budget(current)['variable_budget']} 字符。只输出 self_md 和 observation 的 JSON。"
+    variable = variable_self(candidate["self_md"])
+    return ("执行唯一一次有界压缩。固定部分由程序保留，不得输出或修改；仅压缩目标栈、观察清单、自评。"
+            "variable_md 必须按顺序包含且仅包含三个二级标题：## 目标栈、## 观察清单、## 自评。"
+            f"可变预算 {self_budget(current)['variable_budget']} 字符。只输出 variable_md 和 observation 的 JSON。"
             "禁止新增事实、隐藏推理、完整提示词、原始工具输出、秘密或私人路径。\n"
-            + json.dumps({"fixed": fixed, "variable": variable, "observation": candidate["observation"]}, ensure_ascii=False))
+            + json.dumps({"variable": variable, "observation": candidate["observation"]}, ensure_ascii=False))
 
 
 def build_prompt(self_md: str, increment: dict[str, Any]) -> str:
@@ -335,15 +351,16 @@ def build_prompt(self_md: str, increment: dict[str, Any]) -> str:
 {self_md}
 --- SELF END ---
 
-固定部分预算 {budget['fixed_chars']} 字符，逐字保留；可变部分预算 {budget['variable_budget']} 字符。
+固定部分 {budget['fixed_chars']} 字符由程序原样保留，不要输出或修改；可变部分预算 {budget['variable_budget']} 字符。
 mem_entries/mem_edges 是 since 窗口增量，不是库存；total_entries/total_edges 才是全库总量。null 表示采集未知，禁止补零。
 本搏增量观察（机器采集，不得篡改数字）：
 {json.dumps(increment, ensure_ascii=False, indent=2)}
 
-观察员纪律：你只能思考与记录，不得执行、建议执行或安排任何写操作；不得修改法典，亦不得删改「我是什么／我的能力阶梯／我能自主做什么／我永远不能自己做的五件事」四节定义骨架（可在其中如实更新自己的阶梯现状标记）。你可以依据观察更新目标栈的排序、内容与自评，但必须给出可追溯到本搏观察的依据。输出完整的新 SELF，不要省略未改章节。
+观察员纪律：你只能思考与记录，不得执行、建议执行或安排任何写操作；不得修改固定部分，包括法典、身份、能力阶梯及其现状标记、自主权和禁止事项。能力现状的观察只能写入自评，不能改动固定定义。你可以依据观察更新目标栈、观察清单与自评，但必须给出可追溯到本搏观察的依据。
+只输出可变部分 variable_md，按顺序包含且仅包含三个二级标题：## 目标栈、## 观察清单、## 自评。不得输出其他一级或二级标题。固定部分和可变部分由程序组合，不输出完整 SELF。
 
 只输出一个裸 JSON 对象，顶层必须且只能包含：
-{{"self_md":"完整新 SELF（不超过 8000 字符）","observation":"本搏观察日志条目"}}
+{{"variable_md":"三个可变章节（不超过 {budget['variable_budget']} 字符）","observation":"本搏观察日志条目"}}
 不要输出 Markdown 代码围栏或 JSON 之外的文字。"""
 
 
@@ -390,16 +407,42 @@ def strip_json_fence(raw: str) -> str:
     return text
 
 
-def parse_llm_result(raw: str) -> dict[str, str]:
+def parse_llm_result(raw: str, current: str | None = None) -> dict[str, str]:
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise HeartbeatError("LLM JSON contains duplicate fields")
+            result[key] = value
+        return result
+
     try:
-        payload = json.loads(strip_json_fence(raw))
+        payload = json.loads(strip_json_fence(raw), object_pairs_hook=unique_object)
     except json.JSONDecodeError as error:
         raise HeartbeatError(f"invalid LLM JSON: {error}") from error
-    if not isinstance(payload, dict) or set(payload) != {"self_md", "observation"}:
-        raise HeartbeatError("LLM JSON must contain only self_md and observation")
+    if not isinstance(payload, dict) or set(payload) not in (
+        {"self_md", "observation"}, {"variable_md", "observation"}
+    ):
+        raise HeartbeatError("LLM JSON must contain one SELF representation and observation")
     if not all(isinstance(payload[key], str) and payload[key].strip() for key in payload):
-        raise HeartbeatError("LLM self_md and observation must be non-empty strings")
-    return {key: payload[key].strip() for key in ("self_md", "observation")}
+        raise HeartbeatError("LLM SELF content and observation must be non-empty strings")
+    if current is not None:
+        variable_self(current)  # Never silently discard an unrecognized old layout.
+    if "variable_md" in payload:
+        if current is None:
+            raise HeartbeatError("variable SELF requires current SELF")
+        variable = payload["variable_md"].strip()
+        validate_variable(variable)
+        self_md = fixed_self(current) + variable
+    else:
+        # Compatibility is strict: do not salvage a legacy candidate that also
+        # rewrites fixed authority, even if its variable part could be reused.
+        self_md = payload["self_md"].rstrip()
+        if current is not None:
+            if fixed_self(self_md) != fixed_self(current):
+                raise HeartbeatError("self_fixed_sections_changed")
+            variable_self(self_md)
+    return {"self_md": self_md, "observation": payload["observation"].strip()}
 
 
 def self_guard(text: str) -> str | None:
@@ -562,10 +605,11 @@ def run_beat(home: Path, args: argparse.Namespace) -> int:
     observation_text: str
     compression_attempts = 0
     try:
-        result = parse_llm_result(run_llm(args.llm_cmd, build_prompt(current_self, increment)))
+        variable_self(current_self)
+        result = parse_llm_result(run_llm(args.llm_cmd, build_prompt(current_self, increment)), current_self)
         if len(result["self_md"].rstrip()) + 1 > MAX_SELF_CHARS and self_budget(current_self)["variable_budget"] > 0:
             compression_attempts = 1
-            result = parse_llm_result(run_llm(args.llm_cmd, compression_prompt(current_self, result), timeout=60))
+            result = parse_llm_result(run_llm(args.llm_cmd, compression_prompt(current_self, result), timeout=60), current_self)
         degraded_reason = self_guard(result["self_md"])
         if degraded_reason is None and fixed_self(result["self_md"]) != fixed_self(current_self):
             degraded_reason = "self_fixed_sections_changed"

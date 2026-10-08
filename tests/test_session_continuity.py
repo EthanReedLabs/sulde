@@ -33,13 +33,13 @@ class SessionContinuityTests(unittest.TestCase):
 
     def review(self) -> dict:
         return {
-            "intent_id": "synthetic-application-visual-grammar",
+            "intent_id": "apollo-visual-grammar",
             "base_revision": 1,
             "proposed_revision": 2,
             "proposal_digest": "a" * 64,
             "decision_route": "human",
             "decision_card": {
-                "要完成的结果": "建立 SyntheticApplication 测试样例页面",
+                "要完成的结果": "建立 Apollo 品牌母题板",
                 "为什么要做": "先冻结视觉语言再替换组件",
                 "允许改变": ["独立母题页"],
                 "必须保持": ["Gate C", "现有产品代码"],
@@ -75,7 +75,7 @@ class SessionContinuityTests(unittest.TestCase):
         self.assertEqual(capsule["authority"]["approval_receipts_transferred"], 0)
         self.assertEqual(capsule["authority"]["tool_grants_transferred"], 0)
         context = render_context(capsule)
-        self.assertIn("建立 SyntheticApplication 测试样例页面", context)
+        self.assertIn("建立 Apollo 品牌母题板", context)
         self.assertIn("不转移人工批准", context)
 
         capsule["next_action"] = "skip review"
@@ -132,7 +132,7 @@ class SessionContinuityTests(unittest.TestCase):
         self.assertNotIn("private-key", rendered)
 
     def test_rollout_lookup_is_exact_and_rejects_unsafe_session_ids(self) -> None:
-        session_id = "00000000-0000-7000-8000-000000000001"
+        session_id = "019f1d33-e496-7801-bf53-6e213bd12a1f"
         sessions = self.root / "sessions" / "2026" / "08" / "15"
         sessions.mkdir(parents=True)
         expected = sessions / f"rollout-2026-08-15T00-00-00-{session_id}.jsonl"
@@ -152,8 +152,8 @@ class SessionContinuityTests(unittest.TestCase):
         prepare_workspace_proposal(
             home,
             workspace,
-            intent_id="synthetic-application-context-resume",
-            objective="建立 SyntheticApplication 测试样例页面",
+            intent_id="apollo-context-resume",
+            objective="建立 Apollo 品牌母题板",
             acceptance_criteria=["不覆盖现有产品代码"],
             mode="enforce",
             decision_route="human",
@@ -196,7 +196,7 @@ class SessionContinuityTests(unittest.TestCase):
         output = json.loads(completed.stdout.strip().splitlines()[-1])
         context = output["hookSpecificOutput"]["additionalContext"]
         self.assertIn("[sulde-continuation]", context)
-        self.assertIn("建立 SyntheticApplication 测试样例页面", context)
+        self.assertIn("建立 Apollo 品牌母题板", context)
         self.assertIn("不转移人工批准", context)
 
         claude = subprocess.run(
@@ -217,7 +217,7 @@ class SessionContinuityTests(unittest.TestCase):
             if line.strip()
         ]
         self.assertTrue(any("[sulde-continuation]" in item for item in contexts))
-        self.assertTrue(any("建立 SyntheticApplication 测试样例页面" in item for item in contexts))
+        self.assertTrue(any("建立 Apollo 品牌母题板" in item for item in contexts))
 
 
 if __name__ == "__main__":

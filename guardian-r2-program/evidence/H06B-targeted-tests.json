@@ -1,0 +1,23 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "commands": [
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_agent_runtime.AgentRuntimeTests.test_audited_codex_0150_real_cli_contract"], "exit_code": 0, "result": "pass"},
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_codex_plugin_install", "tests.test_stage_plugin"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The exact integrated coordinator tree passed the real 0.150.1 staged authority roundtrip in 3.264 seconds and verified 605 staged files plus 366 knowledge documents.",
+    "The integrated installer/stager composition ran 55 tests in 128.963 seconds with 54 passing and only the native Windows PowerShell case skipped on macOS.",
+    "Shared-contract import, seal/readback, alias binding, rollback, crash recovery, staging inventory and literal guard all ran on the integrated tree."
+  ],
+  "findings": ["FR2-H06-001", "FR2-H06B-002", "FR2-H06B-004"],
+  "kind": "targeted_tests",
+  "requirements": [],
+  "run_id": "run-gpe-be866b2fa440a994860b63a9",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06B focused real-authority and installer/stager tests pass on the exact integrated coordinator commit.",
+  "task_id": "H06B-codex-0150-authority",
+  "verdict": "pass"
+}

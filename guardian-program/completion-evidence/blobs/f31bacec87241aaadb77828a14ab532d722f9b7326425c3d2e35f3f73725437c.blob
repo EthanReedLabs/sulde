@@ -1,0 +1,64 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T25-release-gate-closure",
+  "kind": "requirement_traceability",
+  "baseline": "f87d58689968372cf4332860ac0ee155241e5424",
+  "run_id": "run-gpe-45a0eac272952f59169b6fef",
+  "verdict": "pass",
+  "summary": "All three frozen T25 acceptance clauses are bound to direct integrated and clean-clone evidence without expanding the T25/T26 graph.",
+  "facts": [
+    "All eight disclosed release reds are covered by the 212-test focused gate and the 1340-test complete isolated suite.",
+    "Typed single-lifecycle authority, exact resource settlement, v1/v2 read-only projection privacy and unknown-version fail-closed behavior are directly asserted.",
+    "T26 remains planned; main, installed caches, production ledgers and schedulers remain unchanged during T25."
+  ],
+  "requirements": [
+    "WP56-A",
+    "WP56-F",
+    "DERIVED-RESOURCE",
+    "DERIVED-ISOLATION",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "findings": [],
+  "acceptance": [
+    {
+      "requirement_id": "WP56-A",
+      "clause": "原生可读决策卡绑定一次性请求，Agent 不能伪造或复用决定",
+      "fact": "The focused and full-clone gates pass with exactly one typed approval lifecycle and terminal later-session confirmation assertions."
+    },
+    {
+      "requirement_id": "WP56-F",
+      "clause": "所有 native 决策类型可在崩溃边界幂等恢复且不能重放旧回执",
+      "fact": "The 312-test composed journal and P0 gate proves crash recovery, exact-once application and stale-receipt rejection after the T25 merge."
+    },
+    {
+      "requirement_id": "DERIVED-RESOURCE",
+      "clause": "同一资源的路径、URI 或 MCP 别名不能绕过跨 session debt",
+      "fact": "Typed URI settlement, declared v1/v2 adapters, privacy assertions, cache invalidation and unknown-v3 rejection all pass."
+    },
+    {
+      "requirement_id": "DERIVED-ISOLATION",
+      "clause": "测试不能写生产 KB，父宿主并发事件只能按窄协议归因",
+      "fact": "The integrated dev candidate passed 212 focused, 312 composed and 1340 official isolated tests under a non-production sentinel."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "每个任务有证据包和问题处置，总纲零遗漏后才能关闭",
+      "fact": "All seven T25 findings have dispositions, every evidence gate is represented, no third task was created, and T26 remained planned throughout T25."
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "python",
+        "scripts/kb/guardian_program.py",
+        "status",
+        "--verify-evidence",
+        "guardian-program"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

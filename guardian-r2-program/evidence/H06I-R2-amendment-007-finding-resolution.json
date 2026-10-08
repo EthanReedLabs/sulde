@@ -1,0 +1,30 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "run_id": "run-gpe-bd3a9c0923125f655fd9ccf3",
+  "kind": "finding_resolution",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "verdict": "pass",
+  "summary": "Amendment-007 closes the historical H06I-R2 findings and supplies current resolution coverage for all inherited obligations without expanding the frozen implementation scope.",
+  "facts": [
+    "Historical findings are resolved against the current frozen candidate and closure artifact.",
+    "Inherited H06H, H06I and H06I-R1 obligations retain explicit current-run resolution coverage."
+  ],
+  "acceptance": [],
+  "findings": [
+    "FR2-H06I-R2-001", "FR2-H06I-R2-002", "FR2-H06I-R2-003", "FR2-H06I-R2-004",
+    "FR2-H06I-R2-005", "FR2-H06I-R2-006", "FR2-H06I-R2-007", "FR2-H06I-R2-008",
+    "FR2-H06I-R2-009", "FR2-H06I-R2-010", "FR2-H06I-R2-011", "FR2-H06I-R2-012",
+    "FR2-H06I-R2-013", "FR2-H06I-R2-014", "FR2-H06I-R2-015", "FR2-H06I-R2-016",
+    "FR2-H06H-002", "FR2-H06I-001", "FR2-H06I-002", "FR2-H06I-003", "FR2-H06I-004",
+    "FR2-H06H-001", "FR2-H06I-R1-001", "FR2-H06I-R1-002", "FR2-H06I-R1-003",
+    "FR2-H06I-R1-004", "FR2-H06I-R1-005", "FR2-H06I-R1-006"
+  ],
+  "artifacts": [
+    {"path": "H06I-R2-AMENDMENT-007-CLOSURE.json", "sha256": "f9caa247e1b1e704ece4106bd29b081d1057e251f3f26d2ec1613281e6b44e6d"},
+    {"path": "reports/H06I-R2-interruption-authority.md", "sha256": "cd373e9eca838cab5c7e7d26cf2d567e01da475c6759974ea36d78df6c322a16"}
+  ],
+  "requirements": [],
+  "commands": []
+}

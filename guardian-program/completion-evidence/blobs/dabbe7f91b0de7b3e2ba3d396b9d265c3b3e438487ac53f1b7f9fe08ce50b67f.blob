@@ -1,0 +1,30 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T00-control-plane",
+  "kind": "failure_injection",
+  "baseline": "34dcbd0d6ea81ba330c701bc755f1f557978f515",
+  "run_id": "run-gpe-5902ccbd79317bd597055811",
+  "verdict": "pass",
+  "summary": "Crash, tamper, stale-writer, authority and ownership bypass injections fail closed or recover idempotently.",
+  "facts": [
+    "Prepared completion, immutable snapshot publishing and post-commit retry boundaries are covered.",
+    "Ten prohibited glob forms fail before event append and alias ownership remains serialized."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "tests.test_guardian_program"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/T00-independent-review.md",
+      "sha256": "ad36fad191df8f0077cb7d9f11aff6b7129a41ba206f4aab47ca7032313e6ef3"
+    }
+  ]
+}

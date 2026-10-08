@@ -1,0 +1,175 @@
+{
+  "schema": "life-r1-dispatch-integration-acceptance-v1",
+  "status": "scoped_integration_and_isolated_candidate_passed",
+  "source_commit": "76d234cba4bc465d43bd189f55a93eaa380c2dfa",
+  "test_source_sha256": "5dcf907860e4546b487ed0e372337ea53357ae6e0a1a6e13259294324067e8a1",
+  "scoped_tests": {
+    "run_id": "20260907T160601.793744-5cefc7086d64",
+    "run": 148,
+    "passed": 148,
+    "skipped": 0,
+    "seconds": 284.209,
+    "log_sha256": "4154580c533ee5ec7adae2860834f3f03809cb9083d2ebf1c98f2a48e39a8092",
+    "original_head": "492cf12e0201f6d2b73267011c8119fc3ae639a7",
+    "source_was_uncommitted": true,
+    "committed_source_digest_reverified": true
+  },
+  "candidate": {
+    "schema": "life-r1-integration-candidate-v1",
+    "source_commit": "76d234cba4bc465d43bd189f55a93eaa380c2dfa",
+    "candidate_id": "integration-76d234cba4bc-20260908T015158Z",
+    "production_promotion": false,
+    "scope": "official candidate CLI in OS-enforced isolated host/data roots; scheduler dry-run fixture",
+    "phases": [
+      {
+        "phase": "prepare",
+        "exit_code": 0,
+        "seconds": 1.791,
+        "stdout_sha256": "d8fb0bc92ec2d6d6a0d83998a943699d7c2ab0149be3ad328de35345f7b12fc9",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "phase": "verify",
+        "exit_code": 0,
+        "seconds": 23.277,
+        "stdout_sha256": "2293eadac5e1dbaa7ba710992aaed996b24a59852a2e8a15018a7ccf4f210c9e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "production_write_attempts": [],
+    "passed": true
+  },
+  "receipt_excerpt": {
+    "status": "verified",
+    "candidate_id": "integration-76d234cba4bc-20260908T015158Z",
+    "source": {
+      "commit": "76d234cba4bc465d43bd189f55a93eaa380c2dfa",
+      "plugin_version": "0.2.5+codex.20260907071718-6e84c50faf",
+      "tree": "817ff3f8ce1995ddf2b199307901cc746c07bce6"
+    },
+    "artifact": {
+      "generation": "0.2.5+codex.20260907071718-6e84c50faf:d14ddc7c78616365f2442173d8cc8541df75fa150f63637daecc99eed49cb986",
+      "path": "/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/life-r1-dispatch-integration/.sulde/data/life-r1-candidates/integration-76d234cba4bc-20260908T015158Z/artifact",
+      "platform": "posix",
+      "plugin_tree_sha256": "1e7c24c3b7972c76cfbc9484c2dacff0dd6089aff3463f41889e4541af16fdac",
+      "plugin_version": "0.2.5+codex.20260907071718-6e84c50faf",
+      "runtime_tree_sha256": "d14ddc7c78616365f2442173d8cc8541df75fa150f63637daecc99eed49cb986"
+    },
+    "receipt_sha256": "7ac7f8d2e18b4777c0196abad3b38f6d654430363baf8d401518a570fb666c10",
+    "python": {
+      "environment": {
+        "base_prefix": "/Users/eric/.pyenv/versions/3.10.7",
+        "cache_tag": "cpython-310",
+        "dependencies": {
+          "PyYAML": {
+            "content_sha256": "cd599dfd54eaa161a07a80ea872158b3849b8a6ab5d21fa9d51e5f5d00e4086a",
+            "root": "/Users/eric/.sulde/data/kb/venv/lib/python3.10/site-packages/yaml",
+            "version": "6.0.3"
+          },
+          "sqlite3": "3.51.0",
+          "ssl": "OpenSSL 3.6.3 9 Jun 2026",
+          "venv": "available"
+        },
+        "implementation": "cpython",
+        "prefix": "/Users/eric/.sulde/data/kb/venv",
+        "version": [
+          3,
+          10,
+          7
+        ]
+      },
+      "executable": "/Users/eric/.sulde/data/kb/venv/bin/python",
+      "executable_sha256": "821824635f10f06dace33486e71ad7b520d633b0e4b1f6f150cfaffc1b0dc1b7",
+      "schema": "sulde-python-environment-v1"
+    },
+    "verifications": {
+      "artifact": {
+        "status": "ready"
+      },
+      "isolated_registry": {
+        "codex_home": "/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/life-r1-dispatch-integration/.sulde/data/life-r1-candidates/integration-76d234cba4bc-20260908T015158Z/isolated/codex-home",
+        "installed_path": "/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/life-r1-dispatch-integration/.sulde/data/life-r1-candidates/integration-76d234cba4bc-20260908T015158Z/isolated/codex-home/plugins/cache/sulde-local/sulde/0.2.5+codex.20260907071718-6e84c50faf",
+        "status": "ready"
+      },
+      "hooks": {
+        "status": "ready",
+        "real_entrypoints": true
+      },
+      "preexecution_chain": {
+        "artifact_generation": "0.2.5+codex.20260907071718-6e84c50faf:d14ddc7c78616365f2442173d8cc8541df75fa150f63637daecc99eed49cb986",
+        "contract_activation": {
+          "decision_authority": "agent-policy",
+          "mode": "enforce",
+          "proposal_digest": "8619d255b18a1db3438f4176309990bce3551c8c74ab4d35413d9b4c66b79914",
+          "revision": 2,
+          "status": "ready"
+        },
+        "hook": "PreToolUse",
+        "loaded_module_generation": "24758f0ed469d1a52f74d12983f7cb75d11e778ef0cce7ec816707b7c08c7d5d",
+        "marker_absent": true,
+        "orchestrator_wrapper": "codex_unified_exec",
+        "permission_decision": "deny",
+        "probe_id": "12e473efe573de6c7db4d935ab54990d",
+        "proof_id": "6c635eed982d4f3feb3f2cd1a1a77965d252e9ac3c478a4709ab939a10329bbe",
+        "started_event_id": "c86d244cb2161bca5ea9185a",
+        "status": "ready",
+        "transport": "candidate-stable-cli-new-process"
+      },
+      "mcp": {
+        "status": "ready"
+      },
+      "doctor": {
+        "status": "ready",
+        "exit_code": 0
+      },
+      "scheduler_entrypoint": {
+        "managed_labels": [
+          "com.sulde.auto-sediment",
+          "com.sulde.codex-harvest",
+          "com.sulde.daily-distill",
+          "com.sulde.golden-expand",
+          "com.sulde.governance-weekly",
+          "com.sulde.graph-audit",
+          "com.sulde.heartbeat",
+          "com.sulde.kb-aging",
+          "com.sulde.kb-dedup",
+          "com.sulde.life-cycle",
+          "com.sulde.mem-backup",
+          "com.sulde.mem-sync-export",
+          "com.sulde.mem-sync-import",
+          "com.sulde.memory-embed",
+          "com.sulde.self-repair",
+          "com.sulde.status-notify"
+        ],
+        "mode": "production-entrypoint-isolated-dry-run",
+        "status": "ready"
+      },
+      "native_permission_ui": {
+        "exit_code": 78,
+        "reason": "isolated CLI has no attachable current-session PermissionRequest surface",
+        "status": "unobserved"
+      },
+      "scheduler_host": {
+        "exit_code": 79,
+        "reason": "candidate must not load production launchd labels before promotion",
+        "status": "unobserved"
+      }
+    },
+    "timings_ms": {
+      "prepare_total": 1581.674,
+      "verify_total": 23065.308
+    }
+  },
+  "original_receipt_file_sha256": "8058f3e737b9a6576461165f27c0aef94c82c8ef4bc0bc5d53f36847e0a03b74",
+  "native_posttool_sha256": "e0d563019d34e3dd4310bd992076c2af7f53e7ef6eaa3a3b8b4ccaf19005ea77",
+  "candidate_driver_sha256": "8be02e529522bbd326289c42293ec863d8cee0dc7ac50b6fdc8d414daeaefa4e",
+  "promotion_authority": false,
+  "limitations": [
+    "Candidate prestate belongs to an isolated host, not production; do not promote this receipt to production.",
+    "Candidate PreToolUse proof is direct fresh-process Hook protocol validation, not actual native host tool denial.",
+    "Real Codex CLI PostToolUse delivery is separately covered; no production business outcome is asserted.",
+    "Windows, Desktop, unwrapped external Hooks, production scheduler/native installation decision remain unverified."
+  ],
+  "test_reuse": "Use unchanged R1 baseline only for unchanged scope. No new full-suite claim.",
+  "retention": "Original failed and passed records/logs committed; candidate derived trees remain local under the task-specific ignored root."
+}

@@ -41,7 +41,8 @@ class NativeSessionContinuityTests(unittest.TestCase):
                 installed = installer._registry_add(codex, prepared.marketplace, runner,
                     expected_version=prepared.descriptor["delivery_generation"]["plugin_version"])
                 kb = Path(env["SULDE_KB_HOME"])
-                installer._install_launchers(installed, kb, runner, platform="posix")
+                candidate._prepare_isolated_hook_launchers(installed, kb, runner,
+                    platform="posix", environment=env)
                 installer._smoke_installed(installed, kb, codex=codex,
                     expected_tree_sha256=prepared.plugin_tree_sha256, runner=runner)
                 workspace = Path(env["SULDE_HOME"]) / "continuity-canary"
@@ -93,7 +94,8 @@ class NativeSessionContinuityTests(unittest.TestCase):
                 with mock.patch.object(subprocess, "Popen", side_effect=persistent_host_process), \
                      mock.patch.object(http.server, "ThreadingHTTPServer", side_effect=capture_server), \
                      NativeCanary(codex, workspace, env,
-                        externally_isolated=externally_isolated).start() as host:
+                        externally_isolated=externally_isolated,
+                        writable_workspaces=(dev_workspace, target_workspace)).start() as host:
                     contract, activation = candidate._activate_candidate_enforce_contract(
                         guardian, kb_home=kb, workspace=workspace, session=host.session,
                         environment=env, runner=runner)

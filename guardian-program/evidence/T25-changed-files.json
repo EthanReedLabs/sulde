@@ -1,0 +1,33 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T25-release-gate-closure",
+  "kind": "changed_files",
+  "baseline": "f87d58689968372cf4332860ac0ee155241e5424",
+  "run_id": "run-gpe-45a0eac272952f59169b6fef",
+  "verdict": "pass",
+  "summary": "Every T25 source byte is bound to commit 2c0f8f9 and the frozen ten-path ownership set.",
+  "facts": [
+    "scripts/kb/intent_guardian_parts/recovery.py sha256 d812b45049bc72c49e978c063efb437cf949beabb9b876b76071c706a7091694",
+    "scripts/kb/event_observer.py sha256 d6bce804015a71b1c23b2b9c427f306259ed81024aeda8b3e3218d605c415986",
+    "scripts/kb/event_projection_cache.py sha256 d1b2c22c73a60d8217090683eda880ad18b8ad70f0174969af0c3f412242efc5",
+    "scripts/kb/intent_critic.py sha256 737a8fceb092c506f195d51441707c678d39aea410fb3060dc734883ede17d00",
+    "scripts/kb/intervention.py sha256 46cfc4f5f241cafddfb726c5550dbc90270c70e624b766b218b2993f8aea9212",
+    "tests/test_approval_invariant.py sha256 bab7767af26b05988c5c9901cb0ac62458ce18288bd83bde6bb96fb6a3f16ecc",
+    "tests/test_supervision_lifecycle_e2e.py sha256 0949b7b819114bcdbe5c30c431ad81ee03fb709319b633dc5af8ce78c10cc1de",
+    "tests/test_event_observer.py sha256 b0e83b282155beeb0f60865577820d641257686db15992238cefb91e8deb5d2e",
+    "tests/test_kb_mcp_entry.py sha256 84b058c0c7aa644c24817be37f42cd8e2976dada42149cc0c1ae51fdde4085ba",
+    "tests/test_guardian_recovery.py sha256 164c985d170dc9c797de6d111ff01d9b9a6574639f30a32ccb3ed6b5efb60da8"
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "show", "--stat", "2c0f8f96098c52be8178eca18dff24fb892472f7"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

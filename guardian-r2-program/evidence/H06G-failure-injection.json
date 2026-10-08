@@ -1,0 +1,20 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06G-release-inventory-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-1634746746868f08cb98ff7d",
+  "verdict": "pass",
+  "kind": "failure_injection",
+  "summary": "H06G rejects hostile runtime inventories before filesystem or downstream effects and creates no staging artifact.",
+  "facts": [
+    "Independent matrices rejected exact duplicate, unknown, reorder, absolute, parent traversal, parent-directory symlink alias, wrong type and empty inventories across Guardian, release_entries, Codex staging and Claude staging.",
+    "Path.resolve, lstat, readlink, Git, SHA-256, copy and prepare_output sentinels recorded zero touches before rejection; 16 of 16 guarded artifacts and 6 of 6 real artifacts were absent.",
+    "Real temporary Git and file attacks rejected unknown and both alias forms at all four production entry points without mocking the validator, digest, release or staging entry points."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06F-001", "FR2-H06G-001", "FR2-H06G-002"],
+  "acceptance": [],
+  "commands": [{"argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_stage_release_inventory.ReleaseInventoryTests.test_hostile_allowlists_fail_before_filesystem_or_downstream_touch", "tests.test_stage_release_inventory.ReleaseInventoryTests.test_real_unknown_and_alias_attacks_create_no_artifact"], "exit_code": 0, "result": "pass"}],
+  "artifacts": [{"path": "reports/H06G-release-inventory-authority.md", "sha256": "66db2a7e1229d0c301e719e05d383bb9bd32db45365336d34e5bcda6fd83abea"}]
+}

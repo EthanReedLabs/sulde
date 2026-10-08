@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06G-release-inventory-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-1634746746868f08cb98ff7d",
+  "verdict": "pass",
+  "kind": "requirement_traceability",
+  "summary": "H06G maps every assigned recovery, live-acceptance and governance clause while preserving final host, platform and production gates.",
+  "facts": [
+    "All four task acceptance clauses and all six assigned requirement clauses are mapped to reviewed, executed facts.",
+    "No H06G evidence claims production installation, scheduler ownership, live-host completion, native Windows or final R2 acceptance."
+  ],
+  "requirements": ["R2-RECOVERY-SUPERVISOR", "R2-LIVE-ACCEPTANCE", "PROGRAM-GOVERNANCE"],
+  "findings": ["FR2-H06E-004", "FR2-H06F-001", "FR2-H06G-001", "FR2-H06G-002", "FR2-H06G-003"],
+  "acceptance": [
+    {"requirement_id": "R2-RECOVERY-SUPERVISOR", "clause": "生命体在 5 秒内报告卡顿并在能力边界内处理孤儿锁、退出 actor、冲突 lane 与 runtime drift", "fact": "H06G prevents a hostile or drifted release inventory from being hashed, granted or staged; accepted liveness ownership remains with H03 and final runtime observation remains an H06H gate."},
+    {"requirement_id": "R2-RECOVERY-SUPERVISOR", "clause": "干预有预算、有终态、有 receipt，不能扩大 allowed paths、静默换宿主或无限重试", "fact": "The managed task used one Codex provider, five exact paths and terminal receipts; unknown, reordered and aliased inputs fail before filesystem or effects and cannot expand maintenance authority."},
+    {"requirement_id": "R2-LIVE-ACCEPTANCE", "clause": "I01-I19、并发、进程死亡、receipt tamper、world-state drift、只读账本、scheduler degraded 与 rollback 全部通过", "fact": "H06G proves the release-inventory, staged-artifact, tamper and installer rollback subset only; the complete I01-I19 and concurrent fleet run remains a final H06H obligation."},
+    {"requirement_id": "R2-LIVE-ACCEPTANCE", "clause": "Codex 与 Claude 真实宿主、macOS 与 Windows 证据齐全前不得宣称 R2 完成或 production accepted", "fact": "The macOS candidate and integrated suites pass, but the native Windows PowerShell test is explicitly skipped and no live host or production claim is made."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并", "fact": "H06G retained run1 and repair1 findings, used five frozen paths, passed three independent reviews, and integrated only byte-identical repair2 outputs before evidence promotion."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写", "fact": "H06G ran in an independent full clone and integrated only into the R2 coordinator branch; accepted predecessor events, dev/main, installed runtime and production state were not rewritten."}
+  ],
+  "commands": [],
+  "artifacts": [{"path": "reports/H06G-release-inventory-authority.md", "sha256": "66db2a7e1229d0c301e719e05d383bb9bd32db45365336d34e5bcda6fd83abea"}]
+}

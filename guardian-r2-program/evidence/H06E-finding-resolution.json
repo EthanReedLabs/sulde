@@ -1,0 +1,42 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06E-codex-help-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-c6a54d6965683d2d8f39c3d0",
+  "verdict": "pass",
+  "kind": "finding_resolution",
+  "summary": "H06E closes both help-authority defects and explicitly transfers environment, release-inventory and quiet-fleet obligations without erasing failed campaigns.",
+  "facts": [
+    "FR2-H06E-001 is fixed by exhaustive C0/DEL/C1 rejection with real byte evidence and independent attacks.",
+    "FR2-H06E-002 is fixed by one shared probe spec that binds normalized environment plus immediate EOF; real PTY and pipe observations are identical.",
+    "FR2-H06E-003 and FR2-H06E-005 remain final-successor obligations for a supported full clone and fleet-safe quiet window; FR2-H06E-004 is implemented by H06G and remains unclosed until that task is accepted.",
+    "FR2-H06D-002 and FR2-H06D-004 are resolved by this integrated shared authority, while every other H06D release obligation stays open."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06E-001",
+    "FR2-H06E-002",
+    "FR2-H06E-003",
+    "FR2-H06E-004",
+    "FR2-H06E-005"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "guardian_program.py",
+        "status",
+        "guardian-r2-program"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H06E-codex-help-authority.md",
+      "sha256": "9b7ddf86ae94d26a5c7a65f9523a11cf7f3410c459641467450af66ec5e28a2b"
+    }
+  ]
+}

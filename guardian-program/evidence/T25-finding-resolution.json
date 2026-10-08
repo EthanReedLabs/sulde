@@ -1,0 +1,30 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T25-release-gate-closure",
+  "kind": "finding_resolution",
+  "baseline": "f87d58689968372cf4332860ac0ee155241e5424",
+  "run_id": "run-gpe-45a0eac272952f59169b6fef",
+  "verdict": "pass",
+  "summary": "All seven T25 findings have explicit frozen-scope dispositions and no new task was created.",
+  "facts": [
+    "F25-001, F25-002, F25-003, F25-004, F25-006 and F25-007 are fixed in the current ten-path candidate.",
+    "F25-005 is rejected as a product regression because strict launcher refusal was caused only by disposable parent bytecode and the clean rerun passed 1340 tests."
+  ],
+  "requirements": [],
+  "findings": ["F25-001", "F25-002", "F25-003", "F25-004", "F25-005", "F25-006", "F25-007"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/T25-release-gate-closure.md",
+      "sha256": "2ca59b3017af17bd46cd379c1b444d76ef2ad7f65aa0f473332d7ca6bea88b02"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-write* (require-all
+    (require-not (subpath (param "RUNTIME")))
+    (require-not (literal "/dev/null"))))
+(deny file-read-data file-map-executable (require-all
+    (subpath (param "USERROOT"))
+    (require-not (subpath (param "TASK")))
+    (require-not (subpath (param "PILOT")))
+    (require-not (subpath (param "PYTHONROOT")))
+    (require-not (subpath (param "VENV")))))
+(deny mach-lookup (global-name "com.apple.securityd"))

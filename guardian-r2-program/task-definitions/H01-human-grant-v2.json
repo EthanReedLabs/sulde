@@ -1,0 +1,28 @@
+{
+  "acceptance": [
+    "HumanGrantV2 严格绑定 provider、session、task epoch、subject、capability、effect、constraints、card/request/receipt、world state、expiry 与 verifier",
+    "风险 taxonomy 精确区分 read、reversible_local、external_or_destructive 与 integrity_unknown",
+    "同一 grant 只消费一次；同一 effect 获准后默认策略不得二次 deny，真实 world-state 漂移必须展示 diff 并请求新决定",
+    "文本批准、复制 digest、旧 session receipt、重复消费和资源替换全部 fail closed"
+  ],
+  "base_commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "capability_tier": "deep",
+  "depends_on": ["H00-fixture-baseline"],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/human_grant.py",
+    "tests/test_human_grant.py",
+    "guardian-r2-program/reports/H01-human-grant-v2.md"
+  ],
+  "owner": "guardian-r2-worker-h01",
+  "requirements": ["R2-HUMAN-GRANT", "PROGRAM-GOVERNANCE"],
+  "schema": "sulde-guardian-program-task-v1",
+  "supersedes": [],
+  "task_id": "H01-human-grant-v2",
+  "title": "实现 HumanGrantV2 与四层风险 taxonomy"
+}

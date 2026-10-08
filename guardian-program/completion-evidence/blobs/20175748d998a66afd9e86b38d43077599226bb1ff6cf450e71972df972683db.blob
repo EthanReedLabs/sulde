@@ -1,0 +1,28 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T00-control-plane",
+  "kind": "task_report",
+  "baseline": "34dcbd0d6ea81ba330c701bc755f1f557978f515",
+  "run_id": "run-gpe-5902ccbd79317bd597055811",
+  "verdict": "pass",
+  "summary": "The coordinator control plane, evidence gates, finding lifecycle and completion protocol are implemented and independently reviewed.",
+  "facts": [
+    "The report records F00-001 through F00-045 and preserves F00-002 as an explicit cross-task obligation.",
+    "The latest independent review reported zero blocker and zero high findings."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T00-control-plane.md",
+      "sha256": "bcef167c7e0a2c2f6967b48f4fbc1ea98eef3e08de5e10bc58b7c2298d77a4ec"
+    },
+    {
+      "path": "reports/T00-independent-review.md",
+      "sha256": "ad36fad191df8f0077cb7d9f11aff6b7129a41ba206f4aab47ca7032313e6ef3"
+    }
+  ]
+}

@@ -1,0 +1,601 @@
+{
+  "schema": "guardian-receipt-integration-evidence-v1",
+  "status": "accepted-r11-full-plus-test-only-delta",
+  "authority": {
+    "revision": 11,
+    "receipt_id": "721658f984668f319ac0a341f195b3b980bca0633af94feda03fde3ed851cbda",
+    "authority_fields_changed": [],
+    "install": false,
+    "push": false
+  },
+  "original_commit": "8ffb86165ec5f9caf8510d2899de42133d468ccd",
+  "dev_parent": "77c5929d7a69ffada7b205d431db82e24bd4e87c",
+  "full_tree": {
+    "full_run_tree": "b06270a92546c0dcceae32bcee10a97bc8841e20",
+    "semantic_sha256": "ed1293a93d9b29aab205634f955c3251c9e8021dc8b3cc63c6b9c15a87a7b7f2",
+    "files": 1586,
+    "full_run_source_matches": true,
+    "local_ref": "refs/sulde/evidence/guardian-receipt-consistency-full-20260910"
+  },
+  "acceptance": {
+    "full": {
+      "total": 2119,
+      "passed": 2093,
+      "skipped": 25,
+      "failed": 1,
+      "failed_case": "test_subprocess_text_encoding_guard.test_all_text_subprocess_calls_fix_encoding_and_errors",
+      "raw_result_remains_failed": true
+    },
+    "final_delta": {
+      "total": 123,
+      "passed": 123,
+      "failed": 0,
+      "seconds": 29.73
+    },
+    "runtime_unchanged_after_full": true,
+    "artifact_identity_reverified": true,
+    "claim": "R11 accepted evidence composition; not a newly green full run on final test-script bytes"
+  },
+  "post_full_delta": {
+    "tracked_paths": [
+      "docs/guardian-receipt-consistency/PLAN.md",
+      "docs/guardian-receipt-consistency/REPORT.md",
+      "tests/test_control_composition_architecture.py",
+      "tests/test_native_receipt_consistency.py",
+      "tests/test_selected_task_continuation.py"
+    ],
+    "added_report": "docs/guardian-receipt-consistency/EVIDENCE.json",
+    "test_patch": "diff --git a/tests/test_control_composition_architecture.py b/tests/test_control_composition_architecture.py\nindex 5f6f77f..1f9f37e 100644\n--- a/tests/test_control_composition_architecture.py\n+++ b/tests/test_control_composition_architecture.py\n@@ -20,7 +20,8 @@ from intent_guardian_parts import control_composition as composition, resources\n \n \n def baseline(name):\n-    return subprocess.check_output(['git', 'show', BASE+':scripts/kb/intent_guardian_parts/'+name+'.py'], cwd=ROOT, text=True)\n+    return subprocess.check_output(['git', 'show', BASE+':scripts/kb/intent_guardian_parts/'+name+'.py'],\n+        cwd=ROOT, text=True, encoding=\"utf-8\", errors=\"replace\")\n \n \n class WithoutImports(ast.NodeTransformer):\n@@ -114,7 +115,8 @@ class CompositionArchitectureTests(unittest.TestCase):\n                 code = \"import sys,importlib; sys.path.insert(0,'scripts/kb'); \" + '; '.join(\n                     \"importlib.import_module('intent_guardian_parts.\"+name+\"')\" for name in order)\n                 result = subprocess.run([sys.executable, '-B', '-c', code], cwd=ROOT,\n-                    env={**os.environ, 'PYTHONDONTWRITEBYTECODE':'1'}, capture_output=True, text=True, timeout=30)\n+                    env={**os.environ, 'PYTHONDONTWRITEBYTECODE':'1'}, capture_output=True, text=True,\n+                    encoding=\"utf-8\", errors=\"replace\", timeout=30)\n                 self.assertEqual(result.returncode, 0, result.stderr)\n \n     def test_policy_implementation_ast_is_unchanged(self):\ndiff --git a/tests/test_native_receipt_consistency.py b/tests/test_native_receipt_consistency.py\nindex 483667f..2c87b45 100644\n--- a/tests/test_native_receipt_consistency.py\n+++ b/tests/test_native_receipt_consistency.py\n@@ -131,6 +131,7 @@ class NativeReceiptConsistencyTests(unittest.TestCase):\n             child = subprocess.Popen(\n                 [sys.executable, \"-c\", WRITER, self.kb, str(self.path)],\n                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,\n+                encoding=\"utf-8\", errors=\"replace\",\n             )\n             self.children.append(child)\n             processes.append(child)\n@@ -177,6 +178,7 @@ class NativeReceiptConsistencyTests(unittest.TestCase):\n         return subprocess.Popen(\n             [sys.executable, \"-c\", RECOVER, self.kb, str(self.path)],\n             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,\n+            encoding=\"utf-8\", errors=\"replace\",\n         )\n \n     def test_fresh_process_recovers_after_effect_without_second_decision(self):\ndiff --git a/tests/test_selected_task_continuation.py b/tests/test_selected_task_continuation.py\nindex 1bc8903..4931a6e 100644\n--- a/tests/test_selected_task_continuation.py\n+++ b/tests/test_selected_task_continuation.py\n@@ -186,7 +186,7 @@ class SelectedTaskTests(unittest.TestCase):\n         result = subprocess.run(\n             [sys.executable, \"-B\", \"-c\", LOCK_PROBE, str(fixtures.SCRIPT_DIR),\n              *(str(path) for path in paths)],\n-            capture_output=True, text=True, timeout=15,\n+            capture_output=True, text=True, encoding=\"utf-8\", errors=\"replace\", timeout=15,\n         )\n         self.assertEqual(result.returncode, 0, result.stderr)\n         return json.loads(result.stdout)\n"
+  },
+  "runs": [
+    {
+      "label": "original-scoped",
+      "head_during_run": "3d4df5412193633b3f26ad1cfa90844068e9489c",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_native_receipt_consistency",
+        "tests.test_native_receipt_validation_reuse",
+        "tests.test_control_composition_architecture",
+        "tests.test_native_decision_journal",
+        "tests.test_intent_guardian_architecture"
+      ],
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "platform": "macOS-26.3-arm64-arm-64bit",
+      "python_identity_sha256": null,
+      "dependency_py_yaml": null,
+      "started_at": "20260910T103043165017Z",
+      "duration_seconds": 6.857402582652867,
+      "exit_code": 1,
+      "reusable_success": false,
+      "source_sha256_before": "813457d7867ecd073ea3f860b419f98dccf2e352406a00c0305f7f9666d9eda7",
+      "source_sha256_after": "813457d7867ecd073ea3f860b419f98dccf2e352406a00c0305f7f9666d9eda7",
+      "semantic_sha256_before": "813457d7867ecd073ea3f860b419f98dccf2e352406a00c0305f7f9666d9eda7",
+      "semantic_sha256_after": "813457d7867ecd073ea3f860b419f98dccf2e352406a00c0305f7f9666d9eda7",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T103043165017Z-original-scoped/result.json",
+      "log_sha256": "f4603bd3d771571c585ae29ae909db14f5be6d7a9f4bdce8e3db2b4e7e9c8385"
+    },
+    {
+      "label": "original-scoped-r2",
+      "head_during_run": "3d4df5412193633b3f26ad1cfa90844068e9489c",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_native_receipt_consistency",
+        "tests.test_native_receipt_validation_reuse",
+        "tests.test_control_composition_architecture",
+        "tests.test_native_decision_journal"
+      ],
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "platform": "macOS-26.3-arm64-arm-64bit",
+      "python_identity_sha256": null,
+      "dependency_py_yaml": null,
+      "started_at": "20260910T103154973567Z",
+      "duration_seconds": 11.009004875086248,
+      "exit_code": 0,
+      "reusable_success": true,
+      "source_sha256_before": "adc38656b8ca9448f7882e8c5b57d5f3aff4c4e4d67c6c77a3dc294e5e08cc85",
+      "source_sha256_after": "adc38656b8ca9448f7882e8c5b57d5f3aff4c4e4d67c6c77a3dc294e5e08cc85",
+      "semantic_sha256_before": "adc38656b8ca9448f7882e8c5b57d5f3aff4c4e4d67c6c77a3dc294e5e08cc85",
+      "semantic_sha256_after": "adc38656b8ca9448f7882e8c5b57d5f3aff4c4e4d67c6c77a3dc294e5e08cc85",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T103154973567Z-original-scoped-r2/result.json",
+      "log_sha256": "06c847bce4f518d1f3ade71098caa8f386b0b3df5851cf63ef44209b2bcc422b"
+    },
+    {
+      "label": "integrated-scoped",
+      "head_during_run": "8ffb86165ec5f9caf8510d2899de42133d468ccd",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_native_receipt_consistency",
+        "tests.test_native_receipt_validation_reuse",
+        "tests.test_control_composition_architecture",
+        "tests.test_native_decision_journal",
+        "tests.test_selected_task_continuation",
+        "tests.test_intent_guardian_state",
+        "tests.test_guardian_memory_consistency",
+        "tests.test_control_composition"
+      ],
+      "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+      "python_identity_sha256": null,
+      "dependency_py_yaml": null,
+      "started_at": "20260910T104116015149Z",
+      "duration_seconds": 15.908661582972854,
+      "exit_code": 0,
+      "reusable_success": true,
+      "source_sha256_before": "81356f12fdd87262da2321625a29204fdd3ec85910a72b6b169a2fabee47d317",
+      "source_sha256_after": "81356f12fdd87262da2321625a29204fdd3ec85910a72b6b169a2fabee47d317",
+      "semantic_sha256_before": "6d8bcf79def14c4624f9e8648db053ee2db0f45279243d547e965a06d6620701",
+      "semantic_sha256_after": "6d8bcf79def14c4624f9e8648db053ee2db0f45279243d547e965a06d6620701",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T104116015149Z-integrated-scoped/result.json",
+      "log_sha256": "5f8ca58c0ae900520a4296b8d3f81db1f7b2f0bb7217395aed6b3bbbed8e9834"
+    },
+    {
+      "label": "integrated-final-full",
+      "head_during_run": "8ffb86165ec5f9caf8510d2899de42133d468ccd",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py"
+      ],
+      "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+      "python_identity_sha256": null,
+      "dependency_py_yaml": null,
+      "started_at": "20260910T104250006805Z",
+      "duration_seconds": 432.7303825421259,
+      "exit_code": 254,
+      "reusable_success": false,
+      "source_sha256_before": "81356f12fdd87262da2321625a29204fdd3ec85910a72b6b169a2fabee47d317",
+      "source_sha256_after": "41b2cd611b567017247a9a6d67d9c7e7db038695d7f814b5af1ee6999dce0fa4",
+      "semantic_sha256_before": "6d8bcf79def14c4624f9e8648db053ee2db0f45279243d547e965a06d6620701",
+      "semantic_sha256_after": "6d8bcf79def14c4624f9e8648db053ee2db0f45279243d547e965a06d6620701",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T104250006805Z-integrated-final-full/result.json",
+      "log_sha256": "a0efff8d78b8969e2f6da7b789e4a466ce77e4530ebbd16705d67646c800db85"
+    },
+    {
+      "label": "installer-failure-repro",
+      "head_during_run": "8ffb86165ec5f9caf8510d2899de42133d468ccd",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_candidate_codex_plugin.CandidateDeploymentTests.test_discard_is_bounded_to_one_verified_slot",
+        "tests.test_codex_plugin_install.CodexPluginInstallTests.test_install_reports_untrusted_pretool_without_claiming_live_ready"
+      ],
+      "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+      "python_identity_sha256": null,
+      "dependency_py_yaml": null,
+      "started_at": "20260910T104736760101Z",
+      "duration_seconds": 2.63703433284536,
+      "exit_code": 1,
+      "reusable_success": false,
+      "source_sha256_before": "41b2cd611b567017247a9a6d67d9c7e7db038695d7f814b5af1ee6999dce0fa4",
+      "source_sha256_after": "41b2cd611b567017247a9a6d67d9c7e7db038695d7f814b5af1ee6999dce0fa4",
+      "semantic_sha256_before": "6d8bcf79def14c4624f9e8648db053ee2db0f45279243d547e965a06d6620701",
+      "semantic_sha256_after": "6d8bcf79def14c4624f9e8648db053ee2db0f45279243d547e965a06d6620701",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T104736760101Z-installer-failure-repro/result.json",
+      "log_sha256": "6492aea7401eca1dc852f90d2d0f7dcea0be1673a8c9e378de7bd1f3554a86fe"
+    },
+    {
+      "label": "wrong-python-preflight",
+      "head_during_run": "8ffb86165ec5f9caf8510d2899de42133d468ccd",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_candidate_codex_plugin.CandidateDeploymentTests.test_discard_is_bounded_to_one_verified_slot"
+      ],
+      "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+      "python_identity_sha256": null,
+      "dependency_py_yaml": null,
+      "started_at": "20260910T105046443990Z",
+      "duration_seconds": 0.17319283401593566,
+      "exit_code": 3,
+      "reusable_success": false,
+      "source_sha256_before": "bc24277ce337964afac1fe7bce60bb6e81488ff5f155d196fe6a330262910fff",
+      "source_sha256_after": "bc24277ce337964afac1fe7bce60bb6e81488ff5f155d196fe6a330262910fff",
+      "semantic_sha256_before": "ed1293a93d9b29aab205634f955c3251c9e8021dc8b3cc63c6b9c15a87a7b7f2",
+      "semantic_sha256_after": "ed1293a93d9b29aab205634f955c3251c9e8021dc8b3cc63c6b9c15a87a7b7f2",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T105046443990Z-wrong-python-preflight/result.json",
+      "log_sha256": "9de994d407cbb6eb2d3a13c652c2f973d8f715c1b32498ab27b9986bd5bce34f"
+    },
+    {
+      "label": "supported-python-repro",
+      "head_during_run": "8ffb86165ec5f9caf8510d2899de42133d468ccd",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_candidate_codex_plugin.CandidateDeploymentTests.test_discard_is_bounded_to_one_verified_slot",
+        "tests.test_codex_plugin_install.CodexPluginInstallTests.test_install_reports_untrusted_pretool_without_claiming_live_ready",
+        "tests.test_selected_task_continuation"
+      ],
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "platform": "macOS-26.3-arm64-arm-64bit",
+      "python_identity_sha256": "821824635f10f06dace33486e71ad7b520d633b0e4b1f6f150cfaffc1b0dc1b7",
+      "dependency_py_yaml": "6.0.3",
+      "started_at": "20260910T105350908313Z",
+      "duration_seconds": 40.01938433293253,
+      "exit_code": 0,
+      "reusable_success": true,
+      "source_sha256_before": "bc24277ce337964afac1fe7bce60bb6e81488ff5f155d196fe6a330262910fff",
+      "source_sha256_after": "bc24277ce337964afac1fe7bce60bb6e81488ff5f155d196fe6a330262910fff",
+      "semantic_sha256_before": "ed1293a93d9b29aab205634f955c3251c9e8021dc8b3cc63c6b9c15a87a7b7f2",
+      "semantic_sha256_after": "ed1293a93d9b29aab205634f955c3251c9e8021dc8b3cc63c6b9c15a87a7b7f2",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T105350908313Z-supported-python-repro/result.json",
+      "log_sha256": "7245ab944744dd1b0b7422d90d794b8941bd2c80df04277fb1993b51030b80ec"
+    },
+    {
+      "label": "integrated-final-full-r2",
+      "head_during_run": "8ffb86165ec5f9caf8510d2899de42133d468ccd",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py"
+      ],
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "platform": "macOS-26.3-arm64-arm-64bit",
+      "python_identity_sha256": "821824635f10f06dace33486e71ad7b520d633b0e4b1f6f150cfaffc1b0dc1b7",
+      "dependency_py_yaml": "6.0.3",
+      "started_at": "20260910T105514922873Z",
+      "duration_seconds": 1181.9824196668342,
+      "exit_code": 1,
+      "reusable_success": false,
+      "source_sha256_before": "a14c651fc4aad523dac351061c95ae3985052946aa26bb37d87a3d2006238f33",
+      "source_sha256_after": "add254d2651c679c79f0d54b009f0476547a57120f8c0cdd8444fe3b1a82afbb",
+      "semantic_sha256_before": "ed1293a93d9b29aab205634f955c3251c9e8021dc8b3cc63c6b9c15a87a7b7f2",
+      "semantic_sha256_after": "ed1293a93d9b29aab205634f955c3251c9e8021dc8b3cc63c6b9c15a87a7b7f2",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T105514922873Z-integrated-final-full-r2/result.json",
+      "log_sha256": "da72dec785f20421fe8589f7adbcb7ada4b1ffc2d1ac63681c16a94f9f9780c7"
+    },
+    {
+      "label": "final-encoding-impact",
+      "head_during_run": "8ffb86165ec5f9caf8510d2899de42133d468ccd",
+      "command": [
+        "<recorded-python>",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_subprocess_text_encoding_guard",
+        "tests.test_control_composition_architecture",
+        "tests.test_native_receipt_consistency",
+        "tests.test_native_receipt_validation_reuse",
+        "tests.test_selected_task_continuation",
+        "tests.test_native_decision_journal",
+        "tests.test_native_pretool_delivery"
+      ],
+      "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "platform": "macOS-26.3-arm64-arm-64bit",
+      "python_identity_sha256": "821824635f10f06dace33486e71ad7b520d633b0e4b1f6f150cfaffc1b0dc1b7",
+      "dependency_py_yaml": "6.0.3",
+      "started_at": "20260910T113505323424Z",
+      "duration_seconds": 30.68344383314252,
+      "exit_code": 0,
+      "reusable_success": true,
+      "source_sha256_before": "cc68141c203ebc9942e7b7b1148057c5da370224ca06a55df24250364bfa1a36",
+      "source_sha256_after": "cc68141c203ebc9942e7b7b1148057c5da370224ca06a55df24250364bfa1a36",
+      "semantic_sha256_before": "fcd6147b6dff476190d38fcecf8c6395d799fe836d1dbe1ddc538d92619476fb",
+      "semantic_sha256_after": "fcd6147b6dff476190d38fcecf8c6395d799fe836d1dbe1ddc538d92619476fb",
+      "semantic_exclusions": [
+        "docs/guardian-receipt-consistency/REPORT.md",
+        "docs/guardian-receipt-consistency/EVIDENCE.json"
+      ],
+      "local_result_path": ".sulde/data/guardian-receipt-consistency/20260910T113505323424Z-final-encoding-impact/result.json",
+      "log_sha256": "bae001e87137c5626f42b66e315b766ddd498e81d50bf1af3ad4e855addd404d"
+    }
+  ],
+  "actual_isolated_host_observations": [
+    {
+      "phase": "final-delta",
+      "type": "NATIVE_PRETOOL_EVIDENCE",
+      "value": {
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "contract_activation": {
+          "decision_authority": "agent-policy",
+          "mode": "enforce",
+          "proposal_digest": "3d100f7ab345839414e87a522bc61b688b9503bd7d2186e999f1b29ac0aec93e",
+          "revision": 2,
+          "status": "ready"
+        },
+        "destructive_pre_denied": true,
+        "executor": "unified_exec",
+        "external_model_requests": 0,
+        "hook": "PreToolUse",
+        "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+        "marker_absent": true,
+        "native_tool": "exec_command",
+        "outside_plan_write_executed": true,
+        "permission_decision": "deny",
+        "positive_executed": true,
+        "probe_id": "847a8e522d20e979612cc4b3909557cf",
+        "proof_id": "78835990a7454beba1a541074fc4de243d1ed2465679553ae91570761566b243",
+        "scope_denial_event_id": "33673c1893dfb8bf29210c9f",
+        "session_id": "01a08b19-f933-7f03-8d41-8689b2f59a56",
+        "started_call_id": "candidate_native_2",
+        "started_event_id": "33673c1893dfb8bf29210c9f",
+        "status": "ready",
+        "transport": "codex-cli-app-server"
+      }
+    },
+    {
+      "phase": "full",
+      "type": "COMPOSITION_PERFORMANCE",
+      "value": {
+        "base": "086f49bd372c21ef0c63613b1682d803c0047eec",
+        "measurements": {
+          "base": {
+            "local_write": {
+              "median_ms": 338.27783350000004,
+              "p95_ms": 377.5605
+            },
+            "read": {
+              "median_ms": 341.032604,
+              "p95_ms": 395.660792
+            },
+            "single_control": {
+              "median_ms": 337.545146,
+              "p95_ms": 362.977875
+            }
+          },
+          "candidate": {
+            "local_write": {
+              "median_ms": 336.9132495,
+              "p95_ms": 375.530292
+            },
+            "read": {
+              "median_ms": 337.36279149999996,
+              "p95_ms": 364.363375
+            },
+            "single_control": {
+              "median_ms": 336.1677915,
+              "p95_ms": 376.124666
+            }
+          }
+        },
+        "samples_per_case": 150,
+        "scope": "single-call normalization; unchanged sibling dependencies"
+      }
+    },
+    {
+      "phase": "full",
+      "type": "NATIVE_COMPOSITION_EVIDENCE",
+      "value": {
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "denied_call_id": "candidate_native_2",
+        "destructive_pre_denials": 1,
+        "executor": "unified_exec",
+        "external_model_requests": 0,
+        "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+        "per_step_success_inferred": false,
+        "post_denial_write_succeeded": true,
+        "safe_batches_completed": 4,
+        "short_circuit_preserved": true,
+        "transport": "codex-cli-app-server"
+      }
+    },
+    {
+      "phase": "full",
+      "type": "NATIVE_MEMORY_EVIDENCE",
+      "value": {
+        "annotations": 1,
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "audit_sha256": "069934fadbc887a6484ce8e7864ea1f41ec71889fc7d2029bbd92dd6ae86f37f",
+        "fresh_cli_reconciliations": 2,
+        "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+        "pending": 0,
+        "post_callback_deliberately_lost": true,
+        "pretool_attribution_denials": 0,
+        "schema": "guardian-native-memory-v1",
+        "transport": "codex-cli-app-server"
+      }
+    },
+    {
+      "phase": "full",
+      "type": "NATIVE_MEMORY_EVIDENCE",
+      "value": {
+        "annotations": 10,
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "audit_sha256": "bd87781526300447b8b344bb0fa61a795c17266fb89024ae43569c4a107ef202",
+        "fresh_cli_reconciliations": 0,
+        "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+        "pending": 0,
+        "post_callback_deliberately_lost": false,
+        "pretool_attribution_denials": 1,
+        "schema": "guardian-native-memory-v1",
+        "transport": "codex-cli-app-server"
+      }
+    },
+    {
+      "phase": "full",
+      "type": "NATIVE_CONTINUATION_DENY_EVIDENCE",
+      "value": {
+        "transport": "codex-cli-app-server",
+        "human_input": "exact one-shot fixture decline",
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "authority_transferred": false,
+        "source_lane_created": false,
+        "route_unchanged": true
+      }
+    },
+    {
+      "phase": "full",
+      "type": "NATIVE_MEMORY_CONTINUATION_EVIDENCE",
+      "value": {
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "audit_sha256": "651dd9b486069c096431ea666fbb57fc764000215162a945aad88a8c13fca7b3",
+        "authority_transferred": false,
+        "destructive_marker_preserved": true,
+        "human_input": "exact one-shot fixture accept, not a production click",
+        "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+        "native_approvals": 2,
+        "other_session_memory_after_preview": 1,
+        "post_continuation_write": "verified",
+        "transport": "codex-cli-app-server"
+      }
+    },
+    {
+      "phase": "full",
+      "type": "NATIVE_PRETOOL_EVIDENCE",
+      "value": {
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "contract_activation": {
+          "decision_authority": "agent-policy",
+          "mode": "enforce",
+          "proposal_digest": "08e863e635a21d5fdf4a6d638985e80da2c898491e8989239a60437ef4a85c69",
+          "revision": 2,
+          "status": "ready"
+        },
+        "destructive_pre_denied": true,
+        "executor": "unified_exec",
+        "external_model_requests": 0,
+        "hook": "PreToolUse",
+        "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+        "marker_absent": true,
+        "native_tool": "exec_command",
+        "outside_plan_write_executed": true,
+        "permission_decision": "deny",
+        "positive_executed": true,
+        "probe_id": "95c0076cd1f6a4bdd412ff52f6f432dc",
+        "proof_id": "e0a8f7af068d9b7038ded33caedddb04c3ce5fbde11da6d4fd131d2b54b421d3",
+        "scope_denial_event_id": "3d23770b1c005d5df2f9d5f9",
+        "session_id": "01a08b05-2a5f-7820-a8a0-3e2dcc0f24eb",
+        "started_call_id": "candidate_native_2",
+        "started_event_id": "3d23770b1c005d5df2f9d5f9",
+        "status": "ready",
+        "transport": "codex-cli-app-server"
+      }
+    },
+    {
+      "phase": "full",
+      "type": "NATIVE_CONTINUITY_EVIDENCE",
+      "value": {
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "composition_denied_then_write_succeeded": true,
+        "data_write_succeeded": true,
+        "destructive_pre_denied": true,
+        "executor": "unified_exec",
+        "external_model_requests": 0,
+        "legacy_migration_and_same_session_handoff": {
+          "handoff_authority_transferred": false,
+          "historical_release": {
+            "added_edges": 1,
+            "authority_transferred": false,
+            "coverage": "verified_release_pairs_and_recorded_transitions",
+            "invalid_inventory": 0,
+            "mapping_sha256": "d6924b76fd7b575badc07c2553297a25a4f6ca21eee9faedbd32d95a86cc322f",
+            "scanned_bytes": 21108,
+            "schema": "sulde-lifecycle-history-recovery-v1",
+            "source_modified": false,
+            "status": "recovered",
+            "verified_edges": 1
+          },
+          "historical_sources_unchanged": true,
+          "migration": {
+            "authority_transferred": false,
+            "invalid_rows": 0,
+            "offset": 4962023,
+            "retained_rows": 5,
+            "scanned_bytes": 4962023,
+            "source_modified": false,
+            "status": "complete"
+          },
+          "workspace_lifecycle": {
+            "authority_transferred": false,
+            "carried_capabilities": [
+              "session_context"
+            ],
+            "status": "verified"
+          }
+        },
+        "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+        "proof_id": "942984ad10fe70cbe29120b7a555b86c2d9abbe2dfb41c64097988858c66db13",
+        "session_id": "01a08b05-7ba7-7980-a5da-929274a54244",
+        "started_event_id": "3e57bd18e78155387532e3a8",
+        "transport": "codex-cli-app-server",
+        "uncertainty_denied_then_write_succeeded": true
+      }
+    },
+    {
+      "phase": "full",
+      "type": "NATIVE_CONTINUITY_EVIDENCE",
+      "value": {
+        "artifact_generation": "0.2.5+codex.20260909091120-48e0594354:ffb168348ea693b5322047a49d470ec7a9634be89b0caff0552d39430d688507",
+        "composition_denied_then_write_succeeded": true,
+        "data_write_succeeded": true,
+        "destructive_pre_denied": true,
+        "executor": "unified_exec",
+        "external_model_requests": 0,
+        "legacy_migration_and_same_session_handoff": {
+          "handoff_authority_transferred": false,
+          "migration": {
+            "authority_transferred": false,
+            "invalid_rows": 0,
+            "offset": 4960511,
+            "retained_rows": 4,
+            "scanned_bytes": 4960511,
+            "source_modified": false,
+            "status": "complete"
+          },
+          "workspace_lifecycle": {
+            "authority_transferred": false,
+            "carried_capabilities": [
+              "prompt_control",
+              "session_context"
+            ],
+            "status": "verified"
+          }
+        },
+        "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+        "proof_id": "471746a37309b784a2b12579e12a258f6da4cc4fbb2c4f134c64eab8e20d9a9f",
+        "session_id": "01a08b05-cd86-7590-b48b-721f833ac096",
+        "started_event_id": "88f5dcba6ac4ce1ca1094447",
+        "transport": "codex-cli-app-server",
+        "uncertainty_denied_then_write_succeeded": true
+      }
+    }
+  ],
+  "limits": [
+    "No production install, push, cleanup or KB writes.",
+    "Native approval fixtures are exact one-shot test inputs, not production human clicks.",
+    "25 full-suite platform/sandbox skips are not passes.",
+    "Raw output remains private local evidence; prior interrupted/failed runs stay non-reusable."
+  ]
+}

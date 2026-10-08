@@ -1,0 +1,41 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-amendment-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-011",
+  "parent_chain": [
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-010.json",
+      "sha256": "34ff43ad468d8ea9d7372c7f522428c20627068282cade64d3f24846491cfa70"
+    }
+  ],
+  "authority": "human-authorized-current-delivery-with-nonblocking-external-followup",
+  "authority_scope": "complete and push the current Codex/macOS R2 implementation; allow task-to-dev integration after its local gates; let Windows pull the complete branch and independently modify or verify; defer Claude live without treating either external gate as a current code-delivery blocker",
+  "current_delivery": {
+    "branch": "task/r2-guardian-human-authority-lifeform",
+    "source_commit": "920fd4c79ccc37971e2962ca2b27abd5d9a1d3ac",
+    "evidence_commit": "bdc6963ecd123768daa290494a8e3ee1bf611a8c",
+    "installed_generation": "0.2.5+codex.20260828081159:efac6801160919fbbc4e7a638982b1c45e53efa7d6e83601acf1817a6ad6b46a",
+    "local_verdict": "codex_macos_delivery_verified"
+  },
+  "windows_followup": {
+    "blocking_for_current_delivery": false,
+    "required_for_r2_production_complete": true,
+    "checkout": "origin/task/r2-guardian-human-authority-lifeform",
+    "required_test": "python -B -m unittest -v tests.test_stage_plugin.StagePluginTests.test_windows_launchers_fall_back_from_broken_python3",
+    "required_readback": [
+      "native Windows host identity and Python version",
+      "PowerShell launcher test exit code and complete terminal summary",
+      "staged Windows .codex-plugin/generation.json bytes and SHA-256",
+      "exact tested Git commit and clean/changed worktree status"
+    ],
+    "mutation_rule": "Windows may create a follow-up commit on its own branch; it must not rewrite the accepted Codex/macOS commits or manufacture a native PASS on a non-Windows host."
+  },
+  "claude_followup": {
+    "blocking_for_current_delivery": false,
+    "required_for_r2_production_complete": true,
+    "status": "deferred_until_quota_available",
+    "substitution_forbidden": true
+  },
+  "integration_rule": "The current task branch may merge to dev and be pushed after byte-identical integrated verification. Dev-to-main and guardian program completion remain prohibited until the repository main worktree is clean and the explicit production-complete gates are satisfied or separately re-authorized by the human.",
+  "truth_rule": "This amendment changes delivery sequencing only. It does not create live_host_canary_claude, native Windows PASS, final_traceability, H06H accepted or R2 program complete evidence."
+}

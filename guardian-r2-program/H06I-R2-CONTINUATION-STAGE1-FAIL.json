@@ -1,0 +1,123 @@
+{
+  "schema": "sulde-h06i-r2-continuation-stage1-fail-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "task_id": "H06I-R2-interruption-authority",
+  "created_at": "2026-08-28T05:04:38Z",
+  "decision": "fail",
+  "authority": {
+    "amendment_path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-005.json",
+    "amendment_sha256": "1f729bd18594d4681fce59289cabf7367ed720c27c3ed41a5406e014c82c32eb",
+    "continuation_brief_sha256": "2c64b25dfbfd19233ce748c2a68092dad432bab13a2d2a2d3be26f33a7691a79",
+    "provider_invocations_authorized": 1,
+    "provider_invocations_consumed": 1,
+    "automatic_retry": false
+  },
+  "pre_provider_observation": {
+    "attempted_control_root": "guardian-r2-program",
+    "result": "rejected before provider start because the runtime requires the exact guardian-program basename",
+    "provider_invocation_consumed": false,
+    "candidate_write": false,
+    "recovery": "projected the byte-identical brief into guardian-program and retained the same task, candidate and authority"
+  },
+  "managed_run": {
+    "slug": "r2-h06i-r2-review-repair-continuation",
+    "run_id": "run-2dc4b3d034b54094adf2ee01",
+    "execution_binding_sha256": "1b6e3c69c8a6419122f8e118e8fe7a9e292725c7ea04210f1a6c63953435c145",
+    "authority_sha256": "bcbe08e8cac991deff0a482c3f84d4adcc02d42a33609909310282287aaf77df",
+    "runtime_tree_sha256": "05099b2c71c273a0a60ab214143b1887b9289a7ec34420c10146e2c2aba973f7",
+    "timeout_seconds": 1500,
+    "duration_seconds": 901,
+    "provider_returncode": 0,
+    "provider_stop_reason": "completed",
+    "provider_terminal_event": "turn.completed",
+    "provider_natural_terminal": true,
+    "cleanup_quiescent": true,
+    "runtime_status": "failed",
+    "runtime_reason": "task report verdict failed",
+    "execution_prevented": true
+  },
+  "artifacts": {
+    "events": {
+      "sha256": "c02276c44334c6c9d9e13e87ae9051d22f0b3d91552daf892dfe456b72a208ca",
+      "bytes": 990026,
+      "lines": 67
+    },
+    "status": {
+      "sha256": "73f8e70c6e6c54da87e57bde2550accf61df4d60d7fa5bc3bd9f5c196bbdbc6f"
+    },
+    "stderr": {
+      "sha256": "5973e95a3edb593264a331f7b2992eef1f86d259b0b6f4a25705ecf63d188559",
+      "bytes": 338,
+      "observation": "two invalid apply_patch transport attempts were recovered before the final report write"
+    },
+    "run_ledger": {
+      "sha256": "ce11635b7e37c6a043f8280846b02a27e3101e4b54584d083e6a2b447a9b3382",
+      "bytes": 1267,
+      "output_present": true,
+      "output_sha256": "eacbda95e387e1942ef4082794a89353b1b9d7f63d42bd9e0574479cd0a4f489",
+      "disposed_quiescent": true
+    },
+    "output_last_message": {
+      "sha256": "eacbda95e387e1942ef4082794a89353b1b9d7f63d42bd9e0574479cd0a4f489",
+      "bytes": 10098
+    },
+    "durable_report": {
+      "sha256": "eacbda95e387e1942ef4082794a89353b1b9d7f63d42bd9e0574479cd0a4f489",
+      "bytes": 10098
+    },
+    "native_receipt": {
+      "file_sha256": "9df254b9468492d699cffb2873787ec7e0f2bb6496819f5c124d3b312a35c398",
+      "receipt_sha256": "dd5abe7c031ebf7b31ae0a6f378c48898082bdd3625d25e6b14a1e9332c15757",
+      "terminal_status": "succeeded",
+      "termination_domain": "provider_natural",
+      "output_sha256": "eacbda95e387e1942ef4082794a89353b1b9d7f63d42bd9e0574479cd0a4f489",
+      "report_sha256": "eacbda95e387e1942ef4082794a89353b1b9d7f63d42bd9e0574479cd0a4f489"
+    }
+  },
+  "candidate_after_run_sha256": {
+    "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+    "scripts/kb/agent-runtime.py": "9effefc5f477dc7d78a985ad028e9dcf790b548b1d846c7c6a2c46870fb7e740",
+    "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "tests/test_agent_runtime.py": "a637b37445adad801ae865d83852890b1c40bd24706823ed5c1525d7a40b2b76",
+    "guardian-r2-program/reports/H06I-R2-interruption-authority.md": "eacbda95e387e1942ef4082794a89353b1b9d7f63d42bd9e0574479cd0a4f489"
+  },
+  "positive_facts_not_accepted_as_stage_completion": [
+    "11 focused review-repair tests passed",
+    "tests/test_agent_runtime.py ran 74 tests successfully with one existing conditional skip",
+    "frozen tests/test_native_agent_broker.py ran 52 tests successfully",
+    "all four behavior and test file hashes remained unchanged from the continuation input",
+    "run ledger output, output-last-message, durable report and native receipt output/report summaries bind the same canonical bytes",
+    "the provider reached one natural terminal and cleanup was quiescent"
+  ],
+  "report_verdict": {
+    "passed": false,
+    "check_count": 3,
+    "failures": [
+      "1 current-success check lacks a valid candidate/execution/environment/command/count binding"
+    ],
+    "exact_root_cause": "the broker command text says PYTHONDWRITEBYTECODE while its stated command_sha256 was calculated for the actually executed PYTHONDONTWRITEBYTECODE command",
+    "affected_line": 4,
+    "behavioral_code_failure": false,
+    "test_failure": false
+  },
+  "finding": {
+    "finding_id": "FR2-H06I-R2-015",
+    "title": "one report command transcription drift invalidated an otherwise canonical natural terminal",
+    "root_cause_status": "verified",
+    "impact": "the stage-one report contract fails, so coordinator environment verification, stage boundary and self-host verification remain forbidden"
+  },
+  "control_disposition": {
+    "task_transition": "running_to_blocked",
+    "accepted": false,
+    "integration_allowed": false,
+    "coordinator_matrix_allowed": false,
+    "stage_two_allowed": false,
+    "automatic_retry": false,
+    "authorized_repair_remaining": 0,
+    "candidate_bytes_preserved_as_red_evidence": true,
+    "production_install": false,
+    "merge_or_push": false,
+    "h06j_started": false
+  },
+  "terminal_rule": "preserve the five candidate paths and all run artifacts; do not edit the report, rerun a provider, execute the coordinator matrix, create the stage boundary, self-host, integrate, install or start H06J without a new explicit human thaw authority"
+}

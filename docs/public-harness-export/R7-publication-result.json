@@ -1,0 +1,86 @@
+{
+  "schema": "sulde-publication-result-v1",
+  "status": "published-and-independently-verified",
+  "date": "2026-09-12",
+  "intent_id": "completion:d7c56153d92f24aaedadbd0c",
+  "intent_revision": 6,
+  "native_decision": {
+    "status": "applied",
+    "decision": "approve",
+    "receipt_id": "ccd56548a2a842b452a91875a059c42ba03ce3d513b42dce3735f8191a66a5bf",
+    "request_id": "apr-e5defe8a9c54e98c0e994194",
+    "transaction_id": "ndt-972ae408fc2dde021c84e2f1c591f033",
+    "proposal_digest": "c81a93690fea895dac1616ced3ad15adf94c553eff7b35422bec97d77bdc8ed6"
+  },
+  "source_revision": "bf0884fea7495a538af7faa5d7c90c974fba0421",
+  "manifest_sha256": "bf2953a555195a2731b6edc55ca9b297ee09472e02042879fdb61d186a9fb7d6",
+  "candidate": ".sulde/public-export/review-011",
+  "publication_plan": "docs/public-harness-export/R7-publication-plan.json",
+  "public_repository": "https://github.com/EthanReedLabs/sulde-cc.git",
+  "public_branch": "main",
+  "public_commit": "9cefc8a3875dafa49de9d95db68e69a74bc56da5",
+  "public_tree": "6add687d53a04083c8790a209ea9fb0c9d4b3805",
+  "public_parent": "c966bae1477423ee3a64fd2a6d02fdcb91a43913",
+  "public_history_new_commits": 1,
+  "private_git_history_imported": false,
+  "delta": {
+    "file_count": 628,
+    "added": 481,
+    "modified": 40,
+    "unchanged": 107,
+    "deleted": 0
+  },
+  "staged_proof": {
+    "staged_tree": "6add687d53a04083c8790a209ea9fb0c9d4b3805",
+    "files_verified": 628,
+    "manifest_sha256": "bf2953a555195a2731b6edc55ca9b297ee09472e02042879fdb61d186a9fb7d6"
+  },
+  "independent_remote_proof": {
+    "remote_commit": "9cefc8a3875dafa49de9d95db68e69a74bc56da5",
+    "parent": "c966bae1477423ee3a64fd2a6d02fdcb91a43913",
+    "tree": "6add687d53a04083c8790a209ea9fb0c9d4b3805",
+    "files_verified": 628,
+    "all_blob_hashes_and_modes_match": true,
+    "public_checkout_safe_to_fast_forward": true
+  },
+  "local_public_head": "9cefc8a3875dafa49de9d95db68e69a74bc56da5",
+  "local_public_worktree_clean": true,
+  "protected_pro_heads": {
+    "main": "bd216b3d29e37b1aaf0e6be0c930b5221a925562",
+    "dev": "e61683c08aaf97db3e8e9d105ea3154ec217061c"
+  },
+  "existing_pro_user_modifications_preserved": [
+    ".ua/fingerprints.json",
+    ".ua/knowledge-graph.json",
+    ".ua/meta.json"
+  ],
+  "contract_readback": {
+    "pending_proposal": "",
+    "pending_verifications": [],
+    "open_events": [],
+    "integrity_breaches": []
+  },
+  "verification": {
+    "source_tests": {
+      "passed": 29,
+      "skipped": 0,
+      "seconds": 4.53,
+      "log": ".sulde/public-export/r7-exporter-tests.log",
+      "sha256": "cc21a24bff97e618c9ece8a5bcae1e3c5d79c122e730081c9bbf6cfa4ba274f1"
+    },
+    "r6_existing_files_identical": 600,
+    "restored_scaffolds_match_public_history": 28,
+    "reused_candidate_evidence": "R6 80 tests / 19 checks on unchanged implementation; R5/R6 exact-byte privacy review.",
+    "new_full_suite": false,
+    "new_package_run": false
+  },
+  "installation_performed": false,
+  "pro_merge_performed": false,
+  "production_readiness_claimed": false,
+  "retained_private_evidence": ".sulde/public-export/publication-001 (standalone public-history clone, not a Pro-linked worktree)",
+  "independent_host_observation": {
+    "fact_status": "verified",
+    "cause_status": "inconclusive",
+    "description": "Host reported saving an exact approval command prefix although this request provided no prefix_rule. Authority was accepted only from the matching native applied receipt, never inferred from that prefix. No host configuration repair performed."
+  }
+}

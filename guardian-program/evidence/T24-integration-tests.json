@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T24-p0-transaction-integration",
+  "kind": "integration_tests",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-9d84a3e7e26d5694fbc0c75a",
+  "verdict": "pass",
+  "summary": "The serialized T24 integration preserves the accepted T21 through T23 composition and passes its 183-test shared gate.",
+  "facts": [
+    "T21, T22 and T23 were merged in the exact frozen order before 2d65284.",
+    "The prior composed 161-test and cross-domain 158-test gates remain source-valid because T24 changed no production module.",
+    "The post-commit T24 shared guardian gate passed 183 tests."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "-q", "tests.test_intent_guardian", "tests.test_p0_transaction_integration"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

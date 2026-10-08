@@ -1,0 +1,89 @@
+{
+  "schema": "life-host-isolation-v1",
+  "codex": "0.153.4",
+  "platform": "macOS",
+  "new_session": true,
+  "resume_after_host_restart": true,
+  "worktree_switch": true,
+  "plugin_install": [
+    {
+      "exit_code": 0
+    },
+    {
+      "exit_code": 0
+    }
+  ],
+  "third_party_hook_sha256": "e1cb68b563d62709dc4bb8e630657efa9475021aa78e94f02febf696d229bfbe",
+  "events": [
+    {
+      "session_phase": "new",
+      "source": "user",
+      "event": "sessionStart",
+      "status": "completed",
+      "duration_ms": 6,
+      "delivery_exit": 0,
+      "notification_sha256": "411c7c3a3d472793deea004f89ebe67944db2ab49fa86119ac30991194284a6c"
+    },
+    {
+      "session_phase": "new",
+      "source": "project",
+      "event": "sessionStart",
+      "status": "failed",
+      "duration_ms": 6,
+      "delivery_exit": 0,
+      "notification_sha256": "5b4a29321fd328c9e4eb6cd73dd79ccf6d656fd33e4aaa0305a6d703fc166f5d"
+    },
+    {
+      "session_phase": "new",
+      "source": "plugin",
+      "event": "sessionStart",
+      "status": "completed",
+      "duration_ms": 2,
+      "delivery_exit": 0,
+      "notification_sha256": "fdb4e28cc65299e9f239bc9bc1a6afa8a4e918cebdd74f485d96564f0cb1976d"
+    },
+    {
+      "session_phase": "resumed_worktree",
+      "source": "user",
+      "event": "sessionStart",
+      "status": "completed",
+      "duration_ms": 5,
+      "delivery_exit": 0,
+      "notification_sha256": "cf235f2e81d86c4a4da49d645041a2f16a0db82910bef9fbaf814d7afe9e83e4"
+    },
+    {
+      "session_phase": "resumed_worktree",
+      "source": "project",
+      "event": "sessionStart",
+      "status": "failed",
+      "duration_ms": 5,
+      "delivery_exit": 0,
+      "notification_sha256": "36baf85188822254943d150e7cea0865b9981301e2dcce659d808932e8761199"
+    },
+    {
+      "session_phase": "resumed_worktree",
+      "source": "plugin",
+      "event": "sessionStart",
+      "status": "completed",
+      "duration_ms": 2,
+      "delivery_exit": 0,
+      "notification_sha256": "0fe15f52b797f811d8be9cacdd5152e1d58f08afebc9add1f671f839cad0d8d7"
+    }
+  ],
+  "recorder_status": {
+    "status": "observed",
+    "blind_spots": [
+      "host_events_not_delivered",
+      "observer_or_interpreter_cannot_start",
+      "host_kills_entire_process_tree"
+    ],
+    "count": 6
+  },
+  "model_backend": "unavailable_loopback_no_external_calls",
+  "business_tool_actions": 0,
+  "blind_spots": [
+    "third_party_post_tool_use_environment_unverified",
+    "historical_business_session_loading_unknown",
+    "no_desktop_notification_subscription_installed"
+  ]
+}

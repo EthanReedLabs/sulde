@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "task_report",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-f5c07f9049e7e2ba3dac7894",
+  "verdict": "pass",
+  "summary": "T30 packages corpus-bound Git history for immutable KB aging while preserving fail-closed staging and installation boundaries.",
+  "facts": [
+    "The isolated source candidate f08a41c was reproduced in the controlled task worktree as dbaf5b4 and changes exactly the ten frozen T30 paths.",
+    "The report discloses the worker timeout, nested-sandbox limitation and unaudited Codex 0.149.1 host drift; none is represented as production acceptance."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T30-packaged-kb-aging-provenance.md",
+      "sha256": "de45d8e1ee57976c61329ead78b0db2317f02eb0c61bc6e49ff69a1984cc3bdd"
+    }
+  ]
+}

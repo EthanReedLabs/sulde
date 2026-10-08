@@ -67,7 +67,7 @@ class TestEvidenceTests(unittest.TestCase):
         module = load_module()
         self.assertEqual(module.classify(["docs/note.md"]), "small")
         self.assertEqual(
-            module.classify([f"feature/file-{index}.py" for index in range(5)]),
+            module.classify([f"docs/file-{index}.md" for index in range(5)]),
             "medium",
         )
         self.assertEqual(
@@ -107,25 +107,41 @@ class TestEvidenceTests(unittest.TestCase):
         now = datetime(2026, 9, 3, tzinfo=timezone.utc)
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
+            keys = {}
             for label, key, status, age in (
                 ("exact", "a" * 64, "passed", 1),
                 ("failed", "b" * 64, "failed", 1),
                 ("stale", "c" * 64, "passed", 60),
             ):
+                identity = {"workspace_sha256": key, "risk": "small", "tests": [], "runner_sha256": "d" * 64}
+                keys[label] = module._digest(identity)
+                ended = now - timedelta(days=age)
+                log = root / (label + ".log")
+                log.write_bytes(b"fixture result")
                 row = {
                     "schema": module.SCHEMA,
                     "run_id": label,
-                    "evidence_key": key,
+                    "evidence_key": keys[label],
+                    **identity,
+                    "input_identity_before": identity,
+                    "input_identity_after": identity,
                     "status": status,
-                    "ended_at": (now - timedelta(days=age)).isoformat(),
+                    "partial": False,
+                    "exit_code": 0 if status == "passed" else 1,
+                    "result": {"complete": True, "verdict": status, "exit_code": 0 if status == "passed" else 1},
+                    "started_at": (ended - timedelta(seconds=1)).isoformat(),
+                    "ended_at": ended.isoformat(),
+                    "expires_at": (ended + timedelta(days=30)).isoformat(),
+                    "log": log.name,
+                    "log_sha256": module.hashlib.sha256(log.read_bytes()).hexdigest(),
                 }
                 (root / f"{label}.json").write_text(json.dumps(row), encoding="utf-8")
             self.assertEqual(
-                module.reusable_record(root, "a" * 64, current=now)["run_id"],
+                module.reusable_record(root, keys["exact"], current=now)["run_id"],
                 "exact",
             )
-            self.assertIsNone(module.reusable_record(root, "b" * 64, current=now))
-            self.assertIsNone(module.reusable_record(root, "c" * 64, current=now))
+            self.assertIsNone(module.reusable_record(root, keys["failed"], current=now))
+            self.assertIsNone(module.reusable_record(root, keys["stale"], current=now))
 
     def test_gc_preserves_first_failure_and_latest_full_baseline(self) -> None:
         module = load_module()
@@ -211,7 +227,7 @@ class TestEvidenceTests(unittest.TestCase):
                 result="tests passed",
                 evidence=[],
                 source_summary="managed summary",
-                occurred_at="2026-09-04T00:00:00Z",
+                occurred_at=datetime.now(timezone.utc).isoformat(),
                 recommended_tests=["tests.test_agent_experience"],
                 affected_components=["scripts/kb/self-repair.py"],
             )
@@ -253,8 +269,9 @@ class TestEvidenceTests(unittest.TestCase):
 
         self.assertEqual(
             selected["tests"],
-            ["tests.test_codex_plugin_install"],
+            [],
         )
+        self.assertEqual(selected["risk"], "refactor")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,83 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-8604a20166ecf047ad18291d",
+  "verdict": "pass",
+  "kind": "requirement_traceability",
+  "summary": "Every H06I requirement clause is bound to the final five-path implementation, its canonical interruption authority and the current combined system evidence without claiming the remaining H06H live-only gates.",
+  "facts": [
+    "H06I production files are scripts/kb/agent-runtime.py and scripts/kb/native_agent_broker.py; their tests and report remain inside the frozen five-path task scope.",
+    "The exact production broker round trip executes without SULDE_TEST_MODE and the official isolated runner restores its inherited environment after the test.",
+    "Claude live, native Windows and final program acceptance remain H06H obligations and are not inferred from this task evidence."
+  ],
+  "requirements": [
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "findings": ["FR2-H06I-R2-017"],
+  "acceptance": [
+    {
+      "requirement_id": "R2-GRANT-BROKER",
+      "clause": "PermissionRequest 展示和授权结算先于普通 task/tool guard，paused 或 degraded lane 不得遮蔽恢复卡",
+      "fact": "H06I preserves the accepted grant and recovery-lane ordering while unifying only the local-interruption terminal authority; combined public-boundary tests remain green."
+    },
+    {
+      "requirement_id": "R2-GRANT-BROKER",
+      "clause": "crash、retry、reprobe 与 abort 按 transaction id 幂等推进且不重放人类决定或外部效果",
+      "fact": "The shared immutable reason map and production broker receipt path reject altered reason, type, order and quiescence evidence without retry or replay."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-SUPERVISOR",
+      "clause": "生命体在 5 秒内报告卡顿并在能力边界内处理孤儿锁、退出 actor、冲突 lane 与 runtime drift",
+      "fact": "The final H06I terminal mapping composes the accepted supervisor public boundary without changing its liveness, lock or generation behavior."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-SUPERVISOR",
+      "clause": "干预有预算、有终态、有 receipt，不能扩大 allowed paths、静默换宿主或无限重试",
+      "fact": "The managed awaiting-human terminal contains one provider invocation, interrupt, result, disposal, intervention identity and external attempt, with no retry or post-terminal downgrade."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-LANE",
+      "clause": "status、doctor、repair、uninstall、rollback 与 pending decision 在普通 lane 不可用时仍可达",
+      "fact": "H06I maps external_effect_outcome_unknown only to awaiting_human and keeps the independent recovery lane reachable; no ordinary-lane authority is synthesized."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-LANE",
+      "clause": "等待使用可更新状态卡和本地完整日志，满足 5/30 秒进度 SLA 且不重复输出轮询文案",
+      "fact": "Canonical ledger, output-last-message, durable report and receipt bytes are bound once; the H06I change does not introduce polling or duplicate terminal output."
+    },
+    {
+      "requirement_id": "R2-LIVE-ACCEPTANCE",
+      "clause": "I01-I19、并发、进程死亡、receipt tamper、world-state drift、只读账本、scheduler degraded 与 rollback 全部通过",
+      "fact": "H06I is covered by the quiet 214-test combined matrix and 64-test control matrix; installation and live-only portions are recorded separately by H06H program evidence."
+    },
+    {
+      "requirement_id": "R2-LIVE-ACCEPTANCE",
+      "clause": "Codex 与 Claude 真实宿主、macOS 与 Windows 证据齐全前不得宣称 R2 完成或 production accepted",
+      "fact": "This evidence closes H06I system verification only and explicitly does not claim Claude, native Windows, H06H acceptance or program completion."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并",
+      "fact": "Amendments 001-010 preserve failed candidates append-only; the final integrated bytes come only from the accepted H06I and H06H candidates plus the one owned test-harness repair."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写",
+      "fact": "H06I adds R2 evidence and implementation commits without rewriting the completed G0-G6/T32 event history."
+    }
+  ],
+  "commands": [
+    {
+      "argv": ["python3", "-B", "scripts/kb/run-isolated-tests.py", "<eight combined R2 modules>"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

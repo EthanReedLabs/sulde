@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from .repository_relocation import route_relocation_recovery
+
 from contextlib import contextmanager
 
 from dataclasses import dataclass, replace
@@ -52,6 +54,7 @@ from decision_kernel import (
     claim_human_grant,
     confirmation_reason,
     prepare_human_grant,
+    prepare_effect_risk_grant,
 )
 from production_recovery import route_production_recovery
 
@@ -371,6 +374,10 @@ def process_hook(payload: dict[str, Any], *, phase: str, provider: str | None = 
     selected_session = str(
         payload.get("session_id") or payload.get("sessionId") or ""
     ).strip()
+    relocation = route_relocation_recovery(payload, home=kb_home(), provider=selected_provider,
+                                          session_id=selected_session)
+    if relocation is not None:
+        return relocation, None
     # Production recovery must remain reachable even when the durable session
     # route points at a removed worktree or contract.  This hint deliberately
     # avoids session mapping resolution; recovery_pre_state treats a missing or
@@ -520,10 +527,12 @@ def process_hook(payload: dict[str, Any], *, phase: str, provider: str | None = 
     prepared = (
         None
         if control_plane
-        else prepare_human_grant(path, session.contract, event, decision)
+        else (prepare_human_grant(path, session.contract, event, decision)
+              or prepare_effect_risk_grant(path, session.contract, event, decision))
     )
     if prepared is not None:
-        decision = replace(decision, reason=confirmation_reason(event))
+        decision = replace(decision, reason=confirmation_reason(event, prepared), dispatch="defer",
+                           would_dispatch="defer")
     return decision, path
 
 def finalize_host_turn(

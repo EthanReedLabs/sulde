@@ -19,18 +19,21 @@ from pathlib import Path, PurePosixPath
 from types import SimpleNamespace
 from typing import Any
 
+sys.dont_write_bytecode = True
+
 from file_lock import lock_exclusive_nonblocking, unlock
 from sedimentation_schema import validate_document
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+RUNTIME_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = RUNTIME_ROOT
 kb_cli = SimpleNamespace(
-    **runpy.run_path(str(REPO_ROOT / "hooks" / "lib" / "kb_cli.py"))
+    **runpy.run_path(str(RUNTIME_ROOT / "hooks" / "lib" / "kb_cli.py"))
 )
 _command_template = runpy.run_path(str(Path(__file__).with_name("command_template.py")))
 split_command_template = _command_template["split_command_template"]
-SKILL_PATH = REPO_ROOT / "skills" / "sediment" / "SKILL.md"
-KB_INDEX_ROOT = REPO_ROOT / "tools" / "kb-index"
+SKILL_PATH = RUNTIME_ROOT / "skills" / "sediment" / "SKILL.md"
+KB_INDEX_ROOT = RUNTIME_ROOT / "tools" / "kb-index"
 DEFAULT_LLM_CMD = _command_template["default_llm_command"]()
 RESULT_FIELDS = {"action", "container", "target_doc_id", "doc_id", "slug", "markdown", "reason"}
 ACTIONS = {"new", "merge", "skip", "unsure"}
@@ -81,9 +84,11 @@ class KbIndexCli:
     python: Path | None = None
 
     def command(self, name: str, *arguments: str) -> list[str]:
+        if name == "build":
+            arguments = ("--repo-root", str(REPO_ROOT), *arguments)
         try:
             return kb_cli.build_command(
-                REPO_ROOT,
+                RUNTIME_ROOT,
                 self.home,
                 name,
                 arguments,
@@ -151,14 +156,14 @@ def manual_resolutions_path(home: Path, run_id: str) -> Path:
 def run_command(
     arguments: list[str],
     *,
-    cwd: Path = REPO_ROOT,
+    cwd: Path | None = None,
     input_text: str | None = None,
     timeout: float | None = None,
 ) -> subprocess.CompletedProcess[str]:
     try:
         return subprocess.run(
             arguments,
-            cwd=cwd,
+            cwd=REPO_ROOT if cwd is None else cwd,
             input=input_text,
             text=True,
             encoding="utf-8",
@@ -475,35 +480,111 @@ def acquire_lock(path: Path):
     return handle
 
 
-def run_in_isolated_worktree(home: Path) -> int:
+@dataclass(frozen=True)
+class SourceBinding:
+    root: Path
+    common_dir: Path
+    head: str
+
+
+def resolve_source_binding(args: argparse.Namespace, home: Path) -> SourceBinding:
+    """Read an explicit authoring binding; never infer it from the caller's cwd."""
+    expected_common: Path | None = None
+    selected = args.source_root
+    config = home / "auto-sediment-source.json"
+    if selected is None and config.exists():
+        try:
+            payload = json.loads(config.read_text(encoding="utf-8"))
+            if (
+                not isinstance(payload, dict)
+                or payload.get("schema") != "sulde-auto-sediment-source-v1"
+            ):
+                raise ValueError("unsupported source binding schema")
+            selected = Path(payload["source_root"])
+            expected_common = Path(payload["git_common_dir"])
+            if not expected_common.is_absolute():
+                raise ValueError("git_common_dir must be absolute")
+        except (KeyError, TypeError, ValueError) as error:
+            raise SedimentError(f"invalid auto-sediment source binding: {error}") from error
+    if selected is None:
+        if not (RUNTIME_ROOT / ".git").exists():
+            raise SedimentError(
+                "source binding required: installed runtime is not an authoring repository; "
+                "set --source-root or SULDE_KB_HOME/auto-sediment-source.json"
+            )
+        selected = RUNTIME_ROOT
+    if not selected.is_absolute():
+        raise SedimentError("source_root must be absolute")
+    root = selected.resolve(strict=True)
+    git_path_overrides = ("GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_INDEX_FILE")
+    if any(os.environ.get(key) for key in git_path_overrides):
+        raise SedimentError("source binding rejects ambient Git path overrides")
+    top = run_command(["git", "rev-parse", "--show-toplevel"], cwd=root)
+    if top.returncode != 0 or Path(top.stdout.strip()).resolve() != root:
+        raise SedimentError("source_root must be the exact root of a non-bare Git checkout")
+    common = run_command(
+        ["git", "rev-parse", "--path-format=absolute", "--git-common-dir"], cwd=root
+    )
+    head = run_command(["git", "rev-parse", "--verify", "HEAD^{commit}"], cwd=root)
+    if common.returncode != 0 or head.returncode != 0:
+        raise SedimentError("source binding requires a Git common directory and committed HEAD")
+    common_dir = Path(common.stdout.strip()).resolve(strict=True)
+    if expected_common is not None and common_dir != expected_common.resolve(strict=True):
+        raise SedimentError("source binding git_common_dir mismatch")
+    knowledge = root / "knowledge"
+    if not knowledge.is_dir() or knowledge.is_symlink():
+        raise SedimentError("source binding requires a local knowledge directory")
+    if any(path.is_symlink() for path in knowledge.rglob("*")):
+        raise SedimentError("source binding rejects symlinks inside knowledge")
+    if os.environ.get(ISOLATED_RUN_ENV) == "1" and (
+        root.parent != common_dir.parent / ".worktrees"
+        or not root.name.startswith("auto-sediment-runtime-")
+        or not (root / ".git").is_file()
+    ):
+        raise SedimentError("isolated execution requires an auto-sediment worktree")
+    return SourceBinding(root, common_dir, head.stdout.strip())
+
+
+def require_source_not_relocating(home: Path, binding: SourceBinding) -> None:
+    # Ordinary standalone use does not acquire a Guardian dependency. Only an
+    # existing relocation registry invokes its authoritative inhibitory reader.
+    fences = home / "intent/repository-relocations/write-fences"
+    if fences.exists() or fences.is_symlink():
+        from intent_guardian_parts.repository_relocation import require_relocation_write_allowed
+        try:
+            require_relocation_write_allowed(home / "auto-sediment-source.json", workspace=binding.root)
+        except RuntimeError as error:
+            raise SedimentError(str(error)) from error
+    if not binding.root.is_dir() or not binding.common_dir.is_dir():
+        raise SedimentError("source binding changed before execution; resolve again on the next run")
+
+
+def run_in_isolated_worktree(home: Path, binding: SourceBinding) -> int:
     """Run Git-writing modes away from the caller's possibly dirty worktree."""
     launch_lock = acquire_lock(home / "auto-sediment-launch.lock")
     worktree: Path | None = None
     try:
-        common = run_command(
-            ["git", "rev-parse", "--path-format=absolute", "--git-common-dir"]
-        )
-        if common.returncode != 0:
-            detail = common.stderr.strip() or common.stdout.strip()
-            raise SedimentError(f"cannot locate git common directory: {detail[:500]}")
-        common_dir = Path(common.stdout.strip()).resolve()
-        runtime_root = common_dir.parent / ".worktrees"
+        require_source_not_relocating(home, binding)
+        runtime_root = binding.common_dir.parent / ".worktrees"
         runtime_root.mkdir(parents=True, exist_ok=True)
         worktree = runtime_root / (
             f"auto-sediment-runtime-{os.getpid()}-{time.time_ns()}"
         )
         added = run_command(
-            ["git", "worktree", "add", "--detach", str(worktree), "HEAD"]
+            ["git", "worktree", "add", "--detach", str(worktree), binding.head]
         )
         if added.returncode != 0:
             detail = added.stderr.strip() or added.stdout.strip()
             raise SedimentError(f"cannot create isolated worktree: {detail[:500]}")
-        relative_script = Path(__file__).resolve().relative_to(REPO_ROOT)
         environment = os.environ.copy()
         environment[ISOLATED_RUN_ENV] = "1"
+        environment["PYTHONDONTWRITEBYTECODE"] = "1"
         try:
             completed = subprocess.run(
-                [sys.executable, str(worktree / relative_script), *sys.argv[1:]],
+                [
+                    sys.executable, str(Path(__file__).resolve()), *sys.argv[1:],
+                    "--source-root", str(worktree),
+                ],
                 cwd=worktree,
                 env=environment,
                 check=False,
@@ -539,7 +620,7 @@ def extract_skill_truth() -> str:
     end = text.find("## 4. 收尾", start)
     if start < 0 or end < 0:
         raise SedimentError("sediment skill is missing §1 or §4")
-    templates_root = REPO_ROOT / "templates" / "knowledge"
+    templates_root = RUNTIME_ROOT / "templates" / "knowledge"
     template_paths = [templates_root / "schema.json"] + sorted(
         path for path in templates_root.glob("*.md") if path.name != "problem-card.md"
     )
@@ -547,9 +628,9 @@ def extract_skill_truth() -> str:
     for path in template_paths:
         try:
             blocks.append(
-                f"--- BEGIN {path.relative_to(REPO_ROOT)} ---\n"
+                f"--- BEGIN {path.relative_to(RUNTIME_ROOT)} ---\n"
                 f"{path.read_text(encoding='utf-8').rstrip()}\n"
-                f"--- END {path.relative_to(REPO_ROOT)} ---"
+                f"--- END {path.relative_to(RUNTIME_ROOT)} ---"
             )
         except (OSError, UnicodeError) as error:
             raise SedimentError(f"cannot read sedimentation template {path}: {error}") from error
@@ -898,7 +979,7 @@ def render_document(
         lines.append(f"sedimented_by: {base_fields['sedimented_by']}")
     lines.extend(["---", "", body, ""])
     rendered = "\n".join(lines)
-    semantic_errors = validate_document(rendered, root=REPO_ROOT, require_v2=True)
+    semantic_errors = validate_document(rendered, root=RUNTIME_ROOT, require_v2=True)
     if semantic_errors:
         raise SedimentError(
             "generated markdown violates sedimentation-v2: " + "; ".join(semantic_errors)
@@ -1064,6 +1145,14 @@ def git_changed_knowledge() -> list[Path]:
     return [REPO_ROOT / line for line in completed.stdout.splitlines() if line]
 
 
+def validation_command(script: str, *arguments: str) -> list[str]:
+    """Execute this runtime's validator against the bound authoring data."""
+    return [
+        sys.executable, str(RUNTIME_ROOT / "scripts" / "kb" / script),
+        "--repo-root", str(REPO_ROOT), *arguments,
+    ]
+
+
 def validate_and_commit(dispositions: list[Disposition], kb_index: KbIndexCli) -> str:
     document_paths = sorted(
         {path for item in dispositions for path in item.changed_paths},
@@ -1074,14 +1163,14 @@ def validate_and_commit(dispositions: list[Disposition], kb_index: KbIndexCli) -
             ["git", "add", "--", *[str(path.relative_to(REPO_ROOT)) for path in document_paths]],
             "git add generated documents",
         )
-    require_success([sys.executable, str(REPO_ROOT / "scripts/kb/lint-frontmatter.py")], "lint-frontmatter")
+    require_success(validation_command("lint-frontmatter.py"), "lint-frontmatter")
     require_success(
-        [sys.executable, str(REPO_ROOT / "scripts/kb/lint-sedimentation.py")],
+        validation_command("lint-sedimentation.py"),
         "lint-sedimentation",
     )
-    require_success([sys.executable, str(REPO_ROOT / "scripts/kb/build-index-md.py")], "build-index-md")
+    require_success(validation_command("build-index-md.py"), "build-index-md")
     require_success(
-        [sys.executable, str(REPO_ROOT / "scripts/kb/build-corpus-manifest.py")],
+        validation_command("build-corpus-manifest.py"),
         "build-corpus-manifest",
     )
     index_path = REPO_ROOT / "knowledge" / "INDEX.md"
@@ -1098,7 +1187,7 @@ def validate_and_commit(dispositions: list[Disposition], kb_index: KbIndexCli) -
     )
     changed = git_changed_knowledge()
     deny = run_command(
-        [sys.executable, str(REPO_ROOT / "scripts/kb/kb-deny-lint.py"), *[str(path) for path in changed]]
+        validation_command("kb-deny-lint.py", *[str(path) for path in changed])
     )
     if deny.stdout.strip():
         print(deny.stdout.strip())
@@ -1394,6 +1483,10 @@ def parse_args() -> argparse.Namespace:
     mode.add_argument("--resume", metavar="RUN_ID")
     mode.add_argument("--resolve-manual", metavar="RUN_ID")
     parser.add_argument(
+        "--source-root", type=Path,
+        help="absolute authoring checkout (otherwise use auto-sediment-source.json or this source checkout)",
+    )
+    parser.add_argument(
         "--resolution-file",
         type=Path,
         help="human-approved JSON array used with --resolve-manual",
@@ -1590,8 +1683,15 @@ def run_manual_resolution(
 
 
 def main() -> int:
+    global REPO_ROOT
     args = parse_args()
     home = kb_home()
+    try:
+        binding = resolve_source_binding(args, home)
+        REPO_ROOT = binding.root
+    except (SedimentError, OSError, UnicodeError) as error:
+        print(f"auto-sediment: {error}", file=sys.stderr)
+        return 2
     home.mkdir(parents=True, exist_ok=True)
     if (
         not args.decide_only
@@ -1599,7 +1699,7 @@ def main() -> int:
         and os.environ.get(ISOLATED_RUN_ENV) != "1"
     ):
         try:
-            return run_in_isolated_worktree(home)
+            return run_in_isolated_worktree(home, binding)
         except (SedimentError, OSError, UnicodeError) as error:
             print(f"auto-sediment: {error}", file=sys.stderr)
             return 2
@@ -1621,6 +1721,7 @@ def main() -> int:
     lock_handle = None
     try:
         lock_handle = acquire_lock(home / "auto-sediment.lock")
+        require_source_not_relocating(home, binding)
         if args.resolve_manual:
             return run_manual_resolution(
                 args,

@@ -184,7 +184,8 @@ class GuardianStringFlowNativeTests(unittest.TestCase):
                 installed = installer._registry_add(codex, prepared.marketplace, runner,
                     expected_version=prepared.descriptor["delivery_generation"]["plugin_version"])
                 kb = Path(env["SULDE_KB_HOME"])
-                installer._install_launchers(installed, kb, runner, platform="posix")
+                candidate._prepare_isolated_hook_launchers(installed, kb, runner,
+                    platform="posix", environment=env)
                 installer._smoke_installed(installed, kb, codex=codex,
                     expected_tree_sha256=prepared.plugin_tree_sha256, runner=runner)
                 module = "runtime/scripts/kb/python_string_flow.py"

@@ -1,0 +1,39 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/Users/eric/.claude/plugins/data/sulde-cc/kb/venv/bin/python",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_intent_guardian",
+        "tests.test_intervention",
+        "tests.test_agent_runtime",
+        "tests.test_native_decision_journal",
+        "tests.test_operational_readiness",
+        "tests.test_sulde_statusline",
+        "tests.test_human_grant",
+        "tests.test_grant_broker"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The supported isolated runner completed 459 tests in 92.918 seconds with exit 0 on the integrated H01+H02 tree.",
+    "The suite covers intent routing, interventions, managed runtime, native decision journaling, readiness, statusline, HumanGrantV2 and GrantBroker without installing a plugin or changing production configuration."
+  ],
+  "findings": [],
+  "kind": "system_tests",
+  "requirements": [],
+  "run_id": "run-gpe-142abf817c36c4687d1480b1",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "The supported isolated Guardian baseline plus accepted H01 and integrated H02 passes 459 tests.",
+  "task_id": "H02-grant-broker",
+  "verdict": "pass"
+}

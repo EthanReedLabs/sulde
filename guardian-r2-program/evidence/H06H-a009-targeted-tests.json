@@ -1,0 +1,7 @@
+{
+  "schema":"sulde-guardian-program-evidence-v1","scope":"task","task_id":"H06H-r2-final-acceptance",
+  "baseline":"10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2","run_id":"run-gpe-4efe615231a4f18a96ee09f8","verdict":"pass","kind":"targeted_tests",
+  "summary":"H06H focused composition and authority-bound replay validation pass three tests with sixteen accepted public-boundary cases.",
+  "facts":["3 H06H tests pass in 2.986 seconds","composition sub-suite has zero failures, errors and skips"],"requirements":[],"findings":["FR2-H06H-003"],"acceptance":[],
+  "commands":[{"argv":["python3","-B","-m","unittest","-v","tests.test_r2_guardian_integration"],"exit_code":0,"result":"pass"}],"artifacts":[]
+}

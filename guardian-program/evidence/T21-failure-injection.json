@@ -1,0 +1,27 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T21-authority-ledger-compat",
+  "kind": "failure_injection",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-c4d6a18cabdc0a254f1a2eb5",
+  "verdict": "pass",
+  "summary": "Expired receipts, stale task epochs, prepared crashes and unbound Codex sessions fail closed while refreshed or recovered typed authority applies once.",
+  "facts": [
+    "An expired undecided request was refreshed with a distinct identity and the old receipt could not be replayed.",
+    "A task-epoch drift superseded the prepared transaction before apply.",
+    "A crash after prepare recovered the same typed request exactly once.",
+    "Missing or mismatched Codex session identity failed before any authority write."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "T21-seven-focused-transaction-journeys"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

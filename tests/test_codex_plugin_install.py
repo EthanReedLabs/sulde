@@ -252,6 +252,14 @@ elif args[:2] == ["plugin", "remove"]:
     state["installed"] = None
     state["version"] = None
     print(json.dumps({"pluginId": "sulde@sulde-local"}))
+elif args == ["plugin", "list", "--json"]:
+    rows = []
+    if state.get("installed"):
+        source = str(Path(state["marketplace"]) / "plugins/sulde") if state.get("marketplace") else state["installed"]
+        rows.append({"pluginId": "sulde@sulde-local", "name": "sulde", "marketplaceName": "sulde-local",
+                     "version": state["version"], "installed": True,
+                     "source": {"source": "local", "path": source}})
+    print(json.dumps({"installed": rows, "available": []}))
 elif args == ["plugin", "list"]:
     if state.get("installed"):
         launcher_manifest = (
@@ -397,8 +405,12 @@ print(os.environ.get("FAKE_PS_OUTPUT", ""), end="")
 '''
 
 
-@unittest.skipIf(os.name == "nt", "fixture uses a POSIX executable shim")
-class CodexPluginInstallTests(unittest.TestCase):
+class CodexPluginInstallFixture:
+    # Historical installer/retirement fixtures intentionally exercise the
+    # legacy transport contract. Stable migration has its own explicit suite;
+    # never bypass the production migration gate with a test environment flag.
+    hook_protocol = "legacy"
+
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
@@ -456,10 +468,204 @@ class CodexPluginInstallTests(unittest.TestCase):
         self.environment_patch.stop()
         self.temp.cleanup()
 
+    def run_installer(
+        self,
+        *,
+        tamper: bool = False,
+        prune_path: Path | None = None,
+        loaded_labels: tuple[str, ...] = (),
+        failpoint: str | None = None,
+        ps_output: str = "",
+        hook_trust_status: str = "trusted",
+        prepare_artifact: bool = True,
+        initialize_launchctl_state: bool = True,
+        refresh_system_skills: bool = False,
+        extra_environment: dict[str, str] | None = None,
+        extra_args: list[str] | None = None,
+        recover_only: bool = False,
+    ) -> subprocess.CompletedProcess[str]:
+        if recover_only:
+            # Same environment as the full chain (the fake codex must answer
+            # the marketplace inspection during recovery), recover-only argv.
+            environment = {
+                "HOME": str(self.fixture_home),
+                "CODEX_HOME": str(self.codex_home),
+                "SULDE_KB_HOME": str(self.kb_home),
+                "SULDE_LAUNCHAGENTS_DIR": str(
+                    self.root / "Library" / "LaunchAgents"
+                ),
+                "CLAUDE_CONFIG_DIR": str(self.root / "claude-config"),
+                "XDG_CACHE_HOME": str(self.root / "xdg-cache"),
+                "TMPDIR": str(self.fixture_tmp),
+                "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+                "LANG": "C.UTF-8",
+                "LC_ALL": "C.UTF-8",
+                "PYTHONDONTWRITEBYTECODE": "1",
+                "FAKE_CODEX_STATE": str(self.state),
+                "SULDE_LAUNCHCTL": str(self.fake_launchctl),
+                "SULDE_PS": str(self.fake_ps),
+                "FAKE_LAUNCHCTL_LABELS": json.dumps([]),
+                "FAKE_PS_OUTPUT": "",
+                "FAKE_CODEX_PRE_TOOL_TRUST_STATUS": "trusted",
+                "FAKE_LAUNCHCTL_STATE": "{}",
+            }
+            if extra_environment:
+                environment.update(extra_environment)
+            return subprocess.run(
+                [
+                    sys.executable,
+                    str(INSTALLER),
+                    "--kb-home",
+                    str(self.kb_home),
+                    "--codex",
+                    str(self.fake),
+                    "--recover-only",
+                    "--json",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                env={**os.environ, **environment},
+                timeout=120,
+                check=False,
+            )
+        if prepare_artifact:
+            self.prepare_artifact()
+        environment = {
+            "HOME": str(self.fixture_home),
+            "CODEX_HOME": str(self.codex_home),
+            "SULDE_KB_HOME": str(self.kb_home),
+            "SULDE_LAUNCHAGENTS_DIR": str(
+                self.root / "Library" / "LaunchAgents"
+            ),
+            "CLAUDE_CONFIG_DIR": str(self.root / "claude-config"),
+            "XDG_CACHE_HOME": str(self.root / "xdg-cache"),
+            "TMPDIR": str(self.fixture_tmp),
+            "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+            "LANG": "C.UTF-8",
+            "LC_ALL": "C.UTF-8",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "FAKE_CODEX_STATE": str(self.state),
+            "SULDE_TEST_MODE": "1",
+            "SULDE_LAUNCHCTL": str(self.fake_launchctl),
+            "SULDE_PS": str(self.fake_ps),
+            "FAKE_PS_OUTPUT": ps_output,
+            "FAKE_LAUNCHCTL_LABELS": json.dumps(loaded_labels),
+            "FAKE_CODEX_PRE_TOOL_TRUST_STATUS": hook_trust_status,
+        }
+        if prepare_artifact:
+            environment["SULDE_TEST_PREPARED_ARTIFACT"] = "1"
+        launchctl_state = self.root / "launchctl-state.json"
+        if initialize_launchctl_state:
+            launchctl_state.write_text(json.dumps(loaded_labels), encoding="utf-8")
+        environment["FAKE_LAUNCHCTL_STATE"] = str(launchctl_state)
+        if tamper:
+            environment["FAKE_CODEX_TAMPER"] = "1"
+        if prune_path is not None:
+            environment["FAKE_CODEX_PRUNE_PATH"] = str(prune_path)
+        if failpoint is not None:
+            environment["SULDE_INSTALL_FAILPOINT"] = failpoint
+        if refresh_system_skills:
+            environment["FAKE_CODEX_REFRESH_SYSTEM_SKILLS"] = "1"
+        if extra_environment:
+            environment.update(extra_environment)
+        return subprocess.run(
+            [
+                sys.executable,
+                str(INSTALLER),
+                *(extra_args or []),
+                "--artifact-root",
+                str(self.artifact),
+                "--kb-home",
+                str(self.kb_home),
+                "--codex",
+                str(self.fake),
+                "--platform",
+                "posix",
+                "--json",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            env=environment,
+            timeout=120,
+            check=False,
+        )
+
+    def prepare_artifact(self) -> None:
+        if not (self.kb_home / "venv").is_dir():
+            self.kb_home.mkdir(parents=True, exist_ok=True)
+            venv.EnvBuilder(with_pip=False, system_site_packages=True).create(self.kb_home / "venv")
+        if self.artifact.exists():
+            return
+        if not self.artifact_template.exists():
+            spec = importlib.util.spec_from_file_location(
+                "test_stage_codex_fixture", ROOT / "scripts/release/stage_plugin.py"
+            )
+            if spec is None or spec.loader is None:
+                raise RuntimeError("stage_plugin.py cannot be loaded")
+            stage = importlib.util.module_from_spec(spec)
+            sys.modules[spec.name] = stage
+            spec.loader.exec_module(stage)
+            entries = []
+            for source in sorted(ROOT.rglob("*")):
+                if not source.is_file() or source.is_symlink():
+                    continue
+                relative = source.relative_to(ROOT)
+                if (
+                    relative.parts[0] in {".git", ".codex-agent"}
+                    or "__pycache__" in relative.parts
+                    or relative.suffix.casefold() == ".pyc"
+                ):
+                    continue
+                mode = 0o100755 if source.stat().st_mode & stat.S_IXUSR else 0o100644
+                entries.append(stage.GitEntry(relative, mode))
+            with mock.patch.object(stage, "release_entries", return_value=entries):
+                stage.stage_codex(ROOT, self.artifact_template, "posix")
+            if self.hook_protocol == "legacy":
+                hook_manifest = self.artifact_template / "plugins/sulde/hooks/hooks.json"
+                hooks = json.loads(hook_manifest.read_text(encoding="utf-8"))
+                event_names = {
+                    "PreToolUse": "pre-tool-use", "PermissionRequest": "permission-request",
+                    "PostToolUse": "post-tool-use", "Stop": "stop", "SessionStart": "session-start",
+                    "UserPromptSubmit": "user-prompt-submit",
+                }
+                for event, name in event_names.items():
+                    hooks["hooks"][event][0]["hooks"][0]["command"] = (
+                        'bash "${PLUGIN_ROOT}/scripts/run-hook.sh" ' + name
+                    )
+                hook_manifest.write_text(json.dumps(hooks), encoding="utf-8")
+            configurator = (
+                self.artifact_template
+                / "plugins/sulde/runtime/scripts/kb/configure-global.py"
+            )
+            source = configurator.read_text(encoding="utf-8")
+            source = source.replace(
+                'cache = Path.home() / ".claude/plugins/cache/sulde/sulde-cc"',
+                'cache = Path("/test-fixture/no-claude-cache")',
+            )
+            configurator.write_text(source, encoding="utf-8")
+            installer = load_installer()
+            installer._complete_staged_native_runtime(
+                self.artifact_template, platform="posix"
+            )
+        self.artifact.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(self.artifact_template, self.artifact)
+
+
+
+@unittest.skipIf(os.name == "nt", "fixture uses a POSIX executable shim")
+class CodexPluginInstallTests(CodexPluginInstallFixture, unittest.TestCase):
+
+
     def test_installer_imports_shared_codex_cli_authority(self) -> None:
         installer = load_installer()
         contract = sys.modules[installer.successful_version_identity.__module__]
-        self.assertEqual(installer.AUDITED_CODEX_VERSION, "codex-cli 0.154.0")
+        self.assertEqual(installer.AUDITED_CODEX_VERSION, "codex-cli 0.160.0")
         self.assertEqual(
             installer.DEFAULT_CODEX_EXECUTABLE,
             "codex",
@@ -732,11 +938,17 @@ class CodexPluginInstallTests(unittest.TestCase):
             (0, "codex-cli 0.152.0\n"),
             (0, "codex-cli 0.153.0\n"),
             (0, "codex-cli 0.153.4\n"),
+            (0, "codex-cli 0.154.0\n"),
             (0, "codex-cli 0.155.0\n"),
-            (0, "wrapper codex-cli 0.154.0\n"),
-            (0, "codex-cli 0.154.0 future\n"),
-            (0, " codex-cli 0.154.0\n"),
-            (0, "codex-cli 0.154.0\n\n"),
+            (0, "codex-cli 0.156.0\n"),
+            (0, "codex-cli 0.155.1\n"),
+            (0, "codex-cli 0.159.0\n"),
+            (0, "codex-cli 0.160.1\n"),
+            (0, "codex-cli 0.161.0\n"),
+            (0, "wrapper codex-cli 0.160.0\n"),
+            (0, "codex-cli 0.160.0 future\n"),
+            (0, " codex-cli 0.160.0\n"),
+            (0, "codex-cli 0.160.0\n\n"),
             (1, installer.AUDITED_CODEX_VERSION + "\n"),
         ):
             with self.subTest(returncode=returncode, stdout=stdout):
@@ -754,7 +966,7 @@ class CodexPluginInstallTests(unittest.TestCase):
 
                 with self.assertRaisesRegex(
                     installer.InstallError,
-                    "exactly codex-cli 0.154.0",
+                    "exactly codex-cli 0.160.0",
                 ):
                     installer._codex_cli_installed_smoke(
                         self.fake,
@@ -887,127 +1099,7 @@ class CodexPluginInstallTests(unittest.TestCase):
                     runner,
                 )
 
-    def run_installer(
-        self,
-        *,
-        tamper: bool = False,
-        prune_path: Path | None = None,
-        loaded_labels: tuple[str, ...] = (),
-        failpoint: str | None = None,
-        ps_output: str = "",
-        hook_trust_status: str = "trusted",
-        prepare_artifact: bool = True,
-        initialize_launchctl_state: bool = True,
-        refresh_system_skills: bool = False,
-    ) -> subprocess.CompletedProcess[str]:
-        if prepare_artifact:
-            self.prepare_artifact()
-        environment = {
-            "HOME": str(self.fixture_home),
-            "CODEX_HOME": str(self.codex_home),
-            "SULDE_KB_HOME": str(self.kb_home),
-            "SULDE_LAUNCHAGENTS_DIR": str(
-                self.root / "Library" / "LaunchAgents"
-            ),
-            "CLAUDE_CONFIG_DIR": str(self.root / "claude-config"),
-            "XDG_CACHE_HOME": str(self.root / "xdg-cache"),
-            "TMPDIR": str(self.fixture_tmp),
-            "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
-            "LANG": "C.UTF-8",
-            "LC_ALL": "C.UTF-8",
-            "PYTHONDONTWRITEBYTECODE": "1",
-            "FAKE_CODEX_STATE": str(self.state),
-            "SULDE_TEST_MODE": "1",
-            "SULDE_LAUNCHCTL": str(self.fake_launchctl),
-            "SULDE_PS": str(self.fake_ps),
-            "FAKE_PS_OUTPUT": ps_output,
-            "FAKE_LAUNCHCTL_LABELS": json.dumps(loaded_labels),
-            "FAKE_CODEX_PRE_TOOL_TRUST_STATUS": hook_trust_status,
-        }
-        if prepare_artifact:
-            environment["SULDE_TEST_PREPARED_ARTIFACT"] = "1"
-        launchctl_state = self.root / "launchctl-state.json"
-        if initialize_launchctl_state:
-            launchctl_state.write_text(json.dumps(loaded_labels), encoding="utf-8")
-        environment["FAKE_LAUNCHCTL_STATE"] = str(launchctl_state)
-        if tamper:
-            environment["FAKE_CODEX_TAMPER"] = "1"
-        if prune_path is not None:
-            environment["FAKE_CODEX_PRUNE_PATH"] = str(prune_path)
-        if failpoint is not None:
-            environment["SULDE_INSTALL_FAILPOINT"] = failpoint
-        if refresh_system_skills:
-            environment["FAKE_CODEX_REFRESH_SYSTEM_SKILLS"] = "1"
-        return subprocess.run(
-            [
-                sys.executable,
-                str(INSTALLER),
-                "--artifact-root",
-                str(self.artifact),
-                "--kb-home",
-                str(self.kb_home),
-                "--codex",
-                str(self.fake),
-                "--platform",
-                "posix",
-                "--json",
-            ],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            env=environment,
-            timeout=120,
-            check=False,
-        )
 
-    def prepare_artifact(self) -> None:
-        if not (self.kb_home / "venv").is_dir():
-            self.kb_home.mkdir(parents=True, exist_ok=True)
-            venv.EnvBuilder(with_pip=False, system_site_packages=True).create(self.kb_home / "venv")
-        if self.artifact.exists():
-            return
-        if not self.artifact_template.exists():
-            spec = importlib.util.spec_from_file_location(
-                "test_stage_codex_fixture", ROOT / "scripts/release/stage_plugin.py"
-            )
-            if spec is None or spec.loader is None:
-                raise RuntimeError("stage_plugin.py cannot be loaded")
-            stage = importlib.util.module_from_spec(spec)
-            sys.modules[spec.name] = stage
-            spec.loader.exec_module(stage)
-            entries = []
-            for source in sorted(ROOT.rglob("*")):
-                if not source.is_file() or source.is_symlink():
-                    continue
-                relative = source.relative_to(ROOT)
-                if (
-                    relative.parts[0] in {".git", ".codex-agent"}
-                    or "__pycache__" in relative.parts
-                    or relative.suffix.casefold() == ".pyc"
-                ):
-                    continue
-                mode = 0o100755 if source.stat().st_mode & stat.S_IXUSR else 0o100644
-                entries.append(stage.GitEntry(relative, mode))
-            with mock.patch.object(stage, "release_entries", return_value=entries):
-                stage.stage_codex(ROOT, self.artifact_template, "posix")
-            configurator = (
-                self.artifact_template
-                / "plugins/sulde/runtime/scripts/kb/configure-global.py"
-            )
-            source = configurator.read_text(encoding="utf-8")
-            source = source.replace(
-                'cache_root = Path.home() / ".claude/plugins/cache/sulde"',
-                'cache_root = Path("/test-fixture/no-claude-cache")',
-            )
-            configurator.write_text(source, encoding="utf-8")
-            installer = load_installer()
-            installer._complete_staged_native_runtime(
-                self.artifact_template, platform="posix"
-            )
-        self.artifact.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(self.artifact_template, self.artifact)
 
     def test_install_atomically_verifies_scheduler_generation_before_return(self) -> None:
         completed = self.run_installer()
@@ -1262,7 +1354,7 @@ class CodexPluginInstallTests(unittest.TestCase):
         native = deployment["native_runtime_authority"]
         self.assertEqual(native["schema"], "sulde-installed-native-runtime-authority-v1")
         self.assertEqual(native["spec_version"], 2)
-        self.assertEqual(native["codex_version"], "codex-cli 0.154.0")
+        self.assertEqual(native["codex_version"], "codex-cli 0.160.0")
         self.assertEqual(
             deployment["native_runtime_authority_sha256"],
             native["authority_sha256"],
@@ -1321,7 +1413,7 @@ class CodexPluginInstallTests(unittest.TestCase):
         installed_contract = importlib.util.module_from_spec(contract_spec)
         sys.modules[contract_spec.name] = installed_contract
         contract_spec.loader.exec_module(installed_contract)
-        self.assertEqual(installed_contract.AUDITED_CODEX_VERSION, "codex-cli 0.154.0")
+        self.assertEqual(installed_contract.AUDITED_CODEX_VERSION, "codex-cli 0.160.0")
         self.assertFalse(list((installed / "runtime").rglob("__pycache__")))
         self.assertFalse(list((installed / "runtime").rglob("*.pyc")))
         self.assertTrue((installed / "hooks" / "hooks.json").is_file())
@@ -2552,6 +2644,14 @@ class CodexPluginInstallTests(unittest.TestCase):
             candidate.descriptor,
             candidate.plugin_tree_sha256,
         )
+        # This is a receipt-routing unit fixture, not stable migration proof.
+        # Supply the explicit legacy transport already prepared by this class
+        # for both artifact locations; absent input must not select the current
+        # source template and accidentally require a real host inventory.
+        for artifact in (candidate, canonical):
+            hooks = artifact.marketplace / "plugins/sulde/hooks/hooks.json"
+            hooks.parent.mkdir(parents=True)
+            hooks.write_bytes((self.artifact / "plugins/sulde/hooks/hooks.json").read_bytes())
         receipt = {"receipt_sha256": "b" * 64, "python": installer.invoking_environment()}
         live = {"schema": "sulde-codex-promotion-prestate-v1"}
 
@@ -2920,7 +3020,7 @@ class CodexPluginInstallTests(unittest.TestCase):
             sealed["production_codex_resolved_executable"],
             str(self.fake.resolve()),
         )
-        self.assertEqual(sealed["codex_version"], "codex-cli 0.154.0")
+        self.assertEqual(sealed["codex_version"], "codex-cli 0.160.0")
 
     def test_recovery_rejects_recomputed_native_authority_drift(self) -> None:
         installer = load_installer()
@@ -3469,3 +3569,307 @@ class CodexPluginInstallTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipIf(os.name == "nt", "fixture uses a POSIX executable shim")
+class GenerationSwitchFenceChainTests(CodexPluginInstallFixture, unittest.TestCase):
+    """R3 followup 2/3: fence lifecycle through the REAL install chain.
+
+    No _install_locked mocking: the fence must be observable in-switch
+    during the actual transaction and cleared after commit; a block-policy
+    refusal with an incompatible active lease must leave zero production
+    mutations.
+    """
+
+    def test_fence_is_in_switch_during_chain_and_cleared_after_commit(self) -> None:
+        leases_dir = self.root / "workspaces" / "ws-a" / "run-leases"
+        leases_dir.mkdir(parents=True)
+        completed = self.run_installer(
+            extra_environment={
+                "SULDE_GENERATION_SWITCH_POLICY": "block",
+                "SULDE_ACTIVE_LEASES_DIRS": str(leases_dir),
+            }
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        result = json.loads(completed.stdout)
+        switch = result["generation_switch"]
+        self.assertEqual(switch["gate"]["policy"], "block")
+        self.assertTrue(switch["gate"]["compatible"])
+        recheck = switch["recheck"]
+        self.assertEqual(recheck["policy"], "block")
+        self.assertTrue(recheck["compatible"])
+        self.assertEqual(
+            recheck["fence_state_at_recheck"],
+            "in-switch",
+            "the fence must be active during the real transaction",
+        )
+        self.assertTrue(recheck.get("fence_transaction_id"))
+        self.assertFalse(
+            (self.kb_home / ".generation-switch-fence.json").exists(),
+            "the fence must be cleared after commit",
+        )
+
+    def test_block_refusal_with_active_old_generation_lease_mutates_nothing(
+        self,
+    ) -> None:
+        leases_dir = self.root / "workspaces" / "ws-a" / "run-leases"
+        leases_dir.mkdir(parents=True)
+        # An active lease for a generation that differs from the switch
+        # target: under block policy the install must refuse before any
+        # production change.
+        (leases_dir / "9999-1.lease").write_text(
+            json.dumps(
+                {
+                    "schema": "sulde-run-lease-v1",
+                    "pid": 1,
+                    "label": "old-run",
+                    "runtime_generation": "0.0.0-test:" + "a" * 64,
+                    "acquired_at": "2026-09-26T00:00:00Z",
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        completed = self.run_installer(
+            extra_environment={
+                "SULDE_GENERATION_SWITCH_POLICY": "block",
+                "SULDE_ACTIVE_LEASES_DIRS": str(leases_dir),
+            }
+        )
+        self.assertNotEqual(completed.returncode, 0, completed.stdout)
+        self.assertIn("generation switch blocked", completed.stderr)
+        self.assertFalse(
+            (self.kb_home / "deployment-generation.json").exists(),
+            "no deployment generation may be published",
+        )
+        self.assertFalse(
+            (self.kb_home / ".generation-switch-fence.json").exists(),
+            "a refused install must not leave a fence",
+        )
+        self.assertFalse(
+            (self.kb_home / "transactions").exists(),
+            "no transaction journal may exist for a pre-mutation refusal",
+        )
+        self.assertTrue(
+            (leases_dir / "9999-1.lease").exists(),
+            "the observed lease is never touched",
+        )
+
+    def _active_transaction_id(self) -> str:
+        recovery = (
+            self.kb_home / ".install-recovery" / "active.json"
+        )
+        active = json.loads(recovery.read_text(encoding="utf-8"))
+        return active["transaction_id"]
+
+    def test_recovery_clears_only_the_matching_fence(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts" / "kb"))
+        from generation_fence import write_fence
+
+        # Crash mid-transaction: an active transaction is left behind.
+        killed = self.run_installer(failpoint="journal.after.prepared")
+        self.assertNotEqual(killed.returncode, 0)
+        transaction_id = self._active_transaction_id()
+        transaction = load_installer().load_active_transaction(self.kb_home / ".install-recovery")
+
+        # A fence MATCHING the transaction is cleared by recovery; a fence
+        # with a foreign identity is never touched.
+        matching = self.kb_home / ".generation-switch-fence.json"
+        write_fence(
+            self.kb_home,
+            from_generation=transaction.descriptor["old_generation"],
+            to_generation=transaction.descriptor["new_generation"],
+            transaction_id=transaction_id,
+            transaction_descriptor_sha256=transaction.descriptor_sha256,
+        )
+        foreign = self.kb_home / ".generation-switch-fence.foreign.json"
+        foreign.write_text(
+            json.dumps(
+                {
+                    "schema": "sulde-generation-switch-fence-v1",
+                    "state": "in-switch",
+                    "to_generation": "gen-x",
+                    "transaction_id": "other-transaction",
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        completed = self.run_installer()
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertFalse(
+            matching.exists(),
+            "recovery must clear the fence matching the transaction",
+        )
+        self.assertTrue(
+            foreign.exists(),
+            "a foreign fence is never cleared blind",
+        )
+
+    def test_unrelated_install_retains_orphan_fence(self) -> None:
+        sys.path.insert(0, str(ROOT / "scripts" / "kb"))
+        from generation_fence import write_fence
+
+        # A2.3/A1: an orphan fence (transaction never began) is historical
+        # protection for every OTHER install — an unrelated successful
+        # install must retain it, never clear it blind.  Even --recover-only
+        # must retain it without positive bound evidence.
+        fence_file = self.kb_home / ".generation-switch-fence.json"
+        write_fence(
+            self.kb_home,
+            from_generation="gen-old:" + "a" * 64,
+            to_generation="gen-new:" + "b" * 64,
+            transaction_id="pre-transaction-orphan",
+        )
+        completed = self.run_installer()
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertTrue(
+            fence_file.exists(),
+            "an unrelated install must retain a pre-existing orphan fence",
+        )
+        # Missing journal is not evidence that an old production effect never occurred.
+        recovered = self.run_installer(recover_only=True)
+        self.assertEqual(recovered.returncode, 0, recovered.stderr)
+        recovery_result = json.loads(recovered.stdout)
+        self.assertEqual(recovery_result["status"], "recovery_required")
+        self.assertTrue(fence_file.exists())
+
+
+@unittest.skipIf(os.name == "nt", "fixture uses a POSIX executable shim")
+class RecoverOnlyFenceLifecycleTests(CodexPluginInstallFixture, unittest.TestCase):
+    """A1/A2: --recover-only fence lifecycle on the official path.
+
+    Uses the real failpoint install chain and the real --recover-only CLI
+    entry (no _install_locked mocking).  Foreign identity means a fence on
+    the OFFICIAL path whose transaction id does not match the recovered
+    transaction.
+    """
+
+    def _recover_only(self) -> subprocess.CompletedProcess[str]:
+        return self.run_installer(recover_only=True)
+
+    def _fence_path(self) -> Path:
+        return self.kb_home / ".generation-switch-fence.json"
+
+    def _write_fence(self, transaction_id: str) -> None:
+        self._fence_path().write_text(
+            json.dumps(
+                {
+                    "schema": "sulde-generation-switch-fence-v1",
+                    "state": "in-switch",
+                    "to_generation": "gen-new:" + "b" * 64,
+                    "transaction_id": transaction_id,
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+    def test_recover_only_clears_matching_fence_and_restores_admission(
+        self,
+    ) -> None:
+        # A first (observe) install establishes the current generation; the
+        # active lease then carries that SAME generation (compatible
+        # co-existence), so the block-policy failpoint install proceeds past
+        # the gate, publishes its fence, and is killed mid-transaction.
+        first = self.run_installer()
+        self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+        generation = json.loads(
+            (self.kb_home / "deployment-generation.json").read_text(
+                encoding="utf-8"
+            )
+        )["generation"]
+        leases_dir = self.root / "workspaces" / "ws-a" / "run-leases"
+        leases_dir.mkdir(parents=True, exist_ok=True)
+        (leases_dir / "active.lease").write_text(
+            json.dumps(
+                {
+                    "schema": "sulde-run-lease-v1",
+                    "pid": 1,
+                    "label": "active-run",
+                    "runtime_generation": generation,
+                    "acquired_at": "2026-09-26T00:00:00Z",
+                },
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        killed = self.run_installer(
+            failpoint="fence.after_publish",
+            extra_environment={
+                "SULDE_GENERATION_SWITCH_POLICY": "block",
+                "SULDE_ACTIVE_LEASES_DIRS": str(leases_dir),
+            },
+        )
+        self.assertNotEqual(killed.returncode, 0, killed.stdout)
+        self.assertTrue(
+            self._fence_path().exists(),
+            "the killed in-switch install must have published its fence",
+        )
+        # --recover-only on the official path: recovery succeeds and the
+        # matching fence is cleared.
+        recovered = self._recover_only()
+        self.assertEqual(recovered.returncode, 0, recovered.stdout + recovered.stderr)
+        result = json.loads(recovered.stdout)
+        self.assertIn(
+            result["status"], ("recovered", "recovered_old_generation")
+        )
+        self.assertTrue(result["fence"]["cleared"])
+        self.assertFalse(self._fence_path().exists())
+        # Admission recovered: the fence no longer refuses old generations.
+        sys.path.insert(0, str(ROOT / "scripts" / "kb"))
+        from generation_fence import fence_refusal
+
+        self.assertIsNone(
+            fence_refusal(self.kb_home, run_generation="gen-old:" + "a" * 64)
+        )
+
+    def test_recover_only_keeps_foreign_identity_fence(self) -> None:
+        # Real failpoint install leaves an active transaction; the fence on
+        # the OFFICIAL path carries a FOREIGN transaction id.  Recovery
+        # succeeds but the foreign fence is retained (never cleared blind).
+        killed = self.run_installer(failpoint="journal.after.prepared")
+        self.assertNotEqual(killed.returncode, 0)
+        self._write_fence("foreign-transaction")
+        recovered = self._recover_only()
+        self.assertEqual(recovered.returncode, 0, recovered.stdout + recovered.stderr)
+        result = json.loads(recovered.stdout)
+        self.assertFalse(result["fence"]["cleared"])
+        self.assertEqual(result["fence"]["state"], "in-switch")
+        self.assertTrue(self._fence_path().exists())
+        del result
+        # Repeating recovery cannot turn missing foreign evidence into proof.
+        second = self._recover_only()
+        self.assertEqual(second.returncode, 0, second.stderr)
+        second_result = json.loads(second.stdout)
+        self.assertEqual(second_result["status"], "recovery_required")
+        self.assertTrue(self._fence_path().exists())
+
+    def test_recover_only_repeats_are_idempotent(self) -> None:
+        first = self._recover_only()
+        self.assertEqual(first.returncode, 0)
+        self.assertEqual(first.status if False else json.loads(first.stdout)["status"],
+                         "no_recovery_required")
+        second = self._recover_only()
+        self.assertEqual(second.returncode, 0)
+        self.assertEqual(json.loads(second.stdout)["status"], "no_recovery_required")
+
+    def test_observe_install_keeps_preexisting_historical_fence(self) -> None:
+        # A2.3: an observe-mode install never creates a fence and never
+        # clears a pre-existing historical one — through the REAL chain.
+        self.kb_home.mkdir(parents=True, exist_ok=True)
+        self._write_fence("historical-transaction")
+        completed = self.run_installer()
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        result = json.loads(completed.stdout)
+        # A2.3: observe never creates its own fence and never clears a
+        # pre-existing historical one through the real chain.
+        self.assertTrue(
+            self._fence_path().exists(),
+            "observe install must not clear a pre-existing historical fence",
+        )
+        del result

@@ -1,0 +1,10 @@
+{
+  "scope": "copied_project_hook_in_temporary_Git_root_with_spaces",
+  "patch_sha256": "f69ce10bb3121a4eb69981b917fb2117bdd987f943e278679d79049181d20f82",
+  "original_hook_sha256": "1e3414ccbc0f85c5d4ff63b60e3be3c593799f81dd7a20b83d84b99a60653ca2",
+  "dry_run_apply": "passed",
+  "isolated_apply": "passed",
+  "empty_nonbusiness_payload_exit": 0,
+  "external_source_unchanged": true,
+  "windows": "pending"
+}

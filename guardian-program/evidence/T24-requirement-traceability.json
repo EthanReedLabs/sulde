@@ -1,0 +1,36 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T24-p0-transaction-integration",
+  "kind": "requirement_traceability",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-9d84a3e7e26d5694fbc0c75a",
+  "verdict": "pass",
+  "summary": "T24 directly traces isolated production-shaped testing and zero-omission frozen-batch governance.",
+  "facts": [
+    "The supported runner proved production KB write denial before the 183-test isolated gate.",
+    "Every frozen task, outcome and T24 finding has an explicit report, evidence package and disposition."
+  ],
+  "requirements": ["DERIVED-ISOLATION", "PROGRAM-GOVERNANCE"],
+  "findings": [],
+  "acceptance": [
+    {
+      "requirement_id": "DERIVED-ISOLATION",
+      "clause": "测试不能写生产 KB，父宿主并发事件只能按窄协议归因",
+      "fact": "The supported isolated runner proved native write denial before testing; the two-session integration test attributes only exact provider/session/lane events and never reads or writes production ledger values."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "每个任务有证据包和问题处置，总纲零遗漏后才能关闭",
+      "fact": "T21 through T24 were integrated in the frozen order, all seven P0 outcomes have direct evidence, every finding has an explicit disposition, and non-goals remain outside the batch."
+    }
+  ],
+  "commands": [
+    {
+      "argv": ["python", "scripts/kb/guardian_program.py", "status", "guardian-program", "--verify-evidence"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

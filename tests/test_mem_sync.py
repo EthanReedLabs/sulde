@@ -343,14 +343,23 @@ class MemSyncIsolationAndRecoveryTests(unittest.TestCase):
 
         with mock.patch.object(MEM_SYNC.time, "sleep") as sleep:
             self.assertEqual(MEM_SYNC.scheduled_retry(args, operation), 0)
-        self.assertEqual(attempts, [1, 2, 3])
+        self.assertEqual(attempts, list(range(1, MEM_SYNC.SCHEDULED_MAX_ATTEMPTS + 1)))
         self.assertEqual(
             [call.args[0] for call in sleep.call_args_list],
             [
-                MEM_SYNC.SCHEDULED_BACKOFF_SECONDS,
-                MEM_SYNC.SCHEDULED_BACKOFF_SECONDS * 2,
+                MEM_SYNC.SCHEDULED_BACKOFF_SECONDS * 2 ** index
+                for index in range(MEM_SYNC.SCHEDULED_MAX_ATTEMPTS - 1)
             ],
         )
+
+    def test_retry_envelope_covers_a_real_opposite_phase_run(self) -> None:
+        # Export moves thousands of entries plus encryption and a git commit,
+        # so the follower's total backoff must be seconds, not milliseconds.
+        total = MEM_SYNC.SCHEDULED_BACKOFF_SECONDS * (
+            2 ** MEM_SYNC.SCHEDULED_MAX_ATTEMPTS - 1
+        )
+        self.assertGreaterEqual(MEM_SYNC.SCHEDULED_MAX_ATTEMPTS, 5)
+        self.assertGreaterEqual(total, 30.0)
 
     def test_manual_and_scheduler_transient_failures_have_distinct_exit_codes(self) -> None:
         for scheduled, expected in ((False, 2), (True, 75)):

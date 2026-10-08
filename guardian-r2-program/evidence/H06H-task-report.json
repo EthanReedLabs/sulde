@@ -1,0 +1,32 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06H-r2-final-acceptance",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-4efe615231a4f18a96ee09f8",
+  "verdict": "pass",
+  "kind": "task_report",
+  "summary": "The current H06H report records the accepted H06I task, final Codex release generation, completed local gates and the exact remaining Claude and native Windows hard gates without a false completion claim.",
+  "facts": [
+    "Final source branch HEAD is 920fd4c79ccc37971e2962ca2b27abd5d9a1d3ac.",
+    "Installed generation is 0.2.5+codex.20260828081159:efac6801160919fbbc4e7a638982b1c45e53efa7d6e83601acf1817a6ad6b46a.",
+    "Report SHA-256 is 152893500a612dced5c5c30f4921541663602ffe7c5e9d1e93739d3b5b432f5b.",
+    "The report explicitly preserves H06H system_verified and does not claim Claude live, native Windows, H06H accepted or R2 complete."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06H-003"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H06H-r2-final-acceptance.md",
+      "sha256": "152893500a612dced5c5c30f4921541663602ffe7c5e9d1e93739d3b5b432f5b"
+    }
+  ]
+}

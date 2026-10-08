@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "kind": "system_tests",
+  "baseline": "f8c830b02a814cf40c541ef861569882062174c0",
+  "run_id": "run-gpe-f218f0c4044547ecb9513656",
+  "verdict": "pass",
+  "summary": "The exact integrated dev candidate passes the official complete OS-isolated repository suite with production writes denied.",
+  "facts": [
+    "A clean full clone bound HEAD and local main to 19088721b17694931edf6584055493844df80a6d.",
+    "Python 3.10.7 with numpy 2.2.2 and PyYAML 6.0.3 ran 1356 tests in 329.927 seconds: all passed with six platform skips.",
+    "SULDE_PRODUCTION_KB_HOME pointed to a new empty local sentinel and the OS isolation runner reported no production-write violation."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

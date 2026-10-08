@@ -1,0 +1,40 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "history_migration",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "Five legacy accepted requirements are migrated as new current facts only after validating the fork boundary, old event chain, exact evidence bytes and current source ancestry.",
+  "facts": [
+    "The old ef81f9c0 event stream contains 1158 sequential events; every previous_sha256 and recomputed event digest matches, and seq1158 is program_completed with head b5304b7c48bb60e251dcab743bb09a853a9a72106218a563f2d9205848b2f178.",
+    "Old and current chains share exactly 101 events and common head 57ecfa0b9e59fa65c2d10732276e553499da02a862d5ab04ca217925b9387a1c; they diverge at seq102, so no post-fork event is replayed.",
+    "T10 requirement evidence SHA-256 95ae03123a6423bc5566473817dedeacdf1c8ea0fe6230192c7a0abcf1dcb6fa matches old seq1100 and accepted seq388.",
+    "T13 requirement evidence SHA-256 126ee53e8cb15ca3c452aef5be9e101fae36b0697522b8deb0536556aea62619 matches old seq1101 and accepted seq680.",
+    "T18 requirement evidence SHA-256 131f7d6e8ec82141f5d4de0049cf22e0ebf3e93f448c7ac91536b47f65d2305c matches old seq1102 and accepted seq583.",
+    "T37 requirement evidence SHA-256 fb7773a2909ce84c85cc0370692cfd82907c2ab79189e37d75c293726754031e matches old seq1103 and accepted seq1099.",
+    "Current HEAD descends from ebd9c2e, the accepted seq819 composition commit, and d8169a2, the T37 final closure commit; the current official full suite revalidates the evolved source."
+  ],
+  "requirements": ["WP56-B", "WP56-E", "DERIVED-CRITIC", "DERIVED-SPLIT", "DERIVED-TIMEOUT"],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "show", "ef81f9c0:guardian-program/events.jsonl", "|", "event-chain-verifier"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "merge-base", "--is-ancestor", "ebd9c2e", "HEAD"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "merge-base", "--is-ancestor", "d8169a2", "HEAD"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

@@ -1,0 +1,22 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H06A2-integration-hygiene.md", "sha256": "a955c3318ba389f7f3bbb82bc2c10bd49697cb84abd08889d4c77e91a2d3ff43"}],
+  "baseline": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "commands": [
+    {"argv": ["<kb-venv-python>", "-B", "scripts/kb/run-isolated-tests.py", "tests.test_intent_guardian", "tests.test_intervention", "tests.test_agent_runtime", "tests.test_native_decision_journal", "tests.test_operational_readiness", "tests.test_sulde_statusline"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "A physical full clone with one OS-isolation layer ran 439 formal tests in 95.211 seconds with zero failures or errors.",
+    "The production-write guard was clear and emitted no concurrent external production-state diagnostic; the formal cursor is retained for audit.",
+    "The formal tree is byte-identical for all nine H06A2 paths to integrated coordinator commit 1d81294e; installation and live-host gates remain assigned to H06B/H06."
+  ],
+  "findings": ["FR2-H06-002", "FR2-H06A2-001", "FR2-H06A2-002"],
+  "kind": "system_tests",
+  "requirements": [],
+  "run_id": "run-gpe-ee80c2b587197cdd2fa57479",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06A2 passes the supported formal system suite with a clear production boundary on byte-identical integrated code.",
+  "task_id": "H06A2-integration-hygiene",
+  "verdict": "pass"
+}

@@ -1,0 +1,39 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/Users/eric/.claude/plugins/data/sulde-cc/kb/venv/bin/python",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_intent_guardian",
+        "tests.test_intervention",
+        "tests.test_agent_runtime",
+        "tests.test_native_decision_journal",
+        "tests.test_operational_readiness",
+        "tests.test_sulde_statusline",
+        "tests.test_human_grant"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The supported isolated runner completed 446 tests in 94.542 seconds with exit 0 on coordinator commit 62296c1868f0ea46a5cf2b0a719fc50ef53f2c56.",
+    "The first nested-sandbox attempt failed before tests because the outer Codex sandbox denied sandbox-exec; the approved host-level rerun used the runner's own OS isolation and passed.",
+    "The runner observed concurrent production-KB files changing behind its verified read-only boundary; no such change was attributed to H01 and no production write is claimed."
+  ],
+  "findings": [],
+  "kind": "system_tests",
+  "requirements": [],
+  "run_id": "run-gpe-81c4eb66edd2ae4588c2648d",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "The supported isolated Guardian baseline plus H01 passes 446 tests under the production KB interpreter.",
+  "task_id": "H01-human-grant-v2",
+  "verdict": "pass"
+}

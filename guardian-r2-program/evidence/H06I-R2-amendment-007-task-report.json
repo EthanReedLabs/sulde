@@ -1,0 +1,28 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-bd3a9c0923125f655fd9ccf3",
+  "verdict": "pass",
+  "kind": "task_report",
+  "summary": "Amendment-007 repairs macOS lexical/physical TMPDIR identity comparisons and passes the focused, complete, combined and fresh no-hardlink matrices under default and explicit TMPDIR environments.",
+  "facts": [
+    "The two production validators now compare paths in one physical identity layer, and the execution binding regression asserts the physical canonical worktree path.",
+    "Focused 11/11, runtime 74/74, broker 52/52 and combined 126/126 checks pass under the host default TMPDIR and explicit TMPDIR=/private/tmp.",
+    "A fresh git clone --no-hardlinks from the frozen base with the five candidate paths projected passes combined 126/126 under both TMPDIR environments.",
+    "Root/parent/post-read replacement, local interruption and report duplicate/conflict/bad-command-hash/missing-binding checks remain fail-closed and pass."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-016"],
+  "acceptance": [],
+  "commands": [
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "<11 focused tests>"], "exit_code": 0, "result": "pass"},
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "tests/test_agent_runtime.py", "tests/test_native_agent_broker.py"], "exit_code": 0, "result": "pass"},
+    {"argv": ["env", "TMPDIR=/private/tmp", "python3", "-B", "-m", "unittest", "-v", "tests/test_agent_runtime.py", "tests/test_native_agent_broker.py"], "exit_code": 0, "result": "pass"}
+  ],
+  "artifacts": [
+    {"path": "H06I-R2-AMENDMENT-007-CLOSURE.json", "sha256": "f9caa247e1b1e704ece4106bd29b081d1057e251f3f26d2ec1613281e6b44e6d"},
+    {"path": "reports/H06I-R2-interruption-authority.md", "sha256": "cd373e9eca838cab5c7e7d26cf2d567e01da475c6759974ea36d78df6c322a16"}
+  ]
+}

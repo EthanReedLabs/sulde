@@ -1,0 +1,243 @@
+{
+  "src": "/private/tmp/ce-probe/candidate",
+  "cases": [
+    {
+      "name": "C1-unittest-vpn-deploy-path",
+      "command": "python3 -B -m unittest discover -s vpn-deploy/personal-fleet/tests -p test_chatgpt_trial.py -v",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "denied": false,
+      "ledger_events": [
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        }
+      ],
+      "contract_runtime": {
+        "pending_verifications": [],
+        "open_events": [],
+        "verified_effects": [],
+        "authorized_events": [],
+        "material_sequence": 1,
+        "sequence": 1
+      }
+    },
+    {
+      "name": "C2-real-deploy-shape",
+      "command": "deploy --env production --config fleet.yaml",
+      "exit": 0,
+      "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"Sulde intent guardian blocked this action: 外部写入被禁止.\"}}",
+      "stderr": "",
+      "denied": true,
+      "ledger_events": [
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        }
+      ],
+      "contract_runtime": {
+        "pending_verifications": [],
+        "open_events": [],
+        "verified_effects": [],
+        "authorized_events": [],
+        "material_sequence": 1,
+        "sequence": 2
+      }
+    },
+    {
+      "name": "C3-scp-upload",
+      "command": "scp report.txt backup@example.com:/srv/incoming/report.txt",
+      "exit": 0,
+      "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"Sulde intent guardian blocked this action: 外部写入被禁止.\"}}",
+      "stderr": "",
+      "denied": true,
+      "ledger_events": [
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        }
+      ],
+      "contract_runtime": {
+        "pending_verifications": [],
+        "open_events": [],
+        "verified_effects": [],
+        "authorized_events": [],
+        "material_sequence": 1,
+        "sequence": 3
+      }
+    },
+    {
+      "name": "C4-http-write",
+      "command": "curl -X POST -H 'Content-Type: application/json' -d '{\"k\":1}' https://api.example.com/v1/items",
+      "exit": 0,
+      "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"Sulde intent guardian blocked this action: 外部写入被禁止.\"}}",
+      "stderr": "",
+      "denied": true,
+      "ledger_events": [
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        }
+      ],
+      "contract_runtime": {
+        "pending_verifications": [],
+        "open_events": [],
+        "verified_effects": [],
+        "authorized_events": [],
+        "material_sequence": 1,
+        "sequence": 4
+      }
+    },
+    {
+      "name": "C5-destructive",
+      "command": "rm -rf ./build/output",
+      "exit": 0,
+      "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"Sulde intent guardian blocked this action: delete requires one exact operand after --.\"}}",
+      "stderr": "",
+      "denied": true,
+      "ledger_events": [
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        }
+      ],
+      "contract_runtime": {
+        "pending_verifications": [],
+        "open_events": [],
+        "verified_effects": [],
+        "authorized_events": [],
+        "material_sequence": 1,
+        "sequence": 5
+      }
+    },
+    {
+      "name": "C6-unknown-script",
+      "command": "./scripts/mystery-tool.sh --plan input.json",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "denied": false,
+      "ledger_events": [
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        },
+        {
+          "effect": null,
+          "reason_code": null,
+          "session_id": null,
+          "command": ""
+        }
+      ],
+      "contract_runtime": {
+        "pending_verifications": [],
+        "open_events": [],
+        "verified_effects": [],
+        "authorized_events": [],
+        "material_sequence": 2,
+        "sequence": 6
+      }
+    }
+  ],
+  "project": "/var/folders/v8/zhy1859972zg9lnpmwcfgv2h0000gn/T/ce-probe-50gugzo049510/proj",
+  "sulde_home": "/var/folders/v8/zhy1859972zg9lnpmwcfgv2h0000gn/T/ce-probe-50gugzo049510/sulde-home",
+  "contract": "/var/folders/v8/zhy1859972zg9lnpmwcfgv2h0000gn/T/ce-probe-50gugzo049510/sulde-home/data/kb/intent/workspaces/1c9610b835866957e0ae9bb5.active.json",
+  "external_write_perm": "deny"
+}

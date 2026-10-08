@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
@@ -120,7 +121,9 @@ def related_ids(raw: str) -> list[str] | None:
 
 
 def main() -> int:
-    root = repo_root()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo-root", type=Path, default=repo_root())
+    root = parser.parse_args().repo_root.resolve()
     documents = tracked_documents(root)
     violations: list[tuple[Path, str]] = []
     parsed: dict[Path, dict[str, str]] = {}

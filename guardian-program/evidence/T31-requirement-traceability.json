@@ -1,0 +1,102 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "requirement_traceability",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "T31 directly traces exact-host recovery, separated readiness domains, one immutable delivery generation, resource debt truth, isolated verification and zero-omission task governance through production live acceptance.",
+  "facts": [
+    "Exact Codex 0.149.1 host, help/profile/app-server/broker contracts and negative future/wrapper/alias cases passed targeted and isolated gates.",
+    "The verified dev tree was merged to main and official staging, transactional installation, launcher, runtime owner and native authority all bind one sealed generation.",
+    "Packaged kb-aging and all 15 scheduler actors are healthy on the installed runtime; resource-scoped effect debt is clear.",
+    "A post-install resumed Sulde-owned Codex thread supplied real current-runtime prompt and tool roundtrip observations and reached operational readiness ready.",
+    "Every T31 finding and acceptance clause has a recorded disposition or direct evidence; no product or production authority state was edited outside official paths."
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-READINESS",
+    "DERIVED-DELIVERY",
+    "DERIVED-RESOURCE",
+    "DERIVED-ISOLATION",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "findings": [
+    "F31-001"
+  ],
+  "acceptance": [
+    {
+      "requirement_id": "WP56-G",
+      "clause": "正常宿主路径不要求外部终端，损坏时仍存在独立且可审计的恢复入口",
+      "fact": "The official installer, stable launcher and resumed same-thread Codex flow completed in the normal host; isolated recovery remains auditable and no copied digest or external approval command was used."
+    },
+    {
+      "requirement_id": "DERIVED-READINESS",
+      "clause": "scheduler、interactive、artifact、effect 和 decision pairing 分域且不能互相冒充",
+      "fact": "The live projection reports each domain separately: artifact ready, scheduler 15/15 ready, interactive ready, effect clear and native pairing settled, with every selected interactive gate true."
+    },
+    {
+      "requirement_id": "DERIVED-DELIVERY",
+      "clause": "源码、stage、installed runtime、scheduler owner 和执行摘要属于同一 generation",
+      "fact": "System-tested source, official stage, installed runtime, stable launcher, native authority, runtime owner and all scheduler definitions bind generation 0.2.5+codex.20260824084717:dbeaf8ce5708729998ffd79cfc0a367e216476d9cad756146212ce1b22d84b39."
+    },
+    {
+      "requirement_id": "DERIVED-RESOURCE",
+      "clause": "同一资源的路径、URI 或 MCP 别名不能绕过跨 session debt",
+      "fact": "Production doctor reports authoritative effect debt clear with zero blocking, pending verification or open intervention; inherited T25/T28 resource identity tests remain accepted."
+    },
+    {
+      "requirement_id": "DERIVED-ISOLATION",
+      "clause": "测试不能写生产 KB，父宿主并发事件只能按窄协议归因",
+      "fact": "The complete 1368-test full-clone suite used an empty production sentinel, and live acceptance bound only exact provider/session/workspace observations from the resumed installed host."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "每个任务有证据包和问题处置，总纲零遗漏后才能关闭",
+      "fact": "T31 has task, changed-file, targeted, failure-injection, integration, system, production-install, scheduler, live-host, finding-resolution and exact requirement evidence; task acceptance precedes the separate program final gate."
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "python3.10",
+        "scripts/kb/run-isolated-tests.py"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "/Users/eric/.claude/plugins/data/sulde-cc/kb/bin/intent-guardian",
+        "doctor",
+        "--workspace",
+        "/Users/eric/ClaudePlugin/sulde-cc-pro",
+        "--provider",
+        "codex",
+        "--session-id",
+        "01a00d6f-65b3-7663-b51b-f88684ffa561"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "evidence/T31-system-tests.json",
+      "sha256": "d9405a6cd6849a2b6c835f2eac4bb1aa276cf79c0bb51b784f120d31f295b041"
+    },
+    {
+      "path": "evidence/T31-production-install.json",
+      "sha256": "df6b4754f24db7b8e1cda1064554f9e869ba067ac7a558000bb85ce9d365c08f"
+    },
+    {
+      "path": "evidence/T31-scheduler-acceptance.json",
+      "sha256": "d0e54e1bf9cd3ab74ec37a13f866568cb8f43cfce35cd1477f6ddeda5c8ee170"
+    },
+    {
+      "path": "reports/T31-live-acceptance.md",
+      "sha256": "4371c037eea1998972abdf3b60e97d3853f6354c8a280f7c74073cf2d0e6fbc5"
+    }
+  ]
+}

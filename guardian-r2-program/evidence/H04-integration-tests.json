@@ -1,0 +1,25 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "tests.test_human_grant", "tests.test_grant_broker", "tests.test_resource_adapters", "tests.test_intent_guardian_resources", "tests.test_intent_guardian.H04TypedResourceHookRoutingTests", "-v"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The coordinator branch composes accepted H01 HumanGrantV2, accepted H02 GrantBroker and integrated H04 typed resource adapters with 57 passing tests.",
+    "The seven H04 blobs remain byte-identical to the worker commit after serial integration; H05 was not mixed into this checkpoint."
+  ],
+  "findings": [],
+  "kind": "integration_tests",
+  "requirements": [],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H04 composes with accepted H01/H02 and current coordinator code without regression.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

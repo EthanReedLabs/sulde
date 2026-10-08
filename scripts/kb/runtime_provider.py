@@ -20,6 +20,7 @@ from typing import Any
 PROVIDERS = ("claude", "codex")
 PROVIDER_ENV = "SULDE_LLM_PROVIDER"
 HOST_PROVIDER_ENV = "SULDE_HOST_PROVIDER"
+AGENT_PROVIDER_ENV = "SULDE_AGENT_PROVIDER"
 EXECUTABLE_ENV = {
     "claude": "SULDE_CLAUDE_EXE",
     "codex": "SULDE_CODEX_EXE",
@@ -455,6 +456,39 @@ def select_provider(
         "both Claude Code and Codex CLI are available but no host owns this invocation; "
         f"set {PROVIDER_ENV}=claude or codex"
     )
+
+
+def resolve_managed_run_provider(
+    requested: str | None = None,
+    *,
+    environment: Mapping[str, str] | None = None,
+    which: Callable[[str], str | None] = shutil.which,
+    test_mode: bool = False,
+) -> tuple[str, str]:
+    """Single managed-run selection path (C1): one implementation, one parse.
+
+    Extends the selection chain with ``SULDE_AGENT_PROVIDER`` and preserves the
+    managed-run shortcut: on a codex host in production, an ``auto`` or
+    ``codex`` selection skips PATH resolution entirely because the installed
+    native runtime authority digest-binds the executable.  No provider is ever
+    silently switched; a selection that cannot resolve stays an error.
+    """
+    current = os.environ if environment is None else environment
+    explicit = requested or current.get(AGENT_PROVIDER_ENV) or ""
+    configured = (
+        explicit
+        or current.get(PROVIDER_ENV)
+        or current.get(HOST_PROVIDER_ENV)
+        or "auto"
+    ).strip().lower()
+    codex_host_only = configured == "auto" and any(
+        current.get(name) for name in CODEX_HOST_MARKERS
+    ) and not any(current.get(name) for name in CLAUDE_HOST_MARKERS)
+    if not test_mode and (configured == "codex" or codex_host_only):
+        # Do not even resolve a caller projection or PATH alias in production;
+        # the installed authority provides the executable.
+        return "codex", ""
+    return select_provider(explicit or None, environment=current, which=which)
 
 
 def cognitive_command(provider: str, executable: str) -> list[str]:

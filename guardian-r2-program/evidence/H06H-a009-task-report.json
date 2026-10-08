@@ -1,0 +1,7 @@
+{
+  "schema":"sulde-guardian-program-evidence-v1","scope":"task","task_id":"H06H-r2-final-acceptance",
+  "baseline":"10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2","run_id":"run-gpe-4efe615231a4f18a96ee09f8","verdict":"pass","kind":"task_report",
+  "summary":"Amendment-009 creates a fresh four-path H06H candidate from accepted authorities and records only current literal checks.",
+  "facts":["candidate commit 21b5c8c0a2ac4fe5c43102b19d31c00d491619ca","report sha256 ad6ae1d1ded34bd811a784a9f5ce0108b3871cd3dac0044bfe51e4d5e251fa26"],"requirements":[],"findings":["FR2-H06H-003"],"acceptance":[],
+  "commands":[{"argv":["python3","-B","-m","unittest","-v","tests.test_r2_guardian_integration"],"exit_code":0,"result":"pass"}],"artifacts":[]
+}

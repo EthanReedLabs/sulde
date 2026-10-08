@@ -8,6 +8,8 @@ decided by the native host before advancing any semantic state.
 
 from __future__ import annotations
 
+from intent_guardian_parts.relocation_storage import require_relocation_write_allowed
+
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
@@ -75,7 +77,16 @@ STAGES = (
     "committed",
 )
 TERMINAL_STAGES = frozenset({"committed", "superseded"})
+_RELOCATION_NATIVE_WRITES: ContextVar[frozenset[Path]] = ContextVar("relocation_native_writes", default=frozenset())
 OPERATION_SPECS = {
+    "repository-relocation": {
+        # Internal preparation only until the physical/rebind/terminal adapter
+        # is complete. The existing data-only review kind is NOT this kind.
+        "kind": "repository-relocation-execution",
+        "approval_kind": "intent-confirmation",
+        "decisions": {"execute": "execute-repository-relocation"},
+        "external_boundary": "exact physical root move, Git link repair, and paused successor publication",
+    },
     "proposal": {
         "kind": "proposal",
         "approval_kind": "proposal",
@@ -386,6 +397,11 @@ def _store_lock(path: Path, *, timeout: float = 3.0) -> Iterator[None]:
                     )
                 time.sleep(0.01)
         try:
+            try:
+                require_relocation_write_allowed(path)
+            except RuntimeError as error:
+                if path.expanduser().resolve() not in _RELOCATION_NATIVE_WRITES.get():
+                    raise NativeDecisionJournalError(str(error)) from error
             yield
         finally:
             unlock(handle)
@@ -1332,6 +1348,8 @@ def _heads_equal(left: dict[str, Any], right: dict[str, Any]) -> bool:
 
 def _recover_anchored_rows(
     contract_path: Path,
+    *,
+    _preview: bool = False,
 ) -> tuple[list[dict[str, Any]], dict[str, Any], bytes, dict[str, Any] | None]:
     store = journal_path(contract_path)
     anchor_path = head_anchor_path(contract_path)
@@ -1390,11 +1408,12 @@ def _recover_anchored_rows(
                 raise NativeDecisionJournalError(
                     "native decision journal has unanchored rows beside a pending head"
                 )
-            try:
-                pending_path.unlink()
-            except FileNotFoundError:
-                pass
-            _fsync_directory(pending_path.parent)
+            if not _preview:
+                try:
+                    pending_path.unlink()
+                except FileNotFoundError:
+                    pass
+                _fsync_directory(pending_path.parent)
             pending = None
     if pending is not None:
         supplied = str(pending["pending_sha256"])
@@ -1412,13 +1431,14 @@ def _recover_anchored_rows(
             )
         if _heads_equal(current, prior):
             append_payload = pending["append_payload"].encode("utf-8")
-            descriptor = os.open(store, os.O_APPEND | os.O_CREAT | os.O_WRONLY, 0o600)
-            if os.name != "nt":
-                os.fchmod(descriptor, 0o600)
-            with os.fdopen(descriptor, "ab") as handle:
-                handle.write(append_payload)
-                handle.flush()
-                os.fsync(handle.fileno())
+            if not _preview:
+                descriptor = os.open(store, os.O_APPEND | os.O_CREAT | os.O_WRONLY, 0o600)
+                if os.name != "nt":
+                    os.fchmod(descriptor, 0o600)
+                with os.fdopen(descriptor, "ab") as handle:
+                    handle.write(append_payload)
+                    handle.flush()
+                    os.fsync(handle.fileno())
             payload += append_payload
             rows = _decode_rows(payload)
             projection = replay(contract_path, rows)
@@ -1427,12 +1447,13 @@ def _recover_anchored_rows(
             raise NativeDecisionJournalError(
                 "native decision journal does not match pending head update"
             )
-        _atomic_write_json(anchor_path, following)
-        try:
-            pending_path.unlink()
-        except FileNotFoundError:
-            pass
-        _fsync_directory(pending_path.parent)
+        if not _preview:
+            _atomic_write_json(anchor_path, following)
+            try:
+                pending_path.unlink()
+            except FileNotFoundError:
+                pass
+            _fsync_directory(pending_path.parent)
         stable = following
         pending_anchor_sha256 = ""
     elif pending_anchor_sha256:
@@ -1840,6 +1861,83 @@ def supersede(contract_path: Path, tx_id: str, *, reason: str) -> dict[str, Any]
 
     projection, selected = _mutate(contract_path, mutation)
     return dict(projection["transactions"][selected])
+
+
+def retirement_snapshot(projection: dict[str, Any]) -> dict[str, Any]:
+    """Stable data-only cut; verification flags are observations, not history."""
+    result = _plain_json_copy({key: projection[key] for key in
+                               ("contract_sha256", "seals", "transactions")})
+    for row in result["transactions"].values():
+        row.pop("local_consistency_verified", None)
+        row.pop("external_authority_verified", None)
+    return result
+
+
+def historical_contract_retirement_proof(contract_path: Path, projection: dict[str, Any], row: dict[str, Any]) -> dict[str, Any]:
+    """Read-only proof of the ORIGINAL Allow; never a new retirement decision."""
+    if (row.get("stage") != "contract_applied" or row.get("status") != "active"
+            or row.get("sealed") is not True or row.get("historical_terminal_seen") is not False
+            or row.get("operation") not in {"proposal", "resume"}):
+        raise NativeDecisionJournalError("retirement requires a sealed historical contract transaction")
+    binding = _require_durable_seal_origin(projection, row)
+    request = verify_request_binding_receipt(contract_path,
+        request_binding_receipt(contract_path, binding["request_id"]))
+    # Binding receipts deliberately stop at request creation. Display and Allow
+    # belong to the later terminal prefix, independently replayed below; testing
+    # prompt_shown on the creation prefix would reject every genuine question.
+    if request.get("typed") is not True:
+        raise NativeDecisionJournalError("historical contract retirement requires an original typed Allow")
+    recorded = _recorded_authority(row)
+    receipt = _verify_sealed_approval(contract_path, binding,
+        decision_sha256=recorded[0], authority_sha256=recorded[1])
+    return {"request_binding_sha256": binding["request_binding_sha256"],
+            "decision_sha256": receipt["decision_sha256"],
+            "authority_sha256": _authority_sha256(binding, receipt)}
+
+
+def supersede_frozen_contracts(
+    contract_path: Path, *, snapshot: dict[str, Any], transaction_ids: list[str], reason: str,
+) -> dict[str, Any]:
+    """Append a frozen batch of non-effect supersessions; never replay an adapter.
+
+    The caller owns the current native retirement decision and both contract
+    locks. This ledger executor additionally proves the OLD approval for every
+    selected row, then compares the entire frozen native cut under its writer
+    lock. A repeated identical batch is a readback, not a fresh authorization.
+    """
+    if (not _is_plain_json(snapshot) or type(snapshot) is not dict
+            or type(transaction_ids) is not list or not 0 < len(transaction_ids) <= 100
+            or any(type(value) is not str for value in transaction_ids)
+            or transaction_ids != sorted(set(transaction_ids))
+            or type(reason) is not str or not reason or len(reason) > 2_000):
+        raise NativeDecisionJournalError("invalid frozen native retirement")
+    frozen = _plain_json_copy(snapshot)
+
+    def mutation(projection):
+        current = retirement_snapshot(projection)
+        after = _plain_json_copy(frozen)
+        specs = []
+        for tx_id in transaction_ids:
+            old = frozen.get("transactions", {}).get(tx_id)
+            if type(old) is not dict:
+                raise NativeDecisionJournalError("retirement requires a sealed historical contract transaction")
+            details = historical_contract_retirement_proof(contract_path, projection, old)
+            row = after["transactions"][tx_id]
+            row.update(stage="superseded", status="superseded", historical_status="superseded",
+                       historical_terminal_seen=True, superseded_reason=reason)
+            row["stage_details"]["superseded"] = details
+            # Only this append's timestamp is intentionally not precomputed.
+            row["updated_at"] = current.get("transactions", {}).get(tx_id, {}).get("updated_at")
+            specs.append({"event": "superseded", "transaction_id": tx_id,
+                          "reason": reason, "details": details})
+        if current == after:
+            return [], transaction_ids
+        if current != frozen:
+            raise NativeDecisionJournalError("historical native retirement CAS changed")
+        return specs, transaction_ids
+
+    projection, selected = _mutate(contract_path, mutation)
+    return {key: projection["transactions"][key] for key in selected}
 
 
 def pending(contract_path: Path) -> list[dict[str, Any]]:
@@ -3032,6 +3130,8 @@ def _matching_contract_receipt(
 def _contract_postcondition(
     contract_path: Path, binding: dict[str, Any]
 ) -> tuple[dict[str, Any], str, str]:
+    if _binding_operation(binding) == "repository-relocation":
+        return _relocation_postcondition(contract_path, binding, "contract_applied")
     document, payload = _read_contract_document(contract_path)
     if (
         document.get("intent_id") != binding["intent_id"]
@@ -3185,10 +3285,70 @@ def _contract_postcondition(
     return postcondition, source_sha256, source_sha256
 
 
+def _relocation_postcondition(contract_path: Path, binding: dict[str, Any], stage: str):
+    from intent_guardian_parts.repository_relocation import relocation_postcondition
+    try:
+        return relocation_postcondition(contract_path, binding, stage=stage)
+    except (RuntimeError, OSError, ValueError, KeyError) as error:
+        raise NativeDecisionJournalError("relocation postcondition verification failed: " + str(error)) from error
+
+
+def _relocation_commit_boundary(stage: str) -> None:
+    """Inert test seam, never an environment-controlled writer exemption."""
+    del stage
+
+
+def complete_repository_relocation(contract_path: Path, tx_id: str) -> dict[str, Any]:
+    """Only the verified relocation adapter may append its native receipt tail.
+
+    This narrow, context-local scope is neither a CLI switch nor a permission
+    token. Before enabling it and at each stage, independently prove the exact
+    moved repository, archived sources, paused successors and session routes.
+    Approval/effect/task writers stay fenced, including in this context.
+    """
+    projection = load_projection_read_only(contract_path)
+    transaction = projection["transactions"].get(tx_id)
+    if not transaction or transaction.get("operation") != "repository-relocation":
+        raise NativeDecisionJournalError("relocation finalizer requires its exact native transaction")
+    binding = _require_durable_seal_origin(projection, transaction)
+    _relocation_postcondition(contract_path, binding, "contract_applied")
+    paths = frozenset(factory(contract_path).resolve() for factory in (
+        journal_path, effect_receipt_store_path, contract_receipt_store_path, external_head_receipt_store_path,
+    ))
+    token = _RELOCATION_NATIVE_WRITES.set(paths)
+    try:
+        producers = {
+            "approval_decided": (produce_effect_receipt, "effect_applied"),
+            "effect_applied": (produce_contract_receipt, "contract_applied"),
+            "contract_applied": (produce_external_head_receipt, "committed"),
+        }
+        for _ in range(4):
+            current = load_projection_read_only(contract_path)["transactions"][tx_id]
+            _relocation_postcondition(contract_path, binding, "contract_applied")
+            if current["stage"] == "committed":
+                verify_recorded_external_head_receipt(contract_path, tx_id)
+                return current
+            if current["stage"] not in producers:
+                raise NativeDecisionJournalError("relocation native completion has an unexpected stage")
+            producer, expected = producers[current["stage"]]
+            producer(contract_path, tx_id)
+            _relocation_commit_boundary(expected + "_receipt")
+            result = advance_with_authority(contract_path, tx_id, readers=NativeAuthorityReaders(None, None, None, None))
+            if result["stage"] != expected:
+                raise NativeDecisionJournalError("relocation native completion did not verify the next stage")
+            _relocation_commit_boundary(expected)
+        raise NativeDecisionJournalError("relocation native completion exceeded its bounded stage count")
+    finally:
+        _RELOCATION_NATIVE_WRITES.reset(token)
+
+
 def _effect_postcondition(
     contract_path: Path, binding: dict[str, Any]
 ) -> tuple[dict[str, Any], str, str, str]:
     operation = _binding_operation(binding)
+    if operation == "repository-relocation":
+        value, digest, event = _relocation_postcondition(contract_path, binding, "effect_applied")
+        return value, "repository-relocation-filesystem", digest, event
     if operation != "effect":
         postcondition, source_sha256, source_event_id = _contract_postcondition(
             contract_path, binding
@@ -3303,6 +3463,8 @@ def _build_authority_receipt(
         postcondition, source_sha256, source_event_id = _contract_postcondition(
             contract_path, binding
         )
+        if _binding_operation(binding) == "repository-relocation":
+            source_kind = "repository-relocation-bindings"
     else:
         source_sha256 = proof["proof_sha256"]
         source_event_id = proof["event_id"]
@@ -3575,7 +3737,8 @@ def _reverify_recorded_receipt(
         postcondition, source_sha256, source_event_id = _contract_postcondition(
             contract_path, binding
         )
-        source_kind = "canonical-intent-contract"
+        source_kind = ("repository-relocation-bindings" if _binding_operation(binding) == "repository-relocation"
+                       else "canonical-intent-contract")
     else:
         return
     if (
@@ -3727,7 +3890,7 @@ def verify_external_head_receipt(
 
 
 def verify_recorded_external_head_receipt(
-    contract_path: Path, tx_id: str
+    contract_path: Path, tx_id: str, *, read_only: bool = False,
 ) -> NativeExternalHeadReceipt:
     """Replay the durable external-head receipt after the transaction committed.
 
@@ -3736,7 +3899,7 @@ def verify_recorded_external_head_receipt(
     instead verify the exact receipt copied into the committed journal event
     against the separate append-only external-head store.
     """
-    projection = load_projection(contract_path)
+    projection = load_projection_read_only(contract_path) if read_only else load_projection(contract_path)
     transaction = projection["transactions"].get(tx_id)
     if not isinstance(transaction, dict):
         raise NativeDecisionJournalError("unknown native decision transaction")

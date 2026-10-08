@@ -776,7 +776,7 @@ class InterventionTests(unittest.TestCase):
     def test_terminal_keyless_figma_debt_releases_distinct_independent_operations(self) -> None:
         attempt = begin_attempt(
             self.contract,
-            intent_id="synthetic-application-brand-visual-grammar-v1",
+            intent_id="apollo-brand-visual-grammar-v1",
             intent_revision=3,
             fingerprint="f" * 64,
             source_event_id="legacy-codex-apps-use-figma",
@@ -801,7 +801,7 @@ class InterventionTests(unittest.TestCase):
         )
         before_local_dispatch = event_store_path(self.contract).read_bytes()
 
-        workspace = Path(self.temporary.name) / "synthetic-application"
+        workspace = Path(self.temporary.name) / "apollo"
         workspace.mkdir()
         local_target = workspace / "Proofline.md"
         local_target.write_text("baseline\n", encoding="utf-8")
@@ -822,7 +822,7 @@ class InterventionTests(unittest.TestCase):
         self.assertIsNone(material_event_blocker(self.contract, local_event))
         local_attempt = begin_attempt(
             self.contract,
-            intent_id="synthetic-application-brand-visual-grammar-v1",
+            intent_id="apollo-brand-visual-grammar-v1",
             intent_revision=8,
             fingerprint="2" * 64,
             source_event_id="typed-local-write",
@@ -868,7 +868,7 @@ class InterventionTests(unittest.TestCase):
             "provider": "codex",
             "session_id": "current-thread",
             "fingerprint": "3" * 64,
-            "intent_id": "synthetic-application-brand-visual-grammar-v1",
+            "intent_id": "apollo-brand-visual-grammar-v1",
             "intent_revision": 8,
             "capability": "mcp:figma:use_figma",
             "effect_operation_fingerprint": figma_operation,
@@ -885,7 +885,7 @@ class InterventionTests(unittest.TestCase):
         self.assertIsNone(material_event_blocker(self.contract, figma_event))
         figma_attempt = begin_attempt(
             self.contract,
-            intent_id="synthetic-application-brand-visual-grammar-v1",
+            intent_id="apollo-brand-visual-grammar-v1",
             intent_revision=8,
             fingerprint="4" * 64,
             source_event_id="typed-independent-figma",

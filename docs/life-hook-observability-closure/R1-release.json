@@ -1,0 +1,291 @@
+{
+  "schema": "life-r1-release-v1",
+  "source_commit": "84195eaa472300c973d0551235ac60c63c92d2b9",
+  "platform": "darwin",
+  "python": "3.10.7 (main, Jan  8 2025, 22:59:06) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "python_sha256": "821824635f10f06dace33486e71ad7b520d633b0e4b1f6f150cfaffc1b0dc1b7",
+  "native_codex_sha256": "61b0194f3bb6534439c8d26a3ed57d0805f84b884588b761795323eeb92fcf70",
+  "scope": "complete isolated installer; real Codex registry/hooks/MCP/launcher; fixture OS scheduler and process inventory",
+  "production_changed": false,
+  "summaries": {
+    "prepare": {
+      "n": 3,
+      "median_seconds": 1.22,
+      "p95_seconds": 1.472
+    },
+    "verify": {
+      "n": 3,
+      "median_seconds": 13.097,
+      "p95_seconds": 13.102
+    },
+    "full_install": {
+      "n": 3,
+      "median_seconds": 16.168,
+      "p95_seconds": 16.487
+    }
+  },
+  "raw_evidence_sha256": "a6b7778f8bcb69af1a77c15431bd0023ed8b21e298e492bd4ce9cd8da736e204",
+  "runs": [
+    {
+      "sample": 0,
+      "phase": "prepare",
+      "seconds": 1.472,
+      "exit_code": 0,
+      "status": "prepared"
+    },
+    {
+      "sample": 0,
+      "phase": "verify",
+      "seconds": 13.097,
+      "exit_code": 0,
+      "status": "verified",
+      "verification": {
+        "artifact": {
+          "status": "ready"
+        },
+        "isolated_registry": {
+          "status": "ready"
+        },
+        "hooks": {
+          "status": "ready"
+        },
+        "preexecution_chain": {
+          "status": "ready"
+        },
+        "mcp": {
+          "status": "ready"
+        },
+        "doctor": {
+          "status": "ready",
+          "exit_code": 0
+        },
+        "scheduler_entrypoint": {
+          "status": "ready",
+          "mode": "production-entrypoint-isolated-dry-run"
+        },
+        "native_permission_ui": {
+          "status": "unobserved",
+          "exit_code": 78,
+          "reason": "isolated CLI has no attachable current-session PermissionRequest surface"
+        },
+        "scheduler_host": {
+          "status": "unobserved",
+          "exit_code": 79,
+          "reason": "candidate must not load production launchd labels before promotion"
+        }
+      },
+      "python_environment": {
+        "version": [
+          3,
+          10,
+          7
+        ],
+        "implementation": "cpython",
+        "cache_tag": "cpython-310",
+        "dependencies": {
+          "PyYAML": {
+            "content_sha256": "cd599dfd54eaa161a07a80ea872158b3849b8a6ab5d21fa9d51e5f5d00e4086a",
+            "version": "6.0.3"
+          },
+          "sqlite3": "3.51.0",
+          "ssl": "OpenSSL 3.6.3 9 Jun 2026",
+          "venv": "available"
+        }
+      }
+    },
+    {
+      "sample": 0,
+      "phase": "full_install",
+      "seconds": 16.487,
+      "exit_code": 0,
+      "status": "generation_verified",
+      "phase_timings_seconds": {
+        "host_preflight": 0.842,
+        "deployment_lock_and_recovery_scan": 0.002,
+        "artifact_stage_and_validation": 0.688,
+        "scheduler_and_home_preflight": 0.445,
+        "snapshot_and_prepare": 0.144,
+        "registry_switch_and_readback": 0.527,
+        "launcher_rules_and_smoke": 6.185,
+        "deployment_and_scheduler": 4.784,
+        "postconditions_and_commit": 0.774,
+        "locked_total": 12.414,
+        "total": 14.392
+      }
+    },
+    {
+      "sample": 1,
+      "phase": "prepare",
+      "seconds": 1.103,
+      "exit_code": 0,
+      "status": "prepared"
+    },
+    {
+      "sample": 1,
+      "phase": "verify",
+      "seconds": 12.925,
+      "exit_code": 0,
+      "status": "verified",
+      "verification": {
+        "artifact": {
+          "status": "ready"
+        },
+        "isolated_registry": {
+          "status": "ready"
+        },
+        "hooks": {
+          "status": "ready"
+        },
+        "preexecution_chain": {
+          "status": "ready"
+        },
+        "mcp": {
+          "status": "ready"
+        },
+        "doctor": {
+          "status": "ready",
+          "exit_code": 0
+        },
+        "scheduler_entrypoint": {
+          "status": "ready",
+          "mode": "production-entrypoint-isolated-dry-run"
+        },
+        "native_permission_ui": {
+          "status": "unobserved",
+          "exit_code": 78,
+          "reason": "isolated CLI has no attachable current-session PermissionRequest surface"
+        },
+        "scheduler_host": {
+          "status": "unobserved",
+          "exit_code": 79,
+          "reason": "candidate must not load production launchd labels before promotion"
+        }
+      },
+      "python_environment": {
+        "version": [
+          3,
+          10,
+          7
+        ],
+        "implementation": "cpython",
+        "cache_tag": "cpython-310",
+        "dependencies": {
+          "PyYAML": {
+            "content_sha256": "cd599dfd54eaa161a07a80ea872158b3849b8a6ab5d21fa9d51e5f5d00e4086a",
+            "version": "6.0.3"
+          },
+          "sqlite3": "3.51.0",
+          "ssl": "OpenSSL 3.6.3 9 Jun 2026",
+          "venv": "available"
+        }
+      }
+    },
+    {
+      "sample": 1,
+      "phase": "full_install",
+      "seconds": 16.168,
+      "exit_code": 0,
+      "status": "generation_verified",
+      "phase_timings_seconds": {
+        "host_preflight": 0.754,
+        "deployment_lock_and_recovery_scan": 0.001,
+        "artifact_stage_and_validation": 0.734,
+        "scheduler_and_home_preflight": 0.344,
+        "snapshot_and_prepare": 0.144,
+        "registry_switch_and_readback": 0.522,
+        "launcher_rules_and_smoke": 5.938,
+        "deployment_and_scheduler": 4.825,
+        "postconditions_and_commit": 0.764,
+        "locked_total": 12.193,
+        "total": 14.027
+      }
+    },
+    {
+      "sample": 2,
+      "phase": "prepare",
+      "seconds": 1.22,
+      "exit_code": 0,
+      "status": "prepared"
+    },
+    {
+      "sample": 2,
+      "phase": "verify",
+      "seconds": 13.102,
+      "exit_code": 0,
+      "status": "verified",
+      "verification": {
+        "artifact": {
+          "status": "ready"
+        },
+        "isolated_registry": {
+          "status": "ready"
+        },
+        "hooks": {
+          "status": "ready"
+        },
+        "preexecution_chain": {
+          "status": "ready"
+        },
+        "mcp": {
+          "status": "ready"
+        },
+        "doctor": {
+          "status": "ready",
+          "exit_code": 0
+        },
+        "scheduler_entrypoint": {
+          "status": "ready",
+          "mode": "production-entrypoint-isolated-dry-run"
+        },
+        "native_permission_ui": {
+          "status": "unobserved",
+          "exit_code": 78,
+          "reason": "isolated CLI has no attachable current-session PermissionRequest surface"
+        },
+        "scheduler_host": {
+          "status": "unobserved",
+          "exit_code": 79,
+          "reason": "candidate must not load production launchd labels before promotion"
+        }
+      },
+      "python_environment": {
+        "version": [
+          3,
+          10,
+          7
+        ],
+        "implementation": "cpython",
+        "cache_tag": "cpython-310",
+        "dependencies": {
+          "PyYAML": {
+            "content_sha256": "cd599dfd54eaa161a07a80ea872158b3849b8a6ab5d21fa9d51e5f5d00e4086a",
+            "version": "6.0.3"
+          },
+          "sqlite3": "3.51.0",
+          "ssl": "OpenSSL 3.6.3 9 Jun 2026",
+          "venv": "available"
+        }
+      }
+    },
+    {
+      "sample": 2,
+      "phase": "full_install",
+      "seconds": 16.108,
+      "exit_code": 0,
+      "status": "generation_verified",
+      "phase_timings_seconds": {
+        "host_preflight": 0.725,
+        "deployment_lock_and_recovery_scan": 0.001,
+        "artifact_stage_and_validation": 0.837,
+        "scheduler_and_home_preflight": 0.326,
+        "snapshot_and_prepare": 0.142,
+        "registry_switch_and_readback": 0.532,
+        "launcher_rules_and_smoke": 6.032,
+        "deployment_and_scheduler": 4.622,
+        "postconditions_and_commit": 0.787,
+        "locked_total": 12.115,
+        "total": 14.004
+      }
+    }
+  ]
+}

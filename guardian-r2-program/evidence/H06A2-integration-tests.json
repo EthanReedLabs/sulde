@@ -1,0 +1,22 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "commands": [
+    {"argv": ["python3", "-B", "-m", "unittest", "<H01-H05-affected-composition>"], "exit_code": 0, "result": "pass"},
+    {"argv": ["git", "diff", "--exit-code", "695c418248a4ee130eb74a1296391e996296de3d", "1d81294eb931fb9106b5dc713809fa944b597a30", "--", "<nine-owned-paths>"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The exact integrated coordinator tree passes 333 affected composition tests.",
+    "All nine worker and coordinator blobs are byte-identical; recovery.py and resources.py preserve their base nonblank line sequences while meeting 3000-line limits."
+  ],
+  "findings": ["FR2-H06-003", "FR2-H06-004", "FR2-H06-006"],
+  "kind": "integration_tests",
+  "requirements": [],
+  "run_id": "run-gpe-ee80c2b587197cdd2fa57479",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06A2 composes with H01-H05 on the coordinator branch without scope or behavior regression.",
+  "task_id": "H06A2-integration-hygiene",
+  "verdict": "pass"
+}

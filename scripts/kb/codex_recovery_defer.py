@@ -13,7 +13,11 @@ from pathlib import Path
 import re
 from typing import Any
 
-from command_template import git_execution_passthrough, split_command_template
+from command_template import (
+    git_execution_passthrough,
+    git_stdin_review_pipeline,
+    split_command_template,
+)
 
 
 _READ_ONLY_TOOLS = frozenset(
@@ -288,7 +292,7 @@ def payload_requires_fail_closed(
     if not isinstance(tool_input, dict):
         return True
     command = str(tool_input.get("command") or tool_input.get("cmd") or "").strip()
-    if git_execution_passthrough(command):
+    if git_execution_passthrough(command) or git_stdin_review_pipeline(command):
         return False
     tokens = _tokens(command)
     if not tokens:

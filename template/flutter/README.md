@@ -1,4 +1,4 @@
-# {{frontend_name}} — Flutter frontend (sulde)
+# {{frontend_name}} — Flutter frontend (sulde-cc)
 
 This directory contains the Flutter frontend for the project. `/sulde-init` populated it from `${CLAUDE_PLUGIN_ROOT}/template/flutter/`.
 

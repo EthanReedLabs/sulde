@@ -619,6 +619,19 @@ def codex_candidate_promotion_candidate(
         r"python(?:\d+(?:\.\d+)*)?(?:\.exe)?", interpreter.name.lower(),
     ):
         return None
+    # The receipt binds the invocation environment, not just the executable
+    # bytes. Resolving a venv symlink here would replace its sys.prefix with
+    # the base environment. Keep a lexical absolute path for that comparison;
+    # the existing resolved interpreter still seals the binary in the grant.
+    invocation = Path(tokens[0]).expanduser()
+    if not invocation.is_absolute():
+        if len(invocation.parts) == 1:
+            located = shutil.which(tokens[0])
+            if not located:
+                return None
+            invocation = Path(located)
+        invocation = working_directory / invocation
+    invocation = Path(os.path.abspath(invocation))
     script_value = Path(tokens[script_index]).expanduser()
     script = (
         script_value if script_value.is_absolute() else working_directory / script_value
@@ -678,7 +691,7 @@ def codex_candidate_promotion_candidate(
     except IntentGuardianError:
         return None
     if (
-        python_identity.get("executable") != str(interpreter)
+        python_identity.get("executable") != str(invocation)
         or python_identity.get("executable_sha256") != _sha256_path(interpreter)
         or source.get("commit") != _candidate_git_output(workspace, "rev-parse", "HEAD")
         or source.get("tree") != _candidate_git_output(
@@ -780,21 +793,30 @@ def codex_plugin_read_only_maintenance_command(
         interpreter.name.lower(),
     ):
         return False
-    raw_script = Path(tokens[1]).expanduser()
-    if raw_script.is_symlink():
+    script_index = 2 if tokens[1] == "-B" else 1
+    if len(tokens) <= script_index + 1:
+        return False
+    raw_script = Path(tokens[script_index]).expanduser()
+    candidate_script = raw_script if raw_script.is_absolute() else working_directory / raw_script
+    if candidate_script.is_symlink():
         return False
     try:
-        script = (
-            raw_script if raw_script.is_absolute() else working_directory / raw_script
-        ).resolve(strict=True)
+        script = candidate_script.resolve(strict=True)
     except OSError:
         return False
-    argv = [token.lower() for token in tokens[2:]]
+    argv = tokens[script_index + 1:]
     try:
         root = workspace_root(working_directory).resolve()
     except (IntentGuardianError, OSError):
         root = working_directory
     installer = (root / "scripts/release/install_codex_plugin.py").resolve()
+    candidate_controller = (root / "scripts/release/candidate_codex_plugin.py").resolve()
+    if script == candidate_controller and (
+        argv in (["--help"], ["-h"])
+        or (len(argv) == 2 and argv[0] in {"prepare", "verify", "promote", "show", "discard"}
+            and argv[1] in {"--help", "-h"})
+    ):
+        return True
     if script == installer and argv in (
         ["--help"],
         ["-h"],
@@ -978,6 +1000,15 @@ def scheduler_reconcile_candidate(
         return None
     try:
         tokens = split_command_template(command)
+        # Necessary syntax only: unrelated tools must not compute a full source
+        # binding. Matching commands still undergo the exact argv/digest check.
+        if (
+            len(tokens) != 6
+            or Path(tokens[0]).name != "install-agents.sh"
+            or tokens[1] != "--runtime-root"
+            or tokens[3:] != ["--provider", "codex", "--accept-llm-data-egress"]
+        ):
+            return None
         binding = _scheduler_reconcile_binding(Path(cwd or os.getcwd()))
     except (ValueError, IntentGuardianError, OSError):
         return None
@@ -1005,6 +1036,12 @@ def launcher_refresh_candidate(
         return None
     try:
         tokens = split_command_template(command)
+        if (
+            len(tokens) != 4
+            or Path(tokens[0]).name != "bootstrap.sh"
+            or tokens[1:] != ["--launchers-only", "--host", "codex"]
+        ):
+            return None
         binding = _launcher_refresh_binding(Path(cwd or os.getcwd()))
     except (ValueError, IntentGuardianError, OSError):
         return None

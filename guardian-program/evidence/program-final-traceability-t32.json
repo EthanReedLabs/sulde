@@ -1,0 +1,39 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "final_traceability",
+  "baseline": "program:guardian-remediation-r97",
+  "run_id": "program-final-t32-20260824",
+  "verdict": "pass",
+  "summary": "All 18 requirements, 13 terminal tasks, 78 resolved findings and the final installed generation are traceable with zero evidence-integrity error.",
+  "facts": [
+    "Task projection is 9 accepted and 4 superseded with no non-terminal task state.",
+    "All 78 findings are resolved and the 100 pre-program-evidence task documents verify with zero integrity error.",
+    "Every one of the 18 manifest requirements is covered by current active requirement_traceability evidence bound to its exact acceptance clause.",
+    "The first post-T32 final-check reports only the eight deliberately absent program evidence kinds and no task, finding, requirement or evidence blocker.",
+    "T32 supplies current WP56-D live proof and migrates five old facts only after common-prefix, completed-chain, evidence-digest and source-ancestry verification.",
+    "The installed artifact, runtime owner, scheduler 15/15 and current-session live doctor bind one production generation."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["guardian_program.py", "status", "guardian-program", "--verify-evidence"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["guardian_program.py", "final-check", "guardian-program"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/program-final-acceptance-t32.md",
+      "sha256": "c64dece515e276ea17d803fe2d8edbb3fba55ec78edbbec3366f1892f3c22d22"
+    }
+  ]
+}

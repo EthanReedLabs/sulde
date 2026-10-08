@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-8604a20166ecf047ad18291d",
+  "verdict": "pass",
+  "kind": "targeted_tests",
+  "summary": "The production interruption round trip passes when the isolated runner inherits SULDE_TEST_MODE=1, while the environment is restored after the local test scope.",
+  "facts": [
+    "The exact FR2-H06I-R2-017 regression passes 1/1 with SULDE_TEST_MODE=1 inherited by the test process.",
+    "The combined direct matrix passes 214/214 at the final candidate commit."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-017"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "SULDE_TEST_MODE=1", "python3", "-B", "-m", "unittest", "-v", "tests.test_agent_runtime.H06HSelfContainedEvidenceTests.test_frozen_h06h_bytes_runtime_to_production_broker_round_trip"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

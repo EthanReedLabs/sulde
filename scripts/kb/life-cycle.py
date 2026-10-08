@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from operational_readiness import project as operational_readiness_projection  # noqa: E402
 from sulde_paths import kb_home as canonical_kb_home
 from life_health import aggregate as aggregate_problems, domains as health_domains
+from experience_maintenance import maintenance as experience_maintenance
 from production_recovery_readiness import (  # noqa: E402
     observe_recovery_truth,
     provision_recovery_key,
@@ -433,9 +434,12 @@ def build(
     test_evidence = {"status": "dry_run", "removed": 0}
     if apply:
         try:
-            test_evidence = load_module(
+            evidence_module = load_module(
                 "sulde_test_evidence_gc", TEST_EVIDENCE_SCRIPT
-            ).gc_records(home.parent / "test-evidence", scheduled=True)
+            )
+            test_evidence = evidence_module.gc_records(
+                evidence_module.evidence_root(home), scheduled=True
+            )
         except (OSError, RuntimeError, ValueError) as error:
             # Retention is housekeeping, not an operational authority gate.
             test_evidence = {
@@ -443,6 +447,13 @@ def build(
                 "removed": 0,
                 "reason": type(error).__name__,
             }
+    try:
+        experience = experience_maintenance(home, apply=apply)
+    except Exception as error:
+        # Maintenance is advisory and cannot turn a successful task/actor into
+        # a permission gate. Do not expose private input in exception messages.
+        experience = {"status": "degraded", "reason_code": type(error).__name__,
+                      "execution_authorized": False}
     readback = {
         "l2": _readback_matches(home / "l2/registry.json", l2),
         "l3": _readback_matches(home / "l3/registry.json", l3),
@@ -475,6 +486,7 @@ def build(
             "truth": str(home / "evolution/registry.json"),
         },
         "test_evidence_retention": test_evidence,
+        "experience_maintenance": experience,
         "health_domains": health_domains(home, operational),
         "payloads": {"l2": l2, "l3": l3, "l4": l4, "evolution": evolution},
     }

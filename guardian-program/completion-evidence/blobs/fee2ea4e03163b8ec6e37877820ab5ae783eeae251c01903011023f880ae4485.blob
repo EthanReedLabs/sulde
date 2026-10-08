@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T23-current-lane-readiness",
+  "kind": "targeted_tests",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-29520e7a7b23276c16fbdd20",
+  "verdict": "pass",
+  "summary": "The coordinator independently reran the complete operational readiness suite on 74061a6.",
+  "facts": [
+    "27 tests passed with no failures or errors.",
+    "Compile and diff-check passed."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "tests.test_operational_readiness"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

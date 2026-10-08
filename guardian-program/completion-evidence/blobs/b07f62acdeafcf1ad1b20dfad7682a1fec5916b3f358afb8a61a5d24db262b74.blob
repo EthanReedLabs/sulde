@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T25-release-gate-closure",
+  "kind": "task_report",
+  "baseline": "f87d58689968372cf4332860ac0ee155241e5424",
+  "run_id": "run-gpe-45a0eac272952f59169b6fef",
+  "verdict": "pass",
+  "summary": "T25 closes the eight disclosed release reds without weakening typed authority, effect verification, privacy or fail-closed generation handling.",
+  "facts": [
+    "Worker commit 2c0f8f96098c52be8178eca18dff24fb892472f7 changes exactly ten frozen T25 paths.",
+    "The report discloses the worktree-layout non-pass, the bytecode-polluted full-clone run and the clean 1340-test rerun rather than hiding intermediate failures."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T25-release-gate-closure.md",
+      "sha256": "2ca59b3017af17bd46cd379c1b444d76ef2ad7f65aa0f473332d7ca6bea88b02"
+    }
+  ]
+}

@@ -1,6 +1,1567 @@
 {
-  "corpus_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "document_count": 0,
-  "documents": [],
-  "schema_version": 1
+  "schema_version": 1,
+  "documents": [
+    {
+      "path": "knowledge/anti-patterns/0001-placeholder-1-1.md",
+      "sha256": "b40f3f57dfcefda41fc929fc13ce5492b0d902989abde5de7aa7839c4eab061c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0002-linearlayout.md",
+      "sha256": "ec5e9520bd14a4d7da4b3f10b94b4067f348965fffe9c3cab8a3656f97db758f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0003-bottomnavigationview.md",
+      "sha256": "0e4593c30561c309926f1b4cda880fc6c5c78a96581733cec20bc9dd245c51f9"
+    },
+    {
+      "path": "knowledge/anti-patterns/0004-placeholder-1-4.md",
+      "sha256": "217b9da061acc95a269e6d4fe69fdf8bc72581625363d8da45fe521b8ab2b317"
+    },
+    {
+      "path": "knowledge/anti-patterns/0005-placeholder-1-5.md",
+      "sha256": "a21882db8f234b8e5b2f765b34be0f1a46e32f7c97691e7eff0a71d08944bf2f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0006-swiftui-vstack-hstack.md",
+      "sha256": "bc33e5bc683ca95b3fe65e6e77cfabeaf436fbae5d032c44b9f8f3edf555c05e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0007-sp-dp.md",
+      "sha256": "fb4ebab828f0e41907471b27af9afd5cc246b5e2f70b023c8653d6adb69e4c02"
+    },
+    {
+      "path": "knowledge/anti-patterns/0008-placeholder-1-8.md",
+      "sha256": "5eb47a6ab357161e84505fbd947151da2cce8faaf4c9dafc51f795ad7dfe3808"
+    },
+    {
+      "path": "knowledge/anti-patterns/0009-inset-navigationbars.md",
+      "sha256": "f2d7dd114a686e61ee38dfca80fe6e00a2b69c523ba87e8b4098cee769f42228"
+    },
+    {
+      "path": "knowledge/anti-patterns/0010-ios-contextmenu-confirmationdialog.md",
+      "sha256": "9f3ae602610a304f0101cb1dc8c62eb6671eefacc329d35b9dafa1099d57b313"
+    },
+    {
+      "path": "knowledge/anti-patterns/0011-vector-shape.md",
+      "sha256": "8f0b4a0294d92205a34296818e6825c66bc4819ab85961c15edc3c059bcf156b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0012-mvi-adaptivebaseactivity-inset.md",
+      "sha256": "27879d6892b3baa9f262ef9d3742a6bcc121d033e65281a288d8e02ac8c32a83"
+    },
+    {
+      "path": "knowledge/anti-patterns/0013-pill-bg-tab-frame.md",
+      "sha256": "908b1309628ea5d9bc1525cd2d7e9c6e52037ce1d64446eac73def33dd2ee248"
+    },
+    {
+      "path": "knowledge/anti-patterns/0014-swiftui-scrollview.md",
+      "sha256": "30253bf0edd01bdc4dbe35829d1bd4a0ace64c9d59b9e5416fbb23ea1a12f203"
+    },
+    {
+      "path": "knowledge/anti-patterns/0015-android-edittext-adaptivebaseactivity.md",
+      "sha256": "d79e1fb777121acfa199d071c89e6be968db061e61aea6963edcbbeac76aa5eb"
+    },
+    {
+      "path": "knowledge/anti-patterns/0016-reduceresult-command.md",
+      "sha256": "4931fe5355df876a5c3955658939680ca7ddbb9e43dd38e8798015f0c27a38a8"
+    },
+    {
+      "path": "knowledge/anti-patterns/0017-ios-result-action-run.md",
+      "sha256": "0bd09accb1d72246bf768ffde72e645952eb437636b24231256cc5ee11194324"
+    },
+    {
+      "path": "knowledge/anti-patterns/0018-feature-feature.md",
+      "sha256": "f5da0cd06d23de9bce7c591ea71a8c7ef026ac9cedca1847a40ba8d1be5346cc"
+    },
+    {
+      "path": "knowledge/anti-patterns/0019-aiservice.md",
+      "sha256": "71020b27bf5501dfef9127c47cc6cc9bba0708b1aa5f6ed08d9db74a34c7ea1b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0020-run.md",
+      "sha256": "3360e9098955203d3bef8bc4e74c5d72c9237042a312aa690d756feef152ef84"
+    },
+    {
+      "path": "knowledge/anti-patterns/0021-fragment-adaptivebasefragment-onbackpressed.md",
+      "sha256": "284f4fe464b61e7b6b6f3c13c7f7ad7dabf2565cde48fed7eb8dbcfd8f4b9231"
+    },
+    {
+      "path": "knowledge/anti-patterns/0022-delegate-reducer.md",
+      "sha256": "e5579b6e7d9f7fddba7af4bcbeb56e672ee741a99b850b9fdcfee8298ed345cd"
+    },
+    {
+      "path": "knowledge/anti-patterns/0023-feature-new-avplayer-exoplayer-mediaplayer.md",
+      "sha256": "3db0a6c11bc5403862828a4361cfc3e773e22fc0422810af12de243ce70d63b8"
+    },
+    {
+      "path": "knowledge/anti-patterns/0024-swiftui.md",
+      "sha256": "1c5b6028f34c45c4b6131e70bfa86f912f8afb4f94cacada9282f9e3830873c7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0025-toggle-guest.md",
+      "sha256": "c112aafc36e8d7f15d79c05db6f4d33d589d685a30edfad9f659c018b69aab4e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0026-exoplayer-recyclerview-viewpager2-setplayer-early-return.md",
+      "sha256": "8a55e7067df372e0c48805b6489cd4d084030c1ff3bb5f7a2b21c28aa4229d0e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0027-ui.md",
+      "sha256": "df7fcf956b1c16af7d442bf68c33f0ad076c813cb8c9349c3c848d110b1200e3"
+    },
+    {
+      "path": "knowledge/anti-patterns/0028-placeholder-3-2.md",
+      "sha256": "02e3fa8263a49f93aebfc83fe7a566928c6780945702243a6e2e9e9463278eec"
+    },
+    {
+      "path": "knowledge/anti-patterns/0029-placeholder-3-3.md",
+      "sha256": "60ddc5e7930e9bf5c53fa18159de2caa0268448b47db51020de6763a5275451a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0030-dev-git.md",
+      "sha256": "bbb178c25105f696057f14632dde86fdd717dcddd95a8d1c96f91c6ccdd6bed8"
+    },
+    {
+      "path": "knowledge/anti-patterns/0031-ui-uiautomator-dump.md",
+      "sha256": "19d79f94bdda64c35de741b75ca21c8df02863193de6b1e2a14321228b43e360"
+    },
+    {
+      "path": "knowledge/anti-patterns/0032-gdpr.md",
+      "sha256": "32879b2e466e21b2a57f9954cfb326529c19576b7c37c74ffaf711a38994b3fc"
+    },
+    {
+      "path": "knowledge/anti-patterns/0033-google-services-json-gitignore-build.md",
+      "sha256": "45609e4890303ae3e49e300ca22f4a8dee6d970a96d4f2d256748cf2bf4d69a7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0034-placeholder-3-8.md",
+      "sha256": "329d013a509b838c88ff17ac26005cfe53243ef9cc82cb390728a4f0f0e3fe0d"
+    },
+    {
+      "path": "knowledge/anti-patterns/0035-prd-prd-v3.md",
+      "sha256": "9f66dcb074bf017ae895f1f35aba4b53a583fd1cc446679986319607c98e46b0"
+    },
+    {
+      "path": "knowledge/anti-patterns/0036-macos-tcc-claude-code-agent.md",
+      "sha256": "60449f2ae33c82fec08df558024eefe25db3e6f3f2173453bcca1069d1c7067a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0037-sub-page-wizard.md",
+      "sha256": "773169afd61e747ad957149e3555266bd8f2f152ab2844750ad74f3d7420a761"
+    },
+    {
+      "path": "knowledge/anti-patterns/0038-wizard-step-step-dev-pageid.md",
+      "sha256": "58c16f5cc50a38d55f28e4934f4bb4493a43dd5c91a0f469fb99abf8d1881ceb"
+    },
+    {
+      "path": "knowledge/anti-patterns/0039-handoff.md",
+      "sha256": "2129ce3fb1a6704ee533e5221f22cb1544728ae92ff1b3daa13d988f3fcb0ef5"
+    },
+    {
+      "path": "knowledge/anti-patterns/0040-placeholder-3-14.md",
+      "sha256": "49f8b9cffa9d6bb6d9d61254a254f1dd6e53b6a049c4c74d37e70ce40fe57dae"
+    },
+    {
+      "path": "knowledge/anti-patterns/0041-placeholder-3-15.md",
+      "sha256": "ef438a0a0733116ec4fc6a9350dcbb87072fd2c2ef6ad1ba9e65f7d51f25a878"
+    },
+    {
+      "path": "knowledge/anti-patterns/0042-task-md-fallback-dev-fallback.md",
+      "sha256": "c9373b461deb7c0959cd2d7e50b4205085f4d068772f3d0e0c1a46f6a3e39d37"
+    },
+    {
+      "path": "knowledge/anti-patterns/0043-dev-bug.md",
+      "sha256": "359a2fa11c10681ebe2a2e025a088bb7abf4f5ef808a868ee7e591cc669036f8"
+    },
+    {
+      "path": "knowledge/anti-patterns/0044-token-dev-fail.md",
+      "sha256": "5e61d44ed50a44074307b9d6c1b163db5d7b11cdfa7a033ed5b9f0b593a7bc11"
+    },
+    {
+      "path": "knowledge/anti-patterns/0045-dev-task-handoff-develop-audit.md",
+      "sha256": "c9770266119fbc5a58aae66e272b8bd385678775e04dde14399c1cb85151e8f2"
+    },
+    {
+      "path": "knowledge/anti-patterns/0046-task-md-spec-service-dev.md",
+      "sha256": "232cc2ee591562bb0c8d8b6f4cb15ef2b3dbeb3972f9a3eff441f2ade5a08287"
+    },
+    {
+      "path": "knowledge/anti-patterns/0047-real-debug-mock-debug-real-task.md",
+      "sha256": "2a62f4cd5d64309c44051a1635cd60e786d0ac5ccb82e51545f17de3b6e7b6ae"
+    },
+    {
+      "path": "knowledge/anti-patterns/0048-ios-verify-find-head-n-app.md",
+      "sha256": "b59edd7113f9f09b4b02db851a8e6e9d5b78f9543f4f5f7ea2e4420d72593750"
+    },
+    {
+      "path": "knowledge/anti-patterns/0049-spec-feature-client-mock.md",
+      "sha256": "0a7e516e26c08bda9a9797e360e7623666ac676c1342de1f8dc366fd3dd8ee3c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0050-envelope-msg-vs-message-decode-try.md",
+      "sha256": "ebbbe565da0941a00d38ace07fed358d14c201dd331673fcbf10cd453eab4b94"
+    },
+    {
+      "path": "knowledge/anti-patterns/0051-ios-sheet-fullscreencover-bottomdrawer-zstack-overlay.md",
+      "sha256": "8aed61a22026ecf95cc7d5f82bfa84c769702116fc97ffe5388dbe447daf5488"
+    },
+    {
+      "path": "knowledge/anti-patterns/0052-task-md-prd-pen-truth-ui-prd-sse.md",
+      "sha256": "e3c8e0b623c26045817f8d2dd4ee4910b60e18d3dbdd9df97604596ec5d9016a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0053-pen-batch_get-json-png-task-md.md",
+      "sha256": "d9aa5c1cbc6d90d1792b0c0e7254a305f15edbc17f952e59beaaec903f692a17"
+    },
+    {
+      "path": "knowledge/anti-patterns/0054-task-md-boilerplate-model-sonnet-dev.md",
+      "sha256": "456fd682a47bdc161edb1d0e9aa90f34a64a3084f896133a12902418cb63448c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0055-sse-decoder-generic-decode-events.md",
+      "sha256": "12c39c8b83e6544317039741ceb5d8eaf58979e5d5e5a1305a2b59a44b898d08"
+    },
+    {
+      "path": "knowledge/anti-patterns/0056-claude-md-shared-rules-dev-session-system-reminder.md",
+      "sha256": "654463bd8164b63defd98af0358e4c178101eced1a94c828047d9e3a563b9586"
+    },
+    {
+      "path": "knowledge/anti-patterns/0057-task-md-audit-cp-dev-asset-catalog-drawable-ui.md",
+      "sha256": "8d0cba87deef36d3055753ec28a7db1cdd6135d366c678f876f800fc34ae3555"
+    },
+    {
+      "path": "knowledge/anti-patterns/0058-xcode-debug-iphoneos-build-preview-dylib-ios-x-sigtrap-crash.md",
+      "sha256": "084c825783b8ebb776adbca9bcc85a98df569f37c70f00f9a973253cde718a0f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0059-sweep-handoff-escalation.md",
+      "sha256": "b0de8e551f97e17e03d7287570e08a0ae369f69f9029ffb9b32d7be56b5f4067"
+    },
+    {
+      "path": "knowledge/anti-patterns/0060-spec.md",
+      "sha256": "1f5cad5ec15a9bbd41f0e835a7c4084b9c464a8d1f435b61423320778042a05b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0061-placeholder-3-42.md",
+      "sha256": "f052433b3973141c56ad9412c68a3890a4e4b8b069e6be94045824f759d61bc6"
+    },
+    {
+      "path": "knowledge/anti-patterns/0062-ios-x-asset-catalog-svg-currentcolor-swiftui-image-template.md",
+      "sha256": "30958e0078926d359297818c40dc7834cea2816a7c28eb562ebe010636b11c98"
+    },
+    {
+      "path": "knowledge/anti-patterns/0063-swiftui-offset-hit-testing.md",
+      "sha256": "0b0dc11952334e4e22c82a0d185ac320b5b5a061d0f01eebe6ca310c44c5745b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0064-tca-perception-bindable-withperceptiontracking.md",
+      "sha256": "9a99a3894dddbb49df65d0e77e6fd6dbbcc876fb730e0f2b0096e36bb12cceab"
+    },
+    {
+      "path": "knowledge/anti-patterns/0065-ultrathink.md",
+      "sha256": "6edc8d2b44986c4d3ad460ca68fcb80a2da49e1c0a48788f044581fae5767cec"
+    },
+    {
+      "path": "knowledge/anti-patterns/0066-parallel-dev-subagent-ultrathink.md",
+      "sha256": "7da5002701dd6e69dc982e7a81b7704e4ad04b7c36f35af70e4f81e535d45ede"
+    },
+    {
+      "path": "knowledge/anti-patterns/0067-ui-vs.md",
+      "sha256": "b6f5af7bf47a38f89ceb9177b7ba961685dcba2405882e0f7851de44772366f4"
+    },
+    {
+      "path": "knowledge/anti-patterns/0068-feature.md",
+      "sha256": "c3411132cb98b739e800a55a343a6bfbba2486cdf7dc7263084d7b7e82d4923c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0069-bash-cd-claude-md.md",
+      "sha256": "fca3deae8aaf9e7f5655f686c48f80b2f5d587fdaceca784f0a4caca7bae8927"
+    },
+    {
+      "path": "knowledge/anti-patterns/0070-main-develop-commit.md",
+      "sha256": "74fbf5e3573f8a006946a130e514ea972a647abeaad12891b5ad902b4bef010a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0071-worktree.md",
+      "sha256": "70124881648d7c3973229a3736a1d501cb189fdfada3330ebe5501a7740e584f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0072-commit-message.md",
+      "sha256": "01e6a7c5155d4f3a5dec79af58927c7a7de788b1fe64c83f218ec9f81fa02447"
+    },
+    {
+      "path": "knowledge/anti-patterns/0073-commit-message-ai.md",
+      "sha256": "976bd9cb08944c5f60578cb8c46a55e1a649152931be1bb3e56902aa83f7a6a1"
+    },
+    {
+      "path": "knowledge/anti-patterns/0074-git.md",
+      "sha256": "3b3f37f6081410b230291ac069d8f408505431d61db5a3a7a3b11e81b5554418"
+    },
+    {
+      "path": "knowledge/anti-patterns/0075-placeholder-5-6.md",
+      "sha256": "7700595d0224224cda7f6a15447f2b21a7fb67dd8f694a468f84043d4d501358"
+    },
+    {
+      "path": "knowledge/anti-patterns/0076-placeholder-5-7.md",
+      "sha256": "e38288ef7968f86c8aba4d6352e2b58405dceee72021a95068a454e0f39fd69e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0077-placeholder-6-1.md",
+      "sha256": "e0ee54204ca3f145989bb4e5fb05e93a4a0ddb3f9cad542a094af80a860f34c0"
+    },
+    {
+      "path": "knowledge/anti-patterns/0078-exoplayer.md",
+      "sha256": "49c4473905349c400ea4bca0df2ec31bb1f56d8dbbe91ba1f0f431fa7253d5d4"
+    },
+    {
+      "path": "knowledge/anti-patterns/0079-s.md",
+      "sha256": "d124efe15b900fb06ca2dd43e8b6a1746be592ad8a7f7bba0a750106afde5795"
+    },
+    {
+      "path": "knowledge/anti-patterns/0081-en-zh.md",
+      "sha256": "f83574ee07261310c7318a13f056ccb1c5f3f6dd25280198b57c57a382e5d5a1"
+    },
+    {
+      "path": "knowledge/anti-patterns/0082-placeholder-7-3.md",
+      "sha256": "1cf1261a97464c26c1ae63a00954ed5380adc9a889cb421dd76ca57d5a367e09"
+    },
+    {
+      "path": "knowledge/anti-patterns/0083-task.md",
+      "sha256": "a1a8873ed4e5751753e6a600f097b21de772af5e387aba91a246ae274359db19"
+    },
+    {
+      "path": "knowledge/anti-patterns/0084-task-md-ui-jank.md",
+      "sha256": "727e50df3f6ea07cf79fecb3467627253c93211d0f97232229001fe6e0edec61"
+    },
+    {
+      "path": "knowledge/anti-patterns/0085-swiftui-lazyvstack-view-closure-body.md",
+      "sha256": "1172d17d1f33074c8d0f3cf573e77fc472ee421d6acc86f6a55d2eeaf856cb6f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0086-onappear-store-action-fast-swipe-action.md",
+      "sha256": "a82b639ac25d476c0e5d88e1b719f79b3807e4e8f49c5ba2d421ed95e914795c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0087-swiftui-tca-escaping-closure-withperceptiontracking.md",
+      "sha256": "2d0a5429de672604b2580021941c6e116e5474fa5734637f7e1235868a6a62b6"
+    },
+    {
+      "path": "knowledge/anti-patterns/0088-swiftui-button-frame-contentshape-hit-testing.md",
+      "sha256": "7dbb7919d5e7f274a449e9c1a74f22fb40677388da6971069a625c7f1231c350"
+    },
+    {
+      "path": "knowledge/anti-patterns/0089-swiftui-preferencekey-geometryreader-lazycontainer.md",
+      "sha256": "8a9caebc9a94809c24c248498d8a7a8e210ef18dba39995309914d49ecdd41fb"
+    },
+    {
+      "path": "knowledge/anti-patterns/0090-reducer-feature-distinctby-key-distinct.md",
+      "sha256": "4452cecc4a2dc8a6f17e0d2e510bc71eb4214a4da42d963d9f464ebfd5e5a651"
+    },
+    {
+      "path": "knowledge/anti-patterns/0091-session-audit-task-md.md",
+      "sha256": "ee142bc4c9ed189c5bd16c9fc8d1f4f00089d9c447f598dc5e301c9464cb76f9"
+    },
+    {
+      "path": "knowledge/anti-patterns/0092-onbeat-cpsm-migration.md",
+      "sha256": "5b9678d2625d62f6868bfaa862188acad0f18616ca7b91eee4937b3585b8346d"
+    },
+    {
+      "path": "knowledge/anti-patterns/0093-cache-file-no-extension-avplayer-fails.md",
+      "sha256": "14cf58f606983d2fd9dce50f543f6cd89bdcba688e713773852225a406610ea7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0094-wizard-viewmodel-threadid-random-uuid-not-flowuuid.md",
+      "sha256": "a625f1c6284624f62bb2543c8fca501f805c642d8476ab730bb9c9e831abebd9"
+    },
+    {
+      "path": "knowledge/anti-patterns/0095-coordinator-audit-skip-api-spec-grep-step.md",
+      "sha256": "ad4456dcbfb4c7293fc76ea30ecd6feb11e11f378de2ff636542ea4a1000ed2f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0096-coordinator-task-md-cite-stale-pen-truth-no-git-log-verify.md",
+      "sha256": "50cc2dbcf022ffb0781a3a95ab1bf4841271347c680288bfd7ded78ccf7098a4"
+    },
+    {
+      "path": "knowledge/anti-patterns/0097-scaffold-bypass-business-layer-direct-call.md",
+      "sha256": "5c5c0e06466c6b7df117ef9979a99f0f4c7558226201afa745c620347eeb5eb6"
+    },
+    {
+      "path": "knowledge/anti-patterns/0098-cold-flow-stateflow-update-broken.md",
+      "sha256": "65e472fad6ac74e1dd757da37fc5618f6a236b14ca84a53c7f6b07e8844086a0"
+    },
+    {
+      "path": "knowledge/anti-patterns/0099-ralph-prompt-backtick-shell-parse-error.md",
+      "sha256": "571823c44a55e97bc7c025d530b50c0e1d160710a8e0cd96db2c353a5c9c1a0a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0101-android-okhttp-factory-multi-instance.md",
+      "sha256": "d8f092f96dd3f4327cc0ada8f73057a82a43cc726878b98957a150460746b65b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0102-android-ios-webview-evaluatejavascript-localstorage-injection.md",
+      "sha256": "7d83c25e1cc7bc26fb496fd832d1a38abc30e2412403df945edeed3d7b1dc2f4"
+    },
+    {
+      "path": "knowledge/anti-patterns/0103-ios-chat-textchunk-stagehint-placeholder.md",
+      "sha256": "99f02d145170d6abec84cb0493c5667cb618e53fdf0772ccf41475eeea061125"
+    },
+    {
+      "path": "knowledge/anti-patterns/0104-ios-round3-backport-cross-feature-miss.md",
+      "sha256": "893485801873151e9cee952002e990805e2598db3d0e2a1df19b10dfe2e99acd"
+    },
+    {
+      "path": "knowledge/anti-patterns/0105-coordinator-approve-gating-without-thin-step-verify.md",
+      "sha256": "9ac4a1f7f9d6337c175b72fb0bbd0379daacdb078a10954d0e078b5df9052449"
+    },
+    {
+      "path": "knowledge/anti-patterns/0106-coordinator-impl-task-md-default-platform-pattern-no-pen-truth.md",
+      "sha256": "c4df7c7b2736609cde38e02f9d4576d16fd0c71bc5c49faf5386b3b4995a7b67"
+    },
+    {
+      "path": "knowledge/anti-patterns/0107-fixture-must-mirror-sse-wire.md",
+      "sha256": "c1e5862a58550652949226d550151ca93b4562597dd70da544926a107bd77bd2"
+    },
+    {
+      "path": "knowledge/anti-patterns/0108-di-singleton-runtime-config-stale.md",
+      "sha256": "a2c8957881a12dfba1c6b89d499c295c7bc1ad9497381214bb59832eccb79aed"
+    },
+    {
+      "path": "knowledge/anti-patterns/0109-uri-cross-activity-permission.md",
+      "sha256": "808eb580e2ae7f5b94969b13e9f547fbb0e650ba1594ab6f59004cef3543f048"
+    },
+    {
+      "path": "knowledge/anti-patterns/0110-naked-toLong-external-id.md",
+      "sha256": "dbe51838af480bf7bd872a21d66439a15e00cc5defcbc1ffaed9811e26c50b67"
+    },
+    {
+      "path": "knowledge/anti-patterns/0111-swiftui-nested-button-custom-tap.md",
+      "sha256": "8c30a36b85a7be1f27530c2fe9100b4911185c207a8fdc998830782d960c0b72"
+    },
+    {
+      "path": "knowledge/anti-patterns/0112-fragmentmanager-result-mismatch.md",
+      "sha256": "717af96c173b4bf9c58c34ab92a873d543e22e5636c5764c24f1433525646362"
+    },
+    {
+      "path": "knowledge/anti-patterns/0113-tca-cancellable-metatype-fail.md",
+      "sha256": "c242232ce57244a2fee68ab84fac7a595c97d542b50a1aeba81c4f43e74483e3"
+    },
+    {
+      "path": "knowledge/anti-patterns/0114-tca-delegate-no-parent-dismiss-and-commit-nil-overrides.md",
+      "sha256": "d0c09f0380b619b88e138c7c3a7b16188ebb9d592dbe6f9e565decd641ec84bc"
+    },
+    {
+      "path": "knowledge/anti-patterns/0115-encryptedsharedpreferences-no-decrypt-fallback-startup-crash.md",
+      "sha256": "533e268cf6c3f14ecf1e7af6febe309b539fc6d7e1e209bda25135dc7cc4f219"
+    },
+    {
+      "path": "knowledge/anti-patterns/0116-ios-uikit-present-while-dismissing-chained-sheet-race.md",
+      "sha256": "3b5ae69af93c80cf967948cb7d9a6fea365f8cb68d2af87af24035e71156c1b7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0117-coil-crossfade-drawable-cast-bitmapdrawable.md",
+      "sha256": "c38071b9414ea60f2f5f6748431a87ccc41c407c6eaec36182f2b0ab06fcb06a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0118-coil-hardware-bitmap-software-canvas-black.md",
+      "sha256": "99f4ad53ac5bb37ea19cfcc9366d62014171f36a82dc86aaf1dd5049ae153da0"
+    },
+    {
+      "path": "knowledge/anti-patterns/0119-upload-service-image-falls-to-music-branch.md",
+      "sha256": "5531c5431626914fd270c5902c3611a4117ba0872c0b1347c46b50f1269e7a70"
+    },
+    {
+      "path": "knowledge/anti-patterns/0120-coordinator-api-doc-v2-skip.md",
+      "sha256": "27b0d41b347188ee11a190fa3266942f1f9c5dafac267abf02f7527bda5d420b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0121-coordinator-endpoint-vs-scenario-mismatch.md",
+      "sha256": "ad0c0066440d916831f21c01e5417c6c43e0b8772620b6507337ffe4ca150d5d"
+    },
+    {
+      "path": "knowledge/anti-patterns/0122-client-placeholder-fakes-backend-business-field.md",
+      "sha256": "46790571b9593fe3a55b393364e0f12310bf060899470f88bd13e4b640e5770b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0123-backend-uses-http-200-code-minus1-for-business-errors.md",
+      "sha256": "cdfc19932b1afa21704761f835e6e09b78288e6336b2ac7ad76c4ce2743d2852"
+    },
+    {
+      "path": "knowledge/anti-patterns/0124-backend-endpoint-wrapped-but-feature-never-calls.md",
+      "sha256": "73bf1fb9589bf6c5361b96da36a0628a3e3f75528140578f374d53d2919abe8e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0125-backend-error-text-ui-mismatch-truth-nested.md",
+      "sha256": "dbc9454f616ce6d3402702ae5e28d9fcc1ab6580e286139d83280e309e43ef95"
+    },
+    {
+      "path": "knowledge/anti-patterns/0126-final-video-render-state-must-mask-not-fallback-placeholder.md",
+      "sha256": "a6c0a21af0eb9b5903d7ec9b1b94ce7c4ba8d8aa2e7c2d3cab8731b4cdce8857"
+    },
+    {
+      "path": "knowledge/anti-patterns/0127-tca-non-idempotent-effect-no-reentrancy-double-fire.md",
+      "sha256": "82be2d4e88b1b5f0866362baa04171fafe00828d4150f9b0758208c1263bc216"
+    },
+    {
+      "path": "knowledge/anti-patterns/0128-ios-custom-player-missing-state-ended-replay.md",
+      "sha256": "fdc729d30ce7546fa0444910f892178e1790fa16d1240dfc2c0064e7ceb00891"
+    },
+    {
+      "path": "knowledge/anti-patterns/0129-backend-boolean-semantic-unclear-direct-pass-once-sediment-bypass.md",
+      "sha256": "c8eb086f1a877006bce1d4ca7777733d4fa96ee8728adab8275ff18d13f26b87"
+    },
+    {
+      "path": "knowledge/anti-patterns/0130-coordinator-cross-sync-l10n-key-multiuse-without-grep.md",
+      "sha256": "eaf7a4101124d8384deb8b9f8a40e18e655ae0fa566594729f2c06338ca84003"
+    },
+    {
+      "path": "knowledge/anti-patterns/0131-audit-subagent-commit-mapping-by-keyword-not-diff.md",
+      "sha256": "479cdd20cbed29b4f5a5a44764b9a12d272a4d5015759f6cad40f691a70ad2f7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0132-poll-first-failure-treated-as-no-task-duplicate-paid-merge.md",
+      "sha256": "56b2cfa3fb69e521dfbde4eed73d854956c08a7b10367dbc2b9e2da517b91423"
+    },
+    {
+      "path": "knowledge/anti-patterns/0133-register-unregister-lifecycle-mismatch-leak.md",
+      "sha256": "58c10b29c2d9352fc8623f9bcab541dd7abc4825b3312f5a50a5be4bcfb87237"
+    },
+    {
+      "path": "knowledge/anti-patterns/0134-coordinator-prd-pen-cross-check-gap.md",
+      "sha256": "3a9f88b3913dedd0b630eaa6e9399de748c5b964a0aec3118ca9e66649af8b08"
+    },
+    {
+      "path": "knowledge/anti-patterns/0135-cross-end-routing-id-single-extra-vs-separate-params.md",
+      "sha256": "6ca3bae397ea9cbe888cdd3d7ba7d21dabab32b7db98fc59aef3c7288f725205"
+    },
+    {
+      "path": "knowledge/anti-patterns/0136-cross-end-color-format-rgba-argb-opacity-pitfall.md",
+      "sha256": "3b714042b171be2e900bc41963361490f7f12f0cb2055e067b6fab09d648c9e7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0137-real-adapter-delegates-mock-data-source-falsified.md",
+      "sha256": "5fa2bacff3fdcea975fd6185979c0a86864abe802dfd172c6bcc20837683c0ce"
+    },
+    {
+      "path": "knowledge/anti-patterns/0138-component-builtin-control-default-empty-callback-dead-button.md",
+      "sha256": "582add4ad98bf7f23d7f8732e7ceae7e7836ed40809e11cfc9085134bf9c65d7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0139-music-duration-sec-ms-truncate.md",
+      "sha256": "c4ac0d1a69bb8378662b8fb0eaa05a9914e054969f97de2c2f9c9535862f2412"
+    },
+    {
+      "path": "knowledge/anti-patterns/0140-swiftui-id-rebuild-store-view-divergence.md",
+      "sha256": "8ab6c0705013df0bea81425e10c130ba05f112775c267b4931e87cde1a15517c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0141-single-state-screenshot-sticky-scroll-misjudge.md",
+      "sha256": "def4a79c80ba53819d755ce82a3e1f062507658c00e5c6e0c9ffb93f59876a74"
+    },
+    {
+      "path": "knowledge/anti-patterns/0142-shallow-source-reverse-multi-round-rework.md",
+      "sha256": "272aea471c095c8d510010971ce5bcb3addce2e0c88fed55fbf95fcca996a9f7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0143-dev-work-outside-dispatch-boundary.md",
+      "sha256": "4b7d92e3d8b4af19099e186576cefabb897da36d8c07be1e025f4cf6e72445a0"
+    },
+    {
+      "path": "knowledge/anti-patterns/0144-experimental-branch-no-merge-to-mainline.md",
+      "sha256": "ff0252f49e19372198da381c1cf199bd224d6645f4419e021fd3ee1f858e85b4"
+    },
+    {
+      "path": "knowledge/anti-patterns/0145-arkui-bindcontentcover-builder-reactive-detachment.md",
+      "sha256": "05d8a206c0f0e0d7103517af24f5659fade9759a53143b0079d1aad99e26eb24"
+    },
+    {
+      "path": "knowledge/anti-patterns/0146-scenario-state-matrix-and-resource-isolation.md",
+      "sha256": "13a319e133434130d4d30a25a050dfdbca0f88ecb9d7a829752a8542cd5abb7b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0147-scroll-shell-fixed-header-boundary.md",
+      "sha256": "3bfa2e484faaa9ae24a209afcd0d4058e5100a8dd57a19f55f5b9f0e0fb188da"
+    },
+    {
+      "path": "knowledge/anti-patterns/0148-third-party-widget-state-machine-before-transpile.md",
+      "sha256": "e8a36d889cc75b33f814f7268355b62471761e53618b31c90aad0da85896c86f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0149-ui-sweep-misses-business-side-effect-chain.md",
+      "sha256": "8a546ffb9539011402a88217ad274ba5168dab2c0bb995af10e0795ecfcd7a53"
+    },
+    {
+      "path": "knowledge/anti-patterns/0150-custom-component-substituted-by-system-default.md",
+      "sha256": "9bed99709704ea4ac8ef5017087919d786fa9117d7e7a01f505926583e2637e5"
+    },
+    {
+      "path": "knowledge/anti-patterns/0151-scroll-container-gesture-ownership.md",
+      "sha256": "ba708bd930762f98db34534a71941fd8a1e41d0985ede020acb1df1f5a196a55"
+    },
+    {
+      "path": "knowledge/anti-patterns/0152-image-asset-render-semantics-not-hash.md",
+      "sha256": "c2ee0fb90ecc2925c6bf2e78202a0df0d0c66bb29544f5f4efed8c854c193e95"
+    },
+    {
+      "path": "knowledge/anti-patterns/0153-payment-platform-branch-store-query-not-a-gate.md",
+      "sha256": "54913543bf679e8bd000e8eaeb86b86eee9b785e86488b3e0122c1e36c5109f5"
+    },
+    {
+      "path": "knowledge/anti-patterns/0154-arkui-width-100-plus-margin-anchor-semantics.md",
+      "sha256": "8784c8925b92515c2b351598999b3e22665f6aacc02b50b00a2f413753735593"
+    },
+    {
+      "path": "knowledge/anti-patterns/0155-runtime-visual-anchor-measurement-closure.md",
+      "sha256": "05062e2a5f260f258d3bd59b2ba874c477f2ef8f9843cdec3a2b94b6784e08a6"
+    },
+    {
+      "path": "knowledge/anti-patterns/0156-arkui-floating-surface-width-layering.md",
+      "sha256": "dbb2037a293f954e7a6e52b5c43b263faec12d105cf6a0c54a233107c77d0796"
+    },
+    {
+      "path": "knowledge/anti-patterns/0157-keyboard-avoidance-boundary-nested-overlay.md",
+      "sha256": "47482bb9360103b05ef2a72f4bec2df65783b6e36a63c304a8bc6b87d2e08a5a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0158-font-color-same-param-different-render-transpile.md",
+      "sha256": "4dfbee42b194558a5edd55c29a5b00545f5eee3f1e186ce54f77bc8c58c4c7e7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0159-compose-list-eager-audio-init-main-thread.md",
+      "sha256": "343d73aca1b5174e3cb955499046de583a9c938b67e2ae1361cf7a99d6ccdfdf"
+    },
+    {
+      "path": "knowledge/anti-patterns/0160-kmp-objective-c-variadic-interop.md",
+      "sha256": "8e595b7203b81fa81123a53214534f0176e1ea2d65cd6484586dfcf8bc2437f3"
+    },
+    {
+      "path": "knowledge/anti-patterns/0161-kmp-failable-initializer-eager-media-composition.md",
+      "sha256": "0afb21f30b0f01766b521d4dec5a1a8475a80b44a0066a923284d9d8485c5f5e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0162-mvi-reducer-hardcoded-english-toast-i18n-leak.md",
+      "sha256": "0f04d4a65d19b3b10b2a847e5607295311a1dd24e3b71821374a29af07ba57fd"
+    },
+    {
+      "path": "knowledge/anti-patterns/0163-fragment-hidden-lifecycle-visibility-decoupled.md",
+      "sha256": "564fcbc770e9050d9120a3f0ba6fbe30cfa0d739257d397a98ee208531284fde"
+    },
+    {
+      "path": "knowledge/anti-patterns/0164-response-dto-typed-by-assumption-not-capture.md",
+      "sha256": "90aeebdd7f6352df7714ca9c2f86d725aee8bafd638cdd6bac7e299680add1b2"
+    },
+    {
+      "path": "knowledge/anti-patterns/0165-ios16-multi-navigationdestination-push-hang.md",
+      "sha256": "f403816ba05997940e2eca5f4ca444c71b5f9008cb5ab1f7c8c6895e3a566959"
+    },
+    {
+      "path": "knowledge/anti-patterns/0166-m3-widget-in-m2-theme-silent-no-render.md",
+      "sha256": "018d1e3ad96f86a57645f21ed812724920943d824c86fc784ec3c2f2d7eb5c24"
+    },
+    {
+      "path": "knowledge/anti-patterns/0167-perception-conditional-read-unstable-tracking.md",
+      "sha256": "8694326906be030c03fdab14017ee03a023641ff684a23198f0ea00b27bbfd3e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0168-xcodebuild-global-bundleid-override-spm-collision.md",
+      "sha256": "5b5e2a6faf336b92e3f69bd5eac0c566d805d0764633774b7514e76af133cc75"
+    },
+    {
+      "path": "knowledge/anti-patterns/0169-video-feed-resume-no-surface-rebuild-frozen.md",
+      "sha256": "20c29d76683ecd184efa5ccfa082c5a1ff3e9e99ab72827d78dde3f715b46466"
+    },
+    {
+      "path": "knowledge/anti-patterns/0170-synthetic-id-collision-collection-trap.md",
+      "sha256": "49cbb66cd4f36fb8785525d271f5f56cc0f261d43167c08126c03faee3f20270"
+    },
+    {
+      "path": "knowledge/anti-patterns/0171-swift-actor-reentrancy-no-keyed-singleflight.md",
+      "sha256": "5a321059c9297493735d36cd6ffacd6ef3b380a89d4c930895a9c6a7957c2756"
+    },
+    {
+      "path": "knowledge/anti-patterns/0172-kotlinx-serialization-encode-defaults-off-wire.md",
+      "sha256": "b719d6f807fae8ab105cce48fe5a995fc275aaf5982a9c44f660be7d283df92c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0173-async-result-missing-cancel-and-identity-guard.md",
+      "sha256": "45841600b5ac0a44bd2ddd6fc8cc924c539c1a0260559259283edd01242743fd"
+    },
+    {
+      "path": "knowledge/anti-patterns/0174-native-app-reuses-web-channel-captcha-gate.md",
+      "sha256": "75d2e278c57cb0ec0353802ff808d5a8ad0a7eb4f414e96cf8cde2bddbdc4d9b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0175-foreground-service-startforeground-five-second-deadline.md",
+      "sha256": "15fb4f8017ef68c1698b780b68d33fcab7fbf908106e253158b3cb9ed4dfbe61"
+    },
+    {
+      "path": "knowledge/anti-patterns/0176-security-scoped-url-copy-inside-access-window.md",
+      "sha256": "dd37cae84e59b5d2757d40ebb08ce9539a4641351c3094cb23f6e33001b08e55"
+    },
+    {
+      "path": "knowledge/anti-patterns/0177-sdk-readiness-required-key-set-not-file-existence.md",
+      "sha256": "f9732ed707910e29977e2a8d1c76030eb0c867d5a40d74f925e6810ec364a372"
+    },
+    {
+      "path": "knowledge/anti-patterns/0178-diagnostic-log-compile-gate-and-redaction.md",
+      "sha256": "f3d04696255aac4af099b7053f9389d92ab5017c61d508c6e3e8ddf7c250f863"
+    },
+    {
+      "path": "knowledge/anti-patterns/0179-strings-quote-syntax-plutil-all-locales.md",
+      "sha256": "a2486733d5c830d311117e36ba703d0b17d39b3f9492356e704bf39240caac2d"
+    },
+    {
+      "path": "knowledge/anti-patterns/0180-warm-subagent-session-unbounded-reuse.md",
+      "sha256": "5cb1a9e59dd0447983448b45523a44820bb03b4c6ae7f7e30190045c23e34ad8"
+    },
+    {
+      "path": "knowledge/anti-patterns/0181-live-session-plugin-hot-update-dangling-path.md",
+      "sha256": "d01d17d60a35b1e279a1412f44656dbd01efd9a34213b996b86c85073fcc5b20"
+    },
+    {
+      "path": "knowledge/anti-patterns/0182-normalized-rank-score-as-eligibility-gate.md",
+      "sha256": "11ccabe7b760af755520b2300d04981d798190619058a3f227d85089c463cf60"
+    },
+    {
+      "path": "knowledge/anti-patterns/0183-daemon-env-missing-user-path.md",
+      "sha256": "6172af789ea567df48a0a843f46915efc8b31841aca642dcdd0430f851b946d6"
+    },
+    {
+      "path": "knowledge/anti-patterns/0184-multimodule-install-wrong-module.md",
+      "sha256": "bc293d4558887cda88a7e98bb5b10582c5abd47e64220d1f894190cbd019dd97"
+    },
+    {
+      "path": "knowledge/anti-patterns/0185-manifest-explicit-vs-autodiscovery-double-load.md",
+      "sha256": "9b9a98a9033dc3800d6b59f09cb25df93f61aa84790ff0fa56f74cea78038d27"
+    },
+    {
+      "path": "knowledge/anti-patterns/0186-gpu-backend-in-package-taints-cpu-fallback.md",
+      "sha256": "7926241313a4860a14146e15bf2acda3483354618d06e81959fe7239db4c0a4e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0187-buildconfig-inline-stale-in-incremental-cache.md",
+      "sha256": "ce121b373fa8fb72bb18f7fcad08f00110fd92a035f77e20c7e2776af7bfea1c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0188-externalproject-toolchain-notfound-empty-artifact.md",
+      "sha256": "cb3e17555340b5290f330846329a5a88fe3f38eb89f42798b6174e1b1dfb7645"
+    },
+    {
+      "path": "knowledge/anti-patterns/0189-ndk-vulkan-hpp-mismatch-vendor-khronos-headers.md",
+      "sha256": "9485c81053de5cac05fd51c46f44f755a45b58943144f9257147274d4024c8ec"
+    },
+    {
+      "path": "knowledge/anti-patterns/0190-benchmark-profile-must-match-build-capability.md",
+      "sha256": "97a407f5be610c51f346f4aec63a17831292b460f889029fa63d8ef4cdfeeb80"
+    },
+    {
+      "path": "knowledge/anti-patterns/0191-single-layer-experiment-flag-as-prod-gate.md",
+      "sha256": "1525b9e1d0c234f47af2c6439a71c6bc6f810532b356695f644dcc0234a3d471"
+    },
+    {
+      "path": "knowledge/anti-patterns/0192-parallel-git-writes-index-lock.md",
+      "sha256": "8c497c4126a489f90406c872eba57d84f0c4a3da702b0a4852a2565b50603b44"
+    },
+    {
+      "path": "knowledge/anti-patterns/0193-persistent-asset-in-temp-dir-stale-ready-marker.md",
+      "sha256": "76312b5309f0de4bc8b46c7ded7859cc1b4629ccd7eefb6b9dbca076fefaf9e4"
+    },
+    {
+      "path": "knowledge/anti-patterns/0194-long-inference-sync-block-silent-quota-gate.md",
+      "sha256": "e7cdbb5f5dfffd6ec405495c96787cea56b3b22fffc3a52a16d246c155d63bc3"
+    },
+    {
+      "path": "knowledge/anti-patterns/0195-search-tools-skip-hidden-dirs-false-nonexistence.md",
+      "sha256": "9ca25a1e3103c18f880d3e06b258c05d3cf0d93dfdfba734efe8be52473928e3"
+    },
+    {
+      "path": "knowledge/anti-patterns/0196-new-route-prefix-bypasses-gateway-rules.md",
+      "sha256": "4fe007b1a4d17c560c8fda5328fa23119618265bf720785d9e5302b83127fa01"
+    },
+    {
+      "path": "knowledge/anti-patterns/0197-gradle-file-resolves-per-module-dir.md",
+      "sha256": "9c49fe6ff625b2919fe05fb0d12f6683a1f58a1a0fe4c564e647e8eefef2c6a7"
+    },
+    {
+      "path": "knowledge/anti-patterns/0198-volatile-fields-in-dedup-key-split-profiles.md",
+      "sha256": "109f9dc4a75edc6ed4dad912f3722458499336c2305955d4771a2483589ab61c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0199-harden-manual-gate-checks-into-selftests.md",
+      "sha256": "f71d2f10b7005dce74d04081293e748f89bf7988a5fc9a50377b9771af8452fb"
+    },
+    {
+      "path": "knowledge/anti-patterns/0200-parallel-test-tasks-shared-output-dir-flaky-failures.md",
+      "sha256": "dd26745f79922aa7c5458aeec1a4e052784281248ff3e2cae7882b56b74d6892"
+    },
+    {
+      "path": "knowledge/anti-patterns/0201-sandbox-permission-noise-masks-preflight-verdict.md",
+      "sha256": "904ea4cfac9264630c2fa482d6ff71643aac56f052331da6c835e103f9413959"
+    },
+    {
+      "path": "knowledge/anti-patterns/0202-shell-handwritten-json-unescaped-newline.md",
+      "sha256": "b21c63bad05454c4137fa53836e1f9bc93c52d2f6685a4bb3233908ed436528e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0203-grep-no-match-exit-code-fails-under-set-e.md",
+      "sha256": "5af39477a052aa3edee7178910759ae58128bb6bb25884550e72f64fcf7b013e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0204-grep-regex-metachar-literal-needs-fixed-string.md",
+      "sha256": "5bf8fae9c944cdece89da20c3ea20b577974b5a322aeb4b5af0bcf1f763e26f0"
+    },
+    {
+      "path": "knowledge/anti-patterns/0205-bash-var-brace-before-multibyte-text.md",
+      "sha256": "56cfc7e65ea49f7049c7b006dd68da6ed44f4247c395a1462c74a218d7abb96d"
+    },
+    {
+      "path": "knowledge/anti-patterns/0206-container-env-dump-credential-leak.md",
+      "sha256": "5212e289b99085d0f8d6b175afdad7c201a25490dc0a8ca9ffb480b3fdddf90f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0207-db-cache-credential-rotation-rolling-rebuild.md",
+      "sha256": "841773758a42d290c69a91b6d81c03f65da51832b1e25f2af11ca30d9f12c253"
+    },
+    {
+      "path": "knowledge/anti-patterns/0208-stale-monitor-check-masks-real-alerts.md",
+      "sha256": "c3b37a0ab219992c0409e130d262b73c09b4485d22e9ba73f6f034dc9f298773"
+    },
+    {
+      "path": "knowledge/anti-patterns/0209-background-task-observer-flow-never-completes.md",
+      "sha256": "174d567c970c9e19534909b7602e776d5713b7ab9df64712ccb1432cd55ebbf5"
+    },
+    {
+      "path": "knowledge/anti-patterns/0210-log-success-not-acceptance-evidence.md",
+      "sha256": "ebe35e68360473a79aee577afd441f4e9c373d5afaefa94155e55b207adf7fd1"
+    },
+    {
+      "path": "knowledge/anti-patterns/0211-kmp-native-framework-exports-all-public.md",
+      "sha256": "1f8040a8d97bf7248c0eb4bccbdd640447f812a9fe76c00cc10645b2bfed5c31"
+    },
+    {
+      "path": "knowledge/anti-patterns/0212-kmp-cocoapods-workspace-and-leftover-embed-phase.md",
+      "sha256": "5ca005ece0aa8c74de2df0b537f1033e3a0c0d070b9177cfdfa5de0db63c5274"
+    },
+    {
+      "path": "knowledge/anti-patterns/0213-kotlin-native-guessing-platform-symbol-names.md",
+      "sha256": "0651b3a28c73533ef4ebae80da81c173b0d87987737b946ae578da6d23ae12da"
+    },
+    {
+      "path": "knowledge/anti-patterns/0214-static-pod-transitive-deps-missing-in-kn-linkeropts.md",
+      "sha256": "aa895b2095d816d39c0866077aac4accec6ab146fd3ce9c087586d3d973da71e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0215-static-pod-transitive-deps-not-propagated-to-native-linker.md",
+      "sha256": "1a152bf980e5115b80ee00c624f984f282a213034626b100080302ea24e996c1"
+    },
+    {
+      "path": "knowledge/anti-patterns/0216-stale-tap-coordinates-after-keyboard.md",
+      "sha256": "d41acd0cd773a1bd1e67d6bceed8642210dc5f5bedbbe0c85cf24df6dbe71c14"
+    },
+    {
+      "path": "knowledge/anti-patterns/0217-compose-bottom-sheet-alertdialog-stacking-input-focus-race.md",
+      "sha256": "84e3923930c2dfaad7b4d3ac820e8d117d7d3bede91e10419aed1b6cfc42c8bc"
+    },
+    {
+      "path": "knowledge/anti-patterns/0218-rules-must-declare-their-own-boundaries.md",
+      "sha256": "d8dd54119eb5ea954b13dc79a1bdc29ff76ee9d111cb80ba57415bf0b6d41ce6"
+    },
+    {
+      "path": "knowledge/anti-patterns/0219-delegation-routing-drift-under-momentum.md",
+      "sha256": "f70b7b536a4fdc5ee92d901772dd0e7b384fe90fe9355775e0c049f137aac090"
+    },
+    {
+      "path": "knowledge/anti-patterns/0220-recency-overrides-standing-instructions.md",
+      "sha256": "c6971b1b1258bb7c80f016c5d13b93c3aae292d888b65a327d2cadca8f428f28"
+    },
+    {
+      "path": "knowledge/anti-patterns/0221-scorer-upgrade-without-downstream-gate-recalibration.md",
+      "sha256": "942fac63992f32ba018fcb08a1c87d4116e20d4822407d69d5888308da4fc599"
+    },
+    {
+      "path": "knowledge/anti-patterns/0222-quality-gate-validates-form-not-substance.md",
+      "sha256": "a7d1795a563693b44eb596d24c9b65d744055edf17c93f6b04e7acd01ce2c0ec"
+    },
+    {
+      "path": "knowledge/anti-patterns/0223-error-message-collapses-distinct-failure-causes.md",
+      "sha256": "1ddb4c63b141a2ffaf7049431b864d9e51f65699eb1da643f45670020b515217"
+    },
+    {
+      "path": "knowledge/anti-patterns/0224-verification-environment-differs-from-runtime.md",
+      "sha256": "e727efaf58924eaf3601d7530f418acf3dbc093772f0405eb0173debb4186b70"
+    },
+    {
+      "path": "knowledge/anti-patterns/0225-windows-process-spawn-three-traps.md",
+      "sha256": "befc59a0765d8844eb4d354ef314f61671e4f24772f3cf63b09450aba21819b8"
+    },
+    {
+      "path": "knowledge/anti-patterns/0226-file-extension-as-type-oracle.md",
+      "sha256": "dbda550eb4069ebef273c333c4a7be8c49fa130486dae986a14dffb2a99ab455"
+    },
+    {
+      "path": "knowledge/anti-patterns/0227-startup-refresh-cancels-ready-connections.md",
+      "sha256": "9b684179f762026fe2b4ad15c5c12e0131da86497eb93d68b5942601dbf1e7f1"
+    },
+    {
+      "path": "knowledge/anti-patterns/0228-tuning-timeout-when-something-else-cancels.md",
+      "sha256": "4f0077adb226011a5bb1e68b63d72ee8fb35007cb210dc7682ce7d64d7b5c14a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0229-unobserved-vs-observed-negative.md",
+      "sha256": "5daec6b348d0936d84bc31b201fd1144b49b7f78729ae82da7be1f3f47ad3fd5"
+    },
+    {
+      "path": "knowledge/anti-patterns/0230-generic-symptom-logged-as-firsthand-project-fact.md",
+      "sha256": "e3dc70c629919d7313ea393b012a22793403a5d397585666454a82758183aab2"
+    },
+    {
+      "path": "knowledge/anti-patterns/0231-debug-entry-silent-fallback-fake-evidence.md",
+      "sha256": "0daeabc043f175db5738593a961dd85a78482fc333ef72573fdbdaf2ecdb45aa"
+    },
+    {
+      "path": "knowledge/anti-patterns/0232-persisted-message-ui-keeps-transient-id.md",
+      "sha256": "58d7a00c50294fcb721939803615a52237b2bd2e0e61178907f4740bad93af17"
+    },
+    {
+      "path": "knowledge/anti-patterns/0233-kotlin-module-version-drift-native-irlinkageerror.md",
+      "sha256": "fb25376adec2d0ed719593ee9084744120ee059c0fa9854b449acd5ac818929e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0234-historical-evidence-written-as-current-status.md",
+      "sha256": "52b2eb94611cae7701ccc0eae359b1ec44cad0d5b63df3d45767079f39b1319f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0235-generated-launcher-not-refreshed-after-spec-change.md",
+      "sha256": "0e50054d432dcf68b7f16c09a4451bf346c8a1db212e78d6249bfb08ed35ca58"
+    },
+    {
+      "path": "knowledge/anti-patterns/0236-cvpixelbuffer-cross-coroutine-without-retain.md",
+      "sha256": "44a59737ea9e5f7149f17044b1c3215aff66bd5165afe7451c30629d0cc8e4b6"
+    },
+    {
+      "path": "knowledge/anti-patterns/0237-native-async-inference-close-race.md",
+      "sha256": "e09f756cb41065b9484453f39682547c292c229060ea8933e696870111d18f53"
+    },
+    {
+      "path": "knowledge/anti-patterns/0238-kmp-common-resource-assumed-in-android-assets.md",
+      "sha256": "925edc5ad595e4b13f9ad8db23dfd97f8b971778d10546175002abae48f4bb0d"
+    },
+    {
+      "path": "knowledge/anti-patterns/0239-provider-specific-model-leaks-into-shared-task.md",
+      "sha256": "79bbc86c574f941e72d52bad0d7c9a0fd22d9af9543776dac726b03cf89a90b1"
+    },
+    {
+      "path": "knowledge/anti-patterns/0240-cross-process-session-secure-storage-only.md",
+      "sha256": "29e651386e3fe23879d4eb86811f4fa905d19128f3699334c6d3a8b657e3e39b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0241-windows-wsl-sqlx-migration-line-ending-checksum.md",
+      "sha256": "f821a249c5c19fe7825dc44d90543012d99c290e3e94789cbb25f919d0d68c6b"
+    },
+    {
+      "path": "knowledge/anti-patterns/0242-read-only-mcp-interruption-false-effect-intervention.md",
+      "sha256": "7ce31e3f87498e66d16d93b6adbe3afb1a090ac5c9418bd9452d76efb912859c"
+    },
+    {
+      "path": "knowledge/anti-patterns/0243-control-composition-misclassified-as-destructive-pause.md",
+      "sha256": "4452d7b5d9cac7f9a33415e18ae7220aa61b00b01f671029bf0923f804ad835f"
+    },
+    {
+      "path": "knowledge/anti-patterns/0244-explicit-git-add-collapsed-to-repository-scope.md",
+      "sha256": "b11b79b97037807b9f725194cb33d55bbfc8b38febc4cd6f1aec910616bd3bc4"
+    },
+    {
+      "path": "knowledge/anti-patterns/0245-permission-request-timeout-is-not-authority.md",
+      "sha256": "f87b57b786bddd2a7af36729d4108876bd3cd981382edc691b5cb0ba05368e9d"
+    },
+    {
+      "path": "knowledge/anti-patterns/0246-shared-consumable-sku-unfinished-transaction-already-owned.md",
+      "sha256": "e416d055cef852be84c65c43f804467f3971d2bfa7b35b5d08360e2ce3cff351"
+    },
+    {
+      "path": "knowledge/anti-patterns/0247-human-allow-not-consumed-as-authority.md",
+      "sha256": "395a6933affad4dd2cf11e5201e2f153e9a0095851ec9746e0ebccfd8516575a"
+    },
+    {
+      "path": "knowledge/anti-patterns/0248-component-migration-content-slot-overflow.md",
+      "sha256": "d75996df9361bfffd7ec8c8e8b895923a109e75a124e920f5b993915cf642547"
+    },
+    {
+      "path": "knowledge/anti-patterns/0249-manual-task-inherits-scheduled-opt-in-filter.md",
+      "sha256": "eb0f6b7924f8729dd53aaec30416a23e4bf67ade6f1d87ef6e2384f894c87fd0"
+    },
+    {
+      "path": "knowledge/anti-patterns/0250-method-name-risk-without-receiver-proof.md",
+      "sha256": "475b56b17f87b00f972693f93b77a612aa4b4fe96af17c2db66c7f95473d975e"
+    },
+    {
+      "path": "knowledge/anti-patterns/0251-optional-enrichment-invalidates-unrelated-approval.md",
+      "sha256": "1b0754a76e8ebae2b437e89668cca18bdc214cfcfcdff4126100a6e5abc36ba9"
+    },
+    {
+      "path": "knowledge/anti-patterns/0252-test-interpreter-preflight-too-late.md",
+      "sha256": "c917963810f443966c5c693ecb8b210d978676a9ca691f75dad1291ade867b97"
+    },
+    {
+      "path": "knowledge/anti-patterns/0253-interrupted-animation-accumulated-deformation.md",
+      "sha256": "95bd91905684b0e29bdb13f62f31dfff926044fcb3cc7aff5646153cca6a9838"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/arkts-language.md",
+      "sha256": "e4ff3632750ff335ddd1767986a68c0d70e1a2977c88198439030669a3860b6b"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/arkui-components.md",
+      "sha256": "6c3cef4b3d08749188861587c4acd1b153d28c887ec50b06ba5574a9e7e80479"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/arkui-incompatibility.md",
+      "sha256": "7dff9728f420ebbf868c616717d0b571e9a714e714022c4fe25415a3a55acc87"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/arkui-layout-scroll-shell.md",
+      "sha256": "051b505cddec062712d47cf736789f934379364fc00e52c7c19c653b104e62e8"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/arkweb.md",
+      "sha256": "c3826306e6e4313c42daca2034b4b64b440e0e127e6480548ea62b711a9b7551"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/build-toolchain.md",
+      "sha256": "14236dc846297eed1fdfa6d6bd587953a9bf9e87b2485adbc3673eee300299d2"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/network-api.md",
+      "sha256": "700e019c85b1cef8e926f840be549d269102a339aa0b2ff2924ecf3cf50662ac"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/real-device-verify.md",
+      "sha256": "8da3db11047197d5d965a3516adf439085be94453ed77110afb43350e36d6a87"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/resources-system.md",
+      "sha256": "459280e08d778fe11628a861266d13d197a8cbcb7a37b87d97d4036a1304b3e6"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/routing-navigation-overlay-frames.md",
+      "sha256": "68ddc06eba2dc4c4094025cdccf972a95afeacb300f153fe51eb1de87ff4cfb5"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/routing-navigation.md",
+      "sha256": "019f17b0b72767e464524ca810ddb60d54846d28a72b5cb00efa8465702ed438"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/state-management.md",
+      "sha256": "04fb092568dfbcdd2e983df06663556e5ed6b0595e9bc7bb418a776ab885a338"
+    },
+    {
+      "path": "knowledge/platform-kb/harmony/translate-rules.md",
+      "sha256": "45b405b5da88d327f506bbbba1d12d3b5256e5b7f56243cbc2ea00d2337c1428"
+    },
+    {
+      "path": "knowledge/platform-kb/mobile-android-ios/平台API速查表.md",
+      "sha256": "3a981138b4beb75b71ab4c191308ae169af1b1ca8da54615b0d53f8e85a069cd"
+    },
+    {
+      "path": "knowledge/tech-docs/AMI额度必须以持久化分析任务为事实.md",
+      "sha256": "1943e4decdca39614dba27a896ae84a6e7e0c41a2bef60f7ffd6f8d33c3be56e"
+    },
+    {
+      "path": "knowledge/tech-docs/Android构建日志先定位首个编译失败.md",
+      "sha256": "a803341e7dfadb6b0763cef677f3637aeabd965518aa07baab882a245a94d81a"
+    },
+    {
+      "path": "knowledge/tech-docs/dart-to-arkts.md",
+      "sha256": "8221ce19a9f4830f5d1b886606df3d61cf340559f26a5b02aa0258691990a624"
+    },
+    {
+      "path": "knowledge/tech-docs/docker-platform-export-verification.md",
+      "sha256": "a17cfb1c1c859eb6192e8cd0a3acb11c8f9d5d7ff6ec32127cb142a8d14756a1"
+    },
+    {
+      "path": "knowledge/tech-docs/durable-effect-claim-and-ledger-identity.md",
+      "sha256": "f0c8c704d012ec89342e00c9d1153c5037f02f50e39607f9fe31e159117646e8"
+    },
+    {
+      "path": "knowledge/tech-docs/pose-first-open-set-motion-arbitration.md",
+      "sha256": "732b6f08e95363b2cea4ba9495993d35cd202cf5fe6041dfea78dd9158732a68"
+    },
+    {
+      "path": "knowledge/tech-docs/user-visible-model-output-contract.md",
+      "sha256": "bab3d62d2e9060f22d9c065981accf63e153a2402f006876c046d6dfb01ceaa5"
+    },
+    {
+      "path": "knowledge/tech-docs/wechat-payment-activation-and-settlement.md",
+      "sha256": "0cc045aec8ab53441c674aa89ac6ca6c5e89b631b94f8349b5f19400d3ef1fae"
+    },
+    {
+      "path": "knowledge/tech-docs/业务列表重排必须保持连续稳定顺序.md",
+      "sha256": "d7fcaa448cc6cca2116920d593f873358bc2455d5cacd2d9f27b03003b1adcd8"
+    },
+    {
+      "path": "knowledge/tech-docs/个人数据计数导出删除必须覆盖同一数据面.md",
+      "sha256": "cd38484eba31f84c730ed99c7bae86bb58c0de87d1ad126171925db4a74e88ee"
+    },
+    {
+      "path": "knowledge/tech-docs/事实纠错必须重算父级聚合.md",
+      "sha256": "07c6e0fc9f449267cbedc82d337bb24cc528f595b9f0dd4d6f22f520050d9174"
+    },
+    {
+      "path": "knowledge/tech-docs/健康平台数据先标准化再进入决策.md",
+      "sha256": "c230dfede3f76eb5a788c83e3fbfa224dd34106ffee83cd418c9c85d93838d89"
+    },
+    {
+      "path": "knowledge/tech-docs/免费体验与持续价值必须在领域层分界.md",
+      "sha256": "efddf6514b480148f128aa70131498e01d63bf0836d11e2315725c1ad7c5ee8c"
+    },
+    {
+      "path": "knowledge/tech-docs/分阶段产品体验必须改变任务优先级.md",
+      "sha256": "83fd447c1c7161930a3fe2885ee44b1f26423779436a6e0ed31a664ac4730d35"
+    },
+    {
+      "path": "knowledge/tech-docs/功能目录必须连接主工作流.md",
+      "sha256": "40cd79034b2e067b5e25661155d825efa0a28ed9ed7414b6713f6082be974697"
+    },
+    {
+      "path": "knowledge/tech-docs/动作示范素材必须精确匹配变式.md",
+      "sha256": "3831785c36b2c89a502f0e621e718e45b2234dd31a7895ec9fe0bd0958b535a2"
+    },
+    {
+      "path": "knowledge/tech-docs/半自动流程创建前必须展示完整链路.md",
+      "sha256": "373450f235c6140530bdc93d524caa4fe8b592038e36b849100bd398bb70c589"
+    },
+    {
+      "path": "knowledge/tech-docs/单次结果形成候选而非自动改计划.md",
+      "sha256": "0a7e2079a75d1025a4eff6f32127ae8bddcf77999880d60a4caba2c35be95dfe"
+    },
+    {
+      "path": "knowledge/tech-docs/历史达标率必须使用当时生效的目标.md",
+      "sha256": "4da8987226d888b103f4d877e2d2012be09051350806f39c62b645326b6c4b8f"
+    },
+    {
+      "path": "knowledge/tech-docs/嵌入模型维度选型与升级决策.md",
+      "sha256": "dfd4b3db0763124a5dcfefa4bac14883ce4790c518be08520d726387f405d9f1"
+    },
+    {
+      "path": "knowledge/tech-docs/异步分析不阻塞事实汇总.md",
+      "sha256": "5b6b708f2880689bf9a9a7c1c4260325a03b28f1ca4c72e1cd79508f0c051461"
+    },
+    {
+      "path": "knowledge/tech-docs/异步状态写入前必须确认平台能力.md",
+      "sha256": "01dbdce30d172821c62dd1e6e9f21cbedf7df25a5b5292b29ee89dde152e77b6"
+    },
+    {
+      "path": "knowledge/tech-docs/思考模式使用规范.md",
+      "sha256": "88c2b59bae48b9ab02f3682787e86117464ac4f13510c021730478c7f25df15f"
+    },
+    {
+      "path": "knowledge/tech-docs/性能专项技术决策.md",
+      "sha256": "71cc5e397ad33880248799a5073bee44d697da4be462235e3b87ae1945777e6f"
+    },
+    {
+      "path": "knowledge/tech-docs/恢复日任务必须连接真实记录.md",
+      "sha256": "38acec65e7660e8348c1f8bb1a50cbd35afe5adc4bb1c376c78e92378c71f87f"
+    },
+    {
+      "path": "knowledge/tech-docs/手动修改生成结果需要保留用户控制权.md",
+      "sha256": "4642313e812a5cbb964ad585f7b529f1754e5544860396945573d9365ae41371"
+    },
+    {
+      "path": "knowledge/tech-docs/批次切分原则.md",
+      "sha256": "b4536dbddfd4e5bfd1a217b817ff7916a1a905d367a907153997c837c700016b"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/01-Android媒体与性能工程/视频Feed七项性能优化.md",
+      "sha256": "06394202d42a2827dd32b6fbf1f90f3f73bc4198dbf4d08a9fb14697db75ebee"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/01-Android媒体与性能工程/视频Feed黑屏与播放竞态.md",
+      "sha256": "b7312e72447661b9e55bc914b137692c00aa7988edd5cab182e348e4abc883ad"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/01-Android媒体与性能工程/视频列表四类典型缺陷与离屏渲染架构.md",
+      "sha256": "7ba522017f21f0db854aaf73e9cd432d62a6be304e81043b6749d049be092af1"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/01-Android媒体与性能工程/音频预览预加载与起播延迟.md",
+      "sha256": "5cc4933894d22d1a4c1c1198cbd806418351b0dd4badf42e93cd2971598354df"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/SwiftUI列表分页卡顿与懒加载.md",
+      "sha256": "a6337ac6ad6832b42bc57e19abc4c923244f848da4992695ed1b9f93a7d1ec3e"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/TCA依赖注入scope错配与占位值.md",
+      "sha256": "a8bf081ae133e9ef5f50cb7a49708e66b3468a305f79a68cb3313156709ac3d2"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/TCA状态机登出登录闭环.md",
+      "sha256": "58a81d85286813a2eb4c7837b9c421583b4739e1510abfa69032fc926af78945"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/UIKit链式模态present-dismiss竞态.md",
+      "sha256": "53ee544070f86dbfdd7621e87602dc8654e6909e20cbf13cd16ea17b09f70856"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/异步媒体子页的播放所有权与可见性门控.md",
+      "sha256": "dda33e2c317db6e485841fbc330c4273a3faa7b9d1a9266f3670b4dfa21c7be7"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则.md",
+      "sha256": "b58af0c95ad16ec2e347a4316436319885b06386709641e15d0877aad9132163"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/观察系统条件读取与依赖追踪失稳.md",
+      "sha256": "9ba83644504bd12e0f9869226ece7607e5cdc97ad3143541f5afe24adb90ab4b"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/03-跨端一致性工程/双端进场动画jank与对称工程.md",
+      "sha256": "d8af901e9c9a4e99e6563cec9cce299791096a69ad6a818c692d6135621aa7ff"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/03-跨端一致性工程/状态模块register-setter竞态与占位补偿.md",
+      "sha256": "fcee375859c8a786e04ff0c690b62a7cce8dbbb04c96b4ebbfbebb255d56f38f"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/04-移动端缓存架构/L1缓存链路断裂排查.md",
+      "sha256": "28fc3d4ec369c457b6041b0f2f3d9f94c239fde243aa230df17f100537139fc3"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/04-移动端缓存架构/图片加载三级缓存与组件抽象.md",
+      "sha256": "b93f30ea31a62b404db19673b6ca103bbf1ef1cdbdb52261660a80d987fa2ca7"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/04-移动端缓存架构/用户已有资产复用与内容寻址分享缓存.md",
+      "sha256": "c5f0c401fd0b57f611dddf9d1ac1491b9b6d57c4f5df2138cebc6e1978aaefd8"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/04-移动端缓存架构/缓存SWR陈旧重验策略.md",
+      "sha256": "70947a59f89de250918b45d83ca0f133b59ac620b5edf6c4cfd86d541a6e5c26"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/04-移动端缓存架构/网络层单例化与连接预热.md",
+      "sha256": "4a7e9861ae6b8815adb4a7059023f1d3a8191cc9657aa70170141014da902ea5"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/04-移动端缓存架构/请求级单飞与多订阅者广播缓存.md",
+      "sha256": "63bba782e95aa21677240ab08515b49c906764a4bfb7a697f1e920e4bc9294a1"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/05-诊断方法论/iOS媒体加载失败诊断-缓存扩展名.md",
+      "sha256": "2fa51fd66bdcc352f04fcdcaa9f8c431f9f65f33a5e1e330530396ffa96e3288"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/05-诊断方法论/分页Feed空态越界崩溃边界防御.md",
+      "sha256": "8300a4491282141c3228a336b0eeb8eece7229f6ef21c371898826de3748a10e"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/05-诊断方法论/动作到主力与协同肌群的可审计可视化.md",
+      "sha256": "f328fe5c370c296fd9fa80abb6c3fb5eba31ababc158378f02cfd4e9d4773c35"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/05-诊断方法论/原创动作动图与第三方训练数据隔离.md",
+      "sha256": "fb85bfd94603948a86d9f314fc892e7629f36dd0ea54c2739630ef6090015fed"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/05-诊断方法论/性能诊断方法论与常见误区.md",
+      "sha256": "509e95b2bc3c22be503cd6ad628cf6f2376cc8c21922d682b8a229bf15aa15ca"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/05-诊断方法论/权威3D解剖数据校验生成式肌肉图谱.md",
+      "sha256": "4b3b38a6a67f7a93ef8a4d6a19fd29ae8d8c75036135b962fd841fa7fe34d4e2"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/05-诊断方法论/流式连接三类终止路径与终态闸门.md",
+      "sha256": "d8bb7da48ee9bafa666eefdac6494c81f13b07baac5b7132a46f979cc154a075"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/05-诊断方法论/轮询守卫三值语义与防御性收紧陷阱.md",
+      "sha256": "654b587201cf1ad2afab04e0d23f2bf474891a3ff3320356a34024911b254048"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/06-HarmonyOS-ArkUI工程/ArkUI浮层体系的响应式-宽度-键盘三类深水区.md",
+      "sha256": "3657f8985739234ed708a9429ce10a184fc18360bdfeadfb75fc82967928c168"
+    },
+    {
+      "path": "knowledge/tech-docs/案例研究/06-HarmonyOS-ArkUI工程/SSE流式响应的生命周期与分帧.md",
+      "sha256": "2a3679adf7e72fd303a7aba7b29dc091ed470cd272ed8c82bc9a15e3bdbe070f"
+    },
+    {
+      "path": "knowledge/tech-docs/派生产物缓存双失效与负缓存.md",
+      "sha256": "39ebd853aa17ad475e86b1c6e4e4f23190d603d32686cf04514be2a513f128f2"
+    },
+    {
+      "path": "knowledge/tech-docs/生成式计划必须通过时间预算硬门禁.md",
+      "sha256": "45285123ca5b0700fd537b8e38fea43f00fd3838f9998dc29ae6dd5203b0cd14"
+    },
+    {
+      "path": "knowledge/tech-docs/用户展示与业务门禁必须复用同一估算器.md",
+      "sha256": "478305be8752c4897488d8ae18e08f9e7850dd010f9a785303b9253454a25fe1"
+    },
+    {
+      "path": "knowledge/tech-docs/用户操作的审计来源必须真实.md",
+      "sha256": "6ce008b01f83b9295ae515f931c7e7710274c90721fafa083d02c0dffd253204"
+    },
+    {
+      "path": "knowledge/tech-docs/真机语音识别验证的可复现证据.md",
+      "sha256": "238e25bcd9bc962310bbef8553a88ed42e1ae3f1cb850462b4ab1ca94c0866fa"
+    },
+    {
+      "path": "knowledge/tech-docs/端侧大模型文件必须做内容哈希校验.md",
+      "sha256": "28467772a7f7985014f40830ede26370014a6cf79ad2033a0f62803a484d9223"
+    },
+    {
+      "path": "knowledge/tech-docs/端侧小模型结构化输出分层治理.md",
+      "sha256": "5119ae1a54a8bca98a6276ea88c467b719cca2af3ab4307bc7e7402374047ed0"
+    },
+    {
+      "path": "knowledge/tech-docs/端侧应用隐私政策与商店声明对齐方法.md",
+      "sha256": "b9c60027525131eef4d89caa36f7ca8da8560e4afee5431c513dc338d71696d7"
+    },
+    {
+      "path": "knowledge/tech-docs/端侧文本推理连续请求的状态边界.md",
+      "sha256": "923fbd632f79465582c910e30370505420aea3160df40830e12428e287eaab7e"
+    },
+    {
+      "path": "knowledge/tech-docs/端侧模型异构分层卸载验证方法.md",
+      "sha256": "596f4a014c8e60b55aaa8848e1c2f9ee2f9e99af4bd0b191cf4b0d10e0b41e35"
+    },
+    {
+      "path": "knowledge/tech-docs/结构化建档与安全约束贯通训练计划.md",
+      "sha256": "4e1b647c38357ea4fecc917982f39bb02d5b1b0eec052983da7a07d1c3a05f1d"
+    },
+    {
+      "path": "knowledge/tech-docs/编码原则集.md",
+      "sha256": "a7f0bcb30d0dbfcce8e4761eac0c0bdc5fa679ae7fca32fb2ba1936c471fe79d"
+    },
+    {
+      "path": "knowledge/tech-docs/自主训练也必须复用持久化执行处方.md",
+      "sha256": "ec4a0f8be37d4614b2e3cabd08aad4299f32fd2757bc1c3f7366fff7fa52a048"
+    },
+    {
+      "path": "knowledge/tech-docs/视觉推理方向元数据与像素归一化.md",
+      "sha256": "4449dc53e8bac7f0c57faa2c16acda7a5297c8669967c6f82a2fbaf68da5eb72"
+    },
+    {
+      "path": "knowledge/tech-docs/订阅权益必须来自商店交易真值.md",
+      "sha256": "a0ca2133eb750349f9c89e6414953e151844c6e6542babe94ce293ea00458c67"
+    },
+    {
+      "path": "knowledge/tech-docs/训练休息计时的暂停与有效时长.md",
+      "sha256": "67d045080cf55af4b0c79dd57b5d050a87ac0ca4fc77e18038b89225762e128d"
+    },
+    {
+      "path": "knowledge/tech-docs/设计模式实现.md",
+      "sha256": "7bf1be4cc94540bdca184dc55cd6f49ed346532f470269162fdd2660821c236d"
+    },
+    {
+      "path": "knowledge/tech-docs/设计稿示意图识别指南.md",
+      "sha256": "86d0048b76a1c352055fd48999983e481d4e015cdfe6800f8792e3e81aa53808"
+    },
+    {
+      "path": "knowledge/tech-docs/调整入口应出现在用户发现问题的上下文.md",
+      "sha256": "8df388c4aced304864b678c348b1dd665e63faca14958709d273dda935cb3ddb"
+    },
+    {
+      "path": "knowledge/tech-docs/跨平台导出功能必须保持契约对等.md",
+      "sha256": "79cb582c36173c12042b865a6a38b34987b8480971a47de2d9f9d216751772a7"
+    },
+    {
+      "path": "knowledge/tech-docs/跨端大模型下载与平台能力门禁.md",
+      "sha256": "2b4850fab12de013268accad3968ffe551b94ac3fc35b7ad6449b4c7b0189456"
+    },
+    {
+      "path": "knowledge/tech-docs/跨设备发布产物固定架构与版本目录.md",
+      "sha256": "93c4a00b87d88bfe1d497da2f75b290913a3bf6ea7ecd6a91c6157a95b51fc59"
+    },
+    {
+      "path": "knowledge/tech-docs/验证器输出必须为LLM设计.md",
+      "sha256": "29bc4f2e3695c4e57eb1f06801c22bc54a6620e5776bca83737985e7770a1322"
+    },
+    {
+      "path": "knowledge/work-model/canonical-byte-authority-self-hosted-verification.md",
+      "sha256": "1522797445e09ea8ba5de74ffcb0b66ea7805781be8a09ec19a6cd7d06009c6e"
+    },
+    {
+      "path": "knowledge/work-model/content-addressed-device-fixture-lifecycle.md",
+      "sha256": "5861bef020ea93c38261124a4016e2792c4eab7ef1057f1554121da8d6f81d8f"
+    },
+    {
+      "path": "knowledge/work-model/cross-stack-parity-loop.md",
+      "sha256": "fd35cb5ff8440570bb607facadf90fa55bb47bf72a5289e036acdf31fcea7e27"
+    },
+    {
+      "path": "knowledge/work-model/data-sources.md",
+      "sha256": "8a67e70332ca5dc409d0561e3da13ff6d4ad2a2c03c293165c83b51a10db1fd4"
+    },
+    {
+      "path": "knowledge/work-model/evidence-gate-contract.md",
+      "sha256": "419e7ecf966bb8f8db8d4f6f2c8b34bf8ec18e2cf72f2549438b2525dcea0f30"
+    },
+    {
+      "path": "knowledge/work-model/failure-triggered-diagnostics-and-scope-freeze.md",
+      "sha256": "e47f7167b9e4a3a9bd2e797bf0e7e339f45cdc5b034256fea48ac8ff855101f2"
+    },
+    {
+      "path": "knowledge/work-model/final-backup-before-migration-cutover.md",
+      "sha256": "753c250000071f04190fdd71a69a216664a8b93baa50893626d8e71df1eb429d"
+    },
+    {
+      "path": "knowledge/work-model/git-worktree-content-evidence-materialization.md",
+      "sha256": "acff92cbc62fe3ea8e3b44cbd4bb4b33df2d9fef6bdeae1f94d80121746e8859"
+    },
+    {
+      "path": "knowledge/work-model/governance-observation-contract.md",
+      "sha256": "a71c26862b0caef721cd10fea1867de341a5aa98e83e38496c451365e459934c"
+    },
+    {
+      "path": "knowledge/work-model/hosted-automation-cost-disclosure.md",
+      "sha256": "554152c4436c5337c69dc1fdb2f3c5dede1a52e40b61d82b2f33cc56dfb9d96f"
+    },
+    {
+      "path": "knowledge/work-model/idempotent-registration-verifier-contract.md",
+      "sha256": "8dc6c7afceb4007d191b24b1d27242230bf8e4d4286f36181fc0f21cbb36a3ba"
+    },
+    {
+      "path": "knowledge/work-model/lossless-knowledge-dedup.md",
+      "sha256": "6f7125ee8386ca4008b80533ecb7875fe7c679a9db963cf1eda8b5aa4bcd92ad"
+    },
+    {
+      "path": "knowledge/work-model/machine-readable-stage-control-plane.md",
+      "sha256": "6c02f0410415be207b942813c7e3c39d298d1b40eff89483ef4bdada52424745"
+    },
+    {
+      "path": "knowledge/work-model/model-strategy.md",
+      "sha256": "72ee40183923e70670522fe124454319a63e1842206d1cc9b325e63a48eaf3ab"
+    },
+    {
+      "path": "knowledge/work-model/multimodal-run-orchestration-and-observability.md",
+      "sha256": "7977119a7388343c5265288bf0669f5365fb6d2f51dbfca88cab3271fb30bb96"
+    },
+    {
+      "path": "knowledge/work-model/offline-fake-device-cli-testing.md",
+      "sha256": "cb767815d7ffafb0efd8a76d08fe2c1b6cac9343d588847131b9a46b5c9e8049"
+    },
+    {
+      "path": "knowledge/work-model/ownership-aware-receipt-locks.md",
+      "sha256": "81ad2c56e63aa49aae54603bc1626505010f2bbcf74d419f1c11c71bcc6d3e37"
+    },
+    {
+      "path": "knowledge/work-model/perf-diagnosis.md",
+      "sha256": "7e1cd6a1b0aad24dbe555fb96abbf9f37b47619c369ec19fe7d549cc4abb376a"
+    },
+    {
+      "path": "knowledge/work-model/postmortem-generalization.md",
+      "sha256": "197d199493d90215ebfc89b5e7f450efd0211d7909f1a8a051251f0395e91aad"
+    },
+    {
+      "path": "knowledge/work-model/recurring-root-cause-governance.md",
+      "sha256": "ba6769250cbb6739b4d450aa4d5a51fea0e0033615342b2ce6bb8430973bc7f7"
+    },
+    {
+      "path": "knowledge/work-model/schema-fixture-migration-and-real-execution.md",
+      "sha256": "4b3db76cf4e7fda3c61303724aa021fc2f76b71701a47aa086eee9f806779c49"
+    },
+    {
+      "path": "knowledge/work-model/self-fix-boundary.md",
+      "sha256": "42fa3b9562242f7b20ad84bb046ed37b3986349ac4aef3d39dfc6a18fb830cf0"
+    },
+    {
+      "path": "knowledge/work-model/session-isolation-explicit-continuation.md",
+      "sha256": "1e63e3a8d0c4a49b862461122f3fe8ea9951fe558c6c99ef4bb8273bb16d7f5c"
+    },
+    {
+      "path": "knowledge/work-model/single-session-task-execution.md",
+      "sha256": "5fbc70d4a1fe6721ab8a40326ca126f22966c5091b0815aa5c5ed1ea0e6c027c"
+    },
+    {
+      "path": "knowledge/work-model/skills/coordinator-maintenance.md",
+      "sha256": "46315f5b6d870643d92145062f2c9d6d66bc795751919939bd88096bbd5a1285"
+    },
+    {
+      "path": "knowledge/work-model/skills/curate-to-kb.md",
+      "sha256": "86a2b2cb57678a5c28338407cf853aee91a6fb5101211a08d6cc88336a7abcaa"
+    },
+    {
+      "path": "knowledge/work-model/skills/dev/assign.md",
+      "sha256": "bb68f604de0bca4e0b5bb7a5fbaa47bd41a8a5fc00f741d65109151817ff83bb"
+    },
+    {
+      "path": "knowledge/work-model/skills/dev/bug-hunt.md",
+      "sha256": "964ebfc653f618cf660b2197edf215a38678da4f3b35cef4aac4290ddc3e69ee"
+    },
+    {
+      "path": "knowledge/work-model/skills/dev/code-review.md",
+      "sha256": "9e3c0427e0499305def9e28a462b062744bfbf8e2329769c88ee2ca026c6244a"
+    },
+    {
+      "path": "knowledge/work-model/skills/dev/crash-fix.md",
+      "sha256": "e4b7401fcd33b9bbd5832f65c70ea6851b691522816fb59b8e39d908e2d17f56"
+    },
+    {
+      "path": "knowledge/work-model/skills/dev/parallel-dev.md",
+      "sha256": "a231e395399acb236a1c4023f30e226e1aeffd642a67abaeb293c45b4b870c6a"
+    },
+    {
+      "path": "knowledge/work-model/skills/dev/perf-diagnose.md",
+      "sha256": "975e409a03020fad3c889de81cd9a8de6b528effaeab4963a8364bdbe3888f59"
+    },
+    {
+      "path": "knowledge/work-model/skills/dev/postmortem.md",
+      "sha256": "f1ac296886c9c226387078cd588976a8f887ca2bc33323798b8783bb98f93c6a"
+    },
+    {
+      "path": "knowledge/work-model/skills/dev/ui-impl.md",
+      "sha256": "8a5df9c805dcae1b4fd0c6575c7d94b44e96457d5563798a3909c68ea3ce8b42"
+    },
+    {
+      "path": "knowledge/work-model/skills/dispatch-parallel-task.md",
+      "sha256": "1ef4112c3d8d8028560ceed2d523a617ebe7c8be17185ef27eb1c8556b3bf825"
+    },
+    {
+      "path": "knowledge/work-model/skills/multi-source-review.md",
+      "sha256": "6120b2bd5de0a82ab570d9d6d15940ff480dc06741a35362462b06bfb8f6b5e2"
+    },
+    {
+      "path": "knowledge/work-model/skills/record-prd-supplement.md",
+      "sha256": "87571676f3899967e99bfd5220a5211ea9c8dd498750d6e5168d0a7cd3458369"
+    },
+    {
+      "path": "knowledge/work-model/skills/sediment-from-code.md",
+      "sha256": "c3cb8542a2b5fcd8527eb2cbe195cbe252a405782aa2f6007144210885cbe914"
+    },
+    {
+      "path": "knowledge/work-model/skills/update-design.md",
+      "sha256": "7de6476ed872c1d262a61bc0da680dc887e90afc9ff3ea1c794d04339645d95e"
+    },
+    {
+      "path": "knowledge/work-model/skills/writing-task-md.md",
+      "sha256": "60c594fd23d7e47e5d83bb789e56d19ba5c4c8817be1c702390f9cc76262f43e"
+    },
+    {
+      "path": "knowledge/work-model/task-md-template-v2.md",
+      "sha256": "e683b40fe26f987ba47d731fd0cb21031e14a45dcb6e69d9e78dae9cf092fbea"
+    },
+    {
+      "path": "knowledge/work-model/task-md-template.md",
+      "sha256": "8633f64c902cc16dae883efd517d449707448a758bedca9bcd425cf952a84bc6"
+    },
+    {
+      "path": "knowledge/work-model/task-schema-v3.md",
+      "sha256": "7d492e7905abb4cf7b64b0027f42c263799bab7cc6de7b8eb7fe525231002d9d"
+    },
+    {
+      "path": "knowledge/work-model/verify-build.md",
+      "sha256": "4abfe3b4ce9763b2c10db72d1b9716e015b6f0ae185f9c600f756f2967a6f87e"
+    },
+    {
+      "path": "knowledge/work-model/事实基线入库必须与下游产出同步交付.md",
+      "sha256": "3602e67eb33196e0304429b772bccf584f743a5c3c652560b6be3b2d9d4f31b7"
+    },
+    {
+      "path": "knowledge/work-model/方程式赛车架构思维.md",
+      "sha256": "1cfea23d9976cc249f99c28b290d114caf168c0f8da5d9e8c2094a9632b64259"
+    }
+  ],
+  "document_count": 390,
+  "corpus_sha256": "456d746f26a027e0666c4aca74ac76dcb36518d2be3830e859e17f09a096e5fe"
 }

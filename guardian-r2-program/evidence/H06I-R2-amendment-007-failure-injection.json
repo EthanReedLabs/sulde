@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-bd3a9c0923125f655fd9ccf3",
+  "verdict": "pass",
+  "kind": "failure_injection",
+  "summary": "Amendment-007 preserves fail-closed behavior for root/parent/post-read replacement, production local interruption and hostile report evidence variants.",
+  "facts": [
+    "Root-swap read, parent-swap write and post-read replacement attacks produce no external write or forged acceptance.",
+    "Production local interruption accepts the absent-output terminal domain only with the ordered ledger and quiescent disposal constraints.",
+    "Duplicate, conflicting-count, bad-command-hash and missing-binding report variants are rejected by task_report_verdict."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-016"],
+  "acceptance": [],
+  "commands": [
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "<root/parent/post-read/local-interruption/report hostile focused tests>"], "exit_code": 0, "result": "pass"}
+  ],
+  "artifacts": [
+    {"path": "H06I-R2-AMENDMENT-007-CLOSURE.json", "sha256": "f9caa247e1b1e704ece4106bd29b081d1057e251f3f26d2ec1613281e6b44e6d"}
+  ]
+}

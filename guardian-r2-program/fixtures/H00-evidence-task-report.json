@@ -1,0 +1,24 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H00-fixture-baseline.md",
+      "sha256": "1bf1a8912c5a20792dd0b17471365bc521a6b1b934584952dfcc08882d1b0c91"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "The tracked brief is READY and binds the parked source digest, exact dev base, worktree, branch and native revision 152 receipt.",
+    "The report distinguishes H00 control-plane activation from all unimplemented H01-H06 product work and from deferred Claude live acceptance."
+  ],
+  "findings": [],
+  "kind": "task_report",
+  "requirements": [],
+  "run_id": "run-gpe-f128db6f4146d085f1391fa8",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H00 reports a fully read-back PARKED-to-READY activation without claiming product implementation or release authority.",
+  "task_id": "H00-fixture-baseline",
+  "verdict": "pass"
+}

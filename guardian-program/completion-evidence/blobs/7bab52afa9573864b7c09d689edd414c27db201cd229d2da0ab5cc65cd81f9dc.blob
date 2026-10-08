@@ -1,0 +1,28 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "changed_files",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "The final T32 product delta is restricted to seven registered source, test and manifest paths; T31/T32 control evidence is accounted separately.",
+  "facts": [
+    "command_template.py 762bfda53727fffc339d59e8e3c7b7ee85fd94c60f7e89ff62b4911f61d7561b; local_file_operations.py 44b03f3c08503059b0cfdaefac8d418aeb607b643733f2f77221db0a84f64f48.",
+    "resources.py 36ce0a44e9b734773cd8f0a80d133b8cd4563cca174663dd743c76955af8362c; native_decision_journal.py 537d116617d6d4fd508670375241cf664530a6cd0625b25032566ec064b8b420.",
+    "test_intent_guardian.py 4ce63fd489b99d27385263fb919b486357d94d0d672ede2c189ed4f8cc2493ef; test_native_decision_journal.py 14b60f287e26b1cde97f8db7c4ed6288a00a86629c669e901c53f72ead49bd39.",
+    "plugin.json 7cbc5deb806ca480e2165704fb05a5db5ad5374cbec8650888a3dba9e3439e58; tests/test_command_policy.py is byte-identical to the frozen baseline after c7fd29a.",
+    "T31 canonical evidence and T32 task/evidence files are append-only coordinator artifacts, not product implementation paths."
+  ],
+  "requirements": [],
+  "findings": ["F32-003", "F32-005"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "diff", "--name-status", "f019ee9..c7fd29a", "--", "T32-owned-paths", "tests/test_command_policy.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

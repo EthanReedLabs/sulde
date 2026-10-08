@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T00-control-plane",
+  "kind": "changed_files",
+  "baseline": "34dcbd0d6ea81ba330c701bc755f1f557978f515",
+  "run_id": "run-gpe-5902ccbd79317bd597055811",
+  "verdict": "pass",
+  "summary": "The changed source and test bytes are bound by their independently reviewed digests.",
+  "facts": [
+    "scripts/kb/guardian_program.py sha256 is 5e710be0a8dd5cb4d9b514035c01f8d056e834a37859c7eee244be3ed442c09e.",
+    "tests/test_guardian_program.py sha256 is f41b69c292687f3733419b4bcc552b73d67c8c87d8d4912994533ac26c837c30."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T00-control-plane.md",
+      "sha256": "bcef167c7e0a2c2f6967b48f4fbc1ea98eef3e08de5e10bc58b7c2298d77a4ec"
+    }
+  ]
+}

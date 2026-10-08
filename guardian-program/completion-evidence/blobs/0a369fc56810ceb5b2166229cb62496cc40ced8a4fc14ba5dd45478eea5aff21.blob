@@ -1,0 +1,27 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "system_tests",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "A clean full clone of the final T32 product bytes passes the official OS-isolated repository suite without production writes.",
+  "facts": [
+    "The clean clone bound HEAD and local main to 8881570 and ran 1370 tests in 301.396 seconds: all passed with six platform skips.",
+    "The first linked-worktree run was not counted; it exposed the 3000-line resources budget and was followed by the bounded 8881570 split.",
+    "The production KB sentinel was empty and the official runner reported no production-write violation.",
+    "Later c7fd29a only removes a repository test assertion duplicated by the 263-test owned gate; every staged or installed product byte is identical to the system-tested candidate."
+  ],
+  "requirements": ["DERIVED-SPLIT", "PROGRAM-GOVERNANCE"],
+  "findings": ["F32-003", "F32-005"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

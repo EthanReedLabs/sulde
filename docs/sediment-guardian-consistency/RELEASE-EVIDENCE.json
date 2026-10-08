@@ -1,0 +1,182 @@
+{
+  "schema": "sulde-guardian-knowledge-publication-v1",
+  "status": "installed_corpus_verified",
+  "accepted_knowledge_commit": "e921807a4a4d8aeb1ff08631d2840974f20f9f8a",
+  "installed_source_commit": "0c9aabc29caf79074d21fd191c8812087d794691",
+  "source_tree": "fb7b2ff6f7d49072ae557542af876886d736c60f",
+  "plugin_version": "0.2.5+codex.20260911043115-19fde00701",
+  "generation": "0.2.5+codex.20260911043115-19fde00701:c7fab0250f5708c7cc37a586d9f0289744899c36d1094263d09595ab86e34df8",
+  "corpus": {
+    "document_count": 387,
+    "chunks": 1846,
+    "changed": 8,
+    "deleted": 0,
+    "edges": 216,
+    "missing_related": 0,
+    "corpus_sha256": "320546548af18ad51f1b3545f90bf6bb65c99a7d4edf1cd39434ae3b0c578de8",
+    "manifest_sha256": "a0684f81af01d6791f8552d9305abfb7525055687cb012e99c48783802802d24",
+    "source_artifact_installed_manifest_equal": true,
+    "incremental_build_seconds": 2.18
+  },
+  "candidate": {
+    "id": "sediment-guardian-consistency-20260911",
+    "status": "promoted",
+    "receipt_sha256": "6d9b1df07286c270711e8a96127b95628e13b869c934bfda88f8bb311fa7e841",
+    "prepare_ms": 2227.279,
+    "verify_ms": 26871.671,
+    "promote_ms": 52546.244
+  },
+  "install_timings_seconds": {
+    "host_preflight": 0.138,
+    "deployment_lock_and_recovery_scan": 1.014,
+    "artifact_stage_and_validation": 1.018,
+    "scheduler_and_home_preflight": 3.034,
+    "snapshot_and_prepare": 28.062,
+    "registry_switch_and_readback": 3.932,
+    "launcher_rules_and_smoke": 2.262,
+    "deployment_and_scheduler": 3.389,
+    "postconditions_and_commit": 5.802,
+    "locked_total": 43.447,
+    "total": 52.385
+  },
+  "installation": {
+    "status": "generation_verified",
+    "initial_operational_status": "scheduler_ready_live_host_unverified",
+    "deployment_operational_ready": true,
+    "scheduler_operational_ready": true
+  },
+  "live_pretool_proof": {
+    "artifact_generation": "0.2.5+codex.20260911043115-19fde00701:c7fab0250f5708c7cc37a586d9f0289744899c36d1094263d09595ab86e34df8",
+    "decision_fingerprint": "fa771d245b8ad19d34acf71227ecbf5f0c5d58318069507c2bc327c0e7dda077",
+    "gaps_cleared": 0,
+    "loaded_module_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+    "prepared_at": "2026-09-11T04:55:58.486391+00:00",
+    "probe_id": "5627d81140a9903230e6c072b5cb83cc",
+    "proof_id": "34527ec458e5c55237ed7fe33bc6708ac58f061f18c0c9e1f4ba16d7c7a6bf6a",
+    "provider": "codex",
+    "runtime_generation": "4eebf26591f75d8100704ecbbde2df0d8e0eae472688067be63ceee05ccc87d0",
+    "schema": "sulde-pre-execution-proof-v2",
+    "session_id": "01a04634-318f-7203-ba2d-26fa6ac442b0",
+    "started_call_id": "exec-a0aae2cf-44b6-4f37-ad14-83878c8bc80f",
+    "started_event_id": "4797a302e1011f95d94fa85e",
+    "target": "/private/tmp/sulde-pre-execution-canary-5627d81140a9903230e6c072b5cb83cc",
+    "verified_at": "2026-09-11T04:56:20.806038+00:00"
+  },
+  "current_session_doctor": {
+    "status": "ready",
+    "readiness": "ready",
+    "interactive": "ready",
+    "scheduler": {
+      "authority": "launchctl_list_process_truth",
+      "failed_labels": {},
+      "inventory_sha256": "0d9ac79c5e5f65d6addb283348516f8f6b6683b5d12893859590b2d7b2f51c7f",
+      "loaded": 16,
+      "managed": 16,
+      "missing_labels": [],
+      "missing_observed": true,
+      "probe_status": "observed",
+      "reasons": [],
+      "retired_loaded_labels": [],
+      "status": "ready"
+    },
+    "effect_debt": {
+      "authoritative_blocking": 0,
+      "authoritative_settled_pending": 0,
+      "blocking": 0,
+      "error": null,
+      "interventions_open": 0,
+      "pending_verifications": 0,
+      "pending_verifications_total": 0,
+      "status": "clear",
+      "terminal_quarantined": 0,
+      "terminal_quarantined_pending": 0
+    },
+    "hook_failures": {
+      "authority": "telemetry_only_not_effect_truth",
+      "callback_recovered_total": 0,
+      "current_lane": [],
+      "current_lane_total": 0,
+      "invalid_observations": 0,
+      "invalid_receipts": 0,
+      "other_lanes_total": 0,
+      "schema": "sulde-host-hook-failure-projection-v1",
+      "status": "clear"
+    }
+  },
+  "grants": [
+    {
+      "profile": "codex-plugin-cachebuster-v2",
+      "uses": 1,
+      "verification": "system_verified",
+      "verifier": "tool:codex_plugin_cachebuster_verify",
+      "attempt_id": "att-3206520c5c60016b5ae24d50"
+    },
+    {
+      "profile": "codex-plugin-install-v2",
+      "uses": 1,
+      "verification": "system_verified",
+      "verifier": "tool:codex_plugin_install_verify",
+      "attempt_id": "att-4d7b7aef9e19900de93896c7"
+    }
+  ],
+  "mcp": {
+    "transport": "Codex-configured stdio, fresh actual process",
+    "requests": 17,
+    "search_passed": 8,
+    "get_passed": 8,
+    "all_top1": true,
+    "source_runtime_returned_bytes_equal": true,
+    "elapsed_seconds": 2.067,
+    "doc_ids": [
+      "ap-0250",
+      "work-model/idempotent-registration-verifier-contract",
+      "ap-0251",
+      "work-model/session-isolation-explicit-continuation",
+      "work-model/ownership-aware-receipt-locks",
+      "ap-0252",
+      "work-model/canonical-byte-authority-self-hosted-verification",
+      "work-model/evidence-gate-contract"
+    ],
+    "existing_conversation_reconnected": false,
+    "old_conversation_result": "kb_get source read failed in retired old runtime",
+    "background_status_snapshot": "degraded; still reported 381 documents, unlike directly verified 387-document SQLite index; not repaired in this scope"
+  },
+  "tests": {
+    "full_suite_rerun": false,
+    "reused_evidence": "EVIDENCE.json",
+    "runtime_logic_changed": false
+  },
+  "retained_failures": [
+    {
+      "kind": "sandbox_write",
+      "effect": "none",
+      "resolution": "native filesystem approval"
+    },
+    {
+      "kind": "promotion_call_shape",
+      "effect": "none; pre-denied",
+      "resolution": "explicit --candidate-home in sealed adapter invocation"
+    },
+    {
+      "kind": "composed_control_and_read_help",
+      "effect": "none; pre-denied",
+      "resolution": "separate exact calls; no policy change"
+    },
+    {
+      "kind": "old_mcp_runtime",
+      "effect": "read failure",
+      "resolution": "fresh Codex-configured MCP process verified; existing client needs reconnect"
+    },
+    {
+      "kind": "unsupported_help_subcommand",
+      "effect": "none",
+      "resolution": "used documented pre-execution-proof-prepare/finalize"
+    }
+  ],
+  "preservation": {
+    "main_unchanged": "bd216b3d29e37b1aaf0e6be0c930b5221a925562",
+    "remote_unchanged": "11c8f9063da32606caeccd4355be8d8d5b44b9c8",
+    "push_performed": false,
+    "other_worktrees_modified": false
+  }
+}

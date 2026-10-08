@@ -1,0 +1,51 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06E-codex-help-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-c6a54d6965683d2d8f39c3d0",
+  "verdict": "pass",
+  "kind": "system_tests",
+  "summary": "H06E passes the supported single-layer runtime and installer system scope while preserving separate quiet-fleet and cross-host final gates.",
+  "facts": [
+    "The coordinator single-layer run passed tests.test_agent_runtime 60/60 in 40.640 seconds with the real openpty branch executed and not skipped.",
+    "The integrated installer system scope passed 42/42 in 99.090 seconds and retained rollback, staged readback and authority-tamper rejection.",
+    "The prior 1556-test detached campaign is not misreported as green: missing local main, missing numpy/PyYAML and concurrent production writers remain assigned to the final supported-environment quiet run."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06E-003",
+    "FR2-H06E-005"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_agent_runtime"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_codex_plugin_install"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H06E-codex-help-authority.md",
+      "sha256": "9b7ddf86ae94d26a5c7a65f9523a11cf7f3410c459641467450af66ec5e28a2b"
+    }
+  ]
+}

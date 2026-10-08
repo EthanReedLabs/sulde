@@ -1,0 +1,7 @@
+{
+  "schema":"sulde-guardian-program-evidence-v1","scope":"task","task_id":"H06H-r2-final-acceptance",
+  "baseline":"10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2","run_id":"run-gpe-4efe615231a4f18a96ee09f8","verdict":"pass","kind":"changed_files",
+  "summary":"Amendment-009 candidate commit changes exactly the four H06H worker-owned paths and no predecessor artifact.",
+  "facts":["guardian-program/MASTER.md 12da84460d613ec067bf969b0ffe94af28c822aeaf40754f8a8c8867c8b8a1be","tests/fixtures/r2-guardian-incidents/replay-cases.json 674e6a440b8d08a25e468fc09b3cc6ad9927153052de1f40384346a47e186f7a","tests/test_r2_guardian_integration.py ae2fb34e5e3bedf1ae18d40a40fb13a2c570fb2a4dc18f20806a2a23cdb4919e","guardian-r2-program/reports/H06H-r2-final-acceptance.md ad6ae1d1ded34bd811a784a9f5ce0108b3871cd3dac0044bfe51e4d5e251fa26"],"requirements":[],"findings":["FR2-H06H-003"],"acceptance":[],
+  "commands":[{"argv":["git","diff","--check"],"exit_code":0,"result":"pass"}],"artifacts":[]
+}

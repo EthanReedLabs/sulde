@@ -220,11 +220,71 @@ def read_distill(path: Path, now: datetime) -> dict[str, Any] | None:
 def read_life(path: Path, now: datetime) -> dict[str, Any] | None:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict):
+            return None
         generated = parse_timestamp(payload.get("generated_at"))
         levels = payload.get("levels", {})
         evolution = payload.get("evolution", {})
+        if not isinstance(levels, dict) or not isinstance(evolution, dict):
+            return None
+        def mapping(value: Any) -> dict[str, Any]:
+            return value if isinstance(value, dict) else {}
+
+        operational = mapping(payload.get("operational_readiness"))
+        closed = mapping(payload.get("closed_loop"))
+        scheduler = mapping(operational.get("scheduler_readiness"))
+        identity = mapping(closed.get("identity_resume"))
+        human = mapping(closed.get("human_gates"))
+        dimensions = mapping(closed.get("dimensions"))
+        readback = mapping(closed.get("readback"))
+        scope = operational.get("readiness_scope", "unknown")
+        reasons = []
+        if generated is None or generated > now or (now - generated).total_seconds() > LIFE_STALE_SECONDS:
+            reasons.append("life_timestamp_missing_stale_or_future")
+        if scope not in {"scheduler", "interactive"}:
+            reasons.append("life_scope_unobserved")
+        if scheduler.get("status") != "ready":
+            reasons.append("scheduler_not_ready")
+        for name in ("L2", "L3", "L4"):
+            if mapping(levels.get(name)).get("status") != "ready":
+                reasons.append(f"{name}_not_ready")
+        if evolution.get("status") != "ready":
+            reasons.append("evolution_not_ready")
+        if not all(readback.get(name) is True for name in ("l2", "l3", "l4", "evolution")):
+            reasons.append("life_readback_unproven")
+        if human.get("unknown_effects_fail_closed") is not True:
+            reasons.append("effect_boundary_unproven")
+        # Only the scheduler's fully evidenced dimensions can explain a degraded
+        # global result by the absence of a human lane. Never turn global unknown
+        # or an interactive fault into background readiness.
+        if scope == "scheduler":
+            if not all(dimensions.get(name) is True for name in ("sense", "persist", "decide", "act", "verify")):
+                reasons.append("life_dimensions_incomplete")
+            if operational.get("status") != "ready":
+                reasons.append("scheduler_scope_not_ready")
+        elif scope == "interactive" and payload.get("status") != "ready":
+            reasons.append("interactive_source_degraded")
+        if payload.get("status") not in {"ready", "degraded"}:
+            reasons.append("life_global_unknown")
+        projection = {
+            "global_status": str(payload.get("status", "unknown")),
+            "generated_at": generated.isoformat() if generated else None,
+            "generation": mapping(operational.get("artifact_generation_readiness")).get("generation"),
+            "source_scope": scope,
+            "background_status": "degraded" if reasons else "ready",
+            "background_reasons": reasons,
+            "interactive_status": "unobserved" if scope == "scheduler" else mapping(operational.get("interactive_readiness")).get("status", "unknown"),
+            "source_reasons": {
+                "global": payload.get("reasons", []),
+                "operational": operational.get("reasons", []),
+                "scheduler": scheduler.get("reasons", []),
+                "human_gates": human.get("reason"),
+                "identity_resume": identity.get("reason"),
+            },
+        }
         return {
             "life_status": str(payload.get("status", "unknown")),
+            "life_projection": projection,
             "life_age_seconds": age_seconds(generated, now),
             "life_levels": {
                 name: str(value.get("status", "unknown"))
@@ -651,7 +711,11 @@ def statusline_healthy(status: dict[str, Any]) -> bool:
         or status.get("kb_index_stale") is True
         or (status.get("harvest_age_seconds") or 0) > DAY_SECONDS
         or (status.get("distill_age_seconds") or 0) > DISTILL_STALE_SECONDS
-        or status.get("life_status") not in {None, "ready"}
+        or (
+            status["life_projection"].get("background_status") != "ready"
+            if isinstance(status.get("life_projection"), dict)
+            else status.get("life_status") not in {None, "ready"}
+        )
         or (status.get("life_age_seconds") or 0) > LIFE_STALE_SECONDS
         or status.get("runtime_available") is False
         or status.get("launcher_contract_healthy") is False
@@ -676,7 +740,9 @@ def statusline(status: dict[str, Any]) -> str:
         )
         mark = "\033[32m●\033[0m" if statusline_healthy(status) else "\033[33m●\033[0m"
         line = (
-            f"sulde {mark} kb:{status['kb_docs']}·边{status['kb_edges']} "
+            f"sulde {mark} "
+            + ("后台·交互未观测 " if status.get("life_projection", {}).get("source_scope") == "scheduler" else "")
+            + f"kb:{status['kb_docs']}·边{status['kb_edges']} "
             f"mem:{compact_number(status['mem_total'])}(+{status['mem_today']}) "
             f"待嵌:{status['mem_pending_embedding']} "
             f"收割:{relative_age(status['harvest_age_seconds'])} 蒸馏:{distill}"
@@ -724,7 +790,8 @@ def statusline(status: dict[str, Any]) -> str:
         elif waiting is not None:
             line += f"·{scheduler_label}"
         else:
-            line = f"sulde \033[33m●\033[0m 交互可用·{scheduler_label}"
+            availability = "交互可用" if isinstance(operational, dict) and operational.get("readiness_scope") == "interactive" and operational.get("status") == "ready" else "后台视图"
+            line = f"sulde \033[33m●\033[0m {availability}·{scheduler_label}"
     if status.get("runtime_available") is False:
         line = "sulde \033[31m●\033[0m 运行时不可用"
     if status.get("launcher_contract_healthy") is False:
@@ -934,6 +1001,8 @@ def main() -> int:
             Path(str(status.get("kb_home") or kb_home())),
             line=line,
             healthy=statusline_healthy(status),
+            scope="interactive" if status.get("operational_readiness", {}).get("readiness_scope") == "interactive" else "background_runtime",
+            life=status.get("life_projection"),
         )
         status["statusline_snapshot_published"] = snapshot_published
         if args.json:

@@ -1,0 +1,9 @@
+{
+  "schema":"sulde-guardian-program-evidence-v1","scope":"task","task_id":"H06H-r2-final-acceptance",
+  "baseline":"10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2","run_id":"run-gpe-4efe615231a4f18a96ee09f8","verdict":"pass","kind":"finding_resolution",
+  "summary":"Amendment-009 replaces the misattributed predecessor topology and carries explicit current-run resolution coverage for every inherited H06H obligation.",
+  "facts":["fresh candidate commit 21b5c8c0a2ac4fe5c43102b19d31c00d491619ca","no H06C/H06D untracked artifact is referenced"],
+  "requirements":[],
+  "findings":["FR2-H06H-003","FR2-H06B-005","FR2-H06B-007","FR2-H06B-008","FR2-H06C-002","FR2-H06C-004","FR2-H06E-003","FR2-H06E-005","FR2-H06D-005","FR2-H06D-006","FR2-H06D-007","FR2-H06D-008"],
+  "acceptance":[],"commands":[{"argv":["git","show","--stat","--oneline","21b5c8c0a2ac4fe5c43102b19d31c00d491619ca"],"exit_code":0,"result":"pass"}],"artifacts":[]
+}

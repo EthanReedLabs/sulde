@@ -1,0 +1,51 @@
+{
+  "acceptance": [
+    {
+      "clause": "一次当前会话原生 Allow 形成 provider、session、task epoch、subject、effect、constraints、world state 与 verifier 全绑定的单次 HumanGrantV2",
+      "fact": "H01 validates and seals every listed binding plus capability, card, request, typed human receipt and expiry; native PermissionRequest issuance remains explicitly assigned to H02/H06 rather than being falsely claimed by this pure layer.",
+      "requirement_id": "R2-HUMAN-GRANT"
+    },
+    {
+      "clause": "同一 grant 获准后普通默认策略不得对同一未漂移 effect 二次 deny",
+      "fact": "An unchanged available grant returns execution_authorized=true and default_policy_recheck_required=false with one versioned CAS transition; drift returns a fresh-decision result instead of a second default-policy denial.",
+      "requirement_id": "R2-HUMAN-GRANT"
+    },
+    {
+      "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并",
+      "fact": "H01 changed exactly three frozen paths; the first candidate was held after FR2-H01-002, repair1 passed independent review, and both H01 findings have append-only dispositions before evidence promotion.",
+      "requirement_id": "PROGRAM-GOVERNANCE"
+    },
+    {
+      "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写",
+      "fact": "H01 added a standalone module, test and R2 report on the frozen dev base; no predecessor event, accepted evidence, dev/main history, installed plugin or production state was rewritten.",
+      "requirement_id": "PROGRAM-GOVERNANCE"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H01-human-grant-v2.md",
+      "sha256": "362e67f6719be687de43b8ef6676660ad3220bad7ba5696cc286f5f63765828f"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "Every acceptance clause assigned to H01's R2-HUMAN-GRANT and PROGRAM-GOVERNANCE requirements is mapped exactly once.",
+    "The mapping distinguishes H01's verified pure protocol contribution from the still-deferred native broker and live-host acceptance work."
+  ],
+  "findings": [
+    "FR2-H01-001",
+    "FR2-H01-002"
+  ],
+  "kind": "requirement_traceability",
+  "requirements": [
+    "R2-HUMAN-GRANT",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "run_id": "run-gpe-81c4eb66edd2ae4588c2648d",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H01 traces every assigned R2-HUMAN-GRANT and PROGRAM-GOVERNANCE clause without claiming H02 or live-host completion.",
+  "task_id": "H01-human-grant-v2",
+  "verdict": "pass"
+}

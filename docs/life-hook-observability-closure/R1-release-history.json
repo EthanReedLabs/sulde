@@ -1,0 +1,336 @@
+[
+  {
+    "source_commit": "4a2782a1aa750ef2e839695055072595d197dff6",
+    "evidence_sha256": "496e71a129a047473c157bc8855d06ee69308811e54f8eb6280ad3f3f691a680",
+    "runs": [
+      {
+        "sample": 0,
+        "phase": "prepare",
+        "seconds": 1.33,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 0,
+        "phase": "verify",
+        "seconds": 13.088,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 0,
+        "phase": "full_install",
+        "seconds": 8.088,
+        "exit_code": 1
+      },
+      {
+        "sample": 1,
+        "phase": "prepare",
+        "seconds": 1.056,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 1,
+        "phase": "verify",
+        "seconds": 12.41,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 1,
+        "phase": "full_install",
+        "seconds": 7.904,
+        "exit_code": 1
+      },
+      {
+        "sample": 2,
+        "phase": "prepare",
+        "seconds": 1.15,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 2,
+        "phase": "verify",
+        "seconds": 12.482,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 2,
+        "phase": "full_install",
+        "seconds": 7.936,
+        "exit_code": 1
+      }
+    ],
+    "summaries": {
+      "prepare": {
+        "n": 3,
+        "median_seconds": 1.15,
+        "p95_seconds": 1.33
+      },
+      "verify": {
+        "n": 3,
+        "median_seconds": 12.482,
+        "p95_seconds": 13.088
+      }
+    },
+    "failure": "missing_mcp_runtime_venv_detected_after_switch_and_rolled_back",
+    "superseded_by": "84195ea"
+  },
+  {
+    "source_commit": "429b84dd7c85e05a94f2792e416b7321bdffcb5e",
+    "evidence_sha256": "cc575afc48e9d9916a6196eb7af428c80e856cf5167653eadd4d994ef0ac0847",
+    "runs": [
+      {
+        "sample": 0,
+        "phase": "prepare",
+        "seconds": 1.71,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 0,
+        "phase": "verify",
+        "seconds": 12.956,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 0,
+        "phase": "full_install",
+        "seconds": 15.567,
+        "exit_code": 0,
+        "status": "generation_verified",
+        "phase_timings_seconds": {
+          "host_preflight": 0.72,
+          "deployment_lock_and_recovery_scan": 0.001,
+          "artifact_stage_and_validation": 0.684,
+          "scheduler_and_home_preflight": 0.346,
+          "snapshot_and_prepare": 0.155,
+          "registry_switch_and_readback": 0.515,
+          "launcher_rules_and_smoke": 5.687,
+          "deployment_and_scheduler": 4.679,
+          "postconditions_and_commit": 0.735,
+          "locked_total": 11.771,
+          "total": 13.523
+        }
+      },
+      {
+        "sample": 1,
+        "phase": "prepare",
+        "seconds": 1.091,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 1,
+        "phase": "verify",
+        "seconds": 12.79,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 1,
+        "phase": "full_install",
+        "seconds": 15.835,
+        "exit_code": 0,
+        "status": "generation_verified",
+        "phase_timings_seconds": {
+          "host_preflight": 0.792,
+          "deployment_lock_and_recovery_scan": 0.001,
+          "artifact_stage_and_validation": 0.675,
+          "scheduler_and_home_preflight": 0.389,
+          "snapshot_and_prepare": 0.137,
+          "registry_switch_and_readback": 0.522,
+          "launcher_rules_and_smoke": 5.915,
+          "deployment_and_scheduler": 4.576,
+          "postconditions_and_commit": 0.737,
+          "locked_total": 11.887,
+          "total": 13.744
+        }
+      },
+      {
+        "sample": 2,
+        "phase": "prepare",
+        "seconds": 1.08,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 2,
+        "phase": "verify",
+        "seconds": 12.926,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 2,
+        "phase": "full_install",
+        "seconds": 15.388,
+        "exit_code": 0,
+        "status": "generation_verified",
+        "phase_timings_seconds": {
+          "host_preflight": 0.727,
+          "deployment_lock_and_recovery_scan": 0.001,
+          "artifact_stage_and_validation": 0.686,
+          "scheduler_and_home_preflight": 0.343,
+          "snapshot_and_prepare": 0.138,
+          "registry_switch_and_readback": 0.506,
+          "launcher_rules_and_smoke": 5.673,
+          "deployment_and_scheduler": 4.527,
+          "postconditions_and_commit": 0.749,
+          "locked_total": 11.593,
+          "total": 13.351
+        }
+      }
+    ],
+    "summaries": {
+      "prepare": {
+        "n": 3,
+        "median_seconds": 1.091,
+        "p95_seconds": 1.71
+      },
+      "verify": {
+        "n": 3,
+        "median_seconds": 12.926,
+        "p95_seconds": 12.956
+      },
+      "full_install": {
+        "n": 3,
+        "median_seconds": 15.567,
+        "p95_seconds": 15.835
+      }
+    },
+    "failure": null,
+    "superseded_by": "84195ea"
+  },
+  {
+    "source_commit": "9e4e571dd09094f2a66b92d4b60224565cdad551",
+    "evidence_sha256": "ff4e869f87e6a17a670e4a47c8da3b25214dd509d43a59b17d29ed1f865ae12d",
+    "runs": [
+      {
+        "sample": 0,
+        "phase": "prepare",
+        "seconds": 1.38,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 0,
+        "phase": "verify",
+        "seconds": 12.897,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 0,
+        "phase": "full_install",
+        "seconds": 16.704,
+        "exit_code": 0,
+        "status": "generation_verified",
+        "phase_timings_seconds": {
+          "host_preflight": 0.776,
+          "deployment_lock_and_recovery_scan": 0.001,
+          "artifact_stage_and_validation": 0.708,
+          "scheduler_and_home_preflight": 0.383,
+          "snapshot_and_prepare": 0.137,
+          "registry_switch_and_readback": 0.614,
+          "launcher_rules_and_smoke": 5.99,
+          "deployment_and_scheduler": 5.193,
+          "postconditions_and_commit": 0.824,
+          "locked_total": 12.758,
+          "total": 14.626
+        }
+      },
+      {
+        "sample": 1,
+        "phase": "prepare",
+        "seconds": 1.399,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 1,
+        "phase": "verify",
+        "seconds": 13.062,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 1,
+        "phase": "full_install",
+        "seconds": 15.798,
+        "exit_code": 0,
+        "status": "generation_verified",
+        "phase_timings_seconds": {
+          "host_preflight": 0.702,
+          "deployment_lock_and_recovery_scan": 0.001,
+          "artifact_stage_and_validation": 0.817,
+          "scheduler_and_home_preflight": 0.33,
+          "snapshot_and_prepare": 0.132,
+          "registry_switch_and_readback": 0.511,
+          "launcher_rules_and_smoke": 5.825,
+          "deployment_and_scheduler": 4.614,
+          "postconditions_and_commit": 0.779,
+          "locked_total": 11.861,
+          "total": 13.711
+        }
+      },
+      {
+        "sample": 2,
+        "phase": "prepare",
+        "seconds": 1.145,
+        "exit_code": 0,
+        "status": "prepared"
+      },
+      {
+        "sample": 2,
+        "phase": "verify",
+        "seconds": 13.384,
+        "exit_code": 0,
+        "status": "verified"
+      },
+      {
+        "sample": 2,
+        "phase": "full_install",
+        "seconds": 16.403,
+        "exit_code": 0,
+        "status": "generation_verified",
+        "phase_timings_seconds": {
+          "host_preflight": 0.719,
+          "deployment_lock_and_recovery_scan": 0.001,
+          "artifact_stage_and_validation": 0.865,
+          "scheduler_and_home_preflight": 0.325,
+          "snapshot_and_prepare": 0.139,
+          "registry_switch_and_readback": 0.644,
+          "launcher_rules_and_smoke": 5.76,
+          "deployment_and_scheduler": 4.508,
+          "postconditions_and_commit": 0.746,
+          "locked_total": 11.797,
+          "total": 13.707
+        }
+      }
+    ],
+    "summaries": {
+      "prepare": {
+        "n": 3,
+        "median_seconds": 1.38,
+        "p95_seconds": 1.399
+      },
+      "verify": {
+        "n": 3,
+        "median_seconds": 13.062,
+        "p95_seconds": 13.384
+      },
+      "full_install": {
+        "n": 3,
+        "median_seconds": 16.403,
+        "p95_seconds": 16.704
+      }
+    },
+    "failure": null,
+    "superseded_by": "84195ea"
+  }
+]

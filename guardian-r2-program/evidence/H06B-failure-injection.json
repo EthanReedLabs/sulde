@@ -1,0 +1,23 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H06B-codex-0150-authority.md", "sha256": "27b52eb201865503691830f436ecb5538a73bd95b875ea72e9a4c8fe85ef2a5c"}],
+  "baseline": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "commands": [
+    {"argv": ["<kb-venv-python>", "-B", "scripts/kb/run-isolated-tests.py", "<eight-H06B-modules>"], "exit_code": 0, "result": "pass"},
+    {"argv": ["python3", "-B", "-m", "unittest", "tests.test_codex_plugin_install", "tests.test_stage_plugin"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "Both 495-test formal runs exercised old 0.149.1, future, substring, whitespace, nonzero-version, executable alias, help diagnostic, profile, generation, broker, shared-contract, tree, rollback and crash failure axes with zero test failures.",
+    "The real roundtrip re-signed a forged broker digest and staged runtime readback still rejected the physical-file mismatch.",
+    "Nested sandbox inability, report time-source misattribution and concurrent production writers remain append-only facts rather than being erased or adapted away."
+  ],
+  "findings": ["FR2-H06B-001", "FR2-H06B-002", "FR2-H06B-003", "FR2-H06B-004", "FR2-H06B-005"],
+  "kind": "failure_injection",
+  "requirements": [],
+  "run_id": "run-gpe-be866b2fa440a994860b63a9",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06B negative authority, rollback and provenance boundaries fail closed without weakening production checks.",
+  "task_id": "H06B-codex-0150-authority",
+  "verdict": "pass"
+}

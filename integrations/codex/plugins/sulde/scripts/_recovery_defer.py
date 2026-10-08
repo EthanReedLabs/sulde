@@ -37,8 +37,8 @@ _CODEX_PLUGIN_COMMANDS = frozenset(
 )
 
 
-def _git_execution_passthrough(command: str) -> bool:
-    """Dependency-free proof that every safe shell segment invokes Git."""
+def _git_review_segments(command: str) -> list[str] | None:
+    """Dependency-free safe shell segments; no runtime import or execution."""
     candidate = re.sub(
         r"\s+2>\s*(?:/dev/null|NUL)\s*$",
         "",
@@ -67,14 +67,14 @@ def _git_execution_passthrough(command: str) -> bool:
             if character == quote:
                 quote = ""
             elif quote == '"' and character == "`":
-                return False
+                return None
             elif (
                 quote == '"'
                 and character == "$"
                 and index + 1 < len(candidate)
                 and candidate[index + 1] in "({"
             ):
-                return False
+                return None
             index += 1
             continue
         if character in {"'", '"'}:
@@ -85,38 +85,121 @@ def _git_execution_passthrough(command: str) -> bool:
         separator_width = 0
         if character == "|":
             if index + 1 < len(candidate) and candidate[index + 1] == "|":
-                return False
+                return None
             separator_width = 1
         elif character == "&":
             if index + 1 >= len(candidate) or candidate[index + 1] != "&":
-                return False
+                return None
             separator_width = 2
         elif character in ";\n\r":
             separator_width = 1
         if separator_width:
             segment = "".join(current).strip()
             if not segment:
-                return False
+                return None
             segments.append(segment)
             current = []
             index += separator_width
             continue
         if character in "<>`":
-            return False
+            return None
         if (
             character == "$"
             and index + 1 < len(candidate)
             and candidate[index + 1] in "({"
         ):
-            return False
+            return None
         current.append(character)
         index += 1
     if quote or escaped:
-        return False
+        return None
     final = "".join(current).strip()
     if not final:
-        return False
+        return None
     segments.append(final)
+    return segments
+
+
+def _literal_git_cwd_body(command: str) -> str:
+    """Recognize one literal cd && prefix; never rewrite an executed command."""
+    if os.name == "nt" or len(command) > 65536:
+        return command
+    segments = _git_review_segments(command)
+    if not segments or len(segments) < 2:
+        return command
+    first = segments[0]
+    try:
+        tokens = shlex.split(first)
+    except ValueError:
+        return command
+    if not tokens or tokens[0] != "cd":
+        return command
+    arguments = tokens[1:]
+    if arguments[:1] == ["--"]:
+        arguments = arguments[1:]
+    if (len(arguments) != 1 or not arguments[0]
+            or arguments[0].startswith("-")
+            or any(char in first for char in "$`~*?[]{}!")):
+        return command
+    remaining = command.strip()[len(first):].lstrip()
+    if not remaining.startswith("&&"):
+        return command
+    return remaining[2:].lstrip()
+
+
+def git_stdin_review_pipeline(command: str) -> bool:
+    """Prove Git followed only by bounded, stdin-only head/tail/wc filters.
+
+    This small proof is mirrored in the static fallback adapter and tested
+    against the same cases. It must not import Guardian state into fallback.
+    Git retains host authority; only the non-Git stages are proven read-only.
+    """
+    if os.name == "nt" or len(command) > 65536:
+        return False
+    body = _literal_git_cwd_body(command)
+    segments = _git_review_segments(body)
+    if not segments or not 2 <= len(segments) <= 8:
+        return False
+    remaining = body.strip()
+    for index, segment in enumerate(segments):
+        if not remaining.startswith(segment):
+            return False
+        remaining = remaining[len(segment):].lstrip()
+        if index < len(segments) - 1:
+            if not remaining.startswith("|") or remaining.startswith("||"):
+                return False
+            remaining = remaining[1:].lstrip()
+        try:
+            tokens = shlex.split(segment)
+        except ValueError:
+            return False
+        if not tokens:
+            return False
+        executable = Path(tokens[0]).name.lower()
+        if index == 0:
+            if executable != "git":
+                return False
+            continue
+        if executable not in {"head", "tail", "wc"} or tokens[0] not in {
+            executable, "/usr/bin/" + executable, "/bin/" + executable,
+        }:
+            return False
+        args = tokens[1:]
+        if executable == "wc":
+            if any(arg not in {"-l", "-w", "-c", "-m"} for arg in args):
+                return False
+        elif args and not (
+            len(args) == 2 and args[0] in {"-n", "-c"}
+            and re.fullmatch(r"[0-9]{1,7}", args[1])
+        ):
+            return False
+    return not remaining
+
+
+def _git_execution_passthrough(command: str) -> bool:
+    segments = _git_review_segments(_literal_git_cwd_body(command))
+    if not segments:
+        return False
     try:
         return all(
             bool(tokens := shlex.split(segment, posix=os.name != "nt"))
@@ -308,7 +391,7 @@ def payload_requires_fail_closed(
     if not isinstance(tool_input, dict):
         return True
     command = str(tool_input.get("command") or tool_input.get("cmd") or "").strip()
-    if _git_execution_passthrough(command):
+    if _git_execution_passthrough(command) or git_stdin_review_pipeline(command):
         return False
     tokens = _tokens(command)
     if not tokens:
@@ -318,3 +401,42 @@ def payload_requires_fail_closed(
     return not _native_recovery(
         command, runtime_root=runtime_root, launcher_home=launcher_home
     )
+
+
+def main() -> int:
+    """Pinned-file fallback: classify only, never load runtime or dispatch tools.
+
+    The caller supplies its own packaged runtime location, not a guessed active
+    generation. This entry has no grants and uses exactly the classifier above.
+    """
+    import argparse
+    import json
+    import sys
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--runtime-root", type=Path, required=True)
+    parser.add_argument("--launcher-home", type=Path, required=True)
+    args = parser.parse_args()
+    raw = sys.stdin.buffer.read(2 * 1024 * 1024 + 1)
+    if len(raw) > 2 * 1024 * 1024:
+        return 65
+    try:
+        payload = json.loads(raw or b"{}")
+    except (ValueError, UnicodeError):
+        payload = {}
+    if not isinstance(payload, dict):
+        payload = {}
+    if payload_requires_fail_closed(payload, runtime_root=args.runtime_root,
+                                    launcher_home=args.launcher_home):
+        print(json.dumps({"hookSpecificOutput": {
+            "hookEventName": "PreToolUse", "permissionDecision": "deny",
+            "permissionDecisionReason": "Sulde PreToolUse policy could not complete; "
+            "this material or unknown action was not executed. Read-only diagnosis, "
+            "Git execution, and exact recovery commands remain available.",
+        }}))
+    print("sulde: static fallback classified; runtime unavailable; no authority transferred", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

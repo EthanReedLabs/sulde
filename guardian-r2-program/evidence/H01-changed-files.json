@@ -1,0 +1,37 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H01-human-grant-v2.md",
+      "sha256": "362e67f6719be687de43b8ef6676660ad3220bad7ba5696cc286f5f63765828f"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "diff-tree",
+        "--no-commit-id",
+        "--name-only",
+        "-r",
+        "62296c1868f0ea46a5cf2b0a719fc50ef53f2c56"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Integrated commit 62296c1868f0ea46a5cf2b0a719fc50ef53f2c56 has parent b5aee2a7d3df9e806f4a7573d6a24bd2bef501e5 and tree 77341dffafa2149039b9b93f4d159334a7337695.",
+    "Its changed paths are exactly guardian-r2-program/reports/H01-human-grant-v2.md, scripts/kb/human_grant.py and tests/test_human_grant.py; all three blobs equal worker commit 9f9a1b0be8d52c5ccaaacdd42b3fa07e07d9ecb5."
+  ],
+  "findings": [],
+  "kind": "changed_files",
+  "requirements": [],
+  "run_id": "run-gpe-81c4eb66edd2ae4588c2648d",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "Integrated H01 commit contains exactly the three frozen task paths and byte-identical worker artifacts.",
+  "task_id": "H01-human-grant-v2",
+  "verdict": "pass"
+}

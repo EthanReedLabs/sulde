@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T22-material-cas-lane-binding",
+  "kind": "failure_injection",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-656b9b20b4b4882b1199d002",
+  "verdict": "pass",
+  "summary": "Partial contract writes, session mismatch and missing-start completion boundaries fail closed without partial authority.",
+  "facts": [
+    "An injected contract write failure persisted neither a revision nor a task lane.",
+    "Missing or mismatched Codex session identity failed before the authority producer call.",
+    "An unmatched allowed completion advanced material CAS exactly once."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "-q", "T22-three-focused-failure-injection-tests"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

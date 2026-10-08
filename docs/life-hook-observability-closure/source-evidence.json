@@ -1,0 +1,31 @@
+{
+  "intent_id": "interactive:db613882e8d8ba05a196234d",
+  "base": "f687193bdda541d4651846ed99aa6dbe37475f7d",
+  "sources": {
+    "$KB/heartbeat-state.json": {
+      "sha256": "ce7eb48d047a187f9b5c9fa0f551af12879d717c27de275719bcc342edca932e",
+      "size": 274
+    },
+    "$KB/heartbeat/observations-202609.md": {
+      "sha256": "208449c45ff9503168f19da3427b19418077f478791ae4df05dc94c8d7fa5acc",
+      "size": 13790
+    },
+    "$KB/governance/report-20260907.md": {
+      "sha256": "36149237b05404701b4a13f7c9d80d2a0b998e08d2d4985819c5ad24bfdb5a96",
+      "size": 20999
+    },
+    "$KB/self-repair/pending.json": {
+      "sha256": "410812ab79fde2f2e6771a1fc9aae57b9639806bcf8008e012e274b480b25d8a",
+      "size": 42245
+    },
+    "$KB/life/state.json": {
+      "sha256": "84abc62dcb4e655427baf6eee9d6d552846eb97d4d7368bd7c51cc4c85242b65",
+      "size": 17744
+    },
+    "$KB/mem-sync-export.stderr.log": {
+      "sha256": "71dbd234995a77c4d004dcf141f6ffb5284e933de91ac52aae65854b478e7f60",
+      "size": 7787
+    }
+  },
+  "production_modified": false
+}

@@ -1,86 +1,84 @@
 # Contributing to Sulde
 
-Sulde shares its framework under [PolyForm Noncommercial 1.0.0](LICENSE).
-Read the [licensing guide](docs/LICENSING.md) before contributing. Contributions should improve
-the reusable framework while keeping project knowledge, session memory and operational data
-outside the source distribution; see the [public data boundary](docs/PUBLIC-DATA-BOUNDARY.md).
+Thank you for considering a contribution. Sulde is a small framework with a deliberately narrow scope, so PRs are accepted in specific areas only.
 
-## Welcome contributions
+## Where contributions are welcome
 
-- Documentation corrections and translations.
-- Cross-platform launcher, UTF-8, clean-install, and diagnostics fixes.
-- Tests that reproduce a generic hook, template, generator, or knowledge-kit failure.
-- Generic schema/tooling improvements for the empty project knowledge kit.
-- Brief, de-identified stack setup examples after a design discussion.
+### Knowledge base (`knowledge/`) — cross-project sedimentation
 
-For an anti-pattern or case-study example, open an issue before adding it. The maintainer will check
-that the material describes a recurring pattern, has a verified cause and prevention mechanism, and
-contains no project, customer, credential, session, or commercial detail. Project incident libraries
-belong in the downstream project's `knowledge/` directory.
+The `knowledge/` tree (anti-patterns / platform-kb / tech-docs / 案例研究 / work-model) accumulates **de-identified, project-agnostic** learnings contributed by real Sulde deployments. If you are sedimenting from a working project, follow [`knowledge/SEDIMENTATION-STANDARD.md`](knowledge/SEDIMENTATION-STANDARD.md) — it defines the two-layer model, the de-identification law, global anti-pattern numbering, the platform controlled vocabulary, `dedup-before-add`, the `curate-to-kb` gates for case studies, and per-project backup mirrors. The single-project origin guide (`knowledge/ABSTRACTION-GUIDE.md`) is retained as the first-source-project example; the STANDARD supersedes it.
 
-## Documentation translations
+### Anti-pattern ADRs (highest value)
 
-The project overview, development guide, and licensing guide are available in English and
-Simplified Chinese. English uses the unsuffixed filename (`README.md`, `docs/DEVELOPMENT.md`,
-`docs/LICENSING.md`); Simplified Chinese uses the `.zh-CN.md` suffix beside each original.
+If your project has hit a multi-end coordination problem that other teams will likely also hit, a generic ADR contribution is valuable. Open a PR adding the ADR under a new `examples/adr/` directory in the repo (not in `template/_project/docs-hub/ADR/` — that ships only the 3 mobile-generic examples; project-specific ADRs accumulate per-deployment).
 
-Keep counterpart pages aligned when changing capabilities, commands, compatibility requirements,
-or licensing explanations. Each page links to the other available languages at the top and uses
-same-language guide links where a translation exists. Mark links to untranslated technical
-references with their actual language. Translations of the licensing guide are explanatory;
-the text of `LICENSE` remains authoritative and must not be translated or modified as part of
-a documentation translation.
+A good ADR contribution:
 
-For another language, use its BCP 47 language tag in the filename, translate the whole page,
-add reciprocal navigation, and include it in the explicit packaging inventory where that page
-is distributed. Preserve command syntax and Mermaid node IDs while translating labels and
-example prose. Verify local links, heading anchors, and the resulting plugin artifacts.
+- Describes a **pattern**, not a single incident — must be plausibly recurring across projects
+- Has a clear **root cause** beyond "human error"
+- Suggests **concrete mitigation** (rule, lint, workflow change)
+- Conforms to `template/_project/docs-hub/ADR/_frontmatter.schema.yaml`
+- `platforms:` entries must come from the v0.2.0 enum (`android` / `ios` / `flutter` / `harmony` / `coordinator` / `any`); patterns that need a new platform should extend the enum locally + propose adding it upstream in a separate issue
+- Stack-neutral writing preferred; mobile-specific examples are fine but the principle should be recognisable across stacks
 
-## Maintainer-controlled areas
+### More examples
 
-Open an issue before changing:
+If you have a working Sulde deployment in a specific stack combination (e.g. Next.js + React Native + Supabase), open a PR adding a brief `examples/{stack}/README.md` describing the setup. We do not accept full example projects (too high a maintenance burden), but a description + diff against the template is welcome.
 
-- the five core skills;
-- production hook protocol or registration;
-- template top-level layout or supported stack list;
-- extension registry schema;
-- `plugin.json`, versioning, license, or private-to-public release manifest.
+### Docs corrections
 
-Generated content below `skills/community/` or `extensions/` normally belongs in a downstream fork.
-It is suitable upstream only when it solves a generic framework problem.
+Typos, broken links, wrong commands, outdated screenshots. Open a PR with the fix. No discussion needed if the change is mechanical.
 
-## Pull request mechanics
+### Translations (i18n)
 
-1. Use a `contrib/{kebab-slug}` branch.
-2. Keep one logical change per pull request.
-3. Use an imperative title of at most 72 characters.
-4. Explain the user-visible failure, root cause, boundary, and verification evidence.
-5. Redact `.sulde-config.yaml`, logs, paths, and screenshots before attaching them.
+`docs/METHODOLOGY.md`, `docs/GETTING_STARTED.md`, and `README.md` translations into other languages are welcome. Place under `docs/i18n/{lang}/`. Prioritize Chinese, given the framework's origin, but other languages are fine.
 
-## Verification
+## Where contributions are NOT welcome
 
-Use Python 3.10+ with PyYAML 6.0+:
+These areas are maintainer-controlled and PRs touching them will be redirected:
 
-```sh
-python3 -m unittest discover -s tests -v
-./bin/sulde doctor --strict
-git diff --check
-```
+- **Skill internals** (`skills/*/SKILL.md`). The structure of the five skills is part of the framework's design. If you think a skill is missing something, open an **issue** describing the problem; a maintainer will evaluate.
+- **Hook logic** (`hooks/*.py`, `hooks/lib/*.py`, `hooks/git-precommit/*.sh`, `hooks/hooks.json`). Same reason. Includes the protocol-compliance details (exit-code semantics, JSON `permissionDecision`, marker-file grace mechanics).
+- **Template top-level layout** (`template/_project/` and `template/{android,ios,flutter,harmony}/`). Adding new top-level directories or new stacks changes the framework's shape; this needs a design discussion first.
+- **`plugin.json` / version bumps / `LICENSE`**. Release management is centralized. License-change proposals require maintainer sign-off given BSL 1.1's Change Date / Change License parameters.
 
-For packaging changes, also copy the tracked tree without `.git`, caches, or local configuration and
-run doctor from that clean artifact. Passing only inside the development checkout is insufficient.
+If you have a strong argument for changing one of these, open an issue with the rationale before writing code.
 
-## Contribution licensing
+## PR mechanics
 
-By opening a pull request you assert that you authored the contribution, or have the necessary
-rights to submit it, and offer it under PolyForm Noncommercial 1.0.0. You retain copyright in
-your contribution. No copyright assignment or additional relicensing permission is implied.
-Identify third-party material and preserve its original license and attribution; do not submit
-material whose terms are incompatible with this distribution.
+1. Fork → branch named `contrib/{kebab-slug}`
+2. One PR per logical change. ADR additions, examples, and doc fixes should be separate PRs.
+3. Title in imperative mood, ≤72 chars.
+4. Body explains *why* (not just *what* — the diff shows what)
+5. If your change has a "this would have caused X before" story, include it; concrete pain motivates merges
 
-This policy applies to new contributions submitted under these terms. Historical contributions
-and releases retain their existing grants; see [license history](docs/LICENSING.md#license-history).
+### Sign-off — Contributor License Agreement (CLA)
+
+By opening a PR against sulde-cc you agree to the following terms:
+
+1. You assert that you authored the contribution and have the right to submit it.
+2. You license your contribution to the Licensor (eric.gao.tech / EthanReedLabs) under the same **Business Source License 1.1** that covers the project, with the same Change Date and Change License (MIT) parameters.
+3. You grant the Licensor an additional perpetual, irrevocable license to re-license your contribution under any OSI-approved license, including but not limited to MIT, so the Licensor can manage the v0.2.0 → Change Date transition consistently across all parts of the codebase.
+4. You retain your copyright on the contribution itself; only the licensing terms are granted.
+
+Why this CLA exists: BSL 1.1 has a Change Date (currently 2030-05-25) at which the licensed work transitions to MIT. The Licensor must hold the right to perform this transition uniformly across the codebase, including contributor code. Without an explicit grant, contributor code would remain BSL after the Change Date in ways that fragment the license.
+
+The CLA does not apply to contributions to the v0.1.x line (MIT, no Change Date) — those continue under MIT in perpetuity per the `LICENSE-v0.1.0-MIT-archive` file.
+
+### CI
+
+There is currently no automated CI. Reviewers will:
+
+- For doc PRs: render-check
+- For ADR PRs: confirm frontmatter validates against the schema
+- For skill / hook PRs: run the static spike (`bash -n`, JSON validity, manual prompt test)
+
+## Issues
+
+- Bug reports: include your `.sulde-config.yaml` (redacted), the command that failed, and what you expected to happen
+- Feature requests: describe the problem the feature solves, not the feature itself. If the problem is real, the maintainer (or you, in a follow-up PR) can decide what shape the fix takes.
+- Questions: prefer GitHub Discussions if available; otherwise issues with the `question` label
 
 ## Code of conduct
 
-Be kind, provide reproducible evidence, and assume good faith.
+Be kind. Assume good faith. If a maintainer is slow to respond, gentle follow-ups are fine after a week — the project is maintained part-time.

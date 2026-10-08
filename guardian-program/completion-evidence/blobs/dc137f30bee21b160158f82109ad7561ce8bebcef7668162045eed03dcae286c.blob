@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T25-release-gate-closure",
+  "kind": "failure_injection",
+  "baseline": "f87d58689968372cf4332860ac0ee155241e5424",
+  "run_id": "run-gpe-45a0eac272952f59169b6fef",
+  "verdict": "pass",
+  "summary": "Journal, batch, critic and P0 crash/CAS failure paths remain fail closed after the release fixes.",
+  "facts": [
+    "312 native journal, batch, critic, guardian and P0 tests passed together.",
+    "Prepared-stage crash recovery applies once, sibling sessions cannot cross-bind, and unknown schemas or resources remain non-authoritative."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "-q", "T25-journal-batch-critic-p0-gate"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

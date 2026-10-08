@@ -1,0 +1,34 @@
+{
+  "acceptance": [
+    {"requirement_id": "R2-HUMAN-GRANT", "clause": "一次当前会话原生 Allow 形成 provider、session、task epoch、subject、effect、constraints、world state 与 verifier 全绑定的单次 HumanGrantV2", "fact": "The integrated H01/H02 behavior remains covered by both 495-test formal runs; H06B adds the exact executable, version, help, profile and runtime-generation authority consumed by the same native execution path without manufacturing a second human decision."},
+    {"requirement_id": "R2-HUMAN-GRANT", "clause": "同一 grant 获准后普通默认策略不得对同一未漂移 effect 二次 deny", "fact": "H06B does not alter the single-consumption grant policy proven by H01/H02; it makes host drift a preflight authority failure, so an unchanged effect is not re-denied by ordinary policy and a changed host cannot silently inherit authority."},
+    {"requirement_id": "R2-GRANT-BROKER", "clause": "PermissionRequest 展示和授权结算先于普通 task/tool guard，paused 或 degraded lane 不得遮蔽恢复卡", "fact": "The H02 control-route ordering remains unchanged and passes in both formal suites; H06B only supplies the shared audited Codex authority that native launch consumes after the grant transaction is settled."},
+    {"requirement_id": "R2-GRANT-BROKER", "clause": "crash、retry、reprobe 与 abort 按 transaction id 幂等推进且不重放人类决定或外部效果", "fact": "The staged installed-authority roundtrip preserves the existing transaction and replay implementation while binding broker digest and protocol, CLI identity, strict profile, app-server initialize and runtime generation/tree to one sealed object."},
+    {"requirement_id": "R2-RECOVERY-SUPERVISOR", "clause": "生命体在 5 秒内报告卡顿并在能力边界内处理孤儿锁、退出 actor、冲突 lane 与 runtime drift", "fact": "The integrated H03 supervisor and its liveness tests remain green in both 495-test formal runs; H06B adds exact runtime and CLI drift fields needed for the supervisor to reject a changed execution generation."},
+    {"requirement_id": "R2-RECOVERY-SUPERVISOR", "clause": "干预有预算、有终态、有 receipt，不能扩大 allowed paths、静默换宿主或无限重试", "fact": "H06B accepts only the exact sealed executable and generation; alias, version, help, profile, broker and tree drift fail closed, while the existing bounded intervention and receipt suite remains green without provider substitution."},
+    {"requirement_id": "R2-TYPED-RESOURCES", "clause": "Git、worktree、文件删除、跨项目、Figma、设备与 Skill/runtime 操作均使用可验证的强类型资源身份", "fact": "The H04 resource adapters remain green in the formal composition, and H06B strengthens the Skill/runtime side with explicit CLI path, regular-file digest, contract digest, broker identity and runtime-tree generation."},
+    {"requirement_id": "R2-TYPED-RESOURCES", "clause": "空 target、unknown effect 或已隔离历史债务不得级联阻断无关 subject", "fact": "H06B changes no resource-debt routing; both 495-test formal runs retain H04 quarantined-debt behavior, and the unrelated Harmony writer was attributed as external evidence rather than converted into H06B authority or a global block."},
+    {"requirement_id": "R2-RECOVERY-LANE", "clause": "status、doctor、repair、uninstall、rollback 与 pending decision 在普通 lane 不可用时仍可达", "fact": "The H05 recovery-lane suite remains green in both formal runs, while H06B installer rollback and authority-readback tests preserve the dedicated recovery entry points and reject partial authority."},
+    {"requirement_id": "R2-RECOVERY-LANE", "clause": "等待使用可更新状态卡和本地完整日志，满足 5/30 秒进度 SLA 且不重复输出轮询文案", "fact": "H06B does not alter status-card or log budgeting; the integrated H05 tests covering those behaviors pass in both 495-test formal runs, and the long executions retained bounded cursor logs instead of repeated chat polling."},
+    {"requirement_id": "R2-LIVE-ACCEPTANCE", "clause": "I01-I19、并发、进程死亡、receipt tamper、world-state drift、只读账本、scheduler degraded 与 rollback 全部通过", "fact": "H06B proves the prerequisite Codex 0.150.1 authority, rollback and drift matrices only; it transfers the quiet fleet-safe run, complete I01-I19, all thirteen failure axes, scheduler and production install gates to the final H06 successor."},
+    {"requirement_id": "R2-LIVE-ACCEPTANCE", "clause": "Codex 与 Claude 真实宿主、macOS 与 Windows 证据齐全前不得宣称 R2 完成或 production accepted", "fact": "H06B used isolated macOS Codex execution and did not claim Claude live, native Windows, installed generation or production acceptance; those hard gates remain open for the final successor."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并", "fact": "H06B retained all findings and two repair slugs, used three independent reviews, froze eight paths, and integrated only the reviewed eight-path worker commit after scoped and formal tests passed."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写", "fact": "H06B ran in an independent physical full clone and integrated only into the R2 coordinator branch; dev, main, origin/main, installed runtime and accepted predecessor event history remain untouched."}
+  ],
+  "artifacts": [{"path": "reports/H06B-codex-0150-authority.md", "sha256": "27b52eb201865503691830f436ecb5538a73bd95b875ea72e9a4c8fe85ef2a5c"}],
+  "baseline": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "commands": [],
+  "facts": [
+    "All four H06B acceptance clauses and all seven assigned program requirements are mapped to executed, reviewed facts.",
+    "FR2-H06B-005 and all release-level gates remain explicit; no task evidence is promoted to program completion."
+  ],
+  "findings": ["FR2-H06-001", "FR2-H06B-001", "FR2-H06B-002", "FR2-H06B-003", "FR2-H06B-004", "FR2-H06B-005", "FR2-H06B-006"],
+  "kind": "requirement_traceability",
+  "requirements": ["R2-HUMAN-GRANT", "R2-GRANT-BROKER", "R2-RECOVERY-SUPERVISOR", "R2-TYPED-RESOURCES", "R2-RECOVERY-LANE", "R2-LIVE-ACCEPTANCE", "PROGRAM-GOVERNANCE"],
+  "run_id": "run-gpe-be866b2fa440a994860b63a9",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06B traces every assigned authority, recovery and governance clause while preserving all final H06 release gates.",
+  "task_id": "H06B-codex-0150-authority",
+  "verdict": "pass"
+}

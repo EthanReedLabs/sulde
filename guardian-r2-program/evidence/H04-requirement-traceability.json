@@ -1,0 +1,23 @@
+{
+  "acceptance": [
+    {"requirement_id": "R2-HUMAN-GRANT", "clause": "一次当前会话原生 Allow 形成 provider、session、task epoch、subject、effect、constraints、world state 与 verifier 全绑定的单次 HumanGrantV2", "fact": "H04 consumes the complete H01 capability, effect, subject, constraints, current world and verifier binding together with H02 provider/session/task-epoch dispatch before any typed resource can authorize execution."},
+    {"requirement_id": "R2-HUMAN-GRANT", "clause": "同一 grant 获准后普通默认策略不得对同一未漂移 effect 二次 deny", "fact": "The H01/H02/H04 composition tests prove one-shot dispatch precedence and pre-execution reclassification; unchanged authority reaches the adapter without a second default-policy decision."},
+    {"requirement_id": "R2-TYPED-RESOURCES", "clause": "Git、worktree、文件删除、跨项目、Figma、设备与 Skill/runtime 操作均使用可验证的强类型资源身份", "fact": "Git metadata, exact delete, workspace, Figma and device resources bind canonical identity, typed action, current world and independent readback; Skill/runtime authority remains separately sealed by the accepted control plane."},
+    {"requirement_id": "R2-TYPED-RESOURCES", "clause": "空 target、unknown effect 或已隔离历史债务不得级联阻断无关 subject", "fact": "I04/I15/I19 and debt-routing negatives prove empty targets fail locally, terminal quarantine is excluded from unrelated local work, and only live unresolved same-resource writes remain blocking."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并", "fact": "H04 integrated exactly seven frozen implementation/report paths, preserved failed repair artifacts, recorded FR2-H04-001..012, superseded inconsistent report evidence append-only, and passed independent 22, 3, 57 and 484-test gates."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写", "fact": "H04 developed in an isolated full clone and integrated only on the R2 coordinator; predecessor events, accepted evidence, dev/main, installed runtime and production state were not rewritten."}
+  ],
+  "artifacts": [{"path": "reports/H04-typed-resource-adapters.md", "sha256": "692a0e4a5e7657dabd0f2f6b9fc7f6c638e688ea069a2bebeb0a3741f0300698"}],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": ["All six acceptance clauses assigned to H04 are mapped exactly once to executed and independently reviewed facts; H06-only live and installation clauses are excluded."],
+  "findings": ["FR2-H04-001", "FR2-H04-002", "FR2-H04-003", "FR2-H04-004", "FR2-H04-005", "FR2-H04-006", "FR2-H04-007", "FR2-H04-008", "FR2-H04-009", "FR2-H04-010", "FR2-H04-011", "FR2-H04-012"],
+  "kind": "requirement_traceability",
+  "requirements": ["R2-HUMAN-GRANT", "R2-TYPED-RESOURCES", "PROGRAM-GOVERNANCE"],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H04 traces every assigned HumanGrant, typed-resource and governance clause without claiming H06 live or release acceptance.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

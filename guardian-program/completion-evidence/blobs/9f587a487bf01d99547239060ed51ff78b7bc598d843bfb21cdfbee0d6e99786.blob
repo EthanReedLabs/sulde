@@ -1,0 +1,31 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T24-p0-transaction-integration",
+  "kind": "finding_resolution",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-9d84a3e7e26d5694fbc0c75a",
+  "verdict": "pass",
+  "summary": "All T24 findings are explicitly disposed without expanding the frozen task graph.",
+  "facts": [
+    "F24-001 is fixed by exact fixture session and host identity binding.",
+    "F24-002 is fixed by clean declared-runtime input copies while production integrity remains fail-closed.",
+    "F24-003 is rejected as a product regression because its duplicate untyped approved outcome contradicts frozen P0 outcome 2; the red assertion remains visible as release-suite debt."
+  ],
+  "requirements": [],
+  "findings": ["F24-001", "F24-002", "F24-003"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "-q", "tests.test_intent_guardian", "tests.test_p0_transaction_integration"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/T24-p0-transaction-integration.md",
+      "sha256": "3fa49942fd63d7642ddb4fe5e25bf866963bd98cc18475a962ae0ef661514d56"
+    }
+  ]
+}

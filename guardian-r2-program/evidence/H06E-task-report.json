@@ -1,0 +1,50 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06E-codex-help-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-c6a54d6965683d2d8f39c3d0",
+  "verdict": "pass",
+  "kind": "task_report",
+  "summary": "H06E durable report records run1, repair1, independently verified outcomes, encountered failures and retained final-release boundaries without claiming R2 completion.",
+  "facts": [
+    "Managed repair1 completed on the frozen base with exactly six owned outputs and a strict report verdict of 15 checks, passed=true.",
+    "The report records the original control-byte and inherited-stdin defects, the exact fixes, real PTY evidence, and the unsupported formal-environment/concurrent-writer limits.",
+    "Two independent reviewers returned PASS and explicitly left installation, scheduler, Claude, Windows and final R2 acceptance to the final successor."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06E-001",
+    "FR2-H06E-002",
+    "FR2-H06E-003",
+    "FR2-H06E-004",
+    "FR2-H06E-005"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "agent-runtime.py",
+        "run",
+        "<H06E-full-clone>",
+        "r2-h06e-help-authority-repair1"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "task_report_verdict",
+        "reports/H06E-codex-help-authority.md"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H06E-codex-help-authority.md",
+      "sha256": "9b7ddf86ae94d26a5c7a65f9523a11cf7f3410c459641467450af66ec5e28a2b"
+    }
+  ]
+}

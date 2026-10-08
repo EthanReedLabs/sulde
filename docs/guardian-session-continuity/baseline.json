@@ -1,0 +1,19 @@
+{
+  "schema": "guardian-session-continuity-test-evidence-v1",
+  "source_revision": "1b38b304b3fe22fffb30bf6fc13988bbd82d9f32",
+  "recorded_date": "2026-09-08",
+  "scope": ["tests.test_host_capabilities", "tests.test_guardian_performance", "tests.test_doctor_session_contract"],
+  "runner": "scripts/kb/run-isolated-tests.py",
+  "python": "3.10.7",
+  "result": "passed",
+  "tests": 49,
+  "failures": 0,
+  "elapsed_seconds": 2.964,
+  "evidence_kind": "observed_process_exit_and_unittest_summary",
+  "not_evidence_for": ["new regression cases", "full suite", "production repair", "latency non-regression"],
+  "initial_attempt": {
+    "result": "not_executed",
+    "reason": "parent sandbox refused sandbox_apply",
+    "recovery": "native approval; official isolated runner retained production write denial"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T21-authority-ledger-compat",
+  "kind": "targeted_tests",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-c4d6a18cabdc0a254f1a2eb5",
+  "verdict": "pass",
+  "summary": "The coordinator independently reran the typed CAS ledger and native decision journal suites on 78ce09f.",
+  "facts": [
+    "79 tests passed with no failures or errors.",
+    "The six changed Python files compiled and the worker commit had no whitespace errors in its owned paths."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "tests.test_approval_invariant.ApprovalTypedCASLedgerTests", "tests.test_native_decision_journal"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

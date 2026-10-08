@@ -1,0 +1,140 @@
+{
+  "schema": "life-latency-v1",
+  "baseline": "f687193bdda541d4651846ed99aa6dbe37475f7d",
+  "platform": "darwin",
+  "method": "10 fresh wrapper processes with no-effect adapter; one real staging and isolated Codex registry install per source; shared machine load, not a release SLA",
+  "samples": {
+    "before": {
+      "ordinary_call_ms": [
+        26.955,
+        26.068,
+        27.192,
+        26.502,
+        26.45,
+        25.721,
+        25.857,
+        26.016,
+        26.935,
+        26.074
+      ],
+      "median_ms": 26.262,
+      "max_ms": 27.192,
+      "isolated_install_phases": [
+        {
+          "phase": "stage",
+          "ms": 431.341,
+          "exit_code": 0
+        },
+        {
+          "phase": "marketplace_add",
+          "ms": 184.153,
+          "exit_code": 0
+        },
+        {
+          "phase": "plugin_add",
+          "ms": 163.55,
+          "exit_code": 0
+        }
+      ],
+      "installer_scope": "staging_and_actual_Codex_registry_only; runtime_launchers_and_scheduler_not_in_this_timing"
+    },
+    "after": {
+      "ordinary_call_ms": [
+        77.213,
+        92.27,
+        94.363,
+        75.007,
+        76.043,
+        76.674,
+        76.538,
+        75.882,
+        76.463,
+        93.591
+      ],
+      "median_ms": 76.606,
+      "max_ms": 94.363,
+      "isolated_install_phases": [
+        {
+          "phase": "stage",
+          "ms": 484.599,
+          "exit_code": 0
+        },
+        {
+          "phase": "marketplace_add",
+          "ms": 72.152,
+          "exit_code": 0
+        },
+        {
+          "phase": "plugin_add",
+          "ms": 175.257,
+          "exit_code": 0
+        }
+      ],
+      "installer_scope": "staging_and_actual_Codex_registry_only; runtime_launchers_and_scheduler_not_in_this_timing"
+    }
+  },
+  "complete_isolated_candidate": {
+    "before_fixture_commit": "24e6552c2a6b7219e3bd15c7c1f83412e56aa93d",
+    "baseline_original_source": "f687193bdda541d4651846ed99aa6dbe37475f7d",
+    "after_task_commit": "4b22406cd01c80fe298b7c27e322cd28e7383275",
+    "scope": "actual candidate preparation and verification; native UI and actual scheduler host remain unobserved",
+    "before": [
+      {
+        "candidate": "normal",
+        "phase": "prepare",
+        "exit_code": 0,
+        "seconds": 1.077,
+        "status": "prepared",
+        "timings_ms": {
+          "prepare_total": 982.632
+        },
+        "verification_keys": [],
+        "promotion_consumed": false,
+        "state_sha256": "d7cc178963e278e1374ac8a2b403df777ac248c49848b0732bf57bcc7dec3005"
+      },
+      {
+        "candidate": "normal",
+        "phase": "verify",
+        "exit_code": 0,
+        "seconds": 13.095,
+        "status": "verified",
+        "timings_ms": {
+          "prepare_total": 982.632,
+          "verify_total": 13004.52
+        },
+        "verification_keys": [],
+        "promotion_consumed": false,
+        "state_sha256": "833bd6da98afa53bbfd3609daae3848bfa48770e578e6f3b8a403187c7ba49ef"
+      }
+    ],
+    "after": [
+      {
+        "candidate": "normal",
+        "phase": "prepare",
+        "exit_code": 0,
+        "seconds": 1.032,
+        "status": "prepared",
+        "timings_ms": {
+          "prepare_total": 949.443
+        },
+        "verification_keys": [],
+        "promotion_consumed": false,
+        "state_sha256": "04796e75cd3c8f735f05634a34de433309b58ea3b75fc7dcd30620eee175e56e"
+      },
+      {
+        "candidate": "normal",
+        "phase": "verify",
+        "exit_code": 0,
+        "seconds": 12.93,
+        "status": "verified",
+        "timings_ms": {
+          "prepare_total": 949.443,
+          "verify_total": 12845.593
+        },
+        "verification_keys": [],
+        "promotion_consumed": false,
+        "state_sha256": "6d248dc194e881fdc281741ba1bf01a711123ef4b3f0c1040db23d97ffca2c79"
+      }
+    ]
+  }
+}

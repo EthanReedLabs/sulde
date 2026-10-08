@@ -1,0 +1,34 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "finding_resolution",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "All inherited release obligations and the T31 loader-order finding have current-run evidence without reopening completed source scopes.",
+  "facts": [
+    "F26-001 through F26-003, F27-002 and F29-001 retain their accepted T27/T30 source corrections; the exact T31 candidate changes none of those resolved paths and the official 1368-test gate preserves them.",
+    "F30-002 is closed by the exact Codex CLI 0.149.1 version/help/profile/app-server/broker/generation audit and remains fail closed for aliases, wrappers, substrings and future versions.",
+    "F31-001 is fixed by a bytecode-free runpy installed-authority load plus a strict post-load generation check; an injected post-seal .pyc still forces rollback."
+  ],
+  "requirements": [],
+  "findings": [
+    "F26-001",
+    "F26-002",
+    "F26-003",
+    "F27-002",
+    "F29-001",
+    "F30-002",
+    "F31-001"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

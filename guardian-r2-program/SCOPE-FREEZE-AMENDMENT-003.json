@@ -1,0 +1,126 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-amendment-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-003",
+  "parent_chain": [
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE.json",
+      "sha256": "40bd0ba4bcb342209302bb1c71166fbd9136a655c5df6088f2b6abb50e5bccc8"
+    },
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-001.json",
+      "sha256": "ba553436f3b3fa90ee0a059d2a6523bdbe0df4094fcd19dd917e6ab8c93bafe4"
+    },
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-002.json",
+      "sha256": "58fe1f989b65577881e8ab14168434346385751022f3f758c1df2826b64c11f8"
+    }
+  ],
+  "frozen_controller_event_head_sha256": "2ec2117efc09ebe1357e9810228b6bee286f2ca77f87c7a1fafe3415647f50f9",
+  "frozen_coordinator_commit": "8e6681d",
+  "authority": "human-confirmed-final-two-stage-output-last-message-repair-2026-08-28-current-session",
+  "authority_scope": "one bounded implementation repair followed by one bounded self-hosted verification for the existing H06I-R2 task",
+  "task": {
+    "task_id": "H06I-R2-interruption-authority",
+    "task_definition_path": "guardian-r2-program/task-definitions/H06I-R2-interruption-authority.json",
+    "task_definition_sha256": "55ebd49197d5c940394fd405224b2814d28b290a81e3cd481c4c5d4bcac377c2",
+    "repair_brief_path": "guardian-r2-program/briefs/H06I-R2-output-last-message-final-repair.md",
+    "repair_brief_sha256": "b4b8267acaba2b742b3052cf0de33aa07c6866acd3d32cc66462cb3deaf6c218",
+    "owned_paths": [
+      "scripts/kb/native_agent_broker.py",
+      "scripts/kb/agent-runtime.py",
+      "tests/test_native_agent_broker.py",
+      "tests/test_agent_runtime.py",
+      "guardian-r2-program/reports/H06I-R2-interruption-authority.md"
+    ]
+  },
+  "repair_input_sha256": {
+    "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+    "scripts/kb/agent-runtime.py": "d8d7406595174dc9379c998327a0b6665aac09128840d95471df6e9eca9082a9",
+    "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "tests/test_agent_runtime.py": "59533ccdcf701ccd72c0b1e3882a2b4e839a99b7a56e6254d13fe7c78f2795f6",
+    "guardian-r2-program/reports/H06I-R2-interruption-authority.md": "f8d1e5a984870c81cd8bb659254c820840ded41ef0ea0ce1fe45f76b2efccf18"
+  },
+  "findings_to_close": [
+    "FR2-H06I-R2-007",
+    "FR2-H06I-R2-008"
+  ],
+  "official_codex_contract": {
+    "jsonl_event_types": [
+      "thread.started",
+      "turn.started",
+      "turn.completed",
+      "turn.failed",
+      "item.*",
+      "error"
+    ],
+    "final_message_event": "item.completed with item.type=agent_message",
+    "final_message_file_flag": "--output-last-message",
+    "final_message_file_semantics": "writes the assistant final message to the selected file for downstream scripting",
+    "source": "https://developers.openai.com/codex/noninteractive/"
+  },
+  "stage_one_repair": {
+    "formal_implementation_candidates_before": 2,
+    "authorized_candidate_ordinal": 3,
+    "formal_implementation_candidates_after": 3,
+    "provider_invocations": 1,
+    "behavioral_write_paths": [
+      "scripts/kb/agent-runtime.py",
+      "tests/test_agent_runtime.py"
+    ],
+    "evidence_only_write_path": "guardian-r2-program/reports/H06I-R2-interruption-authority.md",
+    "must_remain_byte_identical": {
+      "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+      "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850"
+    },
+    "parent_authority_sha256": "2234222f28e2cc46eac24ad302de7befb421563e66e1b3388bfc1c9a1049e577",
+    "parent_runtime_tree_sha256": "f7bf14462cdf51cdb1b44b1a9c8709edee050ea9cae5e6c7c5596c277f96b9ba",
+    "known_inherited_parent_terminal": {
+      "finding_id": "FR2-H06I-R2-008",
+      "condition": "the parent runtime predates the repair and therefore cannot obtain Codex final_message from --output-last-message before its own receipt closure",
+      "adjudication": "isolate only after exactly one provider completion, compliant three-path diff, passing tests and no other terminal cause; never promote the parent receipt as passing evidence"
+    },
+    "automatic_retry": false
+  },
+  "stage_boundary": {
+    "required_artifact": "guardian-r2-program/H06I-R2-FINAL-REPAIR-FREEZE.json",
+    "required_before_stage_two": true,
+    "must_bind": [
+      "three output path SHA-256 values",
+      "two unchanged path SHA-256 values",
+      "stage-one events, status, stderr and last-message SHA-256 values",
+      "focused, module, combined and fresh-clone successful test facts",
+      "the exact isolated parent failure classified only as FR2-H06I-R2-008"
+    ],
+    "final_verification_brief": "guardian-r2-program/briefs/H06I-R2-output-last-message-final-selfhost.md"
+  },
+  "stage_two_self_hosted_verification": {
+    "self_hosted_verification_runs_before": 1,
+    "authorized_verification_ordinal": 2,
+    "self_hosted_verification_runs_after": 2,
+    "provider_invocations": 1,
+    "candidate_source_write": false,
+    "authority_mode": "fresh isolated nonproduction projection of the stage-one frozen runtime and unchanged broker",
+    "postconditions": [
+      "all five stage-boundary path hashes remain unchanged",
+      "fresh interpreter verifies the isolated runtime tree and native authority",
+      "run ledger output is present and binds the Codex output-last-message bytes",
+      ".last.md and durable report are byte-identical with exactly one terminal LF",
+      "native receipt output_summary and report_summary are identical",
+      "task_report_verdict and terminal invariants pass with one provider invocation and quiescent cleanup"
+    ],
+    "automatic_retry": false
+  },
+  "unchanged_boundaries": {
+    "new_task_identity": false,
+    "owned_path_expansion": false,
+    "acceptance_weakening": false,
+    "production_install": false,
+    "production_descriptor_write": false,
+    "scheduler_change": false,
+    "dev_or_main_merge": false,
+    "push": false,
+    "h06j_changed": false
+  },
+  "terminal_rule": "stage one may proceed to stage two only under the exact inherited-parent adjudication; any other stage-one failure or any stage-two failure stops the program with append-only red evidence and no retry, successor, new task or H06J start"
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T25-release-gate-closure",
+  "kind": "system_tests",
+  "baseline": "f87d58689968372cf4332860ac0ee155241e5424",
+  "run_id": "run-gpe-45a0eac272952f59169b6fef",
+  "verdict": "pass",
+  "summary": "The exact integrated dev candidate passes the official complete OS-isolated release suite in an independent full clone.",
+  "facts": [
+    "A new full clone with a real .git directory bound both HEAD and local main to 4d9368b64f862fcc3606cf261a7125af7efad78e.",
+    "The official run-isolated-tests.py entry point passed 1340 tests with 6 platform skips in 305.509 seconds.",
+    "The parent process had PYTHONDONTWRITEBYTECODE=1 and SULDE_PRODUCTION_KB_HOME pointed to a new empty local sentinel, so no production KB write was authorized."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "SULDE_PRODUCTION_KB_HOME=isolated-empty-sentinel",
+        "python",
+        "scripts/kb/run-isolated-tests.py"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

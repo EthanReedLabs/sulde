@@ -8,6 +8,7 @@ import os
 import re
 import shlex
 import shutil
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -183,6 +184,9 @@ if command == "search":
     print(json.dumps([]))
     raise SystemExit(0)
 if command == "build":
+    bound_root = Path(sys.argv[sys.argv.index("--repo-root") + 1]).resolve()
+    assert bound_root == Path.cwd().resolve(), "index must target the authoring worktree"
+    assert (bound_root / ".git").exists(), "index must not target the installed package"
     if os.environ.get("MOCK_KB_BUILD_FAIL"):
         print("mock kb-index build failed", file=sys.stderr)
         raise SystemExit(9)
@@ -225,6 +229,7 @@ class AutoSedimentIntegrationTests(unittest.TestCase):
             "scripts/kb/sedimentation_schema.py",
             "scripts/kb/l2-draft.py",
             "tools/kb-index/common.py",
+            "tools/kb-index/build.py",
             "tools/kb-index/corpus_manifest.py",
             "tools/kb-index/memory.py",
             "skills/sediment/SKILL.md",
@@ -286,6 +291,7 @@ class AutoSedimentIntegrationTests(unittest.TestCase):
         maximum: int = 5,
         extra_environment: dict[str, str] | None = None,
         extra_arguments: list[str] | None = None,
+        runtime: Path | None = None,
     ) -> subprocess.CompletedProcess[str]:
         environment = os.environ.copy()
         environment["SULDE_KB_HOME"] = str(self.home)
@@ -294,7 +300,7 @@ class AutoSedimentIntegrationTests(unittest.TestCase):
             environment.update(extra_environment)
         arguments = [
                 sys.executable,
-                "scripts/kb/auto-sediment.py",
+                str((runtime or self.repo) / "scripts/kb/auto-sediment.py"),
                 "--max-candidates",
                 str(maximum),
                 "--llm-cmd",
@@ -316,6 +322,171 @@ class AutoSedimentIntegrationTests(unittest.TestCase):
             capture_output=True,
             check=False,
         )
+
+    def package_runtime(self) -> Path:
+        runtime = self.base / "installed-runtime"
+        shutil.copytree(self.repo, runtime, ignore=shutil.ignore_patterns(".git", ".worktrees", "__pycache__"))
+        self.assertFalse((runtime / ".git").exists())
+        return runtime
+
+    @staticmethod
+    def file_snapshot(root: Path) -> dict[str, bytes]:
+        return {
+            str(path.relative_to(root)): path.read_bytes()
+            for path in root.rglob("*") if path.is_file()
+        }
+
+    def bind_source(self, root: Path | None = None, **overrides) -> None:
+        payload = {
+            "schema": "sulde-auto-sediment-source-v1",
+            "source_root": str(root or self.repo),
+            "git_common_dir": str(self.repo / ".git"),
+            **overrides,
+        }
+        (self.home / "auto-sediment-source.json").write_text(json.dumps(payload), encoding="utf-8")
+
+    def test_packaged_runtime_applies_with_binding_without_executing_source_code(self) -> None:
+        self.write_candidates("NEW_CANDIDATE")
+        runtime = self.package_runtime()
+        self.bind_source()
+        # The authoring checkout may have old code. It must supply data, never handlers.
+        for relative in (
+            "scripts/kb/auto-sediment.py", "scripts/kb/lint-frontmatter.py",
+            "scripts/kb/lint-sedimentation.py", "scripts/kb/build-index-md.py",
+            "scripts/kb/build-corpus-manifest.py", "scripts/kb/kb-deny-lint.py",
+        ):
+            (self.repo / relative).write_text("raise SystemExit('SOURCE_CODE_EXECUTED')\n", encoding="utf-8")
+        (self.repo / "templates/knowledge/schema.json").write_text("{}\n", encoding="utf-8")
+        subprocess.run(["git", "add", "scripts", "templates"], cwd=self.repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "test: incompatible authoring scripts"], cwd=self.repo, check=True)
+        dirty = self.repo / "developer-notes.txt"
+        dirty.write_text("preserve uncommitted work\n", encoding="utf-8")
+        before_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repo)
+        before_status = subprocess.check_output(["git", "status", "--porcelain"], cwd=self.repo)
+        before_runtime = self.file_snapshot(runtime)
+        completed = self.run_auto(runtime=runtime)
+        self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
+        self.assertIn("new=1", completed.stdout)
+        branch = self.surgery_branch(completed.stdout)
+        changed = subprocess.check_output(["git", "diff", "--name-only", "HEAD", branch], cwd=self.repo, text=True, encoding="utf-8", errors="replace").splitlines()
+        self.assertTrue(changed)
+        self.assertTrue(all(path.startswith("knowledge/") for path in changed), changed)
+        self.assertEqual(before_head, subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repo))
+        self.assertEqual(before_status, subprocess.check_output(["git", "status", "--porcelain"], cwd=self.repo))
+        self.assertEqual(dirty.read_text(), "preserve uncommitted work\n")
+        self.assertEqual(before_runtime, self.file_snapshot(runtime))
+        self.assertEqual(subprocess.check_output(["git", "worktree", "list", "--porcelain"], cwd=self.repo, text=True, encoding="utf-8", errors="replace").count("worktree "), 1)
+
+    def test_packaged_runtime_without_binding_fails_before_state_writes(self) -> None:
+        runtime = self.package_runtime()
+        self.write_candidates("NEW_CANDIDATE")
+        before = self.file_snapshot(self.home)
+        before_runtime = self.file_snapshot(runtime)
+        # cwd is a valid source checkout: it must not become an implicit binding.
+        completed = self.run_auto(runtime=runtime)
+        self.assertEqual(completed.returncode, 2, completed.stdout + completed.stderr)
+        self.assertIn("source binding required", completed.stderr)
+        self.assertEqual(before, self.file_snapshot(self.home))
+        self.assertEqual(before_runtime, self.file_snapshot(runtime))
+        self.assertFalse((self.repo / ".worktrees").exists())
+
+    def test_real_index_builder_reads_explicit_source_not_packaged_corpus(self) -> None:
+        runtime = self.package_runtime()
+        # Package has one document; selected source has none. No embedding is needed.
+        subprocess.run(["git", "rm", "-q", "knowledge/anti-patterns/0028-synthetic-existing.md"], cwd=self.repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "test: empty authoring corpus"], cwd=self.repo, check=True)
+        before = self.file_snapshot(runtime)
+        entry = runtime / "tools/kb-index/build.py"
+        wrapper = """
+import runpy, sys, types
+for name in ('jieba', 'numpy', 'fastembed'):
+    sys.modules[name] = types.ModuleType(name)
+class NoEmbedding:
+    def __init__(self, **kwargs):
+        raise AssertionError('unexpected embedding: read the packaged corpus')
+sys.modules['fastembed'].TextEmbedding = NoEmbedding
+entry = sys.argv.pop(1)
+sys.path.insert(0, str(__import__('pathlib').Path(entry).parent))
+sys.argv[0] = entry
+runpy.run_path(entry, run_name='__main__')
+"""
+        result = subprocess.run(
+            [sys.executable, "-B", "-c", wrapper, str(entry), "--repo-root", str(self.repo)],
+            cwd=runtime, env={**os.environ, "SULDE_KB_HOME": str(self.home)},
+            capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertIn("docs=0", result.stdout)
+        connection = sqlite3.connect(self.home / "kb.db")
+        try:
+            head = connection.execute("SELECT value FROM meta WHERE key='git_head'").fetchone()[0]
+        finally:
+            connection.close()
+        self.assertEqual(head, subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repo, text=True, encoding="utf-8", errors="replace").strip())
+        self.assertEqual(before, self.file_snapshot(runtime))
+
+    def test_invalid_source_bindings_fail_without_candidate_or_git_writes(self) -> None:
+        runtime = self.package_runtime()
+        self.write_candidates("NEW_CANDIDATE")
+        for overrides in (
+            {"schema": "wrong"}, {"source_root": "relative"},
+            {"source_root": str(self.base / "missing")},
+            {"source_root": str(self.repo / "knowledge")},
+            {"git_common_dir": str(runtime)},
+            {"git_common_dir": None},
+        ):
+            with self.subTest(overrides=overrides):
+                self.bind_source(**overrides)
+                before = self.file_snapshot(self.home)
+                completed = self.run_auto(runtime=runtime)
+                self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout)
+                self.assertNotIn("Traceback", completed.stderr)
+                self.assertEqual(before, self.file_snapshot(self.home))
+                self.assertFalse((self.repo / ".worktrees").exists())
+
+    def test_packaged_runtime_explicit_source_supports_decide_then_apply(self) -> None:
+        runtime = self.package_runtime()
+        self.write_candidates("NEW_CANDIDATE")
+        arguments = ["--source-root", str(self.repo)]
+        decided = self.run_auto(runtime=runtime, extra_arguments=arguments + ["--decide-only"])
+        self.assertEqual(decided.returncode, 0, decided.stderr + decided.stdout)
+        self.assertFalse((self.repo / ".worktrees").exists())
+        run_id = self.run_id(decided.stdout)
+        applied = self.run_auto(runtime=runtime, extra_arguments=arguments + ["--apply", run_id])
+        self.assertEqual(applied.returncode, 0, applied.stderr + applied.stdout)
+        branch = self.surgery_branch(applied.stdout)
+        head = subprocess.check_output(["git", "rev-parse", branch], cwd=self.repo)
+        repeated = self.run_auto(runtime=runtime, extra_arguments=arguments + ["--apply", run_id])
+        self.assertEqual(repeated.returncode, 2)
+        self.assertEqual(head, subprocess.check_output(["git", "rev-parse", branch], cwd=self.repo))
+
+    def test_packaged_runtime_apply_failure_preserves_source_and_candidates(self) -> None:
+        runtime = self.package_runtime()
+        self.bind_source()
+        self.write_candidates("NEW_CANDIDATE")
+        before = (self.home / "distill-candidates.md").read_bytes()
+        completed = self.run_auto(runtime=runtime, extra_environment={"MOCK_KB_BUILD_FAIL": "1"})
+        self.assertEqual(completed.returncode, 2, completed.stderr + completed.stdout)
+        self.assertIn("kb-index build exited 9", completed.stderr)
+        self.assertEqual(before, (self.home / "distill-candidates.md").read_bytes())
+        self.assertEqual(subprocess.check_output(["git", "status", "--porcelain"], cwd=self.repo), b"")
+        self.assertEqual(subprocess.check_output(["git", "worktree", "list", "--porcelain"], cwd=self.repo, text=True, encoding="utf-8", errors="replace").count("worktree "), 1)
+
+    def test_binding_rejects_knowledge_symlink_and_isolation_bypass(self) -> None:
+        runtime = self.package_runtime()
+        self.bind_source()
+        before = self.file_snapshot(self.home)
+        bypass = self.run_auto(runtime=runtime, extra_environment={"SULDE_AUTO_SEDIMENT_ISOLATED": "1"})
+        self.assertEqual(bypass.returncode, 2)
+        self.assertIn("isolated execution requires", bypass.stderr)
+        external = self.base / "external.md"
+        external.write_text("preserve\n")
+        (self.repo / "knowledge/escape.md").symlink_to(external)
+        linked = self.run_auto(runtime=runtime)
+        self.assertEqual(linked.returncode, 2)
+        self.assertIn("rejects symlinks", linked.stderr)
+        self.assertEqual(external.read_text(), "preserve\n")
+        self.assertEqual(before, self.file_snapshot(self.home))
 
     def branch_name_prefix(self) -> str:
         return f"auto-sediment/{datetime.now().astimezone().strftime('%Y%m%d')}"

@@ -1,0 +1,21 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {"argv": ["python3", "-m", "unittest", "tests.test_human_grant", "tests.test_grant_broker", "tests.test_recovery_supervisor", "tests.test_resource_adapters", "tests.test_intent_guardian_resources", "tests.test_recovery_lane", "tests.test_operational_readiness", "tests.test_sulde_statusline", "tests.test_sulde_supervisor"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The integrated coordinator tree ran 149 H01-H05 composition tests with zero failures or errors.",
+    "Seven core Python modules parsed and compiled without bytecode writes; git diff check passed and H05 worker/coordinator blobs are byte-identical."
+  ],
+  "findings": [],
+  "kind": "integration_tests",
+  "requirements": [],
+  "run_id": "run-gpe-f0547c16e9416c1a0ef60559",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H05 composes with H01-H04 authority, broker, supervisor and typed resources without regression.",
+  "task_id": "H05-recovery-lane",
+  "verdict": "pass"
+}

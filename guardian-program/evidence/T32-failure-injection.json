@@ -1,0 +1,27 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "failure_injection",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "Unsafe Git shapes, linked-worktree identity drift, nested-card ambiguity and stale release grants remain fail closed before material state change.",
+  "facts": [
+    "git add -A, option injection, symlink alias, parent escape, foreign repository, commit --amend and custom-strategy merge all resolve to protected metadata and are denied.",
+    "A real merge carrying unsupported -m syntax was denied at PreToolUse with no merge state; the equivalent safe --no-ff --no-edit form then succeeded.",
+    "A pre-commit installer grant was invalidated when git index blob identity changed; no install state changed until a new current-tree one-shot grant was approved.",
+    "Nested continuation action prose is accepted only below the decision-card top level; a conflicting top-level action still fails."
+  ],
+  "requirements": ["WP56-D", "DERIVED-TIMEOUT"],
+  "findings": ["F32-001", "F32-002", "F32-004"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "-m", "unittest", "T32-hostile-git-and-native-card-matrix"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

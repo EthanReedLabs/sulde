@@ -1,0 +1,23 @@
+{
+  "schema": "sulde-installer-fixture-evolution-v1",
+  "changes": [
+    {
+      "kind": "helper",
+      "owner": "CodexPluginInstallFixture",
+      "name": "prepare_artifact",
+      "before_sha256": "00ee42ebfbab36b3aec2e06342ac16f2e8fa39e551d275a535bb248443b51ca1",
+      "after_sha256": "d4db3611b2ecc7d2f670ba0e133793efa86a3423522a8e8e05664785dda37b04",
+      "commit": "0caeef44c1eb11327cf39c0149e696e484196123",
+      "reason": "Explicit legacy transport for historical installer fixtures; stable-entry suite opts into stable-v1. No production bypass."
+    },
+    {
+      "kind": "method",
+      "owner": "CodexPluginInstallTests",
+      "name": "test_candidate_install_routes_receipt_evidence_to_canonical_marketplace",
+      "before_sha256": "2b73fb5a2a69aeb06e397d164fc1b267f725ab6fe4ecc1ef6d804c03880dce66",
+      "after_sha256": "72ddb2e4d496d37c064f589f30ef3d661a0ea553f71f962fc5f17bbe8f32abb1",
+      "commit": "0adcbc4",
+      "reason": "Supply explicit protocol documents in both receipt-routing artifact fixtures; keep real migration gate unchanged."
+    }
+  ]
+}

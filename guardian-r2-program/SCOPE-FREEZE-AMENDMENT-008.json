@@ -1,0 +1,16 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-amendment-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-008",
+  "parent_chain": [{"path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-007.json", "sha256": "701a05f43feedf72bfb266707f2e24a0693bdae726bb9a2882422b742105987c"}],
+  "authority": "human-confirmed-h06h-restart-2026-08-28-current-session",
+  "authority_scope": "restart H06H final acceptance only; repair the two recorded run1 control defects through exact profile-safe execution and the already accepted interruption mapping, then rerun the frozen coordinator gates",
+  "task": {"task_id": "H06H-r2-final-acceptance", "task_definition_path": "guardian-r2-program/task-definitions/H06H-r2-final-acceptance.json", "candidate_base_commit": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2"},
+  "change_budget": {"candidate_invocations": 1, "provider_invocations": 0, "integration": true, "installation": false, "push": false, "h06j_start": false, "automatic_retry": false},
+  "required_repair": [
+    "keep all worker-generated temporary material inside the exact approved profile or use coordinator-owned scratch outside the managed worker",
+    "consume the accepted H06I-R2 external_effect_outcome_unknown to awaiting_human mapping without duplicating authority",
+    "rerun H06H frozen fixture, integration, failure-injection and evidence gates with literal commands and outputs"
+  ],
+  "terminal_rule": "any scope drift, synthetic live evidence, test failure or unverifiable output returns H06H to blocked without retry"
+}

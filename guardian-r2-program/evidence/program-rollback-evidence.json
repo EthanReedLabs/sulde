@@ -1,0 +1,27 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "rollback_evidence",
+  "baseline": "program:guardian-human-authority-lifeform-r2",
+  "run_id": "program-r2-release-20260828",
+  "verdict": "pass",
+  "summary": "Five final-source installer rollback, crash-recovery, authority-drift and exact-artifact recovery cases pass without mutating the production installation.",
+  "facts": [
+    "The focused final-source run completes five tests in 52.089 seconds and exits zero.",
+    "Failed installed smoke restores registry and launchers, launcher-publish process death recovers coherently, and rollback-journal process death replays the same transaction.",
+    "Recomputed native authority drift is rejected and a partial legacy cache is recoverable only from the exact artifact.",
+    "All cases use temporary roots; the live installed generation was not rolled back or otherwise mutated by these tests."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-B", "-m", "unittest", "-v", "<five final-source installer rollback tests>"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

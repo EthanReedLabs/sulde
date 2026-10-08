@@ -1,0 +1,35 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "briefs/SULDE-R2-HALG-20260825.md",
+      "sha256": "8c5c41522ee4b6457555ae1f778bcfc4e62c8ad851ec0eda6c78bf5b17f416ed"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["python3", "-B", "scripts/kb/guardian_program.py", "status", "guardian-r2-program"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "status", "--short", "--branch"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The new append-only program initialized once and registered H00-H06 in dependency order without touching the completed predecessor program.",
+    "H03, H04 and H05 own disjoint paths; H06 explicitly depends on every predecessor and the manifest forbids human-deferred completion."
+  ],
+  "findings": [],
+  "kind": "integration_tests",
+  "requirements": [],
+  "run_id": "run-gpe-f128db6f4146d085f1391fa8",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "The tracked plan, fixtures, manifest and seven-task graph compose as one independent R2 control plane.",
+  "task_id": "H00-fixture-baseline",
+  "verdict": "pass"
+}

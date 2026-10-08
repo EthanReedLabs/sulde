@@ -3186,7 +3186,8 @@ class IntentGuardianTests(unittest.TestCase):
         ):
             blocked = GuardianSession(self.contract_path).observe(event)
         self.assertEqual(blocked.action, "deny")
-        self.assertTrue(blocked.awaiting_human)
+        self.assertFalse(blocked.awaiting_human)
+        self.assertEqual(blocked.reason_code, "effect_barrier_denied")
 
         authority = {
             "authority": "contract-grant",
@@ -4643,7 +4644,8 @@ class IntentGuardianTests(unittest.TestCase):
         )
         blocked = GuardianSession(self.contract_path).observe(same_target)
         self.assertEqual(blocked.action, "deny")
-        self.assertTrue(blocked.awaiting_human)
+        self.assertFalse(blocked.awaiting_human)
+        self.assertEqual(blocked.reason_code, "effect_barrier_denied")
         self.assertFalse(blocked.pause)
         self.assertEqual(load_contract(self.contract_path)["status"], "active")
         cross_session = GuardianSession(self.contract_path).observe(
@@ -6711,6 +6713,50 @@ class IntentGuardianTests(unittest.TestCase):
         self.assertEqual(decision.reason_code, "non_material_observation")
         self.assertFalse(decision.pause)
 
+    def test_observation_only_events_between_native_question_and_allow_preserve_proposal(self) -> None:
+        self.contract()
+        _, digest = create_revision_proposal(self.contract_path,
+            objective="verify observation and authority separation", acceptance_criteria=["facts preserved"],
+            mode="enforce", allowed_paths=["resume.md"], decision_route="human", intent_kind="deterministic",
+            risk="high", effects=["read"], reversibility="reversible", cost="none", rollback="no writes")
+        preview = native_decision_preview(self.contract_path, kind="proposal", decision="approve", target=digest,
+            provider="codex", session_id="human-review-session")
+        observed = observe_native_permission_request(self.native_permission_payload(preview,
+            session_id="human-review-session"), provider="codex")
+        self.assertEqual(observed["action"], "defer")
+        before = load_contract(self.contract_path)["runtime"]["material_sequence"]
+        session = GuardianSession(self.contract_path, provider="codex", session_id="human-review-session")
+        payloads = [
+            {"tool_name": "Skill", "tool_input": {"skill": "resume-kit"}},
+            {"tool_name": "Read", "tool_input": {"file_path": "resume.md"}},
+            {"tool_name": "Bash", "tool_input": {"command": shlex.join([
+                sys.executable, str(SCRIPT_DIR / "intent-guardian.py"), "show", "--contract", str(self.contract_path)])}},
+        ]
+        for number, payload in enumerate(payloads):
+            for phase in ("started", "completed"):
+                event = normalize_hook_event({**payload, "client": "codex", "session_id": "human-review-session",
+                    "call_id": f"observation-{number}", "success": True}, phase=phase, provider="codex")
+                decision = session.observe(event)
+                self.assertEqual(decision.action, "allow", decision.reason)
+        self.assertEqual(load_contract(self.contract_path)["runtime"]["material_sequence"], before)
+        result = execute_native_decision(self.contract_path, kind="proposal", decision="approve", target=digest,
+            provider="codex", session_id="human-review-session")
+        self.assertEqual(result["status"], "applied")
+        self.assertEqual(load_contract(self.contract_path)["runtime"]["pending_proposal_digest"], "")
+
+    def test_material_sequence_excludes_observation_but_retains_guarded_writes(self) -> None:
+        from intent_guardian_parts.memory_scope import advance_sequence
+        from types import SimpleNamespace
+        runtime = {"material_sequence": 0}
+        decision = SimpleNamespace(action="allow")
+        for event in ({"effect": "read"}, {"effect": "local_write", "control_plane": True},
+                      {"effect": "external_write", "supervision_domain": "execution_passthrough"}):
+            self.assertFalse(advance_sequence(runtime, {**event, "phase": "started"}, decision, matched_started_event=False))
+        for effect in ("local_write", "external_write", "destructive", "unknown"):
+            self.assertTrue(advance_sequence(runtime, {"effect": effect, "phase": "started"}, decision, matched_started_event=False))
+            self.assertFalse(advance_sequence(runtime, {"effect": effect, "phase": "completed"}, decision, matched_started_event=True))
+        self.assertEqual(runtime["material_sequence"], 4)
+
     def test_trusted_control_command_is_audited_without_becoming_open_work(self) -> None:
         self.contract()
         launcher = f"{sys.executable} {SCRIPT_DIR / 'intent-guardian.py'}"
@@ -6738,6 +6784,39 @@ class IntentGuardianTests(unittest.TestCase):
             self.contract_path.with_name("intent.events.jsonl").read_text().splitlines()[-1]
         )
         self.assertTrue(audit["event"]["control_plane"])
+
+    def test_repository_relocation_preflight_is_read_only_not_native_authority(self) -> None:
+        self.contract()
+        command = shlex.join([
+            sys.executable, str(SCRIPT_DIR / "intent-guardian.py"),
+            "repository-relocation-preflight", str(self.root), str(self.root.parent / "moved"),
+            "--provider", "codex", "--session-id", "fixture-session",
+        ])
+        event = normalize_hook_event(
+            {"tool_name": "Bash", "tool_input": {"command": command}},
+            phase="started", provider="codex",
+        )
+        self.assertTrue(event["control_plane"])
+        self.assertEqual(event["control_route"], "agent")
+        self.assertEqual(event["effect"], "read")
+        self.assertEqual(GuardianSession(self.contract_path).observe(event).action, "allow")
+        current = load_contract(self.contract_path)
+        self.assertEqual(current["runtime"]["open_events"], [])
+        self.assertEqual(current["runtime"]["approval_receipts"], [])
+        self.assertEqual(guardian_module.NATIVE_DECISIONS["repository-relocation"], {"approve"})
+
+    def test_repository_relocation_inspection_is_read_only_control(self) -> None:
+        self.contract()
+        command = shlex.join([sys.executable, str(SCRIPT_DIR / "intent-guardian.py"),
+            "inspect-repository-relocation", "a" * 64, "--provider", "codex", "--session-id", "fixture-session"])
+        event = normalize_hook_event({"tool_name": "Bash", "tool_input": {"command": command}},
+            phase="started", provider="codex")
+        self.assertTrue(event["control_plane"])
+        self.assertEqual(event["effect"], "read")
+        self.assertEqual(GuardianSession(self.contract_path).observe(event).action, "allow")
+        current = load_contract(self.contract_path)
+        self.assertEqual(current["runtime"]["open_events"], [])
+        self.assertEqual(current["runtime"]["approval_receipts"], [])
 
     def test_trusted_skill_registration_help_is_read_only_control_work(self) -> None:
         self.contract()
@@ -10847,7 +10926,7 @@ path.write_text(text)
     def test_session_start_does_not_inject_another_sessions_continuation(self) -> None:
         home = Path(self.temp.name) / "kb-continuation"
         codex_home = Path(self.temp.name) / "codex-home"
-        source_session = "00000000-0000-7000-8000-000000000001"
+        source_session = "019f1d33-e496-7801-bf53-6e213bd12a1f"
         rollout_dir = codex_home / "sessions" / "2026" / "08" / "15"
         rollout_dir.mkdir(parents=True)
         rollout = rollout_dir / f"rollout-2026-08-15T00-00-00-{source_session}.jsonl"
@@ -10857,7 +10936,7 @@ path.write_text(text)
                     "type": "event_msg",
                     "payload": {
                         "type": "user_message",
-                        "message": "确认先做 SyntheticApplication 测试样例页面",
+                        "message": "确认先做 Apollo 品牌母题板",
                     },
                 },
                 ensure_ascii=False,
@@ -10868,8 +10947,8 @@ path.write_text(text)
         path, _, digest, review = prepare_workspace_proposal(
             home,
             self.root,
-            intent_id="synthetic-application-brand-visual-grammar-v1",
-            objective="Create an isolated SyntheticApplication test example page",
+            intent_id="apollo-brand-visual-grammar-v1",
+            objective="Create an isolated Apollo brand motif board",
             acceptance_criteria=["去掉颜色和文字后仍能识别统一图形语言"],
             mode="enforce",
             preserve=["Gate C", "现有产品代码"],
@@ -10930,8 +11009,8 @@ path.write_text(text)
             provider="codex",
             session_id=source_session,
         )
-        self.assertIn("Create an isolated SyntheticApplication test example page", owner_context)
-        self.assertIn("确认先做 SyntheticApplication 测试样例页面", owner_context)
+        self.assertIn("Create an isolated Apollo brand motif board", owner_context)
+        self.assertIn("确认先做 Apollo 品牌母题板", owner_context)
         self.assertIn("不转移人工批准", owner_context)
 
         sibling_contract = load_contract(path)
@@ -12297,7 +12376,7 @@ path.write_text(text)
 
     def test_reconcile_corrects_production_shaped_figma_read_from_exact_rollout(self) -> None:
         contract = self.contract()
-        session_id = "00000000-0000-7000-8000-000000000002"
+        session_id = "019feed9-4406-72e2-accf-2e24a01ade69"
         call_id = "exec-b6edc9b5-363d-4470-9b12-2e3b8f7fa297"
         arguments = {
             "fileKey": "0G32qTbFLqMfW5gG8wvv8X",
@@ -12436,7 +12515,7 @@ path.write_text(text)
         self.assertEqual(rows[-1]["type"], "effect.attempt_classification_corrected")
 
     def test_rollout_evidence_rejects_figma_argument_digest_mismatch(self) -> None:
-        session_id = "00000000-0000-7000-8000-000000000002"
+        session_id = "019feed9-4406-72e2-accf-2e24a01ade69"
         call_id = "exec-b6edc9b5-363d-4470-9b12-2e3b8f7fa297"
         stored_arguments = {
             "fileKey": "0G32qTbFLqMfW5gG8wvv8X",

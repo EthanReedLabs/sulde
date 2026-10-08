@@ -1,0 +1,174 @@
+{
+  "batch": "C",
+  "intent_id": "interactive:db613882e8d8ba05a196234d",
+  "generatorVersion": "source-dependencies-fixtures-v1",
+  "sourceVersion": "04070cb683bd5095eb7d45a29f8034b1d7e2a5054ef7d43f84c19ead00f66db3",
+  "source_files": {
+    "integrations/codex/plugins/sulde/scripts/_hook_observer.py": "f87cbc3d4dd0d012af83c273ab9576ef2b10bc4fd1442c68d4554136c9ba0d2c",
+    "integrations/codex/plugins/sulde/scripts/record-hook-failure.py": "2e4da0dd0a4c0a6515a383dd5d253c4f04ce08faa6b746dc70cf38e4059a81b6",
+    "integrations/codex/plugins/sulde/scripts/run-hook.ps1": "c2551c41152f4ba994df3d7510f6bae52c5325405710f7131276526fb59d5cff",
+    "integrations/codex/plugins/sulde/scripts/run-hook.sh": "e600fd40cfc94e9707593a9fdb900f120633840f7038ea0988ffa2be7299f16e",
+    "scripts/kb/bootstrap.sh": "804950dfeeffc3472093f6594f651561dbeac6bd13e4467731738cb96b935811",
+    "scripts/kb/derived-details.py": "e9ed75802e740e24cbec16a34ba708764274cc0094dcfec536d82764a79129f9",
+    "scripts/kb/governance-report.py": "7ec465301a13409672a62bead29c9625c2f6304192f968ebfd1c85e35af96d66",
+    "scripts/kb/heartbeat.py": "f6351d7358a6d7df790505c309a1e3137b48396596a4ffb729210ac50c185db3",
+    "scripts/kb/install-agents.sh": "bdbdb32408341f60f66401c9e11c952f76575e06b76b1ec6ea3f4bf2a81dfa9b",
+    "scripts/kb/intent_guardian_parts/resource_preflight.py": "d3ff99ff3cfc7d76173491708b81e3f7c3d7b1cf8b0f7b4cbfb280124c87d924",
+    "scripts/kb/intent_guardian_parts/resources.py": "1ea5a158a762eaba11ec9c62dc21d9e4b9ee51e68bcc34d638540dbd2c423e37",
+    "scripts/kb/launcher_contract.py": "4346491fea3f1c541f8486c578b1abd6309a41c67de47cf84147195585b5994f",
+    "scripts/kb/life-cycle.py": "4b59a4ad10686084c2580477f82f9cf17e69f2c9d5e888b279fb53446bc26579",
+    "scripts/kb/life-health.py": "644cdd21e80a6979f269243ff3b2f052e7a7d7534cda0c8397f34fe5725b796e",
+    "scripts/kb/life_health.py": "a4e0c21cc9e688da5fdaa5f86d087f1fd399907fbb525a0b16de9dd2d2bc23c1",
+    "scripts/kb/mem-sync.py": "1a12cadc140a8c818276f357dd42c92786b4892330fffe7e2018be6823170347",
+    "scripts/kb/operational_readiness.py": "5ea71bbbaad7d099b6e9e65edf6900798f038ac1afce7240bc05fd63e51d0ca4",
+    "scripts/kb/production_recovery_readiness.py": "bb5cf17fd50cd52900ba3199c8d7577b5a173684e44c506ef28551d3741c8a13",
+    "scripts/kb/sulde-status.py": "55a0f663ffec42288eeef578e57bd9b6c2742ffe4d4078d27ae5c8ddf51b24f0",
+    "scripts/kb/sulde_paths.py": "bcfd367a4362f9b2bc1459ed2e0779d76c94f5e51999cc968d12f6e25bd38084",
+    "scripts/kb/test-evidence.py": "ff1afcb975613c82d012e6fb7d912fa278123b9d9df2e802c461a289b1811821",
+    "scripts/release/install_codex_plugin.py": "0a69e2d2184b45747d045900734ac77f3f7138da7d083f0ca1a375e0b3efbaea",
+    "tests/test_derived_details.py": "996e1128839f8072b3ba85a421af0831ce3d5e16d2306179104d26d6a5a7e0eb",
+    "tests/test_hook_observer_closure.py": "2e600dac2f62e9b9c001905492bc34ae19bcd04ae30aeadea441f8ec98ec3870",
+    "tests/test_kb_mcp_entry.py": "5e4dfcaf83fe720a8fdad0fee0f2716d473fd0a3acbd3a8444127a96412139d8",
+    "tests/test_launcher_split_recovery.py": "6d27207e060b019f8704d9c062e25a9e8f73bee8029e4c2b080a888fef3edc2d",
+    "tests/test_life_health_closure.py": "d63d55b0dcd807f7e75176039adb433613bb8d4003e6c6e92b67bebeeb1e2963",
+    "tests/test_production_recovery_control.py": "4ab6a15307324fb14528c8a86a52a74c5109b94d18f3250de84ae91c1d45bc34",
+    "tests/test_production_recovery_readiness.py": "fb9d44f7269058429e2c20e6ee7ed76d1128a75f50b0697f9c34534c4d53ae32",
+    "tests/test_test_evidence.py": "58b3bf4831b4e748d5b0621c72eb7fe3f51d08cf61e7bab7677e3c904efbd3a3"
+  },
+  "python_dependencies": [
+    [
+      "mlx",
+      "0.32.0"
+    ],
+    [
+      "ndiff",
+      "7.99"
+    ],
+    [
+      "pip",
+      "26.1.2"
+    ],
+    [
+      "wheel",
+      "0.47.0"
+    ]
+  ],
+  "environment": {
+    "python": "3.14.6",
+    "platform": "macOS-26.3-arm64",
+    "host_cli": "codex-cli 0.153.4",
+    "candidate_python": "3.10.7 (existing PyYAML 6.0.3; copied candidate venv)"
+  },
+  "full_suite": {
+    "sourceVersion": "9811bd755e14872dfa57e66f9ad51717db7ddbabdb0e6fe5920f41f2ed306916",
+    "generatorVersion": "source-dependencies-fixtures-v1",
+    "python": "3.14.6",
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "tests": "unittest discover tests/test_*.py",
+    "runner": "scripts/kb/run-isolated-tests.py",
+    "tests_run": 1915,
+    "seconds": 638.56,
+    "exit_code": 1,
+    "status": "failed",
+    "failure_checks": 5,
+    "skipped": 25,
+    "log_sha256": "72ff7de49799eecffea305e877bccd75d4590707e688887c8cb6c4881cb224e3",
+    "failures": [
+      {
+        "test": "test_command_template_split.CommandTemplateDriftGuardTests.test_repository_has_no_unapproved_direct_shlex_split",
+        "status": "baseline_blocker",
+        "details": "production_recovery_control.py:35,191 unchanged from dev"
+      },
+      {
+        "test": "test_intent_guardian_state.IntentGuardianSplitArchitectureTests.test_facade_and_component_line_limits",
+        "module": "resources.py",
+        "status": "baseline_blocker",
+        "baseline_lines": 3049,
+        "current_lines": 3051,
+        "limit": 3000
+      },
+      {
+        "test": "test_intent_guardian_state.IntentGuardianSplitArchitectureTests.test_facade_and_component_line_limits",
+        "module": "state.py",
+        "status": "baseline_blocker",
+        "baseline_lines": 3004,
+        "current_lines": 3004,
+        "limit": 3000
+      },
+      {
+        "test": "test_kb_cli_migration.CliDriftGuardTests.test_cross_directory_import_uses_one_path_neutral_mechanism",
+        "status": "fixed_and_scoped_reverified",
+        "fix": "path-neutral runpy import"
+      },
+      {
+        "test": "test_kb_mcp_entry.KbMcpEntryTests.test_status_matches_direct_venv_invocation",
+        "status": "fixed_and_scoped_reverified",
+        "fix": "check ordered independent collection timestamps; compare all factual fields"
+      }
+    ]
+  },
+  "final_scoped": {
+    "sourceVersion": "04070cb683bd5095eb7d45a29f8034b1d7e2a5054ef7d43f84c19ead00f66db3",
+    "tests_run": 60,
+    "seconds": 10.281,
+    "exit_code": 0,
+    "status": "passed",
+    "modules": [
+      "tests.test_mem_sync",
+      "tests.test_kb_cli_migration",
+      "tests.test_kb_mcp_entry",
+      "tests.test_life_health_closure",
+      "tests.test_test_evidence",
+      "tests.test_derived_details",
+      "tests.test_hook_observer_closure"
+    ]
+  },
+  "baseline_reproduction": {
+    "source": "f687193bdda541d4651846ed99aa6dbe37475f7d",
+    "method": "git archive to independent temporary Git source fixture; actual unittest invocation",
+    "tests_run": 2,
+    "failure_checks": 3,
+    "exit_code": 1,
+    "seconds": 0.981
+  },
+  "earlier_scoped": [
+    {
+      "tests_run": 41,
+      "seconds": 12.217,
+      "status": "passed"
+    },
+    {
+      "tests_run": 11,
+      "seconds": 3.113,
+      "status": "passed"
+    },
+    {
+      "tests_run": 8,
+      "seconds": 2.597,
+      "status": "passed"
+    }
+  ],
+  "interrupted_runs": {
+    "count": 2,
+    "status": "interrupted_not_evidence_of_pass",
+    "reason": "real host schema corrections and dependency binding completed before the recorded full run"
+  },
+  "host_sessions": "host-sessions.json",
+  "latency": "latency.json",
+  "candidate": "candidate.json",
+  "invalidation": "Relevant source/dependency/test/environment change invalidates the affected evidence; reporting/log changes do not. Final full-suite pass is NOT claimed.",
+  "overall": "blocked_on_existing_dev_gates_and_outstanding_host_platform_acceptance",
+  "windows": "pending_native_Windows",
+  "production": "not_installed_or_promoted",
+  "artifacts": {
+    "host-sessions.json": "5e602be37face447e9be4d54bd2e9ede8aa251b41ec93c3062089ce63854bdec",
+    "candidate.json": "531e5c8cb4367d56135d54c7a1a528be671db62bdad571260ef2e3dc1f5a738f",
+    "latency.json": "6931027fc3e955ce0091a68fed97b3d99fe3ac7efe4481f511a641889fa3c57d",
+    "project-patch-tests.json": "640c9b2bf7f805818316c34898b355b66b43c4f14f07f85bf8304f652579dfdd",
+    "queue-plan.json": "9feb338774b782b57bc477d24e9b274e74e451894d6ee9c91b18c1dd59b672aa",
+    "probe-host-sessions.py": "0569a754c2c7b82cc515b86abcc62e2d0c46e1748fce08f2569e71893c1a1a98",
+    "probe-latency.py": "7cded6647fac4d36450b4f12ed306a4aeae3b5685b4a4b6044a4836f7c0ec5a1",
+    "probe-candidate.py": "92f3b51cd555e009c3a6519f182313bfc9e1a22d15f2e59fd560c07ac2b9383f",
+    "proposed-iquokka-hook.patch": "f69ce10bb3121a4eb69981b917fb2117bdd987f943e278679d79049181d20f82"
+  }
+}

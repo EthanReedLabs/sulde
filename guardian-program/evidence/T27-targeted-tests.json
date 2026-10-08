@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T27-release-blocker-remediation",
+  "kind": "targeted_tests",
+  "baseline": "0dce1005d244af7e5b509513226bcfe8a2f11b4f",
+  "run_id": "run-gpe-75da4f180a9fb984f67db91a",
+  "verdict": "pass",
+  "summary": "All directly affected effect, readiness, statusline and scheduler modules pass on the T27 candidate.",
+  "facts": [
+    "146 targeted tests passed with two Windows-only skips.",
+    "The macOS system Python parsed auto-distill under a minimal LaunchAgent environment without source bytecode."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "T27-seven-targeted-modules"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

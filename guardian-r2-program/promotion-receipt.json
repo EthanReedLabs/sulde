@@ -1,0 +1,34 @@
+{
+  "authority": {
+    "intent_revision": 152,
+    "native_receipt_id": "9e17eb2da9173b0e76bc7a9548b1ad0a869b1ae2faadb39952fa6d8b03a70805",
+    "native_transaction_id": "ndt-91b7fbe023ee531b6a64d0b167fad241",
+    "provider": "codex",
+    "session_id": "01a03c4f-f99d-7bb3-96ef-3ac88c23fbab"
+  },
+  "base": {
+    "branch": "task/r2-guardian-human-authority-lifeform",
+    "commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+    "ref": "dev",
+    "worktree": ".worktrees/guardian-human-authority-lifeform"
+  },
+  "prior_program_gate": {
+    "authority_event_sha256": "6c475c9d907b17957d08784475417e4b6dc915b73b2df750cc637838d3342825",
+    "blockers": [],
+    "evidence_count": 108,
+    "final_check_ready": true,
+    "finding_count": 78,
+    "program_id": "guardian-remediation-r97",
+    "requirement_count": 18,
+    "task_count": 13
+  },
+  "promoted_at": "2026-08-26T06:55:54.715010+00:00",
+  "promoted_path": "guardian-r2-program/briefs/SULDE-R2-HALG-20260825.md",
+  "promotion_status": "ready_for_tracked_h00_commit",
+  "schema": "sulde-r2-plan-promotion-receipt-v1",
+  "source": {
+    "path": ".ai-workspace/handoff/SULDE-R2-HALG-20260825.md",
+    "sha256": "3c648a1904cde11ee05f289d0168601a709da104158fd8b4104129d6061f6046",
+    "tracked": false
+  }
+}

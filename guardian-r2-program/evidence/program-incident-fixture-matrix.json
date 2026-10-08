@@ -1,0 +1,8 @@
+{
+  "schema":"sulde-guardian-program-evidence-v1","scope":"program","task_id":"","kind":"incident_fixture_matrix",
+  "baseline":"program:guardian-human-authority-lifeform-r2","run_id":"program-h06h-a009","verdict":"pass",
+  "summary":"The H06H v2 replay fixture binds I01-I19, all thirteen required failure axes and fourteen hard gates to accepted sources without synthetic live PASS.",
+  "facts":["19 unique incidents","13 ordered failure axes","14 ordered hard gates","live-only gates remain independent evidence requirements"],"requirements":[],"findings":[],"acceptance":[],
+  "commands":[{"argv":["python3","-B","-m","unittest","-v","tests.test_r2_guardian_integration.R2GuardianIntegrationTests.test_replay_matrix_is_bound_to_h06h_and_authoritative_sources","tests.test_r2_guardian_integration.R2GuardianIntegrationTests.test_hostile_fixture_mutations_fail_closed"],"exit_code":0,"result":"pass"}],
+  "artifacts":[]
+}

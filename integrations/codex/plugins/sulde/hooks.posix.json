@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" pre-tool-use",
+            "command": "sulde_entry_root=\"${SULDE_HOME:-${HOME}/.sulde}\"; if [ -z \"${SULDE_HOME:-}\" ] && [ -n \"${SULDE_KB_HOME:-}\" ] && [ \"$SULDE_KB_HOME\" != \"${HOME}/.sulde/data/kb\" ]; then sulde_entry_root=\"$SULDE_KB_HOME\"; fi; sulde_entry=\"$sulde_entry_root/bin/sulde-codex-hook\"; if [ -f \"$sulde_entry\" ] && [ ! -L \"$sulde_entry\" ] && sulde_output=$(/bin/sh \"$sulde_entry\" pre-tool-use); then case \"$sulde_output\" in sulde-hook-entry-complete-v1:*) sulde_output=${sulde_output#sulde-hook-entry-complete-v1:}; [ -z \"$sulde_output\" ] || printf '%s\\n' \"$sulde_output\";; *) printf '%s\\n' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Sulde stable Hook entry unavailable; this action was not executed.\"}}'; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2;; esac; else printf '%s\\n' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Sulde stable Hook entry unavailable; this action was not executed.\"}}'; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2; fi",
             "timeout": 120,
             "statusMessage": "Checking the active Sulde intent contract..."
           }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" permission-request",
+            "command": "sulde_entry_root=\"${SULDE_HOME:-${HOME}/.sulde}\"; if [ -z \"${SULDE_HOME:-}\" ] && [ -n \"${SULDE_KB_HOME:-}\" ] && [ \"$SULDE_KB_HOME\" != \"${HOME}/.sulde/data/kb\" ]; then sulde_entry_root=\"$SULDE_KB_HOME\"; fi; sulde_entry=\"$sulde_entry_root/bin/sulde-codex-hook\"; if [ -f \"$sulde_entry\" ] && [ ! -L \"$sulde_entry\" ] && sulde_output=$(/bin/sh \"$sulde_entry\" permission-request); then case \"$sulde_output\" in sulde-hook-entry-complete-v1:*) sulde_output=${sulde_output#sulde-hook-entry-complete-v1:}; [ -z \"$sulde_output\" ] || printf '%s\\n' \"$sulde_output\";; *) :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2;; esac; else :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2; fi",
             "timeout": 120,
             "statusMessage": "Binding the readable Sulde decision to this approval..."
           }
@@ -32,7 +32,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" post-tool-use",
+            "command": "sulde_entry_root=\"${SULDE_HOME:-${HOME}/.sulde}\"; if [ -z \"${SULDE_HOME:-}\" ] && [ -n \"${SULDE_KB_HOME:-}\" ] && [ \"$SULDE_KB_HOME\" != \"${HOME}/.sulde/data/kb\" ]; then sulde_entry_root=\"$SULDE_KB_HOME\"; fi; sulde_entry=\"$sulde_entry_root/bin/sulde-codex-hook\"; if [ -f \"$sulde_entry\" ] && [ ! -L \"$sulde_entry\" ] && sulde_output=$(/bin/sh \"$sulde_entry\" post-tool-use); then case \"$sulde_output\" in sulde-hook-entry-complete-v1:*) sulde_output=${sulde_output#sulde-hook-entry-complete-v1:}; [ -z \"$sulde_output\" ] || printf '%s\\n' \"$sulde_output\";; *) :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2;; esac; else :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2; fi",
             "timeout": 120
           }
         ]
@@ -43,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" stop",
+            "command": "sulde_entry_root=\"${SULDE_HOME:-${HOME}/.sulde}\"; if [ -z \"${SULDE_HOME:-}\" ] && [ -n \"${SULDE_KB_HOME:-}\" ] && [ \"$SULDE_KB_HOME\" != \"${HOME}/.sulde/data/kb\" ]; then sulde_entry_root=\"$SULDE_KB_HOME\"; fi; sulde_entry=\"$sulde_entry_root/bin/sulde-codex-hook\"; if [ -f \"$sulde_entry\" ] && [ ! -L \"$sulde_entry\" ] && sulde_output=$(/bin/sh \"$sulde_entry\" stop); then case \"$sulde_output\" in sulde-hook-entry-complete-v1:*) sulde_output=${sulde_output#sulde-hook-entry-complete-v1:}; [ -z \"$sulde_output\" ] || printf '%s\\n' \"$sulde_output\";; *) :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2;; esac; else :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2; fi",
             "timeout": 120
           }
         ]
@@ -55,7 +55,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" session-start",
+            "command": "sulde_entry_root=\"${SULDE_HOME:-${HOME}/.sulde}\"; if [ -z \"${SULDE_HOME:-}\" ] && [ -n \"${SULDE_KB_HOME:-}\" ] && [ \"$SULDE_KB_HOME\" != \"${HOME}/.sulde/data/kb\" ]; then sulde_entry_root=\"$SULDE_KB_HOME\"; fi; sulde_entry=\"$sulde_entry_root/bin/sulde-codex-hook\"; if [ -f \"$sulde_entry\" ] && [ ! -L \"$sulde_entry\" ] && sulde_output=$(/bin/sh \"$sulde_entry\" session-start); then case \"$sulde_output\" in sulde-hook-entry-complete-v1:*) sulde_output=${sulde_output#sulde-hook-entry-complete-v1:}; [ -z \"$sulde_output\" ] || printf '%s\\n' \"$sulde_output\";; *) :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2;; esac; else :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2; fi",
             "timeout": 120,
             "statusMessage": "Checking Sulde knowledge and memory..."
           }
@@ -67,7 +67,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${PLUGIN_ROOT}/scripts/run-hook.sh\" user-prompt-submit",
+            "command": "sulde_entry_root=\"${SULDE_HOME:-${HOME}/.sulde}\"; if [ -z \"${SULDE_HOME:-}\" ] && [ -n \"${SULDE_KB_HOME:-}\" ] && [ \"$SULDE_KB_HOME\" != \"${HOME}/.sulde/data/kb\" ]; then sulde_entry_root=\"$SULDE_KB_HOME\"; fi; sulde_entry=\"$sulde_entry_root/bin/sulde-codex-hook\"; if [ -f \"$sulde_entry\" ] && [ ! -L \"$sulde_entry\" ] && sulde_output=$(/bin/sh \"$sulde_entry\" user-prompt-submit); then case \"$sulde_output\" in sulde-hook-entry-complete-v1:*) sulde_output=${sulde_output#sulde-hook-entry-complete-v1:}; [ -z \"$sulde_output\" ] || printf '%s\\n' \"$sulde_output\";; *) :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2;; esac; else :; printf '%s\\n' 'sulde: stable_entry_unavailable; coverage_blind_spot' >&2; fi",
             "timeout": 120,
             "statusMessage": "Searching Sulde knowledge and memory..."
           }

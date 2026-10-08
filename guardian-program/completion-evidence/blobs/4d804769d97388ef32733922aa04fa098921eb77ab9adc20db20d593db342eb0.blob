@@ -1,0 +1,36 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "failure_injection_suite",
+  "baseline": "program:guardian-remediation-r97",
+  "run_id": "program-final-t32-20260824",
+  "verdict": "pass",
+  "summary": "Current native, Git, Hook, release-grant and installer recovery failure matrices preserve fail-closed behavior before material state change.",
+  "facts": [
+    "T32 rejects non-literal add, option injection, path escape, symlink alias, foreign repository, commit rewrite, custom merge strategy and unsupported merge syntax before repository mutation.",
+    "Native top-level action tamper, stale PermissionRequest/grant identity and post-seal runtime drift remain non-authorizing.",
+    "The current tree passes five focused process-death, rollback-journal, authority-drift and partial-cache recovery tests in 50.486 seconds."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "-m", "unittest", "five-current-installer-recovery-tests"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["python3.10", "-m", "unittest", "T32-hostile-git-and-native-card-matrix"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/program-final-acceptance-t32.md",
+      "sha256": "c64dece515e276ea17d803fe2d8edbb3fba55ec78edbbec3366f1892f3c22d22"
+    }
+  ]
+}

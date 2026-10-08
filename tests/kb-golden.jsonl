@@ -1,0 +1,50 @@
+{"query":"缓存的统计值和明细对不上","expect":["tech-docs/事实纠错必须重算父级聚合"],"note":"existing-01"}
+{"query":"键盘弹出把整个页面顶上去了","expect":["ap-0014"],"note":"existing-02"}
+{"query":"改个主题色要到处找写死的色值","expect":["ap-0004"],"note":"existing-03"}
+{"query":"长按出现的菜单在 iPhone 上样式不对","expect":["ap-0010"],"note":"existing-04"}
+{"query":"每个二级页面都要手动加状态栏边距","expect":["ap-0012","ap-0008","ap-0001"],"note":"existing-05"}
+{"query":"自定义底部导航栏中间凸起做不出来","expect":["ap-0003"],"note":"existing-06"}
+{"query":"列表刷新后顺序乱跳","expect":["tech-docs/业务列表重排必须保持连续稳定顺序"],"note":"existing-07"}
+{"query":"文字大小在不同手机上表现不一致","expect":["ap-0007","ap-0158"],"note":"existing-08"}
+{"query":"开发者做完主任务又自己顺手改了别的东西","expect":["ap-0143"],"note":"existing-09"}
+{"query":"健身休息倒计时切到后台回来时间不准","expect":["tech-docs/训练休息计时的暂停与有效时长"],"note":"existing-10"}
+{"query":"内容区高度写死导致小屏被截断","expect":["ap-0005"],"note":"existing-11"}
+{"query":"弹层里的按钮在不同屏幕上错位","expect":["ap-0002","ap-0006","ap-0063"],"note":"existing-12"}
+{"query":"系统升级后有些用户一打开应用就崩，清数据又能恢复","expect":["ap-0115"],"note":"new anti-pattern android-1 baseline-miss"}
+{"query":"头像裁剪页看着正常，上传回来却变成纯黑图，日志也没报错","expect":["ap-0118"],"note":"new anti-pattern android-2"}
+{"query":"聊天里只要快速滑过几条语音消息就明显掉帧，图形处理却不忙","expect":["ap-0159"],"note":"new anti-pattern android-3"}
+{"query":"视频从后台放久了回来只有声音，所有卡片画面都定住","expect":["ap-0169"],"note":"new anti-pattern android-4"}
+{"query":"服务刚拉起先查数据库，偶发被系统报没及时进入常驻通知状态","expect":["ap-0175"],"note":"new anti-pattern android-5"}
+{"query":"点完操作菜单里的编辑，下一个弹窗偶尔完全不出现，之后再点也没反应","expect":["ap-0116"],"note":"new anti-pattern ios-1 baseline-miss"}
+{"query":"自绘视频控件播到末尾后，再按播放键一直停在最后一帧","expect":["ap-0128"],"note":"new anti-pattern ios-2"}
+{"query":"老系统点第二个页面入口后处理器占满界面卡死，新系统没事","expect":["ap-0165"],"note":"new anti-pattern ios-3"}
+{"query":"从文件应用选来的文档交给异步任务后，真机偶发读不到","expect":["ap-0176"],"note":"new anti-pattern ios-4"}
+{"query":"弹窗初始内容能看到，但网络持续返回的新文字始终不刷新","expect":["ap-0145"],"note":"new anti-pattern harmonyos-1"}
+{"query":"把另一端的左右留白照抄过去后，标题和卡片怎么调都对不齐","expect":["ap-0154"],"note":"new anti-pattern harmonyos-2"}
+{"query":"输入框藏在底部面板的第二层，软键盘起来后还是把它盖住","expect":["ap-0157"],"note":"new anti-pattern harmonyos-3"}
+{"query":"下载到本地的视频安卓能播，旧苹果手机却报格式不支持，远程地址正常","expect":["ap-0093"],"note":"new anti-pattern cross-1 baseline-miss"}
+{"query":"设置里关掉测试数据开关，没杀进程时下一次请求仍走假数据","expect":["ap-0108"],"note":"new anti-pattern cross-2"}
+{"query":"验证码自动填满时同一登录请求发了两遍，后一个让前一个会话失效","expect":["ap-0127"],"note":"new anti-pattern cross-3"}
+{"query":"接口没有主键，列表里几条空字段记录一出现就崩或复用错行","expect":["ap-0170"],"note":"new anti-pattern cross-4"}
+{"query":"换了会话后没先看最近交付，结果又给开发写了一遍已经做完的活","expect":["ap-0091"],"note":"new anti-pattern none-1 baseline-miss"}
+{"query":"审计报告只看提交说明里撞上的词，就把不相关改动算成需求已完成","expect":["ap-0131"],"note":"new anti-pattern none-2"}
+{"query":"工具扩展换版本后旧窗口每次输入都报某个版本目录下脚本找不到，新窗口正常","expect":["ap-0181"],"note":"new anti-pattern none-3"}
+{"query":"按钮文案一长或手机一窄就被挤没，固定尺寸布局没法用","expect":["ap-0082"],"note":"new anti-pattern none-4"}
+{"query":"隐私页显示有七条记录，导出来只有五条，点清除后却都没了","expect":["tech-docs/个人数据计数导出删除必须覆盖同一数据面"],"note":"new tech-docs-1"}
+{"query":"手表和手机都传来同一天的睡眠值，教练模块有时相加有时覆盖","expect":["tech-docs/健康平台数据先标准化再进入决策"],"note":"new tech-docs-2"}
+{"query":"第一份计划免费，但用户查看和编辑自己的旧计划也被付费墙挡住","expect":["tech-docs/免费体验与持续价值必须在领域层分界"],"note":"new tech-docs-3"}
+{"query":"一次动作做差就把后面几周的重量直接降低了，用户都没确认","expect":["tech-docs/单次结果形成候选而非自动改计划"],"note":"new tech-docs-4"}
+{"query":"运动记录已经保存，模型还在跑时总览却整页空白像数据丢了","expect":["tech-docs/异步分析不阻塞事实汇总"],"note":"new tech-docs-5"}
+{"query":"用户把自动生成的时长改超预算，系统要么悄悄保存要么完全不让改","expect":["tech-docs/手动修改生成结果需要保留用户控制权"],"note":"new tech-docs-6"}
+{"query":"今天把标准调高以后，上个月原本完成的天数突然都变成不合格","expect":["tech-docs/历史达标率必须使用当时生效的目标"],"note":"new tech-docs-7"}
+{"query":"所有敏感内容只在手机处理，商店能否填没有上传，同时权限说明怎么保持一致","expect":["tech-docs/端侧应用隐私政策与商店声明对齐方法"],"note":"new tech-docs-8"}
+{"query":"短视频往回滑几次后有声音没画面，刷新列表又恢复","expect":["tech-docs/案例研究/01-Android媒体与性能工程/视频Feed黑屏与播放竞态"],"note":"new case-study-1"}
+{"query":"退出账号后设置页还盖着底栏，再登录成功个人页仍是空的","expect":["tech-docs/案例研究/02-iOS-TCA架构实践/TCA状态机登出登录闭环"],"note":"new case-study-2"}
+{"query":"断线恢复后，已经走到第七步的生成页面退回第五步，之前素材也消失","expect":["tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则"],"note":"new case-study-3 baseline-miss"}
+{"query":"杀进程重开个人页还要等接口转圈，其实上次昵称积分本地都有","expect":["tech-docs/案例研究/04-移动端缓存架构/缓存SWR陈旧重验策略"],"note":"new case-study-4"}
+{"query":"为了防重复付费，查不到旧任务时一律不创建，结果新用户永远走不通","expect":["tech-docs/案例研究/05-诊断方法论/轮询守卫三值语义与防御性收紧陷阱"],"note":"new case-study-5"}
+{"query":"有人说列表卡，团队还没抓帧率和调用栈就开始加延迟参数试错","expect":["work-model/perf-diagnosis"],"note":"new work-model-1"}
+{"query":"修一个返回按钮时发现要动公共路由和三个模块，能不能顺手一起改","expect":["work-model/self-fix-boundary"],"note":"new work-model-2"}
+{"query":"一个复杂端到端任务反复清上下文分多次修，每轮都要重新读材料","expect":["work-model/single-session-task-execution"],"note":"new work-model-3 baseline-miss"}
+{"query":"鸿蒙新工作目录编译成功但真机启动立刻报找不到三方模块记录","expect":["platform-kb/harmony/build-toolchain"],"note":"new platform-kb-1 baseline-miss"}
+{"query":"抽屉开着进入下一页，按返回却把下面看不见的抽屉关了，新页还在","expect":["platform-kb/harmony/routing-navigation-overlay-frames"],"note":"new platform-kb-2"}

@@ -1,0 +1,30 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T22-material-cas-lane-binding",
+  "kind": "finding_resolution",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-656b9b20b4b4882b1199d002",
+  "verdict": "pass",
+  "summary": "F00-002 is resolved by an exact literal compatibility target rule without a broad control-path allowlist.",
+  "facts": [
+    "Exact approved .codex-agent targets pass while root, ancestor, wildcard and .git targets remain denied.",
+    "The transferred obligation remains auditable through the T22 report and focused regression tests."
+  ],
+  "requirements": [],
+  "findings": ["F00-002"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "-q", "tests.test_material_cas_lane_binding.MaterialCasLaneBindingTests.test_exact_codex_agent_control_path_does_not_create_broad_allow"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/T22-material-cas-lane-binding.md",
+      "sha256": "84960edf9d284b8919ff7e40d06a582e53ab7a0496d3eeb2b2892d87008ba013"
+    }
+  ]
+}

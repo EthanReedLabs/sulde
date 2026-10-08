@@ -1,0 +1,46 @@
+{
+  "acceptance": [
+    "I01-I19 与全部 required failure axes 在集成 exact commit 上通过，所有 reviewer findings 有 append-only disposition",
+    "Allow 到 dispatch P95、二次 deny、卡片展示、孤儿锁、进度 SLA、重复输出和副作用 exactly-once 指标全部满足方案硬门",
+    "完整 isolated suite、历史 replay、failure injection、installer rollback、scheduler、Codex live 与 Claude live 均有独立证据",
+    "只有源码、stage、installed runtime、scheduler owner 和双宿主执行摘要同 generation 时才允许合并 dev/main 和 production accepted"
+  ],
+  "base_commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H00-fixture-baseline",
+    "H01-human-grant-v2",
+    "H02-grant-broker",
+    "H03-recovery-supervisor",
+    "H04-typed-resource-adapters",
+    "H05-recovery-lane"
+  ],
+  "supersedes": [],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "tests/fixtures/r2-guardian-incidents/**",
+    "tests/test_r2_guardian_integration.py",
+    "scripts/release/install_codex_plugin.py",
+    "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+    "guardian-r2-program/evidence/**",
+    "guardian-r2-program/reports/H06-r2-release-acceptance.md"
+  ],
+  "owner": "guardian-r2-coordinator",
+  "requirements": [
+    "R2-HUMAN-GRANT",
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-TYPED-RESOURCES",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06-r2-release-acceptance",
+  "title": "完成十九组回放、故障注入、双宿主与发布验收"
+}

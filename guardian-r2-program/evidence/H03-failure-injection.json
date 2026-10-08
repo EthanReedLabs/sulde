@@ -1,0 +1,32 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env", "H03_REPO=/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/guardian-human-authority-lifeform",
+        "PYTHONDONTWRITEBYTECODE=1", "python3", "-B",
+        "/private/tmp/sulde-h03-independent-review-20260826/attack_probe.py"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Nine independent probe outputs cover the eight code findings: fabricated and contradictory process facts, future clock, concurrent scan, crash replay, stale recommendation, terminal liveness, held state lock and parent replacement.",
+    "Observed safe results are no fabricated reclaim authority; explicit contradiction ambiguity; scan sequences [1,2]; one apply plus one reprobe with independent verification; stale authorization rejection; zero terminal liveness cards; immediate typed busy; and no redirected parent write."
+  ],
+  "findings": [
+    "FR2-H03-001", "FR2-H03-002", "FR2-H03-003", "FR2-H03-004",
+    "FR2-H03-005", "FR2-H03-006", "FR2-H03-007", "FR2-H03-008"
+  ],
+  "kind": "failure_injection",
+  "requirements": [],
+  "run_id": "run-gpe-911f4018e20b6c8d699f94e3",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "Independent H03 authority, replay, concurrency, terminal, lock and storage attacks all converge to bounded fail-closed outcomes.",
+  "task_id": "H03-recovery-supervisor",
+  "verdict": "pass"
+}

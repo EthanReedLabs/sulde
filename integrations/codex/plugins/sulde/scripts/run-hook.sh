@@ -12,8 +12,24 @@ case "${1:-}" in
   *) echo "usage: run-hook.sh {session-start|user-prompt-submit|pre-tool-use|permission-request|post-tool-use|stop}" >&2; exit 2 ;;
 esac
 HOOK=${1:-}
+# sulde-stable-path-begin-v1
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 PLUGIN_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
+# sulde-stable-path-end-v1
+# Hold these two dependency-free modules before waiting for the host payload.
+# An already-started wrapper must not re-open a path pruned by plugin update.
+# `command exec` makes redirection failure nonfatal in POSIX shells. These
+# descriptors carry code only, never approval or a runtime-generation grant.
+# sulde-stable-pin-begin-v1
+PINNED_OBSERVER=
+PINNED_FALLBACK=
+if [ -f "$SCRIPT_DIR/_hook_observer.py" ] && command exec 8<"$SCRIPT_DIR/_hook_observer.py"; then
+  PINNED_OBSERVER=8
+fi
+if [ -f "$SCRIPT_DIR/_recovery_defer.py" ] && command exec 9<"$SCRIPT_DIR/_recovery_defer.py"; then
+  PINNED_FALLBACK=9
+fi
+# sulde-stable-pin-end-v1
 HOOK_PAYLOAD=$(cat)
 if [ -n "${SULDE_HOME:-}" ]; then
   SULDE_ROOT=$SULDE_HOME
@@ -24,6 +40,7 @@ else
   SULDE_ROOT="${HOME}/.sulde"
 fi
 BRIDGE="$SULDE_ROOT/bin/intent-guardian"
+# sulde-stable-python-begin-v1
 if command -v python3 >/dev/null 2>&1; then
   PYTHON=python3
 elif command -v python >/dev/null 2>&1; then
@@ -32,9 +49,10 @@ else
   if [ "$HOOK" = "pre-tool-use" ]; then
     printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Sulde PreToolUse cannot start without Python 3; this action was not executed."}}'
   fi
-  echo "sulde: failed_closed local hook adapter cannot start without Python 3" >&2
+  echo "sulde: failed_closed local hook adapter cannot start without Python 3; hook_observer_unavailable; coverage_blind_spot" >&2
   exit 0
 fi
+# sulde-stable-python-end-v1
 
 NONBLOCKING_FAILURE_RECORDED=0
 record_nonblocking_failure() {
@@ -51,6 +69,36 @@ if [ "$HOOK" != "pre-tool-use" ]; then
   trap 'HOOK_EXIT=$?; trap - EXIT; if [ "$HOOK_EXIT" -ne 0 ]; then record_nonblocking_failure wrapper unexpected_exit "$HOOK_EXIT"; fi; exit 0' EXIT
 fi
 
+run_pinned_module() {
+  # Some Python versions inspect/reopen /dev/fd script paths and can consume
+  # the shared offset before execution. Read the pinned bytes explicitly;
+  # missing/empty/oversized input is failure, never an empty successful policy.
+  "$PYTHON" -B -I -c 'import os, sys
+fd = int(sys.argv.pop(1))
+os.lseek(fd, 0, os.SEEK_SET)
+source = os.read(fd, 262145)
+if not source or len(source) > 262144:
+    raise SystemExit(65)
+namespace = {"__name__": "sulde_pinned_helper", "__file__": "<sulde-pinned-helper>"}
+exec(compile(source, "<sulde-pinned-helper>", "exec"), namespace)
+entry = namespace.get("main")
+if not callable(entry):
+    raise SystemExit(65)
+raise SystemExit(entry())
+' "$@"
+}
+
+record_pinned_failure() {
+  if [ -n "$PINNED_OBSERVER" ]; then
+    printf '%s' "$HOOK_PAYLOAD" | run_pinned_module "$PINNED_OBSERVER" \
+      --hook "sulde:$HOOK" --stage "$1" --record-shell-exit "$2" \
+      --category "${3:-nonzero_exit}" >/dev/null || \
+      echo "sulde: hook_observer_delivery_unavailable; coverage_blind_spot" >&2
+  else
+    echo "sulde: hook_observer_unavailable; coverage_blind_spot" >&2
+  fi
+}
+
 run_hook_command() {
   if [ "${1:-}" = "$BRIDGE" ] && grep -q '^# sulde-observer-in-process-v1$' "$BRIDGE"; then
     # The generated bridge records the sealed adapter in its existing Python
@@ -60,26 +108,55 @@ run_hook_command() {
     if [ "$OBSERVED_EXIT" -ne 0 ]; then
       # Launcher/pre-adapter startup failed: module identity is unknown. This
       # failure-only recorder does not execute the action a second time.
-      printf '%s' "$HOOK_PAYLOAD" | "$PYTHON" "$SCRIPT_DIR/_hook_observer.py" \
-        --hook "sulde:$HOOK" --record-shell-exit "$OBSERVED_EXIT" >/dev/null || true
+      record_pinned_failure bridge "$OBSERVED_EXIT"
     fi
     return "$OBSERVED_EXIT"
   elif [ "${1:-}" = "$PYTHON" ] && [ -f "$SCRIPT_DIR/_hook_entry.py" ] && [ -f "$SCRIPT_DIR/_hook_observer.py" ]; then
     shift
     printf '%s' "$HOOK_PAYLOAD" | "$PYTHON" "$SCRIPT_DIR/_hook_entry.py" \
       "sulde:$HOOK" "${OBSERVER_STAGE:-adapter}" "$@"
+    OBSERVED_EXIT=$?
+    if [ "$OBSERVED_EXIT" -ne 0 ]; then
+      # A check/open race can prevent the local observer from starting at all.
+      # This is a separate wrapper-exit fact, not a second adapter execution or
+      # a diagnosis of its policy result (which is deliberately unknown here).
+      record_pinned_failure wrapper "$OBSERVED_EXIT" unknown
+    fi
+    return "$OBSERVED_EXIT"
   elif [ -f "$SCRIPT_DIR/_hook_observer.py" ]; then
     printf '%s' "$HOOK_PAYLOAD" | "$PYTHON" "$SCRIPT_DIR/_hook_observer.py" \
       --hook "sulde:$HOOK" --stage "${OBSERVER_STAGE:-adapter}" -- "$@"
+    OBSERVED_EXIT=$?
+    if [ "$OBSERVED_EXIT" -ne 0 ]; then
+      record_pinned_failure wrapper "$OBSERVED_EXIT" unknown
+    fi
+    return "$OBSERVED_EXIT"
   else
-    echo "sulde: hook_observer_unavailable; coverage_blind_spot" >&2
     printf '%s' "$HOOK_PAYLOAD" | "$@"
+    OBSERVED_EXIT=$?
+    if [ "$OBSERVED_EXIT" -ne 0 ]; then
+      record_pinned_failure "${OBSERVER_STAGE:-adapter}" "$OBSERVED_EXIT"
+    else
+      echo "sulde: hook_observer_unavailable; coverage_blind_spot" >&2
+    fi
+    return "$OBSERVED_EXIT"
   fi
 }
 
 run_pre_tool_fallback() {
-  FALLBACK_OUTPUT=$(printf '%s' "$HOOK_PAYLOAD" | SULDE_CODEX_FALLBACK_ONLY=1 "$PYTHON" "$SCRIPT_DIR/pre-tool-use.py")
-  FALLBACK_STATUS=$?
+  FALLBACK_STATUS=1
+  FALLBACK_OUTPUT=
+  if [ -f "$SCRIPT_DIR/pre-tool-use.py" ]; then
+    # Preserve the existing native-recovery route while its dependencies are
+    # reachable. The pinned classifier is only the dependency-loss fallback.
+    FALLBACK_OUTPUT=$(printf '%s' "$HOOK_PAYLOAD" | SULDE_CODEX_FALLBACK_ONLY=1 "$PYTHON" "$SCRIPT_DIR/pre-tool-use.py")
+    FALLBACK_STATUS=$?
+  fi
+  if [ "$FALLBACK_STATUS" -ne 0 ] && [ -n "$PINNED_FALLBACK" ]; then
+    FALLBACK_OUTPUT=$(printf '%s' "$HOOK_PAYLOAD" | run_pinned_module "$PINNED_FALLBACK" \
+      --runtime-root "$PLUGIN_DIR/runtime" --launcher-home "$SULDE_ROOT")
+    FALLBACK_STATUS=$?
+  fi
   if [ "$FALLBACK_STATUS" -eq 0 ]; then
     [ -z "$FALLBACK_OUTPUT" ] || printf '%s\n' "$FALLBACK_OUTPUT"
     return 0
@@ -136,6 +213,7 @@ if [ "${SULDE_HOOK_RUNTIME_REBOUND:-0}" != "1" ] && { [ -e "$BRIDGE" ] || [ -L "
     echo "sulde: degraded_to_native_codex stable hook bridge dispatch failed" >&2
     exit 0
   fi
+  record_pinned_failure bridge 127 interpreter_or_executable_unavailable
   if [ "$HOOK" = "pre-tool-use" ]; then
     echo "sulde: failed_closed stable hook bridge unavailable" >&2
     run_pre_tool_fallback

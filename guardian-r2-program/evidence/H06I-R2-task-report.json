@@ -1,0 +1,81 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-06659d2260308adf552e6d68",
+  "verdict": "pass",
+  "kind": "task_report",
+  "summary": "Amendment-006 closes the H06I-R2 durable-report evidence defect with one truthful current-execution claim and byte-identical canonical terminal outputs, without rerunning tests or changing behavior code.",
+  "facts": [
+    "The one authorized evidence-only provider invocation run-7981543b5a264a9b8d819802 reached the natural turn.completed terminal in 61 seconds, ran the exact seven-path SHA-256 command once, ran no tests and wrote no candidate file.",
+    "The run ledger, output-last-message, durable report and native receipt output/report bindings all resolve to f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183.",
+    "The durable report contains exactly one current-success claim, its command text and command digest agree, and the strict task_report_verdict passes with no failure.",
+    "FR2-H06I-R2-015 is resolved; predecessor failures and test results remain historical evidence and are not rebound to the Amendment-006 execution."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06I-R2-001",
+    "FR2-H06I-R2-002",
+    "FR2-H06I-R2-003",
+    "FR2-H06I-R2-004",
+    "FR2-H06I-R2-005",
+    "FR2-H06I-R2-006",
+    "FR2-H06I-R2-007",
+    "FR2-H06I-R2-008",
+    "FR2-H06I-R2-009",
+    "FR2-H06I-R2-010",
+    "FR2-H06I-R2-011",
+    "FR2-H06I-R2-012",
+    "FR2-H06I-R2-013",
+    "FR2-H06I-R2-014",
+    "FR2-H06I-R2-015"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "agent-runtime.py",
+        "run",
+        "<H06I-R2-frozen-full-clone>",
+        "r2-h06i-r2-report-evidence-closure"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "shasum",
+        "-a",
+        "256",
+        "scripts/kb/native_agent_broker.py",
+        "scripts/kb/agent-runtime.py",
+        "tests/test_native_agent_broker.py",
+        "tests/test_agent_runtime.py",
+        ".codex-agent/r2-h06i-r2-review-repair-continuation.run.jsonl",
+        ".codex-agent/r2-h06i-r2-review-repair-continuation.last.md",
+        ".codex-agent/r2-h06i-r2-review-repair-continuation.native-receipt.json"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "task_report_verdict",
+        "projections/H06I-R2-AMENDMENT-006-REPORT.md"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "projections/H06I-R2-AMENDMENT-006-REPORT.md",
+      "sha256": "f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183"
+    },
+    {
+      "path": "H06I-R2-REPORT-EVIDENCE-CLOSURE.json",
+      "sha256": "713291eec01406dcbc5a07545fd2ba42f06a92a387fbbeaf39d28cdf9f3b7d24"
+    }
+  ]
+}

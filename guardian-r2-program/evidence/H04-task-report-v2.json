@@ -1,0 +1,29 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H04-typed-resource-adapters.md",
+      "sha256": "692a0e4a5e7657dabd0f2f6b9fc7f6c638e688ea069a2bebeb0a3741f0300698"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "The durable H04 report records the full implementation, three repair rounds, FR2-H04-001 through FR2-H04-012, exact commands and counts, changed paths, limits and sedimentation samples.",
+    "The report explicitly carries installed-runtime patch misclassification FR2-H04-007 into H06 and does not claim live host, release, Windows, Figma or device acceptance.",
+    "Coordinator follow-up records control-root projection, exact-index atomic commit and independent-clone object import instead of hiding those integration problems."
+  ],
+  "findings": [
+    "FR2-H04-001", "FR2-H04-002", "FR2-H04-003", "FR2-H04-004",
+    "FR2-H04-005", "FR2-H04-006", "FR2-H04-007", "FR2-H04-008",
+    "FR2-H04-009", "FR2-H04-010", "FR2-H04-011", "FR2-H04-012"
+  ],
+  "kind": "task_report",
+  "requirements": [],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H04 report v2 binds typed resource semantics, full repair and integration history, all finding dispositions, executed evidence and downstream limits.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

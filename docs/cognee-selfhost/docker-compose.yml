@@ -1,0 +1,22 @@
+# Cognee server — EasePi A1 部署用
+# 用法:放到 A1 的 /mnt/<1T盘>/cognee/ 下,填入 GLM_KEY 后 `docker compose up -d`
+# 注意:填入真实 key 后不要把此文件回传到任何仓库
+services:
+  cognee:
+    image: cognee/cognee:latest
+    restart: unless-stopped        # A1 重启后自动拉起
+    ports:
+      - "8000:8000"
+    environment:
+      LLM_API_KEY: "<GLM_KEY>"     # Mac 上 ~/.config/cognee/env.sh 里 COGNEE_GLM_KEY 的值
+      LLM_PROVIDER: "custom"
+      LLM_MODEL: "openai/glm-4.5-flash"
+      LLM_ENDPOINT: "https://open.bigmodel.cn/api/paas/v4"
+      EMBEDDING_PROVIDER: "fastembed"
+      EMBEDDING_MODEL: "sentence-transformers/all-MiniLM-L6-v2"
+      EMBEDDING_DIMENSIONS: "384"
+      EMBEDDING_MAX_TOKENS: "256"
+      DATA_ROOT_DIRECTORY: "/data/storage"
+      SYSTEM_ROOT_DIRECTORY: "/data/system"
+    volumes:
+      - ./data:/data               # 全部记忆数据(图谱/向量/关系库)落此目录

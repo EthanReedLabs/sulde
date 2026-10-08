@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T24-p0-transaction-integration",
+  "kind": "failure_injection",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-9d84a3e7e26d5694fbc0c75a",
+  "verdict": "pass",
+  "summary": "Sanitized mixed-generation replay, concurrent sibling sessions and prepared-stage crash recovery all passed.",
+  "facts": [
+    "The seven-row ledger fixture replayed without changing its source bytes.",
+    "A sibling denied write and read-only command did not change material_sequence or gain authority.",
+    "An after_prepared crash recovered to one committed transaction and repeated execution returned already_decided."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "-q", "tests.test_p0_transaction_integration"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

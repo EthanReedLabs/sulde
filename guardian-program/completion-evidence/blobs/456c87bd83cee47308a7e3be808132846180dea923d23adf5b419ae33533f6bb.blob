@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T24-p0-transaction-integration",
+  "kind": "task_report",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-9d84a3e7e26d5694fbc0c75a",
+  "verdict": "pass",
+  "summary": "T24 integrated the frozen authority, CAS, lane and readiness outcomes without changing production state or adding a task.",
+  "facts": [
+    "Source commit 2d65284 changes only the three T24-owned test paths.",
+    "T21, T22 and T23 were integrated and accepted in the frozen order before T24 started.",
+    "The full repository suite was executed and its non-green result is explicitly classified rather than claimed as a pass."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T24-p0-transaction-integration.md",
+      "sha256": "3fa49942fd63d7642ddb4fe5e25bf866963bd98cc18475a962ae0ef661514d56"
+    }
+  ]
+}

@@ -78,6 +78,62 @@ class DerivedDetailsTests(unittest.TestCase):
         selected = self.plan()
         self.assertEqual([r["file"] for r in selected["candidates"]], ["a.detail.json"])
 
+    def test_nonobject_metadata_is_protected_and_readback_rejects_foreign_plan(self):
+        self.add("normal")
+        approved = self.plan()
+        self.assertEqual(len(approved["candidates"]), 1)
+        (self.root / "invalid.meta.json").write_text("[]", encoding="utf-8")
+        selected = self.plan()
+        self.assertEqual(selected["protected"], 1)
+        self.assertEqual(len(selected["candidates"]), 1)
+        for changed in ({**selected, "root": str(self.root.parent)},
+                        {**selected, "plan_id": "../foreign"},
+                        {**selected, "candidates": []}):
+            with self.subTest(changed=changed):
+                with self.assertRaises(ValueError):
+                    module.readback(self.root, changed)
+        module.quarantine(self.root, selected)
+        self.assertEqual(module.readback(self.root, selected)["files_checked"], 2)
+        self.assertTrue((self.root / "invalid.meta.json").is_file())
+
+    def test_actual_250_capacity_preserves_invalid_and_drifted_manifests(self):
+        current = datetime.now(timezone.utc)
+        for index in range(251):
+            self.add(f"detail-{index:03d}", created_at=(current - timedelta(seconds=251-index)).isoformat())
+        (self.root / "invalid.meta.json").write_text("{broken", encoding="utf-8")
+        self.add("protected", authoritative=True)
+        selected = module.plan(self.root, source_version="source-1", generator_version="generator-1",
+                               ttl_seconds=30*86400, capacity=250, at=current.isoformat())
+        self.assertEqual([row["file"] for row in selected["candidates"]], ["detail-000.detail.json"])
+        self.assertEqual(selected["protected"], 2)
+        manifest = self.root / "detail-000.meta.json"
+        original = manifest.read_bytes()
+        manifest.write_bytes(original + b"\n")
+        with self.assertRaisesRegex(ValueError, "drift"):
+            module.quarantine(self.root, selected)
+        self.assertTrue((self.root / "detail-000.detail.json").is_file())
+        manifest.write_bytes(original)
+        before = {p.name: p.read_bytes() for p in self.root.iterdir()}
+        module.quarantine(self.root, selected)
+        self.assertEqual(module.readback(self.root, selected)["files_checked"], 2)
+        for name, data in before.items():
+            if not name.startswith("detail-000."):
+                self.assertEqual((self.root / name).read_bytes(), data)
+
+    def test_aware_plan_time_and_quarantine_symlink_required(self):
+        self.add("normal")
+        with self.assertRaisesRegex(ValueError, "aware"):
+            module.plan(self.root, source_version="source-1", generator_version="generator-1",
+                        ttl_seconds=86400, capacity=2, at="2026-01-01T00:00:00")
+        selected = self.plan()
+        module.quarantine(self.root, selected)
+        area = self.root / ".quarantine"
+        held = self.root / "held-quarantine"
+        area.rename(held)
+        area.symlink_to(held, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, "unsafe"):
+            module.readback(self.root, selected)
+
 
 if __name__ == "__main__":
     unittest.main()

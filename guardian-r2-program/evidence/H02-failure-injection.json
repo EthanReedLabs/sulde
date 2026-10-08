@@ -1,0 +1,41 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_grant_broker.GrantBrokerTests.test_all_durable_boundaries_recover_before_and_after_crash",
+        "tests.test_grant_broker.GrantBrokerTests.test_dispatch_claim_replay_and_all_readbacks_are_non_executable",
+        "tests.test_grant_broker.GrantBrokerTests.test_darwin_var_folders_alias_reuses_one_canonical_transaction",
+        "tests.test_grant_broker.GrantBrokerTests.test_no_follow_ledger_and_lock_reject_hostile_files_before_write",
+        "tests.test_grant_broker.GrantBrokerTests.test_two_concurrent_consumers_and_dispatchers_have_one_winner"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Five focused hostile tests passed in 0.846 seconds on the integrated tree.",
+    "Every durable cut recovers idempotently; replay and all public readbacks are non-executable; lexical /var and canonical /private/var share one transaction; hostile symlink/hardlink leaves are rejected before foreign writes; concurrent consumers and dispatchers produce one winner."
+  ],
+  "findings": [
+    "FR2-H02-002",
+    "FR2-H02-003",
+    "FR2-H02-004"
+  ],
+  "kind": "failure_injection",
+  "requirements": [],
+  "run_id": "run-gpe-142abf817c36c4687d1480b1",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H02 crash, replay, path-alias, hostile-leaf and concurrency failure injections preserve one-shot authority and fail-closed storage.",
+  "task_id": "H02-grant-broker",
+  "verdict": "pass"
+}

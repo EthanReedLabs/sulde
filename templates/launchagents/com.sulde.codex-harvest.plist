@@ -11,7 +11,7 @@
     </array>
     <key>WatchPaths</key>
     <array>
-        <string>__SULDE_CODEX_SESSIONS__</string>
+        <string>/Users/eric/.codex/sessions</string>
     </array>
     <key>StartInterval</key>
     <integer>1800</integer>

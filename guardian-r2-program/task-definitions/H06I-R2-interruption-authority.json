@@ -1,0 +1,45 @@
+{
+  "acceptance": [
+    "agent-runtime and native_agent_broker consume one shared immutable exact local-interruption reason authority, with external_effect_outcome_unknown mapping only to awaiting_human and no duplicated production map",
+    "the real H06H ordered ledger passes agent-runtime parsing and the production native broker receipt build/validate path without SULDE_TEST_MODE, while all hostile reason, type, order and quiescence variants fail closed",
+    "the managed awaiting-human terminal preserves exactly one provider invocation, interrupt, result, disposal, intervention identity and external attempt with no human decision, retry, reprobe, replay or post-terminal downgrade",
+    "the worker report uses content-addressed predecessor references while exact predecessor terminal facts remain in the controller ledger, records only current successful checks, and its own task_report_verdict returns passed true",
+    "the candidate remains exact five-path scope and claims neither coordinator test verification nor integration, H06J, installation, scheduler, live canary or R2 completion",
+    "guardian-r2-program/SCOPE-FREEZE.json is verified before dispatch; H06I-R2 uses one formal managed candidate, creates no repair successor and transfers only the already frozen final-acceptance envelope to H06J"
+  ],
+  "base_commit": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H06A2-integration-hygiene",
+    "H06B-codex-0150-authority",
+    "H06E-codex-help-authority",
+    "H06G-release-inventory-authority"
+  ],
+  "supersedes": [
+    "H06I-R1-interruption-authority"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/native_agent_broker.py",
+    "scripts/kb/agent-runtime.py",
+    "tests/test_native_agent_broker.py",
+    "tests/test_agent_runtime.py",
+    "guardian-r2-program/reports/H06I-R2-interruption-authority.md"
+  ],
+  "owner": "guardian-r2-worker-h06i-r2",
+  "requirements": [
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06I-R2-interruption-authority",
+  "title": "闭合 interruption authority 与 worker report 终态协议"
+}

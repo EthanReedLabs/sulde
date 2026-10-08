@@ -1,0 +1,42 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T25-release-gate-closure",
+  "title": "关闭 T24 披露的八个发布红项并建立全仓绿色发布门",
+  "owner": "release-gate-worker",
+  "capability_tier": "deep",
+  "base_commit": "f87d58689968372cf4332860ac0ee155241e5424",
+  "depends_on": [
+    "T24-p0-transaction-integration",
+    "T21-authority-ledger-compat"
+  ],
+  "owned_paths": [
+    "scripts/kb/intent_guardian_parts/recovery.py",
+    "scripts/kb/event_observer.py",
+    "scripts/kb/event_projection_cache.py",
+    "scripts/kb/intent_critic.py",
+    "scripts/kb/intervention.py",
+    "tests/test_approval_invariant.py",
+    "tests/test_supervision_lifecycle_e2e.py",
+    "tests/test_event_observer.py",
+    "tests/test_kb_mcp_entry.py",
+    "tests/test_guardian_recovery.py"
+  ],
+  "requirements": [
+    "WP56-A",
+    "WP56-F",
+    "DERIVED-RESOURCE",
+    "DERIVED-ISOLATION",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "acceptance": [
+    "T24 披露的八个红项全部通过且 typed 单生命周期、资源验证和未知版本 fail-closed 语义不回退",
+    "observer 对既有 v1/v2 approval 与 intervention 事件稳定投影且不泄露 authority、snapshot 或 raw evidence",
+    "依赖完整的 focused、P0 composed、failure injection 与 clean full isolated suite 全部通过"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"]
+  }
+}

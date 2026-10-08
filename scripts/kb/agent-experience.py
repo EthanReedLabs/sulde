@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+from functools import lru_cache
 import hashlib
 import json
 import os
@@ -109,6 +110,7 @@ def build_record(
     occurred_at: str | None = None,
     recommended_tests: Iterable[str] = (),
     affected_components: Iterable[str] = (),
+    policy_dispute: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if outcome not in OUTCOMES:
         raise ExperienceError(f"invalid experience outcome: {outcome}")
@@ -168,16 +170,28 @@ def build_record(
         ),
         "knowledge_boundary": "candidate_only_single_writer_required",
     }
+    if policy_dispute is not None:
+        record["policy_dispute"] = policy_dispute
     validate_record(record)
     return record
 
 
+@lru_cache(maxsize=1)
+def _policy_validator():
+    return runpy.run_path(str(Path(__file__).with_name("guardian_policy_review.py")))["validate_experience"]
+
+
 def validate_record(value: Any) -> None:
-    optional = {"recommended_tests", "affected_components", "knowledge_boundary"}
+    optional = {"recommended_tests", "affected_components", "knowledge_boundary", "policy_dispute"}
     if not isinstance(value, dict) or set(value) - optional != _REQUIRED:
         raise ExperienceError("experience fields do not match the v1 contract")
     if value.get("schema") != SCHEMA or value.get("outcome") not in OUTCOMES:
         raise ExperienceError("experience schema or outcome is invalid")
+    if "policy_dispute" in value or value.get("problem_type") == "guardian_policy_dispute":
+        try:
+            _policy_validator()(value)
+        except (TypeError, KeyError, ValueError) as error:
+            raise ExperienceError("invalid audit-only policy dispute") from error
     for key in (
         "experience_id", "task_id_sha256", "run_id_sha256", "project_id_sha256",
         "session_id_sha256", "task_instance_id_sha256",
@@ -189,6 +203,14 @@ def validate_record(value: Any) -> None:
         text = str(value.get(key) or "")
         if not text or _ABSOLUTE_PATH.search(text) or _SECRET.search(text):
             raise ExperienceError(f"{key} is empty or contains sensitive text")
+    for key in ("recommended_tests", "affected_components"):
+        values = value.get(key, [])
+        if (not isinstance(values, list) or len(values) > 64
+                or any(not isinstance(item, str) or not item or len(item) > 160
+                       or sanitize_summary(item, maximum=160) != item for item in values)):
+            raise ExperienceError(f"{key} must contain bounded redacted labels")
+    if value.get("knowledge_boundary", "candidate_only_single_writer_required") != "candidate_only_single_writer_required":
+        raise ExperienceError("experience cannot grant knowledge write authority")
     evidence = value.get("evidence")
     if not isinstance(evidence, list):
         raise ExperienceError("evidence must be a list")
@@ -210,6 +232,8 @@ def store_path(home: Path) -> Path:
 
 def load_records(home: Path) -> list[dict[str, Any]]:
     path = store_path(home)
+    if path.is_symlink() or path.parent.is_symlink():
+        raise ExperienceError("experience store must not be a symlink")
     if not path.is_file():
         return []
     records: list[dict[str, Any]] = []
@@ -249,10 +273,22 @@ def _atomic_records(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def record(home: Path, value: dict[str, Any]) -> dict[str, Any]:
     """Append idempotently under a process/file lock and verify by read-back."""
-    validate_record(value)
+    return record_many(home, [value])[0]
+
+
+def record_many(home: Path, values: list[dict[str, Any]], *, maximum_bytes: int | None = None) -> list[dict[str, Any]]:
+    """Maintenance batch: one canonical-store read/rewrite, never a hot-path scan."""
+    if not isinstance(values, list) or not 1 <= len(values) <= 250:
+        raise ExperienceError("experience batches require 1..250 records")
+    for value in values:
+        validate_record(value)
     path = store_path(home)
+    if path.is_symlink() or path.parent.is_symlink():
+        raise ExperienceError("experience store must not be a symlink")
     path.parent.mkdir(parents=True, exist_ok=True)
     lock_path = path.with_suffix(".lock")
+    if lock_path.is_symlink():
+        raise ExperienceError("experience lock must not be a symlink")
     with _PROCESS_LOCK:
         handle = lock_path.open("a+", encoding="utf-8")
         try:
@@ -264,20 +300,34 @@ def record(home: Path, value: dict[str, Any]) -> dict[str, Any]:
                     time.sleep(0.01)
             else:
                 raise ExperienceError("experience store lock is busy")
+            if maximum_bytes is not None and path.exists() and path.stat().st_size > maximum_bytes:
+                raise ExperienceError("experience history exceeds bounded maintenance capacity")
             rows = load_records(home)
-            existing = next(
-                (row for row in rows if row["experience_id"] == value["experience_id"]),
-                None,
-            )
-            if existing is not None:
-                if existing != value:
+            indexed = {row["experience_id"]: row for row in rows}
+            additions = []
+            for value in values:
+                existing = indexed.get(value["experience_id"])
+                if existing is not None and existing != value:
                     raise ExperienceError("experience idempotency collision")
-                return existing
-            _atomic_records(path, [*rows, value])
-            persisted = load_records(home)
-            if not persisted or persisted[-1] != value:
-                raise ExperienceError("experience read-back verification failed")
-            return value
+                if existing is None:
+                    additions.append(value)
+                    indexed[value["experience_id"]] = value
+            if additions:
+                if maximum_bytes is not None and sum(len(_canonical(row).encode("utf-8")) + 1 for row in [*rows, *additions]) > maximum_bytes:
+                    raise ExperienceError("experience merge would exceed maintenance capacity")
+                _atomic_records(path, [*rows, *additions])
+                persisted = {row["experience_id"]: row for row in load_records(home)}
+                if any(persisted.get(value["experience_id"]) != value for value in values):
+                    raise ExperienceError("experience read-back verification failed")
+            # Maintenance may acknowledge transport only after the canonical
+            # directory entry is durable, including an idempotent retry after
+            # a previous writer's fsync failure.
+            directory_descriptor = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(directory_descriptor)
+            finally:
+                os.close(directory_descriptor)
+            return values
         finally:
             try:
                 unlock(handle)
@@ -296,10 +346,28 @@ def recall(
     problem_type: str,
     symptom: str,
     affected_components: Iterable[str] = (),
+    now: str | None = None,
+    ttl_seconds: int | None = None,
 ) -> dict[str, Any]:
-    """Verified experience may select strategy; weaker states remain advisory."""
+    """Verified experience may select strategy; weaker states remain advisory.
+
+    ``ttl_seconds`` bounds how long a verified row stays authoritative (B5):
+    expired verified rows are excluded from strategy and reported separately,
+    so stale experience cannot silently drive later tasks.  ``now`` is an
+    ISO-8601 override for tests; omission uses the wall clock.
+    """
     wanted = _tokens(" ".join([problem_type, symptom, *affected_components]))
     matches: list[tuple[int, dict[str, Any]]] = []
+    expired_verified = 0
+    future_verified = 0
+    if ttl_seconds is not None and (type(ttl_seconds) is not int or ttl_seconds < 0):
+        raise ExperienceError("recall TTL must be a nonnegative integer")
+    reference = datetime.fromisoformat(_timestamp(now if now is not None else _now().isoformat()).replace("Z", "+00:00"))
+    try:
+        from datetime import timedelta
+        cutoff = reference - timedelta(seconds=ttl_seconds) if ttl_seconds is not None else None
+    except OverflowError as error:
+        raise ExperienceError("recall TTL exceeds timestamp range") from error
     for row in load_records(home):
         haystack = _tokens(
             " ".join(
@@ -314,6 +382,20 @@ def recall(
         if score:
             matches.append((score, row))
     matches.sort(key=lambda item: (-item[0], str(item[1].get("occurred_at") or "")))
+    fresh_matches: list[tuple[int, dict[str, Any]]] = []
+    for score, row in matches:
+        if row["outcome"] != "verified":
+            fresh_matches.append((score, row))
+            continue
+        occurred = datetime.fromisoformat(_timestamp(row["occurred_at"]).replace("Z", "+00:00"))
+        if occurred > reference:
+            future_verified += 1
+            continue
+        if cutoff is not None and occurred < cutoff:
+            expired_verified += 1
+            continue
+        fresh_matches.append((score, row))
+    matches = fresh_matches
     verified = [row for _score, row in matches if row["outcome"] == "verified"]
     inconclusive = [row for _score, row in matches if row["outcome"] == "inconclusive"]
     unresolved = [row for _score, row in matches if row["outcome"] == "unresolved"]
@@ -335,6 +417,8 @@ def recall(
             for row in inconclusive
         ],
         "unresolved_retained": len(unresolved),
+        "expired_verified_excluded": expired_verified,
+        "future_verified_excluded": future_verified,
         "matched": len(matches),
     }
 

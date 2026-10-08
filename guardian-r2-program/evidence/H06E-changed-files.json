@@ -1,0 +1,51 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06E-codex-help-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-c6a54d6965683d2d8f39c3d0",
+  "verdict": "pass",
+  "kind": "changed_files",
+  "summary": "H06E integration commit contains exactly the six frozen, reviewed and byte-identical task outputs.",
+  "facts": [
+    "Coordinator integration commit 45cf8c75 contains only the five implementation/test files and the durable H06E report.",
+    "All six coordinator blobs have the same SHA-256 as the independently reviewed full-clone candidate.",
+    "dev, main, origin/main, installed runtime and scheduler were not modified."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06E-001",
+    "FR2-H06E-002"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "diff-tree",
+        "--no-commit-id",
+        "--name-only",
+        "-r",
+        "45cf8c75"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "shasum",
+        "-a",
+        "256",
+        "<six-coordinator-and-candidate-path-pairs>"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H06E-codex-help-authority.md",
+      "sha256": "9b7ddf86ae94d26a5c7a65f9523a11cf7f3410c459641467450af66ec5e28a2b"
+    }
+  ]
+}

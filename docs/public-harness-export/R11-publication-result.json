@@ -1,0 +1,56 @@
+{
+  "schema": "sulde-publication-result-v1",
+  "status": "published-and-independently-verified",
+  "date": "2026-09-12",
+  "intent_id": "completion:d7c56153d92f24aaedadbd0c",
+  "intent_revision": 9,
+  "native_decision": {
+    "status": "applied",
+    "decision": "approve",
+    "receipt_id": "8a9a5251c73ca5f2cd5af6d0436853c54d4f2ad65b43fa154c9b1fccf2f689bd",
+    "request_id": "apr-afeec530212563f6afd665de",
+    "transaction_id": "ndt-d8136dec8119215380a8258efb0114a2",
+    "proposal_digest": "3ea55a94ecf24fb7420abc23468300b573ff8f49eb27482152f9257cbd6ca8cf"
+  },
+  "source_revision": "f21cd5eda55740049c977f31eb79db29324b6df0",
+  "candidate": ".sulde/public-export/review-013",
+  "manifest_sha256": "f5c23776dff872ab4af6a396e0f68cff4bf412511774cfb34a38581249618d95",
+  "public_repository": "https://github.com/EthanReedLabs/sulde-cc.git",
+  "public_branch": "main",
+  "public_parent": "9cefc8a3875dafa49de9d95db68e69a74bc56da5",
+  "public_commit": "ca6c123d8c87ed6377e247ceef80ea0bf6edb0d7",
+  "public_tree": "14abe89401b67c9bc0651a23c3118379cf987b34",
+  "public_history_new_commits": 1,
+  "private_git_history_imported": false,
+  "delta": {"files": 628, "modified": 9, "unchanged": 619, "added": 0, "deleted": 0},
+  "evidence_root": ".sulde/public-export",
+  "evidence_sha256": {
+    "r11-prepared.json": "361027cf855d50fbc626db7638f0dcdb56b7a3675a1821ff9217d3d076e975c4",
+    "r11-commit-verified.json": "a9d31bab1cd59b5c98a38cd1a5163a428fc8156569d4a60bda6df7527d4afdaf",
+    "r11-remote-verified.json": "383310e88a327ab44d47579c224296ae9ca77416655125091e824c6aa255fd54",
+    "r11-local-verified.json": "a9d31bab1cd59b5c98a38cd1a5163a428fc8156569d4a60bda6df7527d4afdaf"
+  },
+  "independent_remote_proof": {
+    "different_public_checkout": true,
+    "fresh_fetch_origin_main": "ca6c123d8c87ed6377e247ceef80ea0bf6edb0d7",
+    "files_verified": 628,
+    "all_blob_hashes_and_modes_match": true,
+    "local_public_head_equals_origin_main": true,
+    "local_public_worktree_clean": true
+  },
+  "protected_pro_heads": {
+    "main": "bd216b3d29e37b1aaf0e6be0c930b5221a925562",
+    "dev": "e61683c08aaf97db3e8e9d105ea3154ec217061c"
+  },
+  "contract_readback": {
+    "pending_proposal": "",
+    "pending_verifications": 0,
+    "open_events": 0,
+    "integrity_breaches": 0
+  },
+  "full_suite_rerun": false,
+  "new_install_receipt": false,
+  "installation_performed": false,
+  "pro_merge_performed": false,
+  "production_readiness_claimed": false
+}

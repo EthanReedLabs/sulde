@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T00-control-plane",
+  "kind": "integration_tests",
+  "baseline": "34dcbd0d6ea81ba330c701bc755f1f557978f515",
+  "run_id": "run-gpe-5902ccbd79317bd597055811",
+  "verdict": "pass",
+  "summary": "End-to-end program lifecycle tests replay the append-only log through accepted task and completion states.",
+  "facts": [
+    "The test suite exercises manifest initialization, task registration, evidence projection, final gate and completion snapshot replay.",
+    "Independent combination attacks over reopen, finding, evidence supersession and completion retained verified integrity."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "tests.test_guardian_program"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

@@ -1,0 +1,35 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H00-fixture-baseline.md",
+      "sha256": "1bf1a8912c5a20792dd0b17471365bc521a6b1b934584952dfcc08882d1b0c91"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["python3", "scripts/kb/guardian_program.py", "final-check", "guardian-program"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["intent-guardian", "codex-hook-probe", "session-start"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The predecessor final gate is independently ready with 108 evidence items, 78 disposed findings, 18 requirements and zero blockers.",
+    "Codex 0.149.1 and the installed 20260826044342 SessionStart adapter are live-readable; Claude live remains explicitly deferred and cannot be substituted."
+  ],
+  "findings": [],
+  "kind": "system_tests",
+  "requirements": [],
+  "run_id": "run-gpe-f128db6f4146d085f1391fa8",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "R2 starts from a verified completed predecessor, exact Git base and current Codex runtime while preserving the Claude live gate.",
+  "task_id": "H00-fixture-baseline",
+  "verdict": "pass"
+}

@@ -1,0 +1,58 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "title": "精确审计 Codex CLI 0.149.1 并恢复 Sulde 生产发布",
+  "owner": "release-host-audit-worker",
+  "capability_tier": "deep",
+  "base_commit": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "depends_on": [
+    "T25-release-gate-closure",
+    "T23-current-lane-readiness",
+    "T28-cleanup-quarantine-consumer",
+    "T00-control-plane"
+  ],
+  "supersedes": [
+    "T30-packaged-kb-aging-provenance"
+  ],
+  "owned_paths": [
+    "scripts/kb/agent-runtime.py",
+    "scripts/release/install_codex_plugin.py",
+    "tests/test_agent_runtime.py",
+    "tests/test_codex_plugin_install.py",
+    "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+    "guardian-program/reports/T31-codex-0149-1-host-audit.md"
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-READINESS",
+    "DERIVED-DELIVERY",
+    "DERIVED-RESOURCE",
+    "DERIVED-ISOLATION",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "acceptance": [
+    "当前规范 Codex executable 必须精确报告 codex-cli 0.149.1，version、help、exec help、app-server initialize、profile 与 broker authority 逐项真实审计；不得使用宽 patch 范围或版本号推断兼容",
+    "agent-runtime 与 installer 共享同一 0.149.1 精确宿主合约，未来版本、substring、wrapper、别名、help/profile/broker/generation 漂移仍 fail closed",
+    "因旧 runtime 在 provider 前拒绝 0.149.1，协调端只可在隔离 full clone 中依据真实只读探针预置最小 exact-version bootstrap candidate；该候选不构成通过，必须由更新后的 agent-runtime 执行、评审和验收",
+    "T31 定向、故障注入、full-clone 官方完整隔离套件通过，且不降级 Codex、不改 symlink、不手改 installed authority、cache runtime、生产 contract 或 ledger",
+    "候选依次合并 dev 与 main，使用仓库官方 sulde-local staging/installer 发布新 cachebuster，并证明 launcher、runtime owner、native authority 和 generation 一致",
+    "安装后 com.sulde.kb-aging 成功且 15 个 scheduler actor 全部当前 generation 就绪；随后用一个安装后 Sulde 自有 Codex 会话完成真实 hooks、doctor ready 和程序 final-check"
+  ],
+  "evidence_gates": {
+    "implemented": [
+      "task_report",
+      "changed_files"
+    ],
+    "task_verified": [
+      "targeted_tests",
+      "failure_injection"
+    ],
+    "integrated": [
+      "integration_tests"
+    ],
+    "system_verified": [
+      "system_tests",
+      "requirement_traceability"
+    ]
+  }
+}

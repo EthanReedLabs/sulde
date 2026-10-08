@@ -1,0 +1,41 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T21-authority-ledger-compat",
+  "kind": "requirement_traceability",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-c4d6a18cabdc0a254f1a2eb5",
+  "verdict": "pass",
+  "summary": "T21 system evidence directly covers one-time native authority, crash recovery and all five native journal operation classes.",
+  "facts": [
+    "New Codex authority is typed, request-bound, session-bound, task-epoch-bound and consumed exactly once.",
+    "The native journal matrix covers proposal, resume, effect, intent and observation-export with idempotent recovery and replay rejection."
+  ],
+  "requirements": ["WP56-A", "WP56-F", "DERIVED-JOURNAL"],
+  "findings": [],
+  "acceptance": [
+    {
+      "requirement_id": "WP56-A",
+      "clause": "原生可读决策卡绑定一次性请求，Agent 不能伪造或复用决定",
+      "fact": "The single typed lifecycle binds native decisions to one request, provider, session, task epoch and proposal digest; forged, expired or consumed receipts fail closed."
+    },
+    {
+      "requirement_id": "WP56-F",
+      "clause": "所有 native 决策类型可在崩溃边界幂等恢复且不能重放旧回执",
+      "fact": "The five-operation journal suite injects stage failures and verifies append-only idempotent recovery with old-receipt replay rejection."
+    },
+    {
+      "requirement_id": "DERIVED-JOURNAL",
+      "clause": "proposal、resume、effect、intent 和 observation-export 均有失败注入与幂等恢复",
+      "fact": "The OPERATIONS matrix exercises proposal, resume, effect, intent and observation-export recovery plans across native journal failure boundaries."
+    }
+  ],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "tests.test_native_decision_journal", "tests.test_approval_timeout_policy", "tests.test_approval_cas_schema"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T00-control-plane",
+  "kind": "system_tests",
+  "baseline": "34dcbd0d6ea81ba330c701bc755f1f557978f515",
+  "run_id": "run-gpe-5902ccbd79317bd597055811",
+  "verdict": "pass",
+  "summary": "The final candidate was independently exercised as a complete coordinator control-plane subsystem.",
+  "facts": [
+    "The final independent review reported Blocker 0 and High 0 on the exact recorded source and test SHA values.",
+    "Exact, recursive subtree, case, Unicode, parent-child and serialized dependency ownership matrices passed."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T00-independent-review.md",
+      "sha256": "ad36fad191df8f0077cb7d9f11aff6b7129a41ba206f4aab47ca7032313e6ef3"
+    }
+  ]
+}

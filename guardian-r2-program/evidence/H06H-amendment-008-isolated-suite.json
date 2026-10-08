@@ -1,0 +1,16 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06H-r2-final-acceptance",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-0b553dca472d863f18b5152c",
+  "verdict": "pass",
+  "kind": "system_tests",
+  "summary": "H06H Amendment-008 isolated full-suite completed in an external macOS Terminal with 199 tests passing in 52.490 seconds.",
+  "facts": ["The supported run-isolated-tests.py entrypoint completed with exit code 0.", "The Codex nested sandbox limitation was not used as a substitute; this is an externally observed isolated run."],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [{"argv": ["python3", "-B", "scripts/kb/run-isolated-tests.py", "tests.test_human_grant", "tests.test_grant_broker", "tests.test_recovery_supervisor", "tests.test_resource_adapters", "tests.test_recovery_lane", "tests.test_agent_runtime", "tests.test_native_agent_broker", "tests.test_r2_guardian_integration"], "exit_code": 0, "result": "pass"}],
+  "artifacts": []
+}

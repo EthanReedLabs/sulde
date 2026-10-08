@@ -1,0 +1,33 @@
+{
+  "acceptance": [
+    "RecoveryLane 在普通 task paused/review_required/unavailable 或 launcher degraded 时仍可执行 status、doctor、settle、repair、uninstall 与 rollback",
+    "恢复动作只由密封 recovery capability 校验，不先经过会阻断它的普通 PreToolUse",
+    "UI 提供 Allow、Deny、查看差异和稍后；不要求输入固定短语或复制命令/digest",
+    "进度满足 5/30 秒 SLA，重复 Waiting 输出为零，完整日志本地落盘且默认只显示阶段摘要"
+  ],
+  "base_commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "capability_tier": "deep",
+  "depends_on": ["H02-grant-broker"],
+  "supersedes": [],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/recovery_lane.py",
+    "scripts/kb/intent_guardian_parts/recovery.py",
+    "scripts/kb/operational_readiness.py",
+    "scripts/kb/sulde-status.py",
+    "tests/test_recovery_lane.py",
+    "tests/test_operational_readiness.py",
+    "tests/test_sulde_statusline.py",
+    "guardian-r2-program/reports/H05-recovery-lane.md"
+  ],
+  "owner": "guardian-r2-worker-h05",
+  "requirements": ["R2-GRANT-BROKER", "R2-RECOVERY-SUPERVISOR", "R2-RECOVERY-LANE", "PROGRAM-GOVERNANCE"],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H05-recovery-lane",
+  "title": "建立永远可达的恢复通道、状态卡与输出预算"
+}

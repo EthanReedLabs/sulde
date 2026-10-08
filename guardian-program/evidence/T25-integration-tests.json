@@ -1,0 +1,43 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T25-release-gate-closure",
+  "kind": "integration_tests",
+  "baseline": "f87d58689968372cf4332860ac0ee155241e5424",
+  "run_id": "run-gpe-45a0eac272952f59169b6fef",
+  "verdict": "pass",
+  "summary": "T25 is merged after the frozen control commit on dev and both dependency-complete composed gates pass.",
+  "facts": [
+    "Merge commit 4d9368b64f862fcc3606cf261a7125af7efad78e contains the exact worker commit 2c0f8f96098c52be8178eca18dff24fb892472f7.",
+    "The affected approval, observer, recovery, encoding, supervision, intervention and critic gate passed 212 tests on dev.",
+    "The native journal, batch, critic, guardian and P0 transaction gate passed 312 tests on the same dev candidate."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "python",
+        "-m",
+        "unittest",
+        "-q",
+        "T25-nine-focused-modules"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "python",
+        "-m",
+        "unittest",
+        "-q",
+        "T25-journal-batch-critic-p0-gate"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

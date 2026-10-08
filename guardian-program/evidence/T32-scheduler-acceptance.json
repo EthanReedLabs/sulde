@@ -1,0 +1,27 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "scheduler_acceptance",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "Official reconciliation places all 15 Codex scheduler actors and the runtime owner on the installed T32 generation.",
+  "facts": [
+    "The installed install-agents.sh reconciled the approved Codex provider and redacted-local-context egress scope without changing scheduler definitions.",
+    "Operational scheduler readiness is ready with managed=15, loaded=15, failed_labels empty and missing_labels empty.",
+    "runtime-owner status is active and generation, runtime root and runtime tree digest match the installed artifact.",
+    "Effect debt is clear with blocking=0, pending_verifications=0 and interventions_open=0."
+  ],
+  "requirements": ["PROGRAM-GOVERNANCE"],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["install-agents.sh", "--runtime-root", "<installed-runtime>", "--provider", "codex", "--accept-llm-data-egress"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

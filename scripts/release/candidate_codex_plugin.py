@@ -331,6 +331,64 @@ def _bound_runner(environment: dict[str, str]) -> installer.Runner:
     return run
 
 
+def _prepare_isolated_hook_launchers(
+    installed: Path, kb_home: Path, runner: installer.Runner, *,
+    platform: str, environment: dict[str, str],
+) -> dict[str, Any]:
+    """Prepare candidate transports, never the production installer transaction.
+
+    Bind every destination to the existing candidate environment layout before
+    the first write. A caller's assertion that a target is isolated is not proof.
+    """
+    home = Path(environment.get("SULDE_HOME", ""))
+    isolated = home.parent
+    bindings = {
+        "SULDE_HOME": isolated / "sulde-home",
+        "SULDE_LAUNCHER_HOME": isolated / "sulde-home",
+        "SULDE_KB_HOME": isolated / "sulde-home/data/kb",
+        "CODEX_HOME": isolated / "codex-home",
+        "HOME": isolated / "home",
+        "SULDE_LAUNCHAGENTS_DIR": isolated / "launchagents",
+    }
+    if not home.is_absolute() or isolated.name != "isolated":
+        raise CandidateError("candidate Hook preparation requires an isolated environment")
+    for key, expected in bindings.items():
+        if (environment.get(key) != str(expected) or os.environ.get(key) != str(expected)
+                or expected.resolve() != expected or not expected.is_dir()):
+            raise CandidateError(f"candidate Hook isolation binding invalid: {key}")
+    if kb_home != bindings["SULDE_KB_HOME"]:
+        raise CandidateError("candidate Hook data root differs from isolated environment")
+    if (installed.resolve() != installed or not installed.is_dir()
+            or not installed.is_relative_to(bindings["CODEX_HOME"])):
+        raise CandidateError("candidate Hook plugin is outside isolated Codex cache")
+    # Atomic file replacement protects leaf symlinks, not a linked parent.
+    # Check both write directories before the launcher installer can write.
+    for directory in (home / "bin", home / "hook-entry"):
+        try:
+            info = directory.lstat()
+        except FileNotFoundError:
+            continue
+        except OSError as error:
+            raise CandidateError("candidate Hook write directory cannot be verified") from error
+        if (not stat.S_ISDIR(info.st_mode) or directory.resolve() != directory
+                or (os.name != "nt" and (info.st_uid != os.getuid() or info.st_mode & 0o022))):
+            raise CandidateError("candidate Hook write directory is unsafe")
+
+    from codex_hook_registration import PROTOCOL, validate_registration
+    registration = validate_registration(installed) if platform == "posix" else None
+    if registration is not None and registration["protocol"] not in {PROTOCOL, "legacy"}:
+        raise CandidateError("candidate Hook registration is unrecognized")
+    launcher = installer._install_launchers(installed, kb_home, runner, platform=platform)
+    if registration is not None and registration["protocol"] == PROTOCOL:
+        import codex_hook_entry as entry
+        from launcher_contract import runtime_interpreter
+        descriptor = entry.prepare(installed, home, interpreter=runtime_interpreter(kb_home))
+        entry.publish(home, descriptor)
+        if not entry.verify(home, descriptor)["healthy"]:
+            raise CandidateError("isolated stable Hook entry did not verify")
+    return launcher
+
+
 def prepare(
     *,
     candidate_home: Path,
@@ -718,6 +776,242 @@ def _fault_injected_installed_tree(
         (installed / "runtime" / "tools" / "kb-mcp" / "server.py").unlink()
 
 
+_GENERATION_DRILL_SOURCE = r'''
+import json, os, subprocess, sys, time
+from pathlib import Path
+
+scripts_dir = Path(sys.argv[1])
+scratch = Path(sys.argv[2])
+generation = sys.argv[3]
+sys.path.insert(0, str(scripts_dir))
+from generation_guard import (  # noqa: E402
+    active_generations, plan_retired_reclamation, switch_compatibility_report,
+)
+
+# R2-05: fresh scratch every run — a repeated verify must never fail
+# because a fixed scratch directory (or its prior launch description or
+# attempt state) already exists.
+scratch = scratch / f"drill-{time.strftime('%Y%m%dT%H%M%S')}-{os.getpid()}"
+scratch.mkdir(parents=True)
+state_dir = scratch / "drill-workspace" / ".codex-agent"
+state_dir.mkdir(parents=True)
+(scratch / "drill-workspace" / "base.txt").write_text("base\n", encoding="utf-8")
+brief = state_dir / "gen-drill.md"
+brief.write_text("# Task\n\nDo the work.\n", encoding="utf-8")
+brief.chmod(0o400)
+# The fake provider must satisfy the REAL report consumer contract (five
+# headings plus one evidenced completion check with the matching command
+# digest) — a run whose report verdict fails is a failed task, and the
+# drill must treat it as such instead of passing on lease mechanics alone.
+evidence = (
+    "\u2705 \u9a8c\u8bc1\u901a\u8fc7\uff1a`python -m unittest`\uff0cexit 0\uff1b\u8f93\u51fa OK\uff1b"
+    "candidate_sha256=" + "a" * 64
+    + "\uff1bexecution_binding_sha256=" + "b" * 64
+    + "\uff1benvironment_sha256=" + "c" * 64
+    + "\uff1bcommand_sha256=88d1e4ef3a5e210c702e32c1f294a637fcac036aae538cf3e0500c2c054b49c7"
+    + "\uff1bcount=1"
+)
+report_text = (
+    "## \u7ed3\u679c\n\u4efb\u52a1\u5b8c\u6210\u3002\n" + evidence
+    + "\n## \u8fc7\u7a0b\np\n## \u9047\u5230\u7684\u95ee\u9898\n\u65e0\n"
+    "## \u89e3\u51b3\u65b9\u5f0f\ns\n## \u9057\u7559\u98ce\u9669\u4e0e\u5efa\u8bae\n\u65e0\n"
+)
+fake_codex = scratch / "gen-drill-codex"
+fake_codex.write_text(
+    "#!/usr/bin/python3\n"
+    "import sys, time\n"
+    "time.sleep(2.0)\n"
+    "args = sys.argv[1:]\n"
+    "from pathlib import Path\n"
+    "report = Path(args[args.index('--output-last-message') + 1])\n"
+    "report.write_text(" + repr(report_text) + ", encoding='utf-8')\n"
+    "print('{\"type\":\"done\"}')\n",
+    encoding="utf-8",
+)
+fake_codex.chmod(0o755)
+run_env = dict(os.environ)
+run_env.update({
+    "SULDE_TEST_MODE": "1",
+    "SULDE_AGENT_PROVIDER": "codex",
+    "SULDE_CODEX_EXE": str(fake_codex),
+    "SULDE_RUNTIME_GENERATION": generation,
+    "PYTHONDONTWRITEBYTECODE": "1",
+})
+run = subprocess.Popen(
+    [sys.executable, str(scripts_dir / "agent-runtime.py"), "run",
+     str(scratch / "drill-workspace"), "gen-drill", str(brief), "--timeout", "30"],
+    stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=run_env, text=True,
+)
+leases_dir = state_dir / "run-leases"
+deadline = time.monotonic() + 20
+while time.monotonic() < deadline:
+    if any(leases_dir.glob("*.lease")) if leases_dir.is_dir() else False:
+        break
+    if run.poll() is not None:
+        break
+    time.sleep(0.02)
+lease_visible = leases_dir.is_dir() and any(leases_dir.glob("*.lease"))
+if not lease_visible:
+    run.terminate()
+    raise SystemExit("drill run never produced a lease")
+while_running = {
+    "active_generations": active_generations(leases_dir),
+    "switch_foreign": switch_compatibility_report(
+        leases_dir, target_generation="foreign-generation"
+    ),
+    "switch_own": switch_compatibility_report(
+        leases_dir, target_generation=generation
+    ),
+}
+retired_dir = scratch / "drill-retired" / "sulde"
+retired_dir.mkdir(parents=True)
+version, _, tree = generation.rpartition(":")
+retired_target = retired_dir / f"{version}-{tree[:20]}"
+retired_target.mkdir(parents=True)
+record = retired_dir / f"{retired_target.name}.retirement.json"
+record.write_text(json.dumps({
+    "schema": "sulde-retired-codex-cache-v1", "schema_version": 1,
+    "alias": f"/plugins/cache/{version}", "target": str(retired_target),
+    "version": version, "tree_sha256": tree,
+}, sort_keys=True), encoding="utf-8")
+plan_while_running = plan_retired_reclamation(
+    retired_dir,
+    leases_dirs=[leases_dir],
+    retention_seconds=0.0,
+)
+stdout, stderr = run.communicate(timeout=60)
+plan_after = plan_retired_reclamation(
+    retired_dir,
+    leases_dirs=[leases_dir],
+    retention_seconds=0.0,
+)
+# R3-01: shared-target reclamation is closed — the diagnostic flips to
+# eligible after the run exits, and the apply entry refuses unconditionally.
+reclaim_closed_error = None
+try:
+    from generation_guard import apply_retired_reclamation  # noqa: F401
+    reclaim_closed_error = "apply entry point still importable"
+except ImportError:
+    reclaim_closed_error = None
+drill_status_file = state_dir / "gen-drill.status"
+drill_task_status = None
+if drill_status_file.is_file():
+    for line in drill_status_file.read_text(encoding="utf-8").splitlines():
+        if line.startswith("status="):
+            drill_task_status = line.split(" ", 1)[0][len("status="):]
+            break
+print(json.dumps({
+    "run_exit": run.returncode,
+    "run_task_status": drill_task_status,
+    "eligible_while_running": plan_while_running["targets"][0]["eligible"]
+    if plan_while_running["targets"] else None,
+    "eligible_after": plan_after["targets"][0]["eligible"]
+    if plan_after["targets"] else None,
+    "reclaimable_after": plan_after["reclaimable_count"],
+    "reclaim_state": plan_after.get("reclamation"),
+    "reclaim_closed_error": reclaim_closed_error,
+    "lease_generation": while_running["active_generations"],
+    "foreign_switch_compatible": while_running["switch_foreign"]["compatible"],
+    "own_switch_compatible": while_running["switch_own"]["compatible"],
+    "reclaimable_while_running": plan_while_running["reclaimable_count"],
+    "reclaim_reason_while_running": (
+        plan_while_running["targets"][0]["reason"]
+        if plan_while_running["targets"] else None
+    ),
+    "reclaimable_after": plan_after["reclaimable_count"],
+    "run_stdout_tail": (stdout or "")[-300:],
+    "run_stderr_tail": (stderr or "")[-300:],
+}, sort_keys=True))
+'''
+
+
+def _verify_generation_protection(
+    installed: Path,
+    *,
+    environment: dict[str, str],
+    runner: Any,
+    candidate_generation: str,
+) -> dict[str, Any]:
+    """R1-06: exercise the candidate's own generational guard via real entries.
+
+    A real managed run (candidate runtime ``agent-runtime.py``, test-mode
+    provider, zero external model calls) holds a genuine lease; while it is
+    live the candidate's guard must see the candidate generation, refuse a
+    foreign-generation switch, and keep a retired tree with the running
+    generation's identity reclaimable=false.  After the run exits the same
+    tree becomes reclaimable and the two-stage apply reclaims it — deletion
+    happens only inside the drill's isolated scratch fixtures.
+    """
+    scripts_dir = installed / "runtime" / "scripts" / "kb"
+    scratch_root = Path(environment["SULDE_HOME"]) / "generation-drill"
+    scratch_root.mkdir(parents=True, exist_ok=True)
+    completed = runner(
+        [
+            sys.executable,
+            "-c",
+            _GENERATION_DRILL_SOURCE,
+            str(scripts_dir),
+            str(scratch_root),
+            candidate_generation,
+        ],
+        environment={
+            **environment,
+            "PYTHONDONTWRITEBYTECODE": "1",
+        },
+        timeout=180,
+    )
+    if completed.returncode != 0:
+        raise CandidateError(
+            "candidate generation-protection drill failed: "
+            + (completed.stderr or completed.stdout).strip()[-800:]
+        )
+    try:
+        evidence = json.loads(completed.stdout)
+    except json.JSONDecodeError as error:
+        raise CandidateError(
+            f"candidate generation-protection drill output was not JSON: {error}"
+        ) from error
+    if evidence.get("run_exit") != 0:
+        raise CandidateError(
+            "drill managed run failed: "
+            + str(evidence.get("run_stderr_tail"))[-400:]
+        )
+    if evidence.get("run_task_status") != "success":
+        # R2-05: process success is not task success — the report
+        # consumer contract must actually pass.
+        raise CandidateError(
+            "drill managed run did not reach task status success: "
+            + str(evidence.get("run_task_status"))
+        )
+    if evidence.get("foreign_switch_compatible") is not False:
+        raise CandidateError("foreign generation switch was not blocked by active lease")
+    if not evidence.get("own_switch_compatible"):
+        raise CandidateError("own-generation switch was wrongly reported incompatible")
+    if evidence.get("reclaimable_while_running") != 0:
+        raise CandidateError(
+            "a retired tree with a running generation's identity was planned "
+            f"reclaimable: {evidence.get('reclaim_reason_while_running')}"
+        )
+    # R3-01: reclamation is closed — the diagnostic flips to eligible after
+    # the run exits, the actionable verdict stays false, and the apply entry
+    # point is gone.
+    if evidence.get("eligible_while_running") is not False:
+        raise CandidateError("running identity was planned eligible while active")
+    if evidence.get("eligible_after") is not True:
+        raise CandidateError("drill fixture did not become eligible after run exit")
+    if evidence.get("reclaimable_after") != 0:
+        raise CandidateError("reclaimable verdict must stay false (reclamation closed)")
+    if evidence.get("reclaim_state") != "closed-diagnostic-only":
+        raise CandidateError("plan does not record the closed-reclamation state")
+    if evidence.get("reclaim_closed_error") is not None:
+        raise CandidateError("the removed apply entry point must not be importable")
+    return {
+        "status": "ready",
+        "mode": "real-managed-run-lease-diagnostic-closed-reclamation",
+        "evidence": evidence,
+    }
+
+
 def verify(
     *,
     candidate_home: Path,
@@ -806,11 +1100,12 @@ def verify(
                     raise CandidateError(f"injected {fault} was rejected")
 
             kb_home = Path(environment["SULDE_KB_HOME"])
-            launcher = installer._install_launchers(
+            launcher = _prepare_isolated_hook_launchers(
                 installed,
                 kb_home,
                 runner,
                 platform=state["platform"],
+                environment=environment,
             )
             smoke = installer._smoke_installed(
                 installed,
@@ -901,6 +1196,13 @@ def verify(
                 "mode": "production-entrypoint-isolated-dry-run",
                 "managed_labels": list(labels),
             }
+
+            verification["generation_protection"] = _verify_generation_protection(
+                installed,
+                environment=environment,
+                runner=runner,
+                candidate_generation=str(state["artifact"]["generation"]),
+            )
 
         verification["native_permission_ui"] = {
             "status": "unobserved",
@@ -993,6 +1295,7 @@ def promote(
     candidate_id: str,
     kb_home: Path,
     codex: str | None = None,
+    _maintenance_context=None,
 ) -> dict[str, Any]:
     started = time.monotonic()
     slot = _slot(candidate_home, candidate_id)
@@ -1004,6 +1307,12 @@ def promote(
     )
     if receipt.get("receipt_sha256") != state.get("receipt_sha256"):
         raise CandidateError("candidate state and receipt differ")
+    if _maintenance_context is not None:
+        plan = _maintenance_context.plan
+        if (str(candidate_home.resolve()) != plan["candidate_home"]
+                or candidate_id != plan["candidate_id"]
+                or receipt["receipt_sha256"] != plan["receipt_sha256"]):
+            raise CandidateError("maintenance candidate identity differs")
     selected_codex = codex or str(state["codex"]["executable"])
     artifact = Path(str(state["artifact"]["path"]))
     descriptor = installer.validate_staged_marketplace(
@@ -1014,6 +1323,9 @@ def promote(
         descriptor,
         installer.tree_digest(artifact / "plugins" / "sulde"),
     )
+    if _maintenance_context is not None:
+        _maintenance_context.check(candidate=artifact / "plugins/sulde",
+            kb_home=kb_home, codex=selected_codex, runner=installer.run_command)
     state.update(
         {
             "status": "promoting",
@@ -1031,6 +1343,7 @@ def promote(
             prepared_artifact=prepared,
             candidate_receipt=receipt,
             expected_live_state=receipt["live_prestate"],
+            **({"maintenance_context": _maintenance_context} if _maintenance_context is not None else {}),
         )
     except Exception as error:
         state.update(
@@ -1059,6 +1372,21 @@ def promote(
     )
     _write_state(slot, state)
     return result
+
+
+def maintenance_promote(context):
+    """Internal worker only; ordinary promote never constructs this context."""
+    from legacy_maintenance import MaintenanceContext, LiveHandoffContext, TrustedLiveHandoffContext, target_environment
+    if type(context) not in {MaintenanceContext, LiveHandoffContext, TrustedLiveHandoffContext}:
+        raise CandidateError("invalid maintenance execution context")
+    context.wait_for_cohort()
+    plan = context.plan
+    # The native host stays in its isolated home. Only its exact approved child
+    # targets the frozen production paths; no parent approvals/config are copied.
+    environment = target_environment(plan)
+    with _process_environment(environment):
+        return promote(candidate_home=Path(plan["candidate_home"]), candidate_id=plan["candidate_id"],
+                       kb_home=Path(plan["kb_home"]), codex=plan["codex"], _maintenance_context=context)
 
 
 def show(*, candidate_home: Path, candidate_id: str) -> dict[str, Any]:

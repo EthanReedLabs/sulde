@@ -1,0 +1,136 @@
+{
+  "schema": "sulde-sedimentation-acceptance-v1",
+  "status": "scoped_acceptance_passed",
+  "source_base": "11c8f9063da32606caeccd4355be8d8d5b44b9c8",
+  "branch": "feat/sediment-guardian-consistency",
+  "scope": {
+    "new_documents": 6,
+    "updated_documents": 2,
+    "knowledge_document_count": 387,
+    "runtime_code_changed": false,
+    "production_index_updated": false,
+    "installed": false,
+    "merged_to_dev": false,
+    "pushed": false
+  },
+  "identity": {
+    "corpus_sha256": "320546548af18ad51f1b3545f90bf6bb65c99a7d4edf1cd39434ae3b0c578de8",
+    "manifest_sha256": "a0684f81af01d6791f8552d9305abfb7525055687cb012e99c48783802802d24",
+    "paraphrases_sha256": "7081770a5972a18749becdc3f24ebf059eb0b4fe674292ce354f15205d47f360"
+  },
+  "source_evidence": {
+    "prior_review_logs_rehashed": 43,
+    "sha256_mismatches": 0,
+    "scope": "memory 20 / receipt 9 / Python dataflow 14; see original reports and immutable refs/sulde/evidence refs; no new production live claim"
+  },
+  "validation": [
+    {
+      "command": "python3.10 -B scripts/kb/lint-frontmatter.py",
+      "exit_code": 0,
+      "tracked_markdown": 393
+    },
+    {
+      "command": "python3.10 -B scripts/kb/lint-sedimentation.py",
+      "exit_code": 0,
+      "v2_documents": 44
+    },
+    {
+      "command": "python3.10 -B scripts/kb/build-index-md.py --check",
+      "exit_code": 0,
+      "documents": 387
+    },
+    {
+      "command": "python3.10 -B scripts/kb/build-corpus-manifest.py --check",
+      "exit_code": 0,
+      "documents": 387
+    },
+    {
+      "command": "python3.10 -B scripts/kb/build-corpus-manifest.py --verify",
+      "exit_code": 0,
+      "documents": 387
+    },
+    {
+      "command": "SULDE_KB_HOME=<task-private-kb> PYTHONDONTWRITEBYTECODE=1 scripts/kb/kb-index build",
+      "exit_code": 0,
+      "documents": 387,
+      "chunks": 1846,
+      "edges": 216,
+      "missing_related": 0,
+      "source": "task checkout, not installed runtime",
+      "data_scope": ".sulde/kb",
+      "network_requests": 0
+    },
+    {
+      "command": "python3.10 -B scripts/kb/run-isolated-tests.py tests.test_sedimentation_schema tests.test_lint_sedimentation tests.test_sedimentation_eval tests.test_sedimentation_search_eval tests.test_kb_index_common tests.test_kb_index_entry",
+      "exit_code": 0,
+      "total": 30,
+      "passed": 29,
+      "skipped": 1,
+      "failed": 0,
+      "suite_seconds": 1.918,
+      "skip_reason": "Windows subprocess branch not applicable to POSIX"
+    },
+    {
+      "command": "python3.10 -B scripts/kb/run-isolated-tests.py tests.test_guardian_string_flow.GuardianStringFlowTests tests.test_guardian_memory_consistency tests.test_selected_task_continuation",
+      "exit_code": 0,
+      "total": 52,
+      "passed": 52,
+      "skipped": 0,
+      "failed": 0,
+      "suite_seconds": 20.89,
+      "scope": "isolated consumers including real file locks; excludes native installation canary"
+    },
+    {
+      "command": "KB-venv/python -B scripts/kb/sedimentation-search-eval.py --data docs/sediment-guardian-consistency/paraphrases.jsonl --kb-home <task-private-kb> --min-rate 1 --json",
+      "exit_code": 0,
+      "result": "paraphrase-final.json",
+      "total": 32,
+      "correct": 32,
+      "exact_top1": 31
+    },
+    {
+      "command": "KB-venv/python -B scripts/kb/sedimentation-search-eval.py --kb-home <task-private-kb> --min-rate 1 --json",
+      "exit_code": 0,
+      "result": "baseline-final.json",
+      "total": 20,
+      "correct": 20,
+      "exact_top1": 16
+    }
+  ],
+  "preserved_failures": [
+    {
+      "kind": "corpus_manifest_stale",
+      "exit_code": 1,
+      "reusable_success": false,
+      "cause_status": "verified",
+      "resolution": "generate and independently verify MANIFEST before index build; production index untouched"
+    },
+    {
+      "kind": "new_paraphrases_run1",
+      "exit_code": 1,
+      "result": "paraphrase-run-1.json",
+      "total": 32,
+      "correct": 30,
+      "reusable_success": false
+    },
+    {
+      "kind": "new_paraphrases_run2",
+      "exit_code": 1,
+      "result": "paraphrase-run-2.json",
+      "total": 32,
+      "correct": 31,
+      "reusable_success": false
+    }
+  ],
+  "retrieval_limits": {
+    "minimum_rate": 1,
+    "target_top_k": 3,
+    "skip_requires_top1": true,
+    "algorithm_changed": false,
+    "threshold_changed": false,
+    "questions_changed_between_runs": false,
+    "evaluation_is_bounded_canary_not_all_possible_queries": true
+  },
+  "evidence_boundary": "No full repository suite or new production install. Earlier full-suite failures remain failures; prior scoped/native evidence reused only for unchanged runtime inputs.",
+  "index_cache": "Rebuildable task-private derived data; not Git-tracked and not promoted to production."
+}

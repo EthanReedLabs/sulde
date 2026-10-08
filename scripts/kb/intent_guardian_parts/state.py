@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from .relocation_storage import require_relocation_write_allowed
+from .relocation_storage import relocation_registration_write
+
+from .relocation_storage import atomic_write, _exclusive_path_lock
+
 from contextlib import contextmanager
 
 from .decision_types import DecisionV2, IntentGuardianError
@@ -17,6 +22,7 @@ import json
 import os
 
 from pathlib import Path
+from plugin_creator_dependency import PluginCreatorDependencyError, check_cachebuster_dependency
 
 import re
 
@@ -481,6 +487,11 @@ AGENT_CONTROL_ACTIONS = frozenset(
         "pause",
         "prepare-proposal",
         "prepare-workspace-handoff", "prepare-task-continuation", "release-completed-workspace", "finalize-workspace-cleanup",
+        "repository-relocation-preflight",
+        "inspect-repository-relocation",
+        "prepare-repository-relocation",
+        "prepare-historical-retirement",
+        "prepare-effect-recovery",
         "prepare-continuation",
         "proposal-show",
         "propose-revision",
@@ -507,6 +518,8 @@ AGENT_CONTROL_ACTIONS = frozenset(
 
 READ_ONLY_AGENT_CONTROL_ACTIONS = frozenset(
     {
+        "repository-relocation-preflight",
+        "inspect-repository-relocation",
         "show",
         "report",
         "doctor",
@@ -532,6 +545,9 @@ NATIVE_DECISIONS = {
     "resume": frozenset({"resume"}),
     "task-continuation": frozenset({"approve"}),
     "workspace-handoff": frozenset({"approve"}),
+    "repository-relocation": frozenset({"approve"}),
+    "historical-retirement": frozenset({"terminate"}),
+    "repository-relocation-execution": frozenset({"execute"}),
     "observation-export": frozenset({"approve", "reject"}),
     "effect-intervention": frozenset(
         {"retry_authorized", "reprobe_authorized", "abort"}
@@ -865,49 +881,20 @@ def _pause_global_locked(
 def kb_home() -> Path:
     return canonical_kb_home()
 
-def atomic_write(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
-    try:
-        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            handle.write(content)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temporary, path)
-    except Exception:
-        try:
-            os.unlink(temporary)
-        except OSError:
-            pass
-        raise
+
 
 @contextmanager
-def _exclusive_path_lock(lock_path: Path, *, timeout: float = 3.0) -> Iterator[None]:
-    """Serialize one short state transition across Claude/Codex processes."""
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    deadline = time.monotonic() + timeout
-    with lock_path.open("a+", encoding="utf-8") as lock_handle:
-        while True:
-            try:
-                lock_exclusive_nonblocking(lock_handle)
-                break
-            except BlockingIOError:
-                if time.monotonic() >= deadline:
-                    raise IntentGuardianError(f"guardian state lock busy: {lock_path}")
-                time.sleep(0.01)
-        try:
-            yield
-        finally:
-            unlock(lock_handle)
-
 def contract_lock(path: Path) -> Iterator[None]:
     """Return the cross-process lock protecting one mutable intent contract."""
-    return _exclusive_path_lock(path.with_name(f".{path.name}.lock"))
+    with _exclusive_path_lock(path.with_name(f".{path.name}.lock")):
+        require_relocation_write_allowed(path)
+        yield
 
 def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lock_path = path.with_name(f".{path.name}.lock")
     with _exclusive_path_lock(lock_path):
+        require_relocation_write_allowed(path)
         with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n")
             handle.flush()
@@ -1448,6 +1435,13 @@ def validate_contract(value: Any) -> dict[str, Any]:
     if not isinstance(runtime, dict):
         runtime = {}
     runtime["sequence"] = max(0, int(runtime.get("sequence", 0)))
+    retirement = runtime.get("historical_retirement")
+    if retirement is not None and (
+        not isinstance(retirement, dict) or set(retirement) != {"plan_id", "epoch"}
+        or not re.fullmatch(r"[a-f0-9]{64}", str(retirement.get("plan_id", "")))
+        or not isinstance(retirement.get("epoch"), str) or not retirement["epoch"]
+    ):
+        raise IntentGuardianError("invalid historical retirement marker")
     runtime["material_sequence"] = max(
         0, int(runtime.get("material_sequence", 0))
     )
@@ -2080,6 +2074,10 @@ def validate_contract(value: Any) -> dict[str, Any]:
     return contract
 
 def load_contract(path: Path) -> dict[str, Any]:
+    selected = path.expanduser().resolve()
+    if (selected.parent.name == "archives" and selected.parent.parent.name == "repository-relocations"
+            and selected.parent.parent.parent.name == "intent"):
+        raise IntentGuardianError("relocation archive is historical evidence, not an active contract")
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
@@ -2093,7 +2091,8 @@ def write_contract(path: Path, contract: dict[str, Any]) -> None:
 def _write_contract_unlocked(path: Path, contract: dict[str, Any]) -> None:
     normalized = validate_contract(contract)
     normalized["updated_at"] = now_iso()
-    atomic_write(path, json.dumps(normalized, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    with relocation_registration_write(path, workspace=Path(normalized["workspace_root"])):
+        atomic_write(path, json.dumps(normalized, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
     contract.clear()
     contract.update(normalized)
 
@@ -2125,6 +2124,10 @@ def policy_digest(contract: dict[str, Any]) -> str:
     # A material grant is authority and therefore becomes part of the base.
     if contract.get("continuation", {}).get("grants"):
         policy["continuation"] = contract["continuation"]
+    if contract.get("runtime", {}).get("historical_retirement"):
+        # Retiring an epoch invalidates cards prepared under its old authority.
+        # Contracts without retirement keep their existing digest unchanged.
+        policy["historical_retirement"] = contract["runtime"]["historical_retirement"]
     rendered = json.dumps(policy, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(rendered.encode("utf-8")).hexdigest()
 
@@ -2401,8 +2404,12 @@ def _codex_plugin_cachebuster_binding(
         / "skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py"
     ).resolve()
     selected_helper = Path(helper or expected_helper).expanduser().resolve()
-    if selected_helper != expected_helper or not selected_helper.is_file():
+    if selected_helper != expected_helper:
         raise IntentGuardianError("official plugin cachebuster helper is unavailable")
+    try:
+        check_cachebuster_dependency(selected_helper)
+    except PluginCreatorDependencyError as error:
+        raise IntentGuardianError(str(error)) from error
     selected_interpreter = Path(interpreter or sys.executable).expanduser().resolve()
     if not selected_interpreter.is_file():
         raise IntentGuardianError("continuation grant interpreter is unavailable")

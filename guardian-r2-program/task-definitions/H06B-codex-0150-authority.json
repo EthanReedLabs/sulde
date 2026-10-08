@@ -1,0 +1,41 @@
+{
+  "acceptance": [
+    "one staged runtime module is the only production source of the exact audited Codex executable and codex-cli 0.150.1 version, and runtime plus installer import that truth instead of duplicating version literals",
+    "native authority generation and runtime preflight bind the same executable digest, full help observation, strict profile, app-server initialize, runtime generation and runtime-tree digest; 0.149.1, future, substring, alias and diagnostic drift fail closed",
+    "the stager includes the shared contract before commit and a repository-wide mechanical guard rejects new production audited-version literals outside the shared module",
+    "focused runtime, installer, stage and rollback tests plus the supported isolated suite pass without production installation, scheduler mutation, dev/main merge or external effects"
+  ],
+  "base_commit": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "capability_tier": "deep",
+  "depends_on": ["H06A2-integration-hygiene"],
+  "supersedes": ["H06-r2-release-acceptance"],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"]
+  },
+  "owned_paths": [
+    "scripts/kb/codex_cli_contract.py",
+    "scripts/kb/agent-runtime.py",
+    "scripts/release/install_codex_plugin.py",
+    "scripts/release/stage_plugin.py",
+    "tests/test_agent_runtime.py",
+    "tests/test_codex_plugin_install.py",
+    "tests/test_stage_plugin.py",
+    "guardian-r2-program/reports/H06B-codex-0150-authority.md"
+  ],
+  "owner": "guardian-r2-worker-h06b",
+  "requirements": [
+    "R2-HUMAN-GRANT",
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-TYPED-RESOURCES",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06B-codex-0150-authority",
+  "title": "统一 Codex 0.150.1 原生执行权威并封闭版本漂移"
+}

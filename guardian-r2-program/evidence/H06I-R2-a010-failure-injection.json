@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-8604a20166ecf047ad18291d",
+  "verdict": "pass",
+  "kind": "failure_injection",
+  "summary": "The final combined candidate retains the full H06I hostile reason, type, order, replacement, quiescence and report-authority rejection matrix.",
+  "facts": [
+    "Missing, duplicate, out-of-order, reason-drift, unknown, non-string, blank, case-drift, non-integer return code and non-quiescent interruption variants fail closed.",
+    "Root-swap, parent-swap and post-read replacement attacks remain rejected before external writes.",
+    "The 214-test direct and isolated matrices include every H06I hostile test without skips."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-017"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_agent_runtime", "tests.test_native_agent_broker"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

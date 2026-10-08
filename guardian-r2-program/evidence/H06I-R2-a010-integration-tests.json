@@ -1,0 +1,37 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-8604a20166ecf047ad18291d",
+  "verdict": "pass",
+  "kind": "integration_tests",
+  "summary": "H06I and H06H compose at commit 809e9cd: 214 direct tests, 214 official isolated tests in a quiet window, and 64 control-plane tests pass.",
+  "facts": [
+    "The direct eight-module matrix passed 214/214 in 46.341 seconds.",
+    "The official isolated eight-module matrix passed 214/214 in 61.956 seconds with no production-KB concurrency warning.",
+    "The H06H integration plus guardian-program control matrix passed 64/64 in 2.894 seconds.",
+    "git diff --check is clean and the combined branch is clean."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-017"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-B", "-m", "unittest", "-v", "<eight combined R2 modules>"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["python3", "-B", "scripts/kb/run-isolated-tests.py", "<eight combined R2 modules>"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_r2_guardian_integration", "tests.test_guardian_program"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

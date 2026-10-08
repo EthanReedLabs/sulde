@@ -1,0 +1,137 @@
+{
+  "schema": "llm-diagnostics-local-release-v1",
+  "scope": "macos_codex_install_and_live_chain",
+  "source_commit": "7d3c309aa2053d2e5a2dca254cb433743e6b62c3",
+  "source_tree": "6837c8790e2e8f9fd19364a41e480132ea73a554",
+  "product_fix_commit": "898906ac30814dc14d4d5c4735504d8e0acfc191",
+  "version": "0.2.5+codex.20260923135758-a1d7cd1c4c",
+  "generation": "0.2.5+codex.20260923135758-a1d7cd1c4c:cc7bbfa9b9b696c81bdd1af8cfdea050f430c3733e7a5f6ef4d7ec95d84b6c79",
+  "runtime_sha256": "cc7bbfa9b9b696c81bdd1af8cfdea050f430c3733e7a5f6ef4d7ec95d84b6c79",
+  "candidate": {
+    "id": "llm-diagnostics-release-20260923-r2",
+    "status": "verified",
+    "receipt_sha256": "bf1581abb3914ce77f37cb087c901532837e754c35fcbfc856cadff3f8a26dae",
+    "timings_ms": {
+      "prepare_total": 2414.998,
+      "verify_total": 20304.322
+    }
+  },
+  "install": {
+    "status": "generation_verified",
+    "initial_operational_status": "scheduler_ready_live_host_unverified",
+    "initial_operational_ready": false,
+    "timings_seconds": {
+      "host_preflight": 0.116,
+      "deployment_lock_and_recovery_scan": 1.18,
+      "artifact_stage_and_validation": 1.072,
+      "scheduler_and_home_preflight": 2.272,
+      "snapshot_and_prepare": 31.234,
+      "registry_switch_and_readback": 3.6,
+      "launcher_rules_and_smoke": 2.429,
+      "deployment_and_scheduler": 2.996,
+      "postconditions_and_commit": 5.583,
+      "locked_total": 45.842,
+      "total": 55.016
+    },
+    "promotions_executed": 1
+  },
+  "live_pretool_proof": {
+    "schema": "sulde-pre-execution-proof-v2",
+    "proof_id": "82635123b766ac408a8316dd19daa1772c672d5f212e5d32c307a480ffe81733",
+    "probe_id": "01704fcf108646e59e1cdcce2e74e5fa",
+    "started_event_id": "f32acf476babce907856c3bc",
+    "started_call_id": "exec-1d11c4ec-7279-4523-abdb-4dd744496f4c",
+    "loaded_module_generation": "4f723803be8759d00d7fc98687e01f5612bc3fb5e77dfb2aa4858222993e1e30",
+    "artifact_generation": "0.2.5+codex.20260923135758-a1d7cd1c4c:cc7bbfa9b9b696c81bdd1af8cfdea050f430c3733e7a5f6ef4d7ec95d84b6c79",
+    "verified_at": "2026-09-23T14:21:43.981543+00:00"
+  },
+  "readback": {
+    "doctor_status": "degraded",
+    "interactive_reasons": [
+      "host_interactive_fresh"
+    ],
+    "scheduler": {
+      "authority": "launchctl_list_process_truth",
+      "failed_labels": {},
+      "inventory_sha256": "0d9ac79c5e5f65d6addb283348516f8f6b6683b5d12893859590b2d7b2f51c7f",
+      "loaded": 16,
+      "managed": 16,
+      "missing_labels": [],
+      "missing_observed": true,
+      "probe_status": "observed",
+      "reasons": [],
+      "retired_loaded_labels": [],
+      "status": "ready"
+    },
+    "effect_debt": {
+      "authoritative_blocking": 0,
+      "authoritative_settled_pending": 0,
+      "blocking": 0,
+      "error": null,
+      "interventions_open": 0,
+      "pending_verifications": 0,
+      "pending_verifications_total": 0,
+      "status": "clear",
+      "terminal_quarantined": 0,
+      "terminal_quarantined_pending": 0
+    },
+    "open_event_count": 0,
+    "verified_effects": [
+      {
+        "attempt_id": "att-2df01cabe621151bfe45a353",
+        "verification_source": "system_verification",
+        "verified_by_capability": "tool:codex_plugin_cachebuster_verify",
+        "verified_by_event": "f59ebe0e1ad9a61741ea3fb9"
+      },
+      {
+        "attempt_id": "att-65de91b2fd20a1f756c07a40",
+        "verification_source": "system_verification",
+        "verified_by_capability": "tool:codex_plugin_install_verify",
+        "verified_by_event": "d702278d21ffc94de74f35e1"
+      }
+    ]
+  },
+  "mcp": {
+    "schema": "sulde-cli01551-installed-mcp-readback-v1",
+    "status": "transport_passed",
+    "generation": "0.2.5+codex.20260923135758-a1d7cd1c4c:cc7bbfa9b9b696c81bdd1af8cfdea050f430c3733e7a5f6ef4d7ec95d84b6c79",
+    "plugin_version": "0.2.5+codex.20260923135758-a1d7cd1c4c",
+    "tool_count": 8,
+    "requests": 3,
+    "fresh_process": true,
+    "existing_conversation_reconnected": false,
+    "kb_status": {
+      "schema": "sulde-kb-status-readiness-v1",
+      "status": "degraded",
+      "ok": false,
+      "warn": true,
+      "authority": "bounded_background_status_snapshot",
+      "line": "sulde \u001b[33m●\u001b[0m kb:389·边222 mem:48.8k(+313) 待嵌:0 收割:3m前 蒸馏:今天 L2:r/L3:r/L4:r/E:",
+      "healthy": false,
+      "snapshot_status": "fresh",
+      "snapshot_age_seconds": 738,
+      "generated_at": "2026-09-23T14:09:12.537177+00:00",
+      "scope": "background_runtime"
+    },
+    "stdout_sha256": "1f7e97440d2e70dacbb3e05ee91b9d8f317c6158e31badf7a3e501ebdf6e6921",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "elapsed_seconds": 1.439
+  },
+  "test_reuse": {
+    "unit_passed": 82,
+    "unit_skipped_windows": 2,
+    "independent_source_passed": 44,
+    "independent_artifact_passed": 44,
+    "all_prior_source_test_runner_hashes_rechecked": true,
+    "source_artifact_installed_diagnostics_hashes_equal": true,
+    "full_suite_rerun": false,
+    "real_business_model_calls": 0
+  },
+  "boundaries": [
+    "current session new-generation prompt_control unobserved",
+    "MCP transport passed but background kb_status remains degraded",
+    "Windows native and real provider failure not exercised",
+    "No Orca environment expansion",
+    "Report commit follows installed source; product code unchanged"
+  ]
+}

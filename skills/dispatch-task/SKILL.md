@@ -21,6 +21,33 @@ capability checks, or a “no switch needed” preamble. Unknown model state doe
 
 Installing another CLI is not evidence that it owns the target session.
 
+## Dispatch an outcome, not a test round
+
+For implementation/repair handoffs, include a bounded continuous-execution
+agreement in the task: frozen scope and acceptance, baseline/candidate identities,
+expected impact, evidence path, budget and genuine stop conditions. Read
+`spec/task-authoring.md` in the source tree (or `runtime/spec/task-authoring.md`
+in a Codex plugin) for the full agreement when authoring or amending that task.
+
+The executor continues authorized fixture repair → defect/fix verification →
+actual entry checks → affected regression without waiting for a new “continue”
+after each stage. Updates are not approval gates. For fault-injection work, valid
+normal controls precede injection; use identical assertions on old and candidate
+code. Distinguish fixture failures, old defects and candidate regressions.
+Do not impose injection on documentation-only tasks or run full suites by default.
+
+Two attempts without new evidence trigger a change of diagnostic method, not
+another identical run or automatic handoff. Pause only at the agreed stop line,
+budget limit, genuine blocker, or a needed authority/scope decision. Preserve
+explicit audit-only/tests-only restrictions. A continuation must explicitly amend
+an earlier “stop after this test” instruction before proceeding beyond it.
+
+Request one consolidated independent review once scoped evidence is ready;
+collect related blockers together rather than issuing one micro-task per finding.
+Do not auto-accept, widen authority, or add unrelated discoveries to completion.
+If an old renderer omits this agreement, append it to the task prose rather than
+requiring a runtime upgrade merely to dispatch.
+
 ## Render the instruction
 
 Use the stable launcher:
@@ -70,6 +97,10 @@ Before sending, confirm:
 - ordinary Codex output contains no model/reasoning advice or readiness preamble;
 - explicit advice output matches the target provider;
 - a continuing task stays in the same session unless the user explicitly requested a fresh one.
+- a repair task covers continuous execution through its review point, with bounded
+  retries and explicit stop conditions rather than user-mediated per-test rounds;
+- claims separate old defects, candidate repairs and invalid tests, and reference
+  the tested inputs; unrelated follow-ups do not silently expand acceptance.
 
 If advice-mode rendering is unavailable, report that limitation without inventing selector commands.
 Ordinary task-only dispatch can proceed without the renderer. This skill controls interactive

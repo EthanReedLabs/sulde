@@ -1,0 +1,109 @@
+{
+  "schema": "sulde-guardian-program-manifest-v1",
+  "program_id": "guardian-remediation-r97",
+  "objective": "建立单写者控制面并完成意图守卫拆分、可靠性修复、集成、安装与最终实机验收",
+  "coordinator": "guardian-coordinator",
+  "requirements": [
+    {
+      "id": "WP56-A",
+      "title": "决策权与执行权分离",
+      "acceptance": ["原生可读决策卡绑定一次性请求，Agent 不能伪造或复用决定"]
+    },
+    {
+      "id": "WP56-B",
+      "title": "结构化只读分类与参数文本隔离",
+      "acceptance": ["只读命令组合不会因参数中出现写入词汇而升级效果"]
+    },
+    {
+      "id": "WP56-C",
+      "title": "未知物质工具 fail closed",
+      "acceptance": ["未知或物质动作在守卫不可用时拒绝，窄只读诊断仍可用"]
+    },
+    {
+      "id": "WP56-D",
+      "title": "本地文件目标和操作解析",
+      "acceptance": ["Update、Add、Delete、Move、多文件和嵌套输入均按真实目标判定"]
+    },
+    {
+      "id": "WP56-E",
+      "title": "Git ref 外部效果验证",
+      "acceptance": ["push 只有在独立 remote/ref/OID 对拍后进入 system_verified"]
+    },
+    {
+      "id": "WP56-F",
+      "title": "一次性回执完整消费与事务恢复",
+      "acceptance": ["所有 native 决策类型可在崩溃边界幂等恢复且不能重放旧回执"]
+    },
+    {
+      "id": "WP56-G",
+      "title": "break-glass 与正常控制面分离",
+      "acceptance": ["正常宿主路径不要求外部终端，损坏时仍存在独立且可审计的恢复入口"]
+    },
+    {
+      "id": "DERIVED-OWNERSHIP",
+      "title": "任务、会话和 lane 状态所有权",
+      "acceptance": ["一个 lane 的暂停、任务切换和授权不会污染无关会话"]
+    },
+    {
+      "id": "DERIVED-RESOURCE",
+      "title": "资源身份与 effect debt 真值",
+      "acceptance": ["同一资源的路径、URI 或 MCP 别名不能绕过跨 session debt"]
+    },
+    {
+      "id": "DERIVED-JOURNAL",
+      "title": "跨账本 native 事务恢复",
+      "acceptance": ["proposal、resume、effect、intent 和 observation-export 均有失败注入与幂等恢复"]
+    },
+    {
+      "id": "DERIVED-READINESS",
+      "title": "运行就绪真值",
+      "acceptance": ["scheduler、interactive、artifact、effect 和 decision pairing 分域且不能互相冒充"]
+    },
+    {
+      "id": "DERIVED-DELIVERY",
+      "title": "发布 generation 与后台 actor 收敛",
+      "acceptance": ["源码、stage、installed runtime、scheduler owner 和执行摘要属于同一 generation"]
+    },
+    {
+      "id": "DERIVED-ISOLATION",
+      "title": "测试隔离与证据归因",
+      "acceptance": ["测试不能写生产 KB，父宿主并发事件只能按窄协议归因"]
+    },
+    {
+      "id": "DERIVED-HOTPATH",
+      "title": "Hook 热路径、自锁和增量审计",
+      "acceptance": ["Hook 不全量重放历史，慢验证不占状态锁，审计 cursor 可持久恢复"]
+    },
+    {
+      "id": "DERIVED-CRITIC",
+      "title": "语义 critic 增量归因",
+      "acceptance": ["critic 只评估任务基线后的本轮增量并消费已登记验收证据"]
+    },
+    {
+      "id": "DERIVED-TIMEOUT",
+      "title": "PermissionRequest 超时重评估",
+      "acceptance": ["五分钟只触发重评估，不形成授权、不伪造过期，并有真实宿主 canary"]
+    },
+    {
+      "id": "DERIVED-SPLIT",
+      "title": "主守卫按领域拆分",
+      "acceptance": ["状态、策略、审批、资源、审计、readiness 与 CLI 边界清晰且不存在反向依赖"]
+    },
+    {
+      "id": "PROGRAM-GOVERNANCE",
+      "title": "统一控制面与总纲验收",
+      "acceptance": ["每个任务有证据包和问题处置，总纲零遗漏后才能关闭"]
+    }
+  ],
+  "program_evidence_required": [
+    "final_traceability",
+    "full_isolated_suite",
+    "failure_injection_suite",
+    "stage_artifact",
+    "installed_generation",
+    "scheduler_owner",
+    "live_host_canary",
+    "rollback_evidence"
+  ],
+  "allow_human_deferred": false
+}

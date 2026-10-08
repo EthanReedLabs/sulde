@@ -498,7 +498,10 @@ def adapt_intervention(
 def adapt_correction_intervention(
     row: Mapping[str, Any], source: EventSource, line: int
 ) -> dict[str, Any]:
-    if row.get("schema") != "sulde-correction-intervention-event-v1":
+    if row.get("schema") not in {
+        "sulde-correction-intervention-event-v1",
+        "sulde-correction-intervention-event-v2",
+    }:
         raise UnsupportedRow("correction intervention schema is unsupported")
     source_type = str(row.get("type") or "")
     if source_type == "correction.intervention_proposed":
@@ -508,6 +511,9 @@ def adapt_correction_intervention(
         outcome = str(row.get("state") or "unknown")
         phase = "completed" if outcome in {
             "applied",
+            "acknowledged",
+            "verified",
+            "closed",
             "rejected",
             "unsupported",
             "cancelled",
@@ -540,7 +546,9 @@ def adapt_correction_intervention(
             "event_name": source_type,
             "intervention_sha256": text_digest(row.get("intervention_id")),
             "reason_code": row.get("reason_code"),
-            "semantic_acceptance": "unknown",
+            "semantic_acceptance": (
+                "verified" if outcome in {"verified", "closed"} else "unknown"
+            ),
             "source_name": row.get("source"),
         },
     )

@@ -1,0 +1,12 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-amendment-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-009",
+  "parent_chain": [{"path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-008.json", "sha256": "fc5f77e313b132bc06ca786d31d4bb727935ab62a40409befd55806fdb54a89d"}],
+  "authority": "human-authorized-autonomous-h06h-completion-current-session",
+  "authority_scope": "replace the incorrectly attributed H06C/H06D test topology with one fresh H06H-owned candidate from accepted sources and verify it without reusing predecessor evidence",
+  "task": {"task_id": "H06H-r2-final-acceptance", "candidate_base_commit": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2", "candidate_root": "/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/r2-h06h-final-acceptance"},
+  "owned_paths": ["guardian-program/MASTER.md", "tests/fixtures/r2-guardian-incidents/replay-cases.json", "tests/test_r2_guardian_integration.py", "guardian-r2-program/reports/H06H-r2-final-acceptance.md"],
+  "required_verification": ["focused H06H integration and hostile fixture matrix", "quiet-window isolated full suite", "failure injection", "independent live and release evidence"],
+  "terminal_rule": "any non-owned diff, predecessor artifact dependency, synthetic live PASS, test failure or missing external evidence stops acceptance"
+}

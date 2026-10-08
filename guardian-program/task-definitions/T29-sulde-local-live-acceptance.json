@@ -1,0 +1,51 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T29-sulde-local-live-acceptance",
+  "title": "解除跨项目 live canary 耦合并完成 Sulde 本地发布验收",
+  "owner": "guardian-coordinator",
+  "capability_tier": "balanced",
+  "base_commit": "7cbd14378f8124efccf0333c7d414f939b0d1e2c",
+  "depends_on": [
+    "T25-release-gate-closure",
+    "T23-current-lane-readiness",
+    "T28-cleanup-quarantine-consumer",
+    "T00-control-plane"
+  ],
+  "supersedes": [
+    "T27-release-blocker-remediation"
+  ],
+  "owned_paths": [
+    "guardian-program/reports/T29-sulde-local-live-acceptance.md"
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-READINESS",
+    "DERIVED-DELIVERY",
+    "DERIVED-RESOURCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "acceptance": [
+    "继承 T27 与 T28 已验证源码、完整隔离测试、dev 到 main 合并和官方安装证据，不修改产品源码或生产账本",
+    "iquokka 会话只保留为历史问题复现证据，外部项目 task epoch、任务存续和 lane 状态不再成为 Sulde 安装、发布或日常运行前置条件",
+    "当前 installed generation、稳定 launcher、runtime owner 和 15 个 scheduler actor 一致且全部就绪",
+    "安装完成后启动的 Sulde 自有 Codex 会话产生真实当前 runtime 的 SessionStart、prompt 与监督观测，doctor 为 ready；不得使用合成回调或旧 receipt",
+    "T29 证据包、问题处置、需求追踪和程序级 final-check 全部通过后才能关闭总纲"
+  ],
+  "evidence_gates": {
+    "implemented": [
+      "task_report",
+      "changed_files"
+    ],
+    "task_verified": [
+      "targeted_tests",
+      "failure_injection"
+    ],
+    "integrated": [
+      "integration_tests"
+    ],
+    "system_verified": [
+      "system_tests",
+      "requirement_traceability"
+    ]
+  }
+}

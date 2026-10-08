@@ -1,0 +1,576 @@
+{
+  "schema": "life-r1-final-test-evidence-v1",
+  "artifacts_sha256": {
+    "R1-cost-breakdown.json": "b3ceca1c077735a19b3a5de7de562f789ee7c586e0c50e841b15b01d278e8b27",
+    "R1-latency-py310.json": "65e2e6c7649422cebeaa1f0cc35879001a2dd890bfa38a78d4e9d65f67427326",
+    "R1-latency-py314.json": "ad88ba9783becac33ea1a4b1049fb18c94a5ab96c4aa52c1a4ce9b1f9b66c51a",
+    "R1-native-posttool.json": "cb60b9f213c4dffa75c94046514e9d6d0c08996ec8141f1ea0c81f3cbf6982e6",
+    "R1-performance-history.json": "6ecec108c5214f3fbc41f054304bfe7fce88430f5a1c2ef92f21d8beaf584633",
+    "R1-release-history.json": "62c55a4c89abc21a1efd2225a05e6e2029ddfed0467e3fa6a2bf401af4d27a66",
+    "R1-release.json": "241b02677bedbf4b38483f830d8858625d0c65e62354817c1bd9889933b1eb6a",
+    "probe-r1-cli.py": "d11aa1aacb8d7202c922723a410253584e964a417b18e3bb9f20d4d8b8ca7c19",
+    "probe-r1-cost.py": "07e236821eecd15e2c989e7529e7a976ea90f55b8d98b9480aa2c742cc67a07b",
+    "probe-r1-latency.py": "ba4b8b32489a5fd3b0b9409dd77ca156259b443988423df1448e0c6acf352134",
+    "probe-r1-release.py": "03244eadd0e5cdd4f39248d63458d8bfa785748e86d7cb604728830224d31fc9"
+  },
+  "batch": "R1",
+  "status": "isolated_source_validation_passed_with_explicit_host_gaps",
+  "sourceVersion": "d90aedba44f07bd6028c0a13fd467279e807e5d25621c982d780f87c3b5dce94",
+  "commit": "8375ac3511af22de9d86886697a16dc154442417",
+  "python": {
+    "schema": "sulde-python-environment-v1",
+    "executable_sha256": "821824635f10f06dace33486e71ad7b520d633b0e4b1f6f150cfaffc1b0dc1b7",
+    "environment": {
+      "version": [
+        3,
+        10,
+        7
+      ],
+      "implementation": "cpython",
+      "cache_tag": "cpython-310",
+      "dependencies": {
+        "PyYAML": {
+          "version": "6.0.3",
+          "content_sha256": "cd599dfd54eaa161a07a80ea872158b3849b8a6ab5d21fa9d51e5f5d00e4086a",
+          "root_sha256": "d40c8f89e170f6901f8a52c7655f29d8e1ad28b43f6fb3b33f5fe6ad0c18e051"
+        },
+        "sqlite3": "3.51.0",
+        "ssl": "OpenSSL 3.6.3 9 Jun 2026",
+        "venv": "available"
+      },
+      "prefix_sha256": "d3234b01bffdc6e57fe4512018fa8fe1e9f6fae9b7467ae03c1c74e78e40e132",
+      "base_prefix_sha256": "d3234b01bffdc6e57fe4512018fa8fe1e9f6fae9b7467ae03c1c74e78e40e132"
+    },
+    "executable_path_sha256": "6cafd681105e528cafb50016d60e49212be88d7eeb88ede7044df82b9e217d29"
+  },
+  "dependencies": [
+    [
+      "Jinja2",
+      "3.1.5"
+    ],
+    [
+      "MarkupSafe",
+      "3.0.2"
+    ],
+    [
+      "MouseInfo",
+      "0.1.3"
+    ],
+    [
+      "PyAutoGUI",
+      "0.9.54"
+    ],
+    [
+      "PyGetWindow",
+      "0.0.9"
+    ],
+    [
+      "PyMsgBox",
+      "2.0.1"
+    ],
+    [
+      "PyRect",
+      "0.2.0"
+    ],
+    [
+      "PyScreeze",
+      "1.0.1"
+    ],
+    [
+      "PyYAML",
+      "6.0.3"
+    ],
+    [
+      "contourpy",
+      "1.3.1"
+    ],
+    [
+      "cycler",
+      "0.12.1"
+    ],
+    [
+      "et_xmlfile",
+      "2.0.0"
+    ],
+    [
+      "filelock",
+      "3.17.0"
+    ],
+    [
+      "fonttools",
+      "4.55.8"
+    ],
+    [
+      "fsspec",
+      "2025.2.0"
+    ],
+    [
+      "imageio",
+      "2.37.0"
+    ],
+    [
+      "kiwisolver",
+      "1.4.8"
+    ],
+    [
+      "lazy_loader",
+      "0.4"
+    ],
+    [
+      "lxml",
+      "6.1.0"
+    ],
+    [
+      "matplotlib",
+      "3.10.0"
+    ],
+    [
+      "mpmath",
+      "1.3.0"
+    ],
+    [
+      "networkx",
+      "3.4.2"
+    ],
+    [
+      "numpy",
+      "2.2.2"
+    ],
+    [
+      "opencv-python",
+      "4.11.0.86"
+    ],
+    [
+      "openpyxl",
+      "3.1.5"
+    ],
+    [
+      "packaging",
+      "24.2"
+    ],
+    [
+      "pillow",
+      "11.1.0"
+    ],
+    [
+      "pip",
+      "22.2.2"
+    ],
+    [
+      "pyobjc-core",
+      "12.1"
+    ],
+    [
+      "pyobjc-framework-Cocoa",
+      "12.1"
+    ],
+    [
+      "pyobjc-framework-Quartz",
+      "12.1"
+    ],
+    [
+      "pyparsing",
+      "3.2.1"
+    ],
+    [
+      "pypdf",
+      "6.10.2"
+    ],
+    [
+      "pyperclip",
+      "1.11.0"
+    ],
+    [
+      "python-dateutil",
+      "2.9.0.post0"
+    ],
+    [
+      "python-docx",
+      "1.2.0"
+    ],
+    [
+      "pytweening",
+      "1.2.0"
+    ],
+    [
+      "rubicon-objc",
+      "0.5.3"
+    ],
+    [
+      "scikit-image",
+      "0.25.1"
+    ],
+    [
+      "scipy",
+      "1.15.1"
+    ],
+    [
+      "setuptools",
+      "63.2.0"
+    ],
+    [
+      "six",
+      "1.17.0"
+    ],
+    [
+      "sympy",
+      "1.13.1"
+    ],
+    [
+      "tifffile",
+      "2025.1.10"
+    ],
+    [
+      "torch",
+      "2.6.0"
+    ],
+    [
+      "torchvision",
+      "0.21.0"
+    ],
+    [
+      "typing_extensions",
+      "4.12.2"
+    ]
+  ],
+  "tests": "unittest discover tests/test_*.py",
+  "runner": "scripts/kb/run-isolated-tests.py",
+  "platform": "macOS-26.3-arm64-arm-64bit",
+  "test_files": {
+    "tests/test_accepted_snapshot_protocol.py": "1621b14c73703926061f6baf629bfe96af5c7d01bdd6bb67ce0cf9d83351ee86",
+    "tests/test_agent_experience.py": "190ea0b564e42114a8b0cb9e46588ed00ad566c15687479bf50e400d342066a5",
+    "tests/test_agent_owned_human_decisions.py": "80a55f518f050efeb29569bbf25326c672e5eeafac69aac05d7997e446e80614",
+    "tests/test_agent_runtime.py": "6c1634ed8ff91cda99f0216bbda0a9ede48d0370b531203385ce2e47ee1ce750",
+    "tests/test_approval_cas_schema.py": "12db20f95c34adee43dd11823cb90a3dfb02701c731b4f15de6a3083d40d68a9",
+    "tests/test_approval_invariant.py": "e7d015f4781efc901aa6bc4d38e1ea61899941a75b06d4f125ba60be298cddbd",
+    "tests/test_approval_timeout_policy.py": "87e3262254b2891c7d823c7af9e47e538121c83069e4309150884b94a25cbb52",
+    "tests/test_audit_cursor.py": "0766df5e5444c6fe5657236229dee0640ae75992ab0d57bf72689ac6b601c6ac",
+    "tests/test_auto_distill_windows.py": "344361e0c75ba44702fbe7efd09dc2f15545c8e2c74e362cee1dae68de35caee",
+    "tests/test_auto_sediment.py": "1f52b1f50be31b1592ed0636c40e6e7dd49109ba5bc736daa199a6fe488a9945",
+    "tests/test_bootstrap_windows.py": "5af4007d313a5976339e9cb1d9e2785478ad18d64e180543e247c362f1ade8a5",
+    "tests/test_candidate_codex_plugin.py": "dfe5a2dc9ced52a96cd52c6b1a88f004d23e3775d0e88197592bfb7951cb26c5",
+    "tests/test_codex_hook_bridge.py": "781a52b4877f64f86baca10bba2375e3a39f1281906c4fa345378c7374f90b78",
+    "tests/test_codex_plugin_install.py": "521a9e5cb70c2016d6d1b2c4ead55ecd92e6bcb3033a87892d7393380819faf7",
+    "tests/test_codex_user_prompt_adapter.py": "af6464aa24102f6d646facc64427c980bf4620d22634a87f6745602e51244ac4",
+    "tests/test_command_policy.py": "f98c57380069693feb4a8cb5b6fb6315bf2bfc42f482f514ed853757f04d84b3",
+    "tests/test_command_template_split.py": "30045083be38b34d4f2ff9f71b06d0d7bb93b7d33ed5fb3196ddacdb0a1c2625",
+    "tests/test_configure_global_cli.py": "ae68cd6d733e690de13945e98e580d889d47bdad2360e8c9dccbd3743e2c46a7",
+    "tests/test_configure_statusline.py": "c91ea61057de368bace9b007c43a923bf1434485fb9064606653d8c3d5d9ef1e",
+    "tests/test_corpus_manifest.py": "1a5f56628e78dd553d4d2432316eef6ecb6e0d68b20c995b6a7df3ee3a30971d",
+    "tests/test_correction_intervention.py": "ff9d484d8e7e19bb1ae431c28d1c34dd8034c75f0bfd25e1adbe657e546de587",
+    "tests/test_critic_checkpoint.py": "73ede38fb02989a1fa4b573600896b342ebf63e901f04689fdb38b92be77318d",
+    "tests/test_decision_kernel.py": "957f591f892dde74bfb5c304fed0f0865aa8613029fe03afdb309279272d614e",
+    "tests/test_derived_details.py": "996e1128839f8072b3ba85a421af0831ce3d5e16d2306179104d26d6a5a7e0eb",
+    "tests/test_dual_runtime_contract.py": "ceafdab278d68dda5f1e0a02a9ea291f733d6a809b90ec6d0198dbc274833cbe",
+    "tests/test_effect_router.py": "974c0db5643c964bb425374e3806e4c2eac6e521994bd7bd80f2aba4304d3bbf",
+    "tests/test_enforcement_protocol.py": "85800fb7f17e3713710addfb4c2feb418e6818b6c7aacba8c969f7e985047594",
+    "tests/test_event_observer.py": "203a728516b8767521f6ffa28ad72e3f3b379298944957c0ce50555e1ae974b2",
+    "tests/test_execution_backend.py": "ce11addd768552a8c0586e174742008b7018f83902975476df18f6be277045f1",
+    "tests/test_export_community.py": "4d2b939d2fc40af083f8867594cb8c68da3d6e0aba31e3d8f9869219ba37bf19",
+    "tests/test_file_lock.py": "35a8fd9cbdca85b01cbb5f5d4da5d00711b91109f43fc48b5e7bce7e11bcdac3",
+    "tests/test_golden_expand.py": "658f2a02dffc2688733ab58fc72254081efaa4bb670c37df6061ee8bc8241077",
+    "tests/test_golden_review.py": "c20f8a71d6cefdfb19347aca0c7c26b53de8b20e465af149d9659de288863c61",
+    "tests/test_governance_report.py": "46c3908520f08b1aa441e976887c2f47ff25672adbd3db102043388a4aa75fb9",
+    "tests/test_governance_review.py": "b475e614e62c20954f6baf56d2189e5067163a361bff440e3bb297ba6885903d",
+    "tests/test_grant_broker.py": "39a196e93cf43aa88a50d7c5526e2ae371cd346304a74a7b11c81d02c4c64491",
+    "tests/test_graph_audit.py": "4371d03a8a32ddccea8b67590d91b91225c645c598ea1d82ea1a8aeac0d51d4e",
+    "tests/test_guardian_performance.py": "6e3981be9c2a826083fff05ac4c48f0fcc3f28ee41aa01c7b61d4fbba6ec2c92",
+    "tests/test_guardian_program.py": "068f81a46680243310b948541a73e44a7db78ac8473da34dcfb203bb1d9de2be",
+    "tests/test_guardian_recovery.py": "164c985d170dc9c797de6d111ff01d9b9a6574639f30a32ccb3ed6b5efb60da8",
+    "tests/test_hook_observer_closure.py": "10df8074f4908f2e87222f698eb75b7d00bae17773bb127819c793bd58ce9fad",
+    "tests/test_host_adapter_contract.py": "dff7023f2d83b93e01692f3c868453dcc0c5a19dcb947e9e06ccdaf51ff2bfad",
+    "tests/test_host_capabilities.py": "f323d1143070947c04714b8d002fcca2cfb0e28f6fe3b0f5d21919f9603109c8",
+    "tests/test_human_grant.py": "530f85e21b56e237eded3ddf9e0d0decf1caa24c581dd4de0ebec48457968b6e",
+    "tests/test_install_transaction_journal.py": "31431035061ff0820b001344e874b7361166fc3e0305756a267a079392d62df4",
+    "tests/test_intent_critic_dag.py": "67f85229160a7ad1d5f04b021aa1a15e843e6f67e74e78d7bc455e127ab219a9",
+    "tests/test_intent_guardian.py": "21bc86203d210150b2772315afd375bba49fc90abbb5c838096e90ec07de179a",
+    "tests/test_intent_guardian_completion.py": "e68fed929f0e98eb2b54e2be935630983e056aa03f22fbd62f46469f1d649ff5",
+    "tests/test_intent_guardian_resources.py": "87d4ed341528079a62fa5ca8ca5023445ff1f45514cdf3b6fb04079a3c1f1237",
+    "tests/test_intent_guardian_state.py": "4286d67ea419a59d8d7296a4604e12ed6b810ddd190ff97b61e911736736f096",
+    "tests/test_intervention.py": "886117f99b5a140f63e48fab0034cf3462a8a47378988740e459373319607417",
+    "tests/test_intervention_batch.py": "1324823a8264acfd24d243ffbc61ed23146f735562d8f788f98a01c47383b26c",
+    "tests/test_isolated_test_runner.py": "7ec9df74656edf9670f5fd1373a3d0d384479279c3cb0274535513c55f74e4d3",
+    "tests/test_kb_aging.py": "d8a308ad2e478d1d3bbb35f295392acf7a63225b076ec6c2c80b39fdccff7ab2",
+    "tests/test_kb_cli_launch.py": "c18eba3c8a0f46ab74ab50e3496c4066b6f14ac878ecb6c6a20b44cf6caa2bc0",
+    "tests/test_kb_cli_migration.py": "003ac92e4f00d469c312afaa82b5a44e548a1b209a410e905c85f8bb790778cc",
+    "tests/test_kb_dedup.py": "19f520101e652d2ed384388535556862752c9791a9bafc5937d12a0dbb3b6377",
+    "tests/test_kb_fingerprint_consumers.py": "ab46257fdd96221511a2f341d61550f3bed9f71b27dc1c58ff5093edbdc14112",
+    "tests/test_kb_index_common.py": "24767504deb1e7dc53159f94816b4603e01c2d1578f469c10df52b8926560eeb",
+    "tests/test_kb_index_entry.py": "2b9efe777c5a4f78905a005e7bf2d0350c101807f60ce174254bc2d44415a712",
+    "tests/test_kb_mcp_entry.py": "5e4dfcaf83fe720a8fdad0fee0f2716d473fd0a3acbd3a8444127a96412139d8",
+    "tests/test_kb_search_polarity.py": "8b605e7f06068450dfde74a0fa4d071fb3449927de3595a74a5e804ad2c2bd90",
+    "tests/test_kb_venv_reentry.py": "91122f9e0b66a6c44521235a0a45de10279e7196a0d9d37e66fa26ab15e2f382",
+    "tests/test_knowledge_history.py": "eb72dfcf772de9b22386d4ba0f7ed40e16e382f37c666dcc91fea6d32c4524b1",
+    "tests/test_l2_draft.py": "e73d4200e23e5ec707a910f366f474c2432f07fbd0b7667f0bfb5384f145bce4",
+    "tests/test_launcher_contract.py": "6987eac9498a25f7a2e277fec386cc498e2eaa2a134d02b77a0008c5df9f32e9",
+    "tests/test_launcher_split_recovery.py": "6d27207e060b019f8704d9c062e25a9e8f73bee8029e4c2b080a888fef3edc2d",
+    "tests/test_life_cycle.py": "eb9320aee73782f141be0ffec2a3daa3e10d44399366d64bdff37ad0f6f99f37",
+    "tests/test_life_health_closure.py": "d63d55b0dcd807f7e75176039adb433613bb8d4003e6c6e92b67bebeeb1e2963",
+    "tests/test_lint_sedimentation.py": "e0a48af5e8b16ccc866a889fe38c87afcd49978dd96afb509f1cd3a89848db55",
+    "tests/test_local_file_operations.py": "fecc8e0d68fd8b18d62f9d3f937cee305c13fa036477ebaa68b20761e359056f",
+    "tests/test_material_cas_lane_binding.py": "8bc0d28b2244873fd00461e41c5082a34f1de200264e164df465dd28eb5104f0",
+    "tests/test_mem_adoption.py": "c891a3039279178fa6cdc7ff5c48d5b4d027fd259673b89ab8aef55d10b887b4",
+    "tests/test_mem_recall_prewarm.py": "792c164041d5887afa3ac07a0904388fc651f0fcbec06763e62eee6845720999",
+    "tests/test_mem_sync.py": "5eede3235dfb4b4c737f5a60776277201d438c7d6cac579e01ee404c6aa35a9a",
+    "tests/test_memory_embed_actor.py": "353f6489f732f94e6259e42ccac689c7e71498409d0a0a07c8e3b857dccf12b0",
+    "tests/test_memory_graph_quality.py": "f6a9e4737a03afe7d0afc8ea7010d47e0f5f6ff6cb9e9fcf4bd055358d4126c4",
+    "tests/test_memory_home_reconcile.py": "b915340adf2a6b7cea1d9d6b92710b8285201c1ab01eb2e8ba24c52fbe565b73",
+    "tests/test_memory_noise.py": "a8441bd9c9f9e8670c142e1027c5b8f1fa94b63e03bda26d31d6315ac0bce745",
+    "tests/test_mixed_host_memory.py": "b816fa5960d2bf19d6c27840fa6b04d74d23d92821059c335d8abb04ce0ec61f",
+    "tests/test_model_dispatch_contract.py": "d50fe9d8f625629af19c4f9e7d0c46f2ccfbd17cfea58bb38eea43215b9a4ef7",
+    "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "tests/test_native_decision_journal.py": "2e7494d1ff332818ddff12810a83da316605f045c4765abdb570865c0c92ddae",
+    "tests/test_native_posttool_delivery.py": "e6ab84a0e252610315f9dfd52ce6e281121f2bd71be64799567398fcd55c541a",
+    "tests/test_no_host_suspension.py": "1229c38fbc6ccf5e49dcef9869f976b032d5822072a8fa0d100944ecb5f97766",
+    "tests/test_observation_privacy.py": "b74d356e15713daa38e5260ac2f5eb0539328f75aedb17ad67e2c1b20eac4b1c",
+    "tests/test_operational_readiness.py": "862f2718c4596b4de0460b60e4b59fe43478f82fb55752bac6c0078e266e6877",
+    "tests/test_organ_evolution.py": "5c1628450d9681774955731944215b96c070def8dd5fd6a472701a1bade9539c",
+    "tests/test_p0_transaction_integration.py": "2ae2bed69f63e92c12b595e7c7e0d6b77750c92e4795eb1f52fcc5b79f9312da",
+    "tests/test_predecessor_composition.py": "6e8e0bc16c17c393862b539da36d13cdb9b375d7e1ca673cf2a060599c62bfb0",
+    "tests/test_production_recovery_control.py": "7c4dcc44f52d3e26747e57e36b8ba995c3bc678d45bf5a4948e2e45f269c6494",
+    "tests/test_production_recovery_readiness.py": "fb9d44f7269058429e2c20e6ee7ed76d1128a75f50b0697f9c34534c4d53ae32",
+    "tests/test_python_environment_preflight.py": "e385814e4f8223702b8905681eb163ff60e9398a29d40178bc3f7a80526af8f6",
+    "tests/test_r2_guardian_integration.py": "ae2fb34e5e3bedf1ae18d40a40fb13a2c570fb2a4dc18f20806a2a23cdb4919e",
+    "tests/test_recall_gate.py": "6019e0b913fadbff36b8167834db573b51406c2916d50b9878b76a352c199764",
+    "tests/test_recall_log_contract.py": "cf05f1e1645f74f4b8e719865d91cbf6f40f79b7d637949a8b01ef5e4a293b72",
+    "tests/test_recovery_lane.py": "0660ed2bf79e1e8fd09a48cb7799602f16af87d58098fd0753b1e8a7b6c97523",
+    "tests/test_recovery_supervisor.py": "932e0431c58ba4051464a1450a4a326da269758f9b780cb520fb20d490f7df98",
+    "tests/test_rerank.py": "3a05fe4d9680844ed935ea208865131c8279b3249922fa92e4ef86be63355dbd",
+    "tests/test_resource_adapters.py": "c546c895face842188bd9275ebf16d4fe6834dcbeca6f4496bbfcc3d1962663a",
+    "tests/test_runtime_provider.py": "8df7f630f0c9a721afca5f33ff9ba867625716a46b3f64fc2aca41b0fa328a7a",
+    "tests/test_scheduler_entrypoints.py": "b4c9ac133b5ba0ccdc257a16ed466df9f7064c339e3a8e87aff390c67779955d",
+    "tests/test_scope_freeze.py": "b6aad906e694f288335ea53cd9329e5b7209fa062b0be85b0a3dfb0568187a23",
+    "tests/test_sedimentation_eval.py": "874c99424c064a6cfe4432f235477ca10cbb77bb8801b74fce2517d1af9a1a46",
+    "tests/test_sedimentation_schema.py": "620f3ba5d0368372efd845f460808d1fd3e04ee025b498dabd00322de3758948",
+    "tests/test_sedimentation_search_eval.py": "710032b1545164ca4e0d2110cc092dc3435e9ac36b8ae7e79a9a5f78558c0a90",
+    "tests/test_self_repair.py": "4fd08dcb1418dc1b4de996c6b64f1da0edcc95ca85a88b4db8ef981104a2a00d",
+    "tests/test_session_continuity.py": "c136c38ceb41034901de12ecc1f2d472b4cea9c4cc710b6443dff68a134f8b42",
+    "tests/test_stage_plugin.py": "f6ba792c3fa14f9714f5ef1dd0507966f68b2429521fa878cb93a14cac2cd79d",
+    "tests/test_stage_release_inventory.py": "4e66704719f6fa833b1ea76b624b2607d609ea9ea80b6eacb2d546825b04327c",
+    "tests/test_subprocess_text_encoding_guard.py": "48b235d4de3fdb53ad1c4f17f37da8ff4343720af06a69d4d086e3b3e81f3f91",
+    "tests/test_sulde_config.py": "25af1459924c1b150f2c29d3525394792e1c1a6788a2a9c13fefc3bd87956aa9",
+    "tests/test_sulde_home_migration.py": "1d8f067a4336115141e373daf4ca6a2ed0d4fb95ec09fe9c0989cf103f8a3d1a",
+    "tests/test_sulde_paths.py": "a10aae2832233393e15beb5e903900defa945e069011ea58ae82f9ac0ebfae6c",
+    "tests/test_sulde_projection.py": "b9e81b882f0976351433cbf73cff5d17da3ae52a6021dff34960622b1424e17b",
+    "tests/test_sulde_protocol.py": "b65195588274d74c39ec4298dd3e4516cfee8870186f3583e54d0dc902a7d748",
+    "tests/test_sulde_state_machine.py": "cc6f24610ce427e2f29196a6f785202175690442f69899bd4faae2e39d75a462",
+    "tests/test_sulde_statusline.py": "f37802153c13df51f47527d4a3899b23a85c140a9cb883ff024f741c057601c8",
+    "tests/test_sulde_supervisor.py": "ac5d659aafd6c796e28cc5c38723a1d7eb52dd250b6f0dceb8ef7b8e06450c62",
+    "tests/test_supervision_lifecycle_e2e.py": "22fe739197f85d2a212758fc72ba177c7ad3f2ef09143fc7b58f2489e6ab0198",
+    "tests/test_sync_self.py": "72177e5d35e88a60d511260fbb6948c703231605fc6d33b87300d9e69cbb13a6",
+    "tests/test_task_epoch_context.py": "b0d5f1110fc6ddc0adafcd462b101a80dac36ef6da1a058ba943398d55c8482a",
+    "tests/test_terminal_invariants.py": "8e3a08af606ed7561ebeb9eada20e892967cdfa2f10a544bcd63f101f0057b52",
+    "tests/test_test_evidence.py": "58b3bf4831b4e748d5b0621c72eb7fe3f51d08cf61e7bab7677e3c904efbd3a3",
+    "tests/test_user_prompt_control_plane.py": "631436353cb44497fdf8bfd476164a4602030d6ffb8a9a6ad735855fb2936804",
+    "tests/test_utf8_subprocess_boundaries.py": "0e2eb86dc011d6a55e5645a2285f3454000041bd5b23f23a8a32aede3e5bf171",
+    "tests/test_validate_codex_plugin.py": "453441aec810fac93f85a4b8129f5214bd4613af86cb532ed41e654e72e9c714"
+  },
+  "logs": {
+    "life-r1-install-targeted.log": {
+      "sha256": "66f9a56a9c8c2edb3a9673727de605f7852bd0a07553961b8b04da3b279d48f9",
+      "size_bytes": 9675,
+      "result": [
+        "Ran 54 tests in 271.280s",
+        "OK"
+      ]
+    },
+    "life-r1-release-9e4e571.log": {
+      "sha256": "9e8bbe0951651342dc4ed9b9d276b320ce49aa1930269d8e63ec9f29aa817d6e",
+      "size_bytes": 2154,
+      "result": []
+    },
+    "life-r1-fixture-targeted.log": {
+      "sha256": "9786b4c99b3cd45bb58cbbeda80e75c87d64aee6055df45cb19dd302d8fdfbe8",
+      "size_bytes": 3057,
+      "result": [
+        "Ran 20 tests in 12.303s",
+        "OK"
+      ]
+    },
+    "life-r1-release.log": {
+      "sha256": "7bafe5318cd0aaaefb79adda3b59c9b8de80b70efcb6c5d2297fb7c09ade4808",
+      "size_bytes": 80809,
+      "result": []
+    },
+    "life-r1-targeted.log": {
+      "sha256": "5ae3841d84d41554ff342b543fd7b69c4d1d88da99d0497519234c8df71997ef",
+      "size_bytes": 9057,
+      "result": [
+        "Ran 70 tests in 29.840s",
+        "OK"
+      ]
+    },
+    "life-r1-final-targeted.log": {
+      "sha256": "a0da2ee72e70d6f760415a155a8bb55f6a142918470fd5e2dde00376e6a3e340",
+      "size_bytes": 11820,
+      "result": [
+        "Ran 93 tests in 32.125s",
+        "OK"
+      ]
+    },
+    "life-r1-full-84195ea.log": {
+      "sha256": "2ceb2b2e15d63995d2119abe44cb239d1926ef0edbcea69b3436f5bfea457f8e",
+      "size_bytes": 232146,
+      "result": [
+        "Ran 1928 tests in 641.425s",
+        "FAILED (failures=1, errors=1, skipped=23)"
+      ]
+    },
+    "life-r1-release-final.log": {
+      "sha256": "e0318fd6963f93949a3341a6fb9d3ffd44c4cc573ff20feb847bf4f5923489eb",
+      "size_bytes": 2154,
+      "result": []
+    },
+    "life-r1-full-8375ac3.log": {
+      "sha256": "2224386331a601320913e2c531d2ed91e6ade2b932d8ccd841efbb0bbe456bec",
+      "size_bytes": 229227,
+      "result": [
+        "Ran 1928 tests in 623.043s",
+        "OK (skipped=23)"
+      ]
+    },
+    "life-r1-release-84195ea.log": {
+      "sha256": "88a4299624ff2fcf77c3362511a4d25f15c66bb15cf5a29eb64e4d5b79725390",
+      "size_bytes": 2157,
+      "result": []
+    }
+  },
+  "changed_files_since_measurement": [
+    "tests/test_codex_plugin_install.py",
+    "tests/test_hook_observer_closure.py",
+    "tests/test_native_posttool_delivery.py",
+    "tests/test_python_environment_preflight.py"
+  ],
+  "sourceVersion_after": "d90aedba44f07bd6028c0a13fd467279e807e5d25621c982d780f87c3b5dce94",
+  "source_binding_method": "scripts/kb/test-evidence.py::_workspace_digest; relevant tracked/untracked executable inputs, dependencies, fixtures and tests; report/log/pyc excluded",
+  "full_suite": {
+    "commit": "8375ac3511af22de9d86886697a16dc154442417",
+    "sourceVersion": "d90aedba44f07bd6028c0a13fd467279e807e5d25621c982d780f87c3b5dce94",
+    "tests_run": 1928,
+    "passed": 1905,
+    "skipped": 23,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 623.043,
+    "exit_code": 0,
+    "log": "life-r1-full-8375ac3.log",
+    "log_sha256": "2224386331a601320913e2c531d2ed91e6ade2b932d8ccd841efbb0bbe456bec",
+    "skipped_tests": [
+      "test_installer_dry_run_is_non_mutating (test_auto_distill_windows.WindowsAgentAssetsTests) ... skipped 'requires native Windows PowerShell'",
+      "test_installer_prefers_current_native_binary_over_stale_exe (test_auto_distill_windows.WindowsAgentAssetsTests) ... skipped 'requires native Windows PowerShell'",
+      "test_uses_scripts_python_from_native_windows_venv (test_bootstrap_windows.BootstrapLauncherTest) ... skipped 'requires Windows Git Bash'",
+      "test_I04_linked_git_route_and_negative_boundaries (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: Hook routing no longer classifies Git resources'",
+      "test_I14_cross_project_route_names_only_one_repository (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: cross-project authority is path-root based, not Git based'",
+      "test_linked_worktree_add_uses_tool_workdir_not_session_cwd (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: worktree lifecycle belongs to Git execution domain'",
+      "test_worktree_attach_existing_routes_to_exact_capability (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: worktree lifecycle belongs to Git execution domain'",
+      "test_worktree_completion_drift_keeps_debt_without_pause (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: Guardian no longer creates Git completion debt'",
+      "test_worktree_completion_uses_sealed_prestate_and_settles (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: Guardian no longer verifies Git completion'",
+      "test_worktree_create_branch_has_distinct_capability (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: worktree lifecycle belongs to Git execution domain'",
+      "test_worktree_failed_completion_closes_dispatch_without_verifier (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: Guardian no longer tracks Git dispatch completion'",
+      "test_worktree_pretool_rejection_never_pauses_or_creates_debt (test_intent_guardian.H04TypedResourceHookRoutingTests) ... skipped 'retired: Guardian no longer rejects Git pre-tool events'",
+      "test_child_scope_cannot_authorize_repository_git_metadata (test_intent_guardian.IntentGuardianTests) ... skipped 'retired: direct Git metadata writes are outside Guardian policy'",
+      "test_git_dash_c_attributes_exact_linked_worktree_and_fails_closed (test_intent_guardian.IntentGuardianTests) ... skipped 'retired: Git execution no longer uses Guardian resource adapters'",
+      "test_git_metadata_exception_excludes_compound_rewrite_and_unsafe_merge (test_intent_guardian.IntentGuardianTests) ... skipped 'retired: Git operation semantics are outside Guardian policy'",
+      "test_git_push_is_verified_by_exact_remote_ref_oid (test_intent_guardian.IntentGuardianTests) ... skipped 'retired: Git effects no longer enter Guardian verification debt'",
+      "test_literal_git_add_is_authorized_one_regular_file_at_a_time (test_intent_guardian.IntentGuardianTests) ... skipped 'retired: Git execution no longer uses per-file Guardian grants'",
+      "test_literal_git_add_rejects_directories_symlinks_and_special_pathspecs (test_intent_guardian.IntentGuardianTests) ... skipped 'retired: Git pathspecs are decided by Agent, human and host'",
+      "test_repository_scope_does_not_broaden_nonliteral_git_add (test_intent_guardian.IntentGuardianTests) ... skipped 'retired: Git execution no longer uses Guardian path policy'",
+      "test_repository_scope_still_allows_narrow_commit_and_merge_metadata (test_intent_guardian.IntentGuardianTests) ... skipped 'retired: Git execution no longer uses Guardian path policy'",
+      "test_os_boundary_blocks_non_python_write_before_file_appears (test_isolated_test_runner.IsolatedTestRunnerTests) ... skipped 'blocked: outer launcher prevents child Seatbelt initialization'",
+      "test_entry_uses_shared_mapping_without_a_second_target_table (test_kb_index_entry.KbIndexEntryTests) ... skipped '本用例断言 Windows 的 subprocess 分支;POSIX 由 test_posix_branch 覆盖'",
+      "test_windows_launchers_fall_back_from_broken_python3 (test_stage_plugin.StagePluginTests) ... skipped 'requires native Windows PowerShell'"
+    ]
+  },
+  "prior_failed_full": {
+    "commit": "84195eaa472300c973d0551235ac60c63c92d2b9",
+    "sourceVersion": "e01fc181e292a4e905f5f05c4eca5c7a442ba2ef820e289bd664f03e8fd9d190",
+    "tests_run": 1928,
+    "seconds": 641.425,
+    "failures": 1,
+    "errors": 1,
+    "skipped": 23,
+    "exit_code": 1,
+    "log_sha256": "2ceb2b2e15d63995d2119abe44cb239d1926ef0edbcea69b3436f5bfea457f8e",
+    "issues": [
+      {
+        "test": "test_codex_plugin_install.CodexPluginInstallTests.test_candidate_install_routes_receipt_evidence_to_canonical_marketplace",
+        "type": "error",
+        "cause": "fixture prepared kb-home/venv but passed another kb directory; missing-runtime production gate correctly refused",
+        "fix": "use self.kb_home without mocking/weakening runtime preflight"
+      },
+      {
+        "test": "test_subprocess_text_encoding_guard.SubprocessTextEncodingGuardTests.test_all_text_subprocess_calls_fix_encoding_and_errors",
+        "type": "failure",
+        "cause": "six new test subprocess calls omitted UTF-8/errors policy",
+        "fix": "set encoding=utf-8/errors=replace; retain guard"
+      }
+    ]
+  },
+  "final_targeted": {
+    "tests_run": 20,
+    "seconds": 12.303,
+    "exit_code": 0,
+    "log_sha256": "9786b4c99b3cd45bb58cbbeda80e75c87d64aee6055df45cb19dd302d8fdfbe8",
+    "sets": [
+      "tests.test_codex_plugin_install.CodexPluginInstallTests.test_candidate_install_routes_receipt_evidence_to_canonical_marketplace",
+      "tests.test_subprocess_text_encoding_guard",
+      "tests.test_hook_observer_closure",
+      "tests.test_native_posttool_delivery",
+      "tests.test_python_environment_preflight"
+    ]
+  },
+  "preserved_historical_evidence": [
+    "A-tests.json",
+    "B-tests.json",
+    "C-tests.json",
+    "latency.json",
+    "R1-performance-history.json",
+    "R1-release-history.json"
+  ],
+  "native_posttool": {
+    "artifact": "R1-native-posttool.json",
+    "ingest_calls": 0,
+    "external_model_requests": 0,
+    "tool_executions": 4,
+    "failed_facts": 12,
+    "total_phase_facts": 16,
+    "problem_occurrences": [
+      1,
+      1,
+      1,
+      3,
+      3,
+      3
+    ],
+    "entry": "native CLI Hook command and native Stop; app-server used only for isolated registry/trust inventory"
+  },
+  "measurement_binding": {
+    "runtime_commit": "84195eaa472300c973d0551235ac60c63c92d2b9",
+    "changed_since_measurement": [
+      "tests/test_codex_plugin_install.py",
+      "tests/test_hook_observer_closure.py",
+      "tests/test_native_posttool_delivery.py",
+      "tests/test_python_environment_preflight.py"
+    ],
+    "only_test_fixture_and_encoding_changed": true,
+    "release_receipts_not_promotion_authority_for_a_new_commit": true
+  },
+  "invalidation": "Relevant source/test/dependency/environment changes invalidate affected evidence. Report/log/pyc noise does not; formal candidate receipts bind actual release commit plus environment and artifact content.",
+  "gaps": {
+    "desktop": "open: no supported active Desktop result ingress verified; no proxy or startup replacement",
+    "windows": "pending_native_Windows",
+    "foreign_hooks": "unwrapped Hooks remain blind; actual installed understand-anything PostToolUse not validated",
+    "historical_exit_1": "inconclusive",
+    "native_install_permission_ui": "unobserved",
+    "real_os_scheduler": "unobserved; isolated fixture only",
+    "production": "not installed, merged, pushed, synchronized or modified"
+  },
+  "new_findings": [
+    {
+      "status": "deferred",
+      "finding": "installed Guardian classified temporary report-text write as destructive, paused current lane; paused patch and resume --help also rejected",
+      "root_cause": "inconclusive",
+      "resolution": "current lane resumed through native PermissionRequest; product issue remains open"
+    }
+  ]
+}

@@ -32,13 +32,37 @@ class PythonEnvironmentTests(unittest.TestCase):
     def test_missing_default_dependency_stops_before_source_or_candidate_creation(self):
         python = self.venv()
         env = {**os.environ, "SULDE_CANDIDATE_PYTHON": str(python)}
-        code = ("import sys; sys.path.insert(0, " + repr(str(ROOT / "scripts/release")) + "); "
-                "from pathlib import Path; import candidate_codex_plugin as c; "
-                "c.prepare(candidate_home=Path(" + repr(str(self.root / "candidates")) + "), codex='unavailable', platform='posix')")
+        # A missing command now fails *before* dependency inspection. Use a
+        # real isolated executable identity with a synthetic version response
+        # so this case exercises missing PyYAML, not the earlier command gate.
+        # No installed Codex is invoked and dependency inspection stays real.
+        code = f"""
+import sys
+from pathlib import Path
+from unittest import mock
+sys.path.insert(0, {str(ROOT / 'scripts/release')!r})
+import candidate_codex_plugin as c
+version = c.installer.CommandResult(({str(python)!r}, '--version'), 0,
+                                    c.installer.AUDITED_CODEX_VERSION + '\\n', '')
+with mock.patch.object(c.installer, 'run_command', return_value=version), \\
+     mock.patch.object(c, '_source_identity', side_effect=AssertionError('source scanned before dependency gate')):
+    c.prepare(candidate_home=Path({str(self.root / 'candidates')!r}),
+              codex={str(python)!r}, platform='posix')
+"""
         result = subprocess.run([str(python), "-B", "-c", code], env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("No module named 'yaml'", result.stderr)
         self.assertIn("No system Python was modified", result.stderr)
+        self.assertFalse((self.root / "candidates").exists())
+
+    def test_missing_command_still_precedes_python_and_source_preflight(self):
+        with mock.patch.object(candidate, "_candidate_python") as python_setup, \
+                mock.patch.object(candidate, "_source_identity") as source_scan:
+            with self.assertRaisesRegex(candidate.installer.InstallError, "cannot be sealed"):
+                candidate.prepare(candidate_home=self.root / "candidates",
+                                  codex=str(self.root / "unavailable-codex"), platform="posix")
+            python_setup.assert_not_called()
+            source_scan.assert_not_called()
         self.assertFalse((self.root / "candidates").exists())
 
     def test_available_environment_binds_contents_and_dependency_drift_invalidates(self):

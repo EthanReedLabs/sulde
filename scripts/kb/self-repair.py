@@ -47,6 +47,7 @@ DEFAULT_QUEUE_TTL_DAYS = 30
 _command_template = runpy.run_path(str(Path(__file__).with_name("command_template.py")))
 split_command_template = _command_template["split_command_template"]
 DEFAULT_LLM_CMD = _command_template["default_llm_command"]()
+_llm_diagnostics = runpy.run_path(str(Path(__file__).with_name("llm_diagnostics.py")))
 
 
 class SelfRepairError(RuntimeError):
@@ -419,7 +420,18 @@ def append_jsonl(path: Path, payload: dict[str, Any]) -> None:
 
 
 
-def record_agent_experience(
+def record_agent_experience(home: Path, row: dict[str, Any], **facts: Any) -> None:
+    """A retrospective failure must not change an already persisted task result."""
+    try:
+        _record_agent_experience(home, row, **facts)
+    except Exception as error:
+        try:
+            print(f"WARN retrospective degraded: {type(error).__name__}; task outcome unchanged", file=sys.stderr)
+        except (OSError, ValueError):
+            pass  # A closed diagnostic stream cannot turn a terminal task into failure.
+
+
+def _record_agent_experience(
     home: Path,
     row: dict[str, Any],
     *,
@@ -609,10 +621,11 @@ def build_draft_prompt(item: dict[str, str], template: str) -> str:
 def run_command_template(command_template: str, prompt: str) -> str:
     try:
         arguments = split_command_template(command_template)
-    except ValueError as error:
-        raise SelfRepairError(f"invalid --llm-cmd: {error}") from error
+    except ValueError:
+        arguments = []
+    # Raise outside the handler: ``from None`` only hides the raw context.
     if not arguments:
-        raise SelfRepairError("--llm-cmd cannot be empty")
+        raise SelfRepairError(_llm_diagnostics["startup_failure"]())
     stdin_prompt: str | None = prompt
     expanded = []
     for argument in arguments:
@@ -632,11 +645,16 @@ def run_command_template(command_template: str, prompt: str) -> str:
             errors="replace",
             check=False,
         )
+    except subprocess.TimeoutExpired:
+        failure = _llm_diagnostics["timeout_failure"]()
     except OSError as error:
-        raise SelfRepairError(f"LLM command failed: {error}") from error
+        failure = _llm_diagnostics["startup_failure"](error)
+    else:
+        failure = None
+    if failure is not None:
+        raise SelfRepairError(failure)
     if completed.returncode != 0:
-        detail = completed.stderr.strip() or completed.stdout.strip()
-        raise SelfRepairError(f"LLM command failed (exit {completed.returncode}): {detail[:500]}")
+        raise SelfRepairError(_llm_diagnostics["process_failure"](completed.stderr, completed.stdout, completed.returncode, prompt))
     return completed.stdout
 
 
@@ -659,13 +677,13 @@ def clean_brief(raw: str) -> str:
     text = "\n\n".join(paragraphs).strip()
 
     if not re.match(r"^#\s+\S", text):
-        raise SelfRepairError("draft is incomplete; must start with a level-1 heading")
+        raise SelfRepairError("[invalid_output] draft is incomplete; must start with a level-1 heading")
     if not re.search(r"^##\s+完成标准\s*$", text, re.MULTILINE):
-        raise SelfRepairError("draft is incomplete; missing: 完成标准")
+        raise SelfRepairError("[invalid_output] draft is incomplete; missing: 完成标准")
     missing = [heading for heading in REQUIRED_BRIEF_HEADINGS if not re.search(rf"^##\s+{re.escape(heading)}\s*$", text, re.MULTILINE)]
     if missing or REPORT_CLAUSE not in text:
         detail = ", ".join(missing) if missing else REPORT_CLAUSE
-        raise SelfRepairError(f"draft is incomplete; missing: {detail}")
+        raise SelfRepairError(f"[invalid_output] draft is incomplete; missing: {detail}")
     return text.rstrip() + "\n"
 
 

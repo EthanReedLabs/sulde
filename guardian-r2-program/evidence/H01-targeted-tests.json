@@ -1,0 +1,37 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-q",
+        "tests.test_human_grant",
+        "tests.test_approval_cas_schema",
+        "tests.test_approval_timeout_policy",
+        "tests.test_approval_invariant"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The integrated coordinator commit ran 116 tests in 0.339 seconds with exit 0.",
+    "The H01-focused module contributes 23 passing tests, including both FR2-H01-002 contradiction subtests."
+  ],
+  "findings": [],
+  "kind": "targeted_tests",
+  "requirements": [],
+  "run_id": "run-gpe-81c4eb66edd2ae4588c2648d",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H01 focused and approval regression suites pass on the integrated coordinator commit.",
+  "task_id": "H01-human-grant-v2",
+  "verdict": "pass"
+}

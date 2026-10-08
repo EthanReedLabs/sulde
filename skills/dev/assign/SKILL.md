@@ -79,6 +79,21 @@ user-invocable: true
 
 ## §3 执行
 
+在任务已授权的路径、效果和预算内连续完成诊断、夹具修复、最小实现及验证。
+普通测试失败或某阶段通过只需更新进展，不交还等待用户说“下一步”。保持原任务身份，
+上下文续接时保存检查点并继续未完项。明确的 audit-only/tests-only 和阶段停止线仍有效，
+不得以本规则自行扩权；需要改变停止线时由协调端签发修订。
+
+故障注入修复先建立旧版/候选都有效的正常对照，再用同一夹具和断言证明旧缺陷失败、
+候选修复通过，随后直接进入实际入口和受影响模块验证。区分夹具错误、旧缺陷与新增回归；
+禁止放宽报告/产品契约凑绿，模拟 provider 通过不等于真实 Agent 能力通过。
+小改定向、中改覆盖消费者、重构全量；文档改动仅做相关结构检查。
+
+同一失败两次无新证据，检查调用可达性、前置数据和首个失败点并改变诊断方法，
+不自动拆新任务。按预算推进；缺权限、范围决策、外部条件或预算耗尽时才准确交还阻塞。
+源/测试/夹具/配置等价才复用证据。报告绑定实际命令、结果和证据，不凭 clean/commit
+宣称完成；通过后提交集中独立复核，不自行 accepted。范围外发现单独登记。
+
 1. 根据 assignee 确定 git alias 与用户名(`.sulde-config.yaml: team[]`)
 2. 切换或创建对应分支
 3. Read 当前 frontend `CLAUDE.md` 确认 stack-specific 规则
@@ -107,7 +122,9 @@ user-invocable: true
 | 3 | `launch_cmd` + `log_cmd`(跑 10-30s 触达本 task 改动路径) | log 无 crash / fatal / 新增 error |
 | 4 | 截图(`screenshots` 配置)+ Read .png — 视觉对照 task md `.ai-workspace/diag/<task>-before.png` 或 design-truth `.png` | 视觉相符;明显差异 escalate |
 
-**判定线**:4 步任一 fail → **不 commit**,handoff 反弹"verify fail at step N,日志 / 截图见 .ai-workspace/diag/<task>-{log,screenshot}.{txt,png}"。
+**判定线**:适用步骤 fail → 不宣称通过；先在原任务授权范围和预算内诊断、修复并复验。
+仅真正阻塞时 handoff，附失败步骤、原始日志、已排除原因及继续所需条件，不因普通失败立即反弹。
+以上设备步骤仅适用于任务涉及且已获授权的应用验收；不自动要求无关安装或扩大生产权限。
 
 > **特例**:纯 doc 改动 / .ai-workspace/ 改动 / 配置改动 → §5 跳过(在 handoff 里说明跳过理由)。
 

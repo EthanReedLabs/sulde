@@ -19,6 +19,7 @@ MAX_SNAPSHOT_BYTES = 16 * 1024
 MAX_LINE_LENGTH = 240
 MAX_AGE_SECONDS = 3 * 60 * 60
 MAX_FUTURE_SKEW_SECONDS = 5 * 60
+MAX_LIFE_AGE_SECONDS = 12 * 60 * 60
 _ANSI_LIGHT = re.compile(r"\x1b\[(?:31|32|33)m●\x1b\[0m")
 
 
@@ -117,6 +118,38 @@ def _fallback(reason: str) -> dict[str, Any]:
     }
 
 
+def _life_projection(value: object) -> dict[str, Any] | None:
+    """Validate the optional v1 extension; legacy snapshots prove no LIFE scope."""
+    if value is None:
+        return {
+            "global_status": "unknown", "background_status": "unknown",
+            "interactive_status": "unobserved", "source_scope": "unknown",
+            "generated_at": None, "generation": None,
+            "background_reasons": ["legacy_snapshot_without_life_scope"],
+            "source_reasons": {},
+        }
+    if not isinstance(value, dict):
+        return None
+    required = {"global_status", "background_status", "interactive_status", "source_scope", "generated_at", "generation", "background_reasons", "source_reasons"}
+    if set(value) != required:
+        return None
+    if any(not isinstance(value[key], str) for key in ("global_status", "background_status", "interactive_status", "source_scope")):
+        return None
+    if value["background_status"] not in {"ready", "degraded", "unknown"}:
+        return None
+    if value["source_scope"] not in {"scheduler", "interactive", "unknown"}:
+        return None
+    if value["generated_at"] is not None and _timestamp(value["generated_at"]) is None:
+        return None
+    if value["generation"] is not None and not isinstance(value["generation"], str):
+        return None
+    if not isinstance(value["source_reasons"], dict) or not isinstance(value["background_reasons"], list) or any(not isinstance(reason, str) for reason in value["background_reasons"]):
+        return None
+    if value["background_status"] == "ready" and (value["background_reasons"] or value["generated_at"] is None or value["source_scope"] == "unknown"):
+        return None
+    return value
+
+
 def read_snapshot(
     home: Path,
     *,
@@ -136,7 +169,10 @@ def read_snapshot(
     line = _safe_line(payload.get("line"))
     generated_at = _timestamp(payload.get("generated_at"))
     healthy = payload.get("healthy")
-    if line is None or generated_at is None or not isinstance(healthy, bool):
+    life = _life_projection(payload.get("life"))
+    if line is None or generated_at is None or not isinstance(healthy, bool) or life is None:
+        return _fallback("invalid")
+    if payload.get("life") is not None and healthy and life["background_status"] != "ready":
         return _fallback("invalid")
     current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     delta = int((current - generated_at).total_seconds())
@@ -147,6 +183,12 @@ def read_snapshot(
         result = _fallback("stale")
         result["snapshot_age_seconds"] = age
         return result
+    life_generated = _timestamp(life.get("generated_at"))
+    if payload.get("life") is not None and life["background_status"] == "ready":
+        if life_generated is None or life_generated > current:
+            return _fallback("invalid")
+        if (current - life_generated).total_seconds() > MAX_LIFE_AGE_SECONDS:
+            return _fallback("stale")
     return {
         "line": line,
         "healthy": healthy,
@@ -154,6 +196,7 @@ def read_snapshot(
         "snapshot_age_seconds": age,
         "generated_at": generated_at.isoformat(),
         "scope": str(payload.get("scope") or "background_runtime"),
+        "life": life,
     }
 
 
@@ -163,11 +206,14 @@ def write_snapshot(
     line: str,
     healthy: bool,
     scope: str = "background_runtime",
+    life: dict[str, Any] | None = None,
     now: datetime | None = None,
 ) -> bool:
     """Atomically publish a bounded owner-only projection of a full status run."""
     safe_line = _safe_line(line)
     if safe_line is None or not isinstance(healthy, bool):
+        return False
+    if _life_projection(life) is None or (life is not None and healthy and life["background_status"] != "ready"):
         return False
     path = snapshot_path(home)
     parent = path.parent
@@ -189,6 +235,8 @@ def write_snapshot(
             "scope": scope,
             "line": safe_line,
         }
+        if life is not None:
+            payload["life"] = life
         encoded = (
             json.dumps(
                 payload,

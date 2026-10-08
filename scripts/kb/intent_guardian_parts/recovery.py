@@ -1,6 +1,12 @@
 """Intent Guardian recovery domain component."""
 from __future__ import annotations
 
+from .historical_retirement import execute
+from .repository_relocation import execute_native_relocation
+from .repository_relocation import record_relocation_decision
+
+from .native_decision_support import _late_native_proposal_result
+
 from . import memory_scope
 import hashlib
 import json
@@ -865,52 +871,6 @@ def recover_native_decisions(path: Path, *, provider: str = "", session_id: str 
         error_factory=IntentGuardianError,
     )
 
-def _late_native_proposal_result(
-    path: Path,
-    *,
-    decision: str,
-    target: str,
-) -> dict[str, Any] | None:
-    if not re.fullmatch(r"[0-9a-f]{64}", target):
-        return None
-    contract = load_contract(path)
-    matching = [
-        row
-        for row in contract["runtime"].get("proposal_decisions", [])
-        if isinstance(row, dict)
-        and row.get("proposal_digest") == target
-        and row.get("verdict") == ("approve" if decision == "approve" else "reject")
-    ]
-    if contract.get("applied_proposal_digest") == target and matching:
-        latest = matching[-1]
-        authority = str(latest.get("authority") or "unknown")
-        return {
-            "schema": "sulde-codex-native-decision-result-v1",
-            "status": (
-                "already_agent_decided"
-                if authority == "agent-policy"
-                else "already_decided"
-            ),
-            "kind": "proposal",
-            "decision": decision,
-            "target": target,
-            "decision_authority": authority,
-            "receipt_id": str(latest.get("receipt_id") or ""),
-            "revision": contract["revision"],
-            "authority_transferred": False,
-        }
-    pending = str(contract["runtime"].get("pending_proposal_digest") or "")
-    if pending != target:
-        return {
-            "schema": "sulde-codex-native-decision-result-v1",
-            "status": "superseded",
-            "kind": "proposal",
-            "decision": decision,
-            "target": target,
-            "revision": contract["revision"],
-            "authority_transferred": False,
-        }
-    return None
 def execute_native_decision(
     path: Path,
     *,
@@ -921,6 +881,15 @@ def execute_native_decision(
     session_id: str,
 ) -> dict[str, Any]:
     """Apply a native decision through a recoverable internal transaction."""
+    if kind == "historical-retirement":
+        return execute(kb_home(), path, target, decision=decision,
+                       provider=provider, session_id=session_id)
+    if kind == "repository-relocation-execution":
+        return execute_native_relocation(kb_home(), path, target, decision=decision,
+                                         provider=provider, session_id=session_id)
+    if kind == "repository-relocation":
+        return record_relocation_decision(kb_home(), path, target, decision=decision,
+                                          provider=provider, session_id=session_id)
     if kind == "grant":
         context = native_decision_context(path, kind=kind, decision=decision,
             target=target, provider=provider, session_id=session_id)

@@ -22,6 +22,9 @@ from typing import Any, Callable, Iterable
 SCHEMA = "sulde-install-transaction-v1"
 SNAPSHOT_SCHEMA = "sulde-install-rollback-snapshot-v1"
 ACTIVE_SCHEMA = "sulde-install-active-transaction-v1"
+REVERSE_SCHEMA = "sulde-first-migration-reversal-v1"
+REVERSE_ACTIVE_SCHEMA = "sulde-install-active-reversal-v1"
+REVERSE_JOURNAL_SCHEMA = "sulde-first-migration-reversal-stage-v1"
 JOURNAL_SCHEMA = "sulde-install-transaction-stage-v1"
 SCHEMA_VERSION = 1
 
@@ -33,6 +36,8 @@ STAGES = (
     "registry_added",
     "launcher_publish_started",
     "launcher_published",
+    "hook_trust_write_started",
+    "hook_trust_written",
     "deployment_publish_started",
     "deployment_published",
     "scheduler_reconcile_started",
@@ -358,6 +363,14 @@ def _persist_snapshot(recovery_root: Path, transaction_id: str, paths: Iterable[
         raise
 
 
+def content_identity(path: Path) -> str:
+    """Path-independent identity using the existing snapshot byte/mode schema."""
+    raw, _ = _capture_snapshot(Path(), (path,))
+    target = json.loads(raw)["targets"][0]
+    target.pop("path")
+    return _sha256(_canonical(target))
+
+
 def _validate_snapshot(root: Path, *, expected_digest: str) -> dict[str, Any]:
     _validate_metadata(root, directory=True)
     if root.name != expected_digest or not _SHA256.fullmatch(expected_digest):
@@ -470,6 +483,10 @@ def _write_restored_file(path: Path, content: bytes, mode: int) -> None:
 
 
 class Transaction:
+    journal_schema = JOURNAL_SCHEMA
+    stage_rank = _STAGE_RANK
+    terminal_stages = _TERMINAL_STAGES
+
     def __init__(
         self,
         recovery_root: Path,
@@ -479,6 +496,7 @@ class Transaction:
     ) -> None:
         self.recovery_root = recovery_root
         self.descriptor = descriptor
+        self.descriptor_sha256 = _sha256(_canonical(descriptor))
         self.transaction_id = str(descriptor["transaction_id"])
         self.snapshot_sha256 = str(descriptor["snapshot_sha256"])
         self.snapshot = snapshot
@@ -517,9 +535,9 @@ class Transaction:
             expected = _sha256(_canonical(record))
             record["record_sha256"] = digest
             stage = record.get("stage")
-            rank = _STAGE_RANK.get(stage) if isinstance(stage, str) else None
+            rank = self.stage_rank.get(stage) if isinstance(stage, str) else None
             if (
-                record.get("schema") != JOURNAL_SCHEMA
+                record.get("schema") != self.journal_schema
                 or type(record.get("schema_version")) is not int
                 or record["schema_version"] != SCHEMA_VERSION
                 or record.get("transaction_id") != self.transaction_id
@@ -539,14 +557,14 @@ class Transaction:
 
     def append(self, stage: str) -> dict[str, Any]:
         records = self.read_records()
-        current_rank = _STAGE_RANK.get(records[-1]["stage"], -1) if records else -1
-        requested_rank = _STAGE_RANK.get(stage)
+        current_rank = self.stage_rank.get(records[-1]["stage"], -1) if records else -1
+        requested_rank = self.stage_rank.get(stage)
         if requested_rank is None or requested_rank <= current_rank:
             raise JournalError("transaction stages must be strictly monotonic")
         if self.failpoint is not None:
             self.failpoint(f"journal.before.{stage}")
         record: dict[str, Any] = {
-            "schema": JOURNAL_SCHEMA,
+            "schema": self.journal_schema,
             "schema_version": SCHEMA_VERSION,
             "transaction_id": self.transaction_id,
             "sequence": len(records) + 1,
@@ -586,15 +604,60 @@ class Transaction:
         _validate_snapshot(self.snapshot_root, expected_digest=self.snapshot_sha256)
         return True
 
-    def restore_snapshot(self) -> None:
+    def _retained_output_matches(self, path: Path) -> bool:
+        """Only sealed atomic-profile retirement outputs may remain after rollback.
+
+        This does not change the original snapshot or exempt other missing paths.
+        Published directories may have readers holding their resolved path or fd.
+        """
+        expected = self.descriptor["expected_postconditions"]
+        outputs = expected.get("retained_outputs", {})
+        if not outputs or str(path) not in outputs:
+            return False
+        if "registry_remove_started" not in {row["stage"] for row in self.read_records()}:
+            # Targets prepared before this durable boundary have not been
+            # published as cache aliases. Partial copies remain rollback-owned.
+            return False
+        rows = expected.get("retirements", [])
+        allowed = {str(row[key]) for row in rows for key in ("target", "record")}
+        if (expected.get("cache_handoff") != "atomic-v1"
+                or not isinstance(outputs, dict) or not set(outputs).issubset(allowed)
+                or path.parent.resolve() != path.parent):
+            raise JournalError("retained output scope differs from sealed retirement authority")
+        digest = outputs[str(path)]
+        if not isinstance(digest, str) or not _SHA256.fullmatch(digest):
+            raise JournalError("retained output identity is invalid")
+        if content_identity(path) != digest:
+            raise JournalError("retained output content differs from sealed identity")
+        return True
+
+    def restore_snapshot(self, *, atomic_directories=(), staging_parent=None) -> None:
         snapshot = _validate_snapshot(
             self.snapshot_root, expected_digest=self.snapshot_sha256
         )
+        self._verify_published_retained_targets()
         blobs = self.snapshot_root / "blobs"
+        atomic_paths = {str(path) for path in atomic_directories}
         for target in snapshot["targets"]:
             path = Path(target["path"])
             state = target["state"]
-            _remove_current(path)
+            if state == "missing" and (path.exists() or path.is_symlink()):
+                if self._retained_output_matches(path):
+                    continue
+            published_path = None
+            staging = None
+            if state == "directory" and str(path) in atomic_paths:
+                parent = Path(staging_parent)
+                if parent.resolve() != parent or not parent.is_dir():
+                    raise JournalError("atomic restore staging parent is unsafe")
+                if not (path.exists() or path.is_symlink()):
+                    raise JournalError("atomic restore cannot hide a missing live path")
+                if path.lstat().st_dev != parent.stat().st_dev:
+                    raise JournalError("atomic restore crosses filesystems")
+                staging = Path(tempfile.mkdtemp(prefix=".sulde-restore-", dir=parent))
+                published_path, path = path, staging / "tree"
+            elif not (atomic_paths and state == "file" and path.is_file() and not path.is_symlink()):
+                _remove_current(path)
             if state == "missing":
                 continue
             if state == "file":
@@ -628,19 +691,39 @@ class Transaction:
                         else path / entry["relative"]
                     )
                     destination.chmod(int(entry["mode"]))
+            if published_path is not None:
+                from atomic_cache_handoff import exchange
+                exchange(path, published_path)
+                # Preserve displaced bytes for crash forensics. They are not
+                # authoritative; the sealed snapshot remains the recovery source.
         if not self.verify_restored_snapshot():
             raise JournalError("rollback snapshot restore did not verify")
+
+    def _verify_published_retained_targets(self) -> None:
+        expected = self.descriptor["expected_postconditions"]
+        if expected.get("cache_handoff") != "atomic-v1":
+            return
+        if "registry_remove_started" not in {row["stage"] for row in self.read_records()}:
+            return
+        # All targets exist before this boundary, even if a crash precedes an
+        # alias's record write. A missing target must not inherit the original
+        # snapshot's "missing" success rule: existing readers may hold it.
+        for row in expected.get("retirements", []):
+            if not self._retained_output_matches(Path(row["target"])):
+                raise JournalError("published retirement target lacks sealed identity")
 
     def verify_restored_snapshot(self) -> bool:
         snapshot = _validate_snapshot(
             self.snapshot_root, expected_digest=self.snapshot_sha256
         )
+        self._verify_published_retained_targets()
         blobs = self.snapshot_root / "blobs"
         for target in snapshot["targets"]:
             path = Path(target["path"])
             if target["state"] == "missing":
                 if path.exists() or path.is_symlink():
-                    return False
+                    if not self._retained_output_matches(path):
+                        return False
                 continue
             if target["state"] == "file":
                 if path.is_symlink() or not path.is_file():
@@ -674,10 +757,11 @@ class Transaction:
 
     def clear_active(self) -> None:
         records = self.read_records()
-        if not records or records[-1]["stage"] not in _TERMINAL_STAGES:
+        if not records or records[-1]["stage"] not in self.terminal_stages:
             raise JournalError("active recovery authority cannot be cleared before terminal readback")
         active = _read_active(self.recovery_root)
-        if active.get("transaction_id") != self.transaction_id:
+        if (active.get("transaction_id") != self.transaction_id
+                or active.get("descriptor_sha256") != self.descriptor_sha256):
             raise JournalError("active recovery authority belongs to another transaction")
         self.active_path.unlink()
         _fsync_directory(self.recovery_root)
@@ -694,7 +778,7 @@ def _read_active(recovery_root: Path) -> dict[str, Any]:
     }:
         raise JournalError("active transaction authority raw bytes or fields are invalid")
     if (
-        payload.get("schema") != ACTIVE_SCHEMA
+        payload.get("schema") not in {ACTIVE_SCHEMA, REVERSE_ACTIVE_SCHEMA}
         or type(payload.get("schema_version")) is not int
         or payload["schema_version"] != SCHEMA_VERSION
         or not isinstance(payload.get("transaction_id"), str)
@@ -715,24 +799,59 @@ def load_active_transaction(
         return None
     _validate_metadata(root, directory=True)
     active = _read_active(root)
-    transaction_root = root / "transactions" / active["transaction_id"]
+    transaction = load_transaction(
+        root, active["transaction_id"],
+        expected_descriptor_sha256=active["descriptor_sha256"], failpoint=failpoint,
+    )
+    expected = REVERSE_ACTIVE_SCHEMA if isinstance(transaction, ReverseTransaction) else ACTIVE_SCHEMA
+    if active["schema"] != expected:
+        raise JournalError("active authority type differs from its descriptor")
+    return transaction
+
+
+def load_transaction(
+    recovery_root: Path,
+    transaction_id: str,
+    *,
+    expected_descriptor_sha256: str,
+    failpoint: Failpoint | None = None,
+) -> Transaction:
+    """Read an exactly bound journal, including after active cleanup.
+
+    This is observation only: it never recreates an active pointer or grants
+    recovery authority from an unbound directory or a self-computed digest.
+    """
+    if not isinstance(transaction_id, str) or not _TRANSACTION_ID.fullmatch(transaction_id):
+        raise JournalError("transaction lookup ID is invalid")
+    if not isinstance(expected_descriptor_sha256, str) or not _SHA256.fullmatch(expected_descriptor_sha256):
+        raise JournalError("transaction lookup requires a bound descriptor digest")
+    root = Path(recovery_root).expanduser()
+    _validate_metadata(root, directory=True)
+    _validate_metadata(root / "transactions", directory=True)
+    _validate_metadata(root / "snapshots", directory=True)
+    transaction_root = root / "transactions" / transaction_id
     _validate_metadata(transaction_root, directory=True)
     descriptor_path = transaction_root / "descriptor.json"
     descriptor_raw = _read_secure(descriptor_path)
-    if _sha256(descriptor_raw) != active["descriptor_sha256"]:
-        raise JournalError("active transaction descriptor digest mismatch")
+    if _sha256(descriptor_raw) != expected_descriptor_sha256:
+        raise JournalError("transaction descriptor digest mismatch")
     descriptor = _json_object(descriptor_raw, label="transaction descriptor")
     if descriptor_raw != _canonical(descriptor):
         raise JournalError("transaction descriptor raw bytes are not canonical")
-    _validate_descriptor(descriptor)
-    if descriptor["transaction_id"] != active["transaction_id"]:
-        raise JournalError("active transaction ID does not match its descriptor")
+    reverse = descriptor.get("schema") == REVERSE_SCHEMA
+    if reverse:
+        _validate_reverse_descriptor(descriptor)
+    else:
+        _validate_descriptor(descriptor)
+    if descriptor["transaction_id"] != transaction_id:
+        raise JournalError("transaction ID does not match its descriptor")
     _validate_metadata(transaction_root / "journal.jsonl", directory=False)
     snapshot = _validate_snapshot(
         root / "snapshots" / descriptor["snapshot_sha256"],
         expected_digest=descriptor["snapshot_sha256"],
     )
-    return Transaction(root, descriptor, snapshot, failpoint)
+    cls = ReverseTransaction if reverse else Transaction
+    return cls(root, descriptor, snapshot, failpoint)
 
 
 def begin_transaction(
@@ -746,6 +865,8 @@ def begin_transaction(
     _ensure_directory(root)
     existing = load_active_transaction(root, failpoint=failpoint)
     if existing is not None:
+        if isinstance(existing, ReverseTransaction):
+            raise TransactionCollision("a reversal owns the stable recovery location")
         supplied = dict(descriptor)
         stored = {key: existing.descriptor[key] for key in _DESCRIPTOR_INPUT_FIELDS}
         if supplied == stored:
@@ -776,15 +897,128 @@ def begin_transaction(
     _fsync_directory(transactions)
     descriptor_raw = _canonical(sealed)
     _atomic_write(transaction_root / "descriptor.json", descriptor_raw)
+    if failpoint is not None:
+        failpoint("transaction.before_journal")
     _atomic_write(transaction_root / "journal.jsonl", b"")
+    if failpoint is not None:
+        failpoint("transaction.after_journal")
     active = {
         "schema": ACTIVE_SCHEMA,
         "schema_version": SCHEMA_VERSION,
         "transaction_id": transaction_id,
         "descriptor_sha256": _sha256(descriptor_raw),
     }
+    if failpoint is not None:
+        failpoint("transaction.before_active")
     _atomic_write(root / "active.json", _canonical(active))
+    if failpoint is not None:
+        failpoint("transaction.after_active")
     loaded = load_active_transaction(root, failpoint=failpoint)
     if loaded is None:
         raise JournalError("new transaction authority vanished during readback")
+    return loaded
+
+
+_REVERSE_FIELDS = {"schema", "schema_version", "transaction_id", "old_generation",
+                   "new_generation", "snapshot_sha256", "origin", "authority_json"}
+_REVERSE_STAGES = ("prepared", "fenced", "restore_started", "restored", "committed")
+
+
+def _validate_reverse_descriptor(value: dict[str, Any]) -> None:
+    if (set(value) != _REVERSE_FIELDS or value.get("schema") != REVERSE_SCHEMA
+            or type(value.get("schema_version")) is not int or value["schema_version"] != 1
+            or not isinstance(value.get("transaction_id"), str)
+            or not _TRANSACTION_ID.fullmatch(value["transaction_id"])):
+        raise JournalError("reversal descriptor schema or identity is invalid")
+    origin = value.get("origin")
+    if (not isinstance(origin, dict) or set(origin) != {"transaction_id", "descriptor_sha256"}
+            or not isinstance(origin["transaction_id"], str)
+            or not _TRANSACTION_ID.fullmatch(origin["transaction_id"])
+            or origin["transaction_id"] == value["transaction_id"]
+            or not isinstance(origin["descriptor_sha256"], str)
+            or not _SHA256.fullmatch(origin["descriptor_sha256"])
+            or not isinstance(value.get("snapshot_sha256"), str)
+            or not _SHA256.fullmatch(value["snapshot_sha256"])):
+        raise JournalError("reversal origin binding is invalid")
+    for field in ("old_generation", "new_generation"):
+        if not isinstance(value.get(field), str) or not value[field]:
+            raise JournalError("reversal generation is unproven")
+    raw = value.get("authority_json")
+    if not isinstance(raw, str):
+        raise JournalError("reversal authority is missing")
+    plan = _json_object(raw.encode(), label="reversal authority")
+    if _canonical(plan).decode() != raw:
+        raise JournalError("reversal authority is not canonical")
+    _validate_no_secrets(value)
+
+
+class ReverseTransaction(Transaction):
+    """Exact inverse; snapshot ALWAYS means the original old destination.
+
+    No new-state snapshot is captured. The old committed journal is read-only;
+    its own rollback stages must never be appended by the inverse controller.
+    Caller holds the deployment lock, just as for forward transactions.
+    """
+    journal_schema = REVERSE_JOURNAL_SCHEMA
+    stage_rank = {stage: index for index, stage in enumerate(_REVERSE_STAGES)}
+    terminal_stages = frozenset({"committed"})
+
+    def origin_transaction(self) -> Transaction:
+        binding = self.descriptor["origin"]
+        origin = load_transaction(self.recovery_root, binding["transaction_id"],
+                                  expected_descriptor_sha256=binding["descriptor_sha256"])
+        if (isinstance(origin, ReverseTransaction) or origin.stage != "committed"
+                or origin.snapshot_sha256 != self.snapshot_sha256
+                or origin.descriptor["new_generation"] != self.descriptor["old_generation"]
+                or origin.descriptor["old_generation"] != self.descriptor["new_generation"]):
+            raise JournalError("reversal is not the exact inverse of a committed installation")
+        return origin
+
+
+def begin_reversal(recovery_root: Path, *, operation_id: str, origin: Transaction,
+                   authority_json: str, failpoint: Failpoint | None = None) -> ReverseTransaction:
+    """Durably acquire the SAME active slot. This is not an approval interface.
+
+    Only the approved maintenance controller calls this after lineage, expiry,
+    process, lease and CAS checks. Persisted start is the mechanical recovery
+    boundary; orphan descriptors before active publication confer no authority.
+    """
+    root = Path(recovery_root).expanduser()
+    if root.resolve() != origin.recovery_root.resolve():
+        raise JournalError("reversal origin belongs to a different recovery root")
+    sealed = {"schema": REVERSE_SCHEMA, "schema_version": 1,
+              "transaction_id": operation_id,
+              "old_generation": origin.descriptor["new_generation"],
+              "new_generation": origin.descriptor["old_generation"],
+              "snapshot_sha256": origin.snapshot_sha256,
+              "origin": {"transaction_id": origin.transaction_id,
+                         "descriptor_sha256": origin.descriptor_sha256},
+              "authority_json": authority_json}
+    _validate_reverse_descriptor(sealed)
+    if isinstance(origin, ReverseTransaction) or origin.stage != "committed":
+        raise JournalError("reversal requires a committed forward origin")
+    origin.verify_snapshot()
+    existing = load_active_transaction(root)
+    if existing is not None:
+        if isinstance(existing, ReverseTransaction) and existing.descriptor == sealed:
+            return existing
+        raise TransactionCollision("another transaction owns the reversal slot")
+    directory = root / "transactions" / operation_id
+    if directory.exists() or directory.is_symlink():
+        raise TransactionCollision("reversal identity already used; exact recovery required")
+    directory.mkdir(mode=0o700)
+    _fsync_directory(directory.parent)
+    raw = _canonical(sealed)
+    _atomic_write(directory / "descriptor.json", raw)
+    _atomic_write(directory / "journal.jsonl", b"")
+    if failpoint:
+        failpoint("reversal.before_active")
+    _atomic_write(root / "active.json", _canonical({"schema": REVERSE_ACTIVE_SCHEMA,
+        "schema_version": 1, "transaction_id": operation_id, "descriptor_sha256": _sha256(raw)}))
+    if failpoint:
+        failpoint("reversal.after_active")
+    loaded = load_active_transaction(root, failpoint=failpoint)
+    if not isinstance(loaded, ReverseTransaction) or loaded.descriptor != sealed:
+        raise JournalError("reversal authority failed independent readback")
+    loaded.origin_transaction()
     return loaded

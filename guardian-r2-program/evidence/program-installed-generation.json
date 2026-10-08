@@ -1,0 +1,33 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "installed_generation",
+  "baseline": "program:guardian-human-authority-lifeform-r2",
+  "run_id": "program-r2-release-20260828",
+  "verdict": "pass",
+  "summary": "The official installer binds the final R2 source, staged artifact, persistent marketplace artifact and installed Codex cache to one immutable generation.",
+  "facts": [
+    "Source commit is 920fd4c79ccc37971e2962ca2b27abd5d9a1d3ac and plugin version is 0.2.5+codex.20260828081159.",
+    "Generation is 0.2.5+codex.20260828081159:efac6801160919fbbc4e7a638982b1c45e53efa7d6e83601acf1817a6ad6b46a.",
+    "The staged, persistent-artifact and installed generation descriptors are byte-identical with SHA-256 15306b16c0aedfbe86d06901de85fb18878f059d128fe1025e20a573cb602e59.",
+    "Plugin tree SHA-256 is 19e72a8958aa300d898d322c50d8b650fd856523321a45de27af14b06d0fc7a0 and runtime tree SHA-256 is efac6801160919fbbc4e7a638982b1c45e53efa7d6e83601acf1817a6ad6b46a.",
+    "codex plugin list reports sulde@sulde-local installed and enabled from the persistent 20260828081159 artifact."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-B", "scripts/release/install_codex_plugin.py", "--json"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["codex", "plugin", "list"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

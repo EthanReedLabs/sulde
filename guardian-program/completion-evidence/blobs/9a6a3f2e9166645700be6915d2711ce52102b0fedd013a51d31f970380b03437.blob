@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "targeted_tests",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-158084839fe31c2cea3d4be9",
+  "verdict": "pass",
+  "summary": "The corrected T30 candidate passes the expanded history, aging, staging, installer and release-inventory suite.",
+  "facts": [
+    "The two originally failing release-inventory tests plus the new tracked-input assertion pass 3/3 in 0.592 seconds.",
+    "The expanded exact candidate suite passes 67 tests with one platform-condition skip in 113.458 seconds."
+  ],
+  "requirements": [],
+  "findings": ["F30-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "tests.test_knowledge_history", "tests.test_kb_aging", "tests.test_stage_plugin", "tests.test_codex_plugin_install", "tests.test_stage_release_inventory"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

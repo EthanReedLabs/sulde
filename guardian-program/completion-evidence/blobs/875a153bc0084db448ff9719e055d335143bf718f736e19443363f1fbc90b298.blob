@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T27-release-blocker-remediation",
+  "kind": "finding_resolution",
+  "baseline": "0dce1005d244af7e5b509513226bcfe8a2f11b4f",
+  "run_id": "run-gpe-75da4f180a9fb984f67db91a",
+  "verdict": "pass",
+  "summary": "The three inherited T26 blockers have direct frozen-scope fixes; the newly discovered cleanup consumer is separately controlled as F27-001.",
+  "facts": [
+    "F26-001 is covered by authoritative same-resource blocking plus a separate terminal quarantine/readiness projection.",
+    "F26-002 is covered by two narrow yellow wait states with red fault precedence; F26-003 is covered by UTF-8 entrypoint parsing and unique explicit mem-sync upstream selection."
+  ],
+  "requirements": [],
+  "findings": ["F26-001", "F26-002", "F26-003"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "T27-seven-targeted-modules"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

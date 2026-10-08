@@ -1,0 +1,24 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H05-recovery-lane.md", "sha256": "7ed793f24d4965b11888426fb37790d8c1f89dd86b3ecc9daab993c55f5ba6e8"}],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "The durable H05 report records the typed recovery protocol, four repair rounds, FR2-H05-001 through FR2-H05-014, exact executed commands and counts, changed paths and remaining H06 obligations.",
+    "The report distinguishes the reversible 0.149.1 projection used for the audited run from unverified native 0.150.1 compatibility and does not claim installation or release acceptance."
+  ],
+  "findings": [
+    "FR2-H05-001", "FR2-H05-002", "FR2-H05-003", "FR2-H05-004",
+    "FR2-H05-005", "FR2-H05-006", "FR2-H05-007", "FR2-H05-008",
+    "FR2-H05-009", "FR2-H05-010", "FR2-H05-011", "FR2-H05-012",
+    "FR2-H05-013", "FR2-H05-014"
+  ],
+  "kind": "task_report",
+  "requirements": [],
+  "run_id": "run-gpe-f0547c16e9416c1a0ef60559",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H05 report binds the typed recovery design, complete repair history, all finding dispositions, executed evidence and explicit H06 limits.",
+  "task_id": "H05-recovery-lane",
+  "verdict": "pass"
+}

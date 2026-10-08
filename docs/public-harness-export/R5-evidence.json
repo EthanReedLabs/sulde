@@ -1,0 +1,289 @@
+{
+  "schema": "sulde-public-export-bounded-evidence-v1",
+  "intent_id": "completion:d7c56153d92f24aaedadbd0c",
+  "intent_revision": 5,
+  "cut": "R5",
+  "status": "bounded_cut_passed",
+  "release_ready": false,
+  "source_revision": "8f53c58221199db768c67a5419820388e74c7120",
+  "public_revision": "c966bae1477423ee3a64fd2a6d02fdcb91a43913",
+  "candidate": ".sulde/public-export/review-009",
+  "manifest_sha256": "3b3d7ecdfdd29c86ec2c2b72e73fe12cb5f68960f634692efa8c57de194be147",
+  "review_file_sha256": "8608a663be53e3c0e210073222471531217528a0d4907869284bd7169b4bcea9",
+  "comparison": {
+    "baseline": "review-008",
+    "file_count": 600,
+    "added": [],
+    "removed": [],
+    "mode_changes": [],
+    "changed": [
+      "tests/test_agent_runtime.py"
+    ],
+    "unchanged_files": 599,
+    "runtime_unchanged": true,
+    "package_inputs_unchanged": true,
+    "private_runtime_test_source_unchanged": true
+  },
+  "source_tests": {
+    "run": 25,
+    "passed": 25,
+    "skipped": 0,
+    "seconds": 3.758,
+    "log": ".sulde/public-export/r5-exporter-tests.log",
+    "log_sha256": "9ddbddd038f3f77f9066a1e2d3c6352907669e8f380ba980535ef590ef610d86"
+  },
+  "candidate_checks": {
+    "results": ".sulde/public-export/validation-010/results.json",
+    "results_sha256": "15a5737886c0c66b5ba0669f3887d49ff129b09fc8e392c979efda950bf62c57",
+    "verifier_sha256": "85c2f6e170dfb340c4333f7acf235db2ef447bef9eba5b7244adafe661a93f16",
+    "check_groups": 24,
+    "all_bounded_probes_passed": true,
+    "tests_run": 56,
+    "tests_passed": 56,
+    "tests_skipped": 0,
+    "sum_probe_seconds": 9.299,
+    "full_suite_attempted": false,
+    "cases": [
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "name": "git-init",
+        "passed": true,
+        "seconds": 0.008
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "name": "git-add",
+        "passed": true,
+        "seconds": 0.328
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "name": "git-commit",
+        "passed": true,
+        "seconds": 0.058
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "8d7f7464e32188f5036a4bf7491e08509da58a9ec6815c5f10fa42d449f37c20",
+        "name": "empty-index",
+        "passed": true,
+        "seconds": 0.33
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "7b219949ad3b1baef104b081abb040c22059524765c4eef232a18301cf863d7c",
+        "name": "empty-memory-init",
+        "passed": true,
+        "seconds": 0.042
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "95d6234d0bbfcafb6bb2874178d7494a1cf56abe7d69ca633d46700b33959893",
+        "name": "mcp-stdio-empty-queries",
+        "passed": true,
+        "seconds": 0.599
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "ab56354c002a2f1d5d93527ee81236d2ae8a9dabd865f2082ec00b6c76a02563",
+        "name": "test_corpus_manifest",
+        "passed": true,
+        "seconds": 0.045,
+        "tests_run": 5,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "8d1cb235941c750546534326513b0628e963aa5cd35fdc2979a2c874c9a21198",
+        "name": "test_kb_index_common",
+        "passed": true,
+        "seconds": 0.104,
+        "tests_run": 8,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "81592152fba32fe145b93fe493c71177c10a72bd7ce2f64c65f5f9cb1c535a6b",
+        "name": "test_kb_mcp_entry",
+        "passed": true,
+        "seconds": 2.61,
+        "tests_run": 9,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "b4a1a0f7e55464c29c4257ef75214b186a3b9aefeefe2ab99fcc138b8da930a5",
+        "name": "test_knowledge_history",
+        "passed": true,
+        "seconds": 0.475,
+        "tests_run": 5,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "7f6b3e71cfbb7a364905aad5d9dcd6132cda04f4672d4cd00b7a3c1fb77f2446",
+        "name": "test_public_toolkit",
+        "passed": true,
+        "seconds": 1.6,
+        "tests_run": 10,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "0d120cbb5676ca840a1e81635b7efe0146bd4dbbeb49a3463f7e201c28e47086",
+        "name": "test_agent_experience",
+        "passed": true,
+        "seconds": 0.06,
+        "tests_run": 4,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "857133becb48bfefdffbe8ebf651a1f4a2dadd18c97fc32832724b3acd9d4f62",
+        "name": "test_user_prompt_control_plane",
+        "passed": true,
+        "seconds": 0.304,
+        "tests_run": 4,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "699e4e9af26536f51f4340dca552aa885726e472ad799ca5a4cae6048246c5ac",
+        "name": "targeted-test-0",
+        "passed": true,
+        "seconds": 0.322,
+        "tests_run": 1,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "16250677dad15eac1f6c858e47716afb11772e38c616af01f141b1f0bda4999b",
+        "name": "targeted-test-1",
+        "passed": true,
+        "seconds": 0.788,
+        "tests_run": 6,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "087352baaa37bfb47c85201220bf1a497e6ccecb572c93164e38cf724f594d5d",
+        "name": "targeted-test-2",
+        "passed": true,
+        "seconds": 0.035,
+        "tests_run": 1,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "64ef94f63dcfb2aef653534de9d10c53cae69f25e3712d594b8c20f975debf26",
+        "name": "targeted-test-3",
+        "passed": true,
+        "seconds": 0.114,
+        "tests_run": 1,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "004ce8eb47bb8b1d723bfea02efd22c0344fd577b5f91743e5456934e7e62060",
+        "name": "targeted-test-4",
+        "passed": true,
+        "seconds": 0.119,
+        "tests_run": 1,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "0dd1243b921c50a8be833daa5c098e901acf8220eb3ef4306d8de83efea37060",
+        "name": "targeted-test-5",
+        "passed": true,
+        "seconds": 0.637,
+        "tests_run": 1,
+        "tests_skipped": 0
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "70d8179277dbeb9b915c2564684050e136df1d6a4b156842d9dec79ed8e748b5",
+        "name": "artifact-claude",
+        "passed": true,
+        "seconds": 0.196
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "55c615c823aaa756bc5e837015701adecdbb0d3252dd61d8c1189369ec50470f",
+        "name": "artifact-codex-posix",
+        "passed": true,
+        "seconds": 0.216
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "97040691ac627919ffca225df781ff88bcfa563dcbb86d719ea13604cc2599f4",
+        "name": "plugin-validator-codex-posix",
+        "passed": true,
+        "seconds": 0.039
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "6731b3a7495fc44d65bd9959f8d2a3ee10b2a8dd2af1a7b47802682f440f6424",
+        "name": "artifact-codex-windows",
+        "passed": true,
+        "seconds": 0.23
+      },
+      {
+        "detail": "",
+        "exit_code": 0,
+        "log_sha256": "de09c1eddaa90d12dad4a42c214b6ac7b80cd820ff1afece7189732145fa0a5f",
+        "name": "plugin-validator-codex-windows",
+        "passed": true,
+        "seconds": 0.04
+      }
+    ]
+  },
+  "privacy": {
+    "review": "docs/public-harness-export/R5-privacy-review.json",
+    "review_sha256": "b1578e4c344e48c56168b8d0b072a3369e873f6bc0eeb672816bb6e80dc02909",
+    "raw_findings": 15,
+    "reviewed_non_sensitive_keep": 15,
+    "unresolved_in_reviewed_set": 0,
+    "raw_findings_preserved": true,
+    "exact_set_and_file_hash_readback": true,
+    "scope": "15 scanner findings and already-identified embedded runtime task material, not whole-release privacy certification"
+  },
+  "not_verified": [
+    "remaining-non-scanner-content-and-necessary-dependency-release-review",
+    "full-source-regression-on-new-cut",
+    "bootstrap-installation",
+    "live-host-hooks",
+    "upgrade-and-rollback",
+    "Windows-native-execution",
+    "production-hook-failure-attribution"
+  ],
+  "external_writes": [],
+  "installation_performed": false,
+  "public_push_performed": false
+}

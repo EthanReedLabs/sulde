@@ -1,0 +1,37 @@
+{
+  "acceptance": [
+    "the stager and intent guardian both reject duplicate explicit runtime input paths before hashing, copying or granting maintenance authority",
+    "the Guardian authorization tuple and stager REQUIRED_RUNTIME_SOURCE_FILES remain exact, unique, stable-order and complete including scripts/kb/codex_cli_contract.py",
+    "real hostile tuple injection, every-input digest mutation, unknown input, symlink/non-regular and stage inventory tests pass without mocks around the production validators",
+    "the worker report claims only candidate implementation and leaves task_verified, accepted, installation and R2 completion to the coordinator"
+  ],
+  "base_commit": "f0e845617867c1710b636205c6798d03140d1646",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H06A2-integration-hygiene",
+    "H06B-codex-0150-authority"
+  ],
+  "supersedes": ["H06F-release-inventory-authority"],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/intent_guardian_parts/state.py",
+    "scripts/release/stage_plugin.py",
+    "tests/test_stage_release_inventory.py",
+    "tests/test_stage_plugin.py",
+    "guardian-r2-program/reports/H06G-release-inventory-authority.md"
+  ],
+  "owner": "guardian-r2-worker-h06g",
+  "requirements": [
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06G-release-inventory-authority",
+  "title": "闭合 release inventory 完整性与重复路径拒绝"
+}

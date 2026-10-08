@@ -1,0 +1,41 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "kind": "requirement_traceability",
+  "baseline": "f8c830b02a814cf40c541ef861569882062174c0",
+  "run_id": "run-gpe-f218f0c4044547ecb9513656",
+  "verdict": "pass",
+  "summary": "Every T28 clause is mapped to archive ordering, dual-projection safety and isolated system evidence.",
+  "facts": [
+    "Terminal abort permits only the unrelated local cleanup lane and preserves archived same-resource blocking.",
+    "Nonterminal debt remains fail closed and all evidence is bound to one controlled task and exact dev candidate."
+  ],
+  "requirements": ["DERIVED-READINESS", "DERIVED-RESOURCE", "PROGRAM-GOVERNANCE"],
+  "findings": [],
+  "acceptance": [
+    {
+      "requirement_id": "DERIVED-READINESS",
+      "clause": "scheduler、interactive、artifact、effect 和 decision pairing 分域且不能互相冒充",
+      "fact": "The abort cleanup test proves readiness-clear, archive-before-remove and successful local cleanup."
+    },
+    {
+      "requirement_id": "DERIVED-RESOURCE",
+      "clause": "同一资源的路径、URI 或 MCP 别名不能绕过跨 session debt",
+      "fact": "Archive replay remains unknown and authoritative-blocking; the five-state negative matrix fails before archive and removal."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "每个任务有证据包和问题处置，总纲零遗漏后才能关闭",
+      "fact": "159 component tests, three focused failures and 1356 OS-isolated tests pass with an empty production sentinel."
+    }
+  ],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

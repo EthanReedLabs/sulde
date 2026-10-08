@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "kind": "finding_resolution",
+  "baseline": "f8c830b02a814cf40c541ef861569882062174c0",
+  "run_id": "run-gpe-f218f0c4044547ecb9513656",
+  "verdict": "pass",
+  "summary": "Transferred finding F27-001 is closed by the exact consumer correction and full isolated rerun.",
+  "facts": [
+    "Cleanup now consumes readiness_blocking_attempts while blocking_attempts remains unchanged for same-resource authority.",
+    "The previously failing cleanup archive test and the full 1356-test suite both pass."
+  ],
+  "requirements": [],
+  "findings": ["F27-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

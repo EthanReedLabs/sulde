@@ -539,17 +539,39 @@ class CodexHookBridgeTests(unittest.TestCase):
             self.assertEqual(payload["outcome"], "inconclusive")
             self.assertEqual(payload["effect_claim"], "none")
 
+    @unittest.skipIf(os.name == "nt", "requires a POSIX shell")
     def test_posix_bridge_policy_validation_adds_no_python_hot_path(self) -> None:
-        source = (
+        scripts = (
             ROOT
             / "integrations"
             / "codex"
             / "plugins"
             / "sulde"
             / "scripts"
-            / "run-hook.sh"
-        ).read_text(encoding="utf-8")
-        self.assertNotIn('"$PYTHON" -c', source)
+        )
+        copied = self.root / "hot-path/scripts"
+        shutil.copytree(scripts, copied, ignore=shutil.ignore_patterns("__pycache__"))
+        bridge = self.root / "hot-home/bin/intent-guardian"
+        bridge.parent.mkdir(parents=True)
+        bridge.write_text("#!/bin/sh\n# sulde-observer-in-process-v1\nexit 0\n", encoding="utf-8")
+        bridge.chmod(0o700)
+        commands = self.root / "hot-commands"
+        commands.mkdir()
+        sentinel = self.root / "unexpected-python"
+        shim = commands / "python3"
+        shim.write_text('#!/bin/sh\nprintf x >> "' + str(sentinel) + '"\nexit 97\n', encoding="utf-8")
+        shim.chmod(0o700)
+        environment = {key: value for key, value in os.environ.items()
+                       if not key.startswith(("SULDE_", "CODEX_", "CLAUDE_"))}
+        environment.update(SULDE_HOME=str(bridge.parent.parent),
+                           SULDE_KB_HOME=str(self.root / "hot-kb"),
+                           PATH=str(commands) + os.pathsep + os.environ["PATH"])
+        result = subprocess.run(["/bin/sh", str(copied / "run-hook.sh"), "pre-tool-use"],
+                                input='{"tool_name":"Read"}', env=environment,
+                                text=True, encoding="utf-8", errors="replace", capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertFalse(sentinel.exists(), "successful bridge must not start wrapper helper Python")
 
     @unittest.skipIf(os.name == "nt", "requires a POSIX shell")
     def test_bridge_dispatch_race_failure_fails_closed_and_policy_deny_survives(self) -> None:

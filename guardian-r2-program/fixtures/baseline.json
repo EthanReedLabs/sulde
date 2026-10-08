@@ -1,0 +1,49 @@
+{
+  "baseline_commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "branch": "task/r2-guardian-human-authority-lifeform",
+  "claude_live": {
+    "status": "deferred",
+    "version": "unknown",
+    "why": "额度不可用；静态测试或另一宿主观察不得替代真实 Claude hook boundary"
+  },
+  "codex": {
+    "session_start_adapter_healthy": true,
+    "session_start_adapter_path": "/Users/eric/.codex/plugins/cache/sulde-local/sulde/0.2.5+codex.20260826044342/scripts/session-start.py",
+    "version": "codex-cli 0.149.1"
+  },
+  "host": {
+    "architecture": "arm64",
+    "kernel": "Darwin 25.3.0",
+    "macos_build": "25D125",
+    "macos_version": "26.3"
+  },
+  "installed_runtime": {
+    "generation": "0.2.5+codex.20260826044342:b4364153e75ccd5c0a881cf95ed0f3b9ccd40521a574c43fe08bc37eaa579247",
+    "launcher_targets_healthy": true,
+    "source_root": "/Users/eric/.codex/plugins/cache/sulde-local/sulde/0.2.5+codex.20260826044342/runtime",
+    "version": "0.2.5+codex.20260826044342"
+  },
+  "parked_plan_sha256": "3c648a1904cde11ee05f289d0168601a709da104158fd8b4104129d6061f6046",
+  "schema": "sulde-r2-h00-baseline-v1",
+  "tests": {
+    "formal": {
+      "command": "/Users/eric/.claude/plugins/data/sulde-cc/kb/venv/bin/python -B scripts/kb/run-isolated-tests.py tests.test_intent_guardian tests.test_intervention tests.test_agent_runtime tests.test_native_decision_journal tests.test_operational_readiness tests.test_sulde_statusline",
+      "count": 423,
+      "duration_seconds": 88.896,
+      "production_write_guard": "clear",
+      "result": "pass"
+    },
+    "negative_entrypoint": {
+      "count": 424,
+      "errors": [
+        "tests.test_task_ownership does not exist"
+      ],
+      "failures": [
+        "system Python 3.14.6 lacks PyYAML and selects the documented legacy no-op hook branch"
+      ],
+      "result": "inconclusive_environment",
+      "use": "fixture only; never treated as product regression"
+    }
+  },
+  "worktree": ".worktrees/guardian-human-authority-lifeform"
+}

@@ -1,0 +1,108 @@
+{
+  "schema": "sulde-h06i-r2-final-repair-freeze-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "task_id": "H06I-R2-interruption-authority",
+  "created_at": "2026-08-28T02:46:09Z",
+  "authority": "human-confirmed-final-two-stage-output-last-message-repair-2026-08-28-current-session",
+  "authority_amendment": {
+    "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-003.json",
+    "sha256": "28e82c75f1b760889d7d4ad174e7984d4c2f88a70b19e9ccc8e26c570192651e"
+  },
+  "task_definition": {
+    "path": "guardian-r2-program/task-definitions/H06I-R2-interruption-authority.json",
+    "sha256": "55ebd49197d5c940394fd405224b2814d28b290a81e3cd481c4c5d4bcac377c2"
+  },
+  "controller": {
+    "state": "running",
+    "event_sequence": 461,
+    "event_head_sha256": "565e653dc47bdb3d9fcdec9cf10328f9fa74d569174a0662ea4183484c4a244a",
+    "coordinator_commit": "eb3877b"
+  },
+  "stage_one": {
+    "implementation_candidate_ordinal": 3,
+    "provider_invocations": 1,
+    "provider_completion": {
+      "thread_started": 1,
+      "turn_started": 1,
+      "turn_completed": 1,
+      "turn_failed": 0,
+      "provider_returncode": 0,
+      "execution_stop_reason": "completed",
+      "cleanup_quiescent": true
+    },
+    "frozen_candidate_sha256": {
+      "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+      "scripts/kb/agent-runtime.py": "df5b6badc657c4f2b57d8c068fc65d3e713afb7a3af906701cd0d90cf04b4d6a",
+      "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+      "tests/test_agent_runtime.py": "215f3a97494f5d9d770d03201d2329f2cc7f13bb24cc7e7a22878c9f11071217",
+      "guardian-r2-program/reports/H06I-R2-interruption-authority.md": "f76718d8fb90b94205afc24971b69b0e5f85f94683b1e039d617eda550b7310a"
+    },
+    "frozen_candidate_size": {
+      "guardian-r2-program/reports/H06I-R2-interruption-authority.md": 18542
+    },
+    "changed_from_stage_input": [
+      "scripts/kb/agent-runtime.py",
+      "tests/test_agent_runtime.py",
+      "guardian-r2-program/reports/H06I-R2-interruption-authority.md"
+    ],
+    "byte_identical_to_stage_input": {
+      "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+      "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850"
+    },
+    "artifacts": {
+      "events": {
+        "sha256": "98bbb81f7dae6afa423518de9381b576689df9f473b80bee1722fc598e1d15c6",
+        "bytes": 722307
+      },
+      "status": {
+        "sha256": "2b2eaf10c1063fa569d6e1b4d9372dd45c61693565e2c0c0181ba673ab7ddcf0",
+        "bytes": 266
+      },
+      "stderr": {
+        "sha256": "e62faab2cd9975041f3e2dff04328551d3b1e64cc7d3223152afe2dfbbdaed77",
+        "bytes": 415
+      },
+      "output_last_message": {
+        "sha256": "a484b82c27b20a5d8156ea5d33edb1abb838fa87f513b34bba7de8e5a777e1f9",
+        "bytes": 18541
+      },
+      "run_ledger": {
+        "sha256": "b5a11ffea5f54868964d3d2f13f471f9be22b25dc8a5b3dd268b9f707b383257",
+        "bytes": 1206
+      }
+    },
+    "successful_test_facts": [
+      "focused output-last-message, canonical authority, H06H, managed terminal and broker equality: 13 passed",
+      "tests/test_agent_runtime.py: 67 run, 1 existing environment-conditional skip, success",
+      "tests/test_native_agent_broker.py: 52 passed",
+      "combined runtime and broker modules: 119 run, 1 existing environment-conditional skip, success",
+      "exact-base fresh full clone with five candidate paths and six controls: 119 run, 1 existing environment-conditional skip, success"
+    ],
+    "inherited_parent_terminal": {
+      "classification": "FR2-H06I-R2-008",
+      "exact_error": "durable worker report does not equal canonical provider final bytes",
+      "runtime_status": "failed:AgentRuntimeError",
+      "adjudication": "isolated inherited parent-runtime failure; not acceptance evidence",
+      "byte_evidence": "the first 18541 bytes of durable report and output-last-message are identical; only durable report has the final LF"
+    },
+    "stage_boundary_passed": true
+  },
+  "stage_two": {
+    "authorized_self_hosted_verification_ordinal": 2,
+    "provider_invocations_remaining": 1,
+    "candidate_source_write": false,
+    "brief_path": "guardian-r2-program/briefs/H06I-R2-output-last-message-final-selfhost.md",
+    "required_authority": "fresh isolated nonproduction runtime projection built from the five frozen candidate hashes",
+    "automatic_retry": false
+  },
+  "unchanged_boundaries": {
+    "production_install": false,
+    "production_descriptor_write": false,
+    "scheduler_change": false,
+    "commit_candidate": false,
+    "dev_or_main_merge": false,
+    "push": false,
+    "h06j_start": false
+  },
+  "terminal_rule": "the single stage-two self-hosted verification must satisfy every frozen postcondition; any failure stops the program with no retry, repair, new task or H06J"
+}

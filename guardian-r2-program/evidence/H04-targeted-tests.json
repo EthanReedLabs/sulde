@@ -1,0 +1,30 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "tests.test_resource_adapters", "tests.test_intent_guardian.H04TypedResourceHookRoutingTests", "tests.test_intent_guardian_resources", "-v"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["python3", "-m", "unittest", "<three-literal-git-tests>", "-v"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Coordinator replay passed all 22 typed resource and hook routing tests plus three adjacent literal Git scope tests after canonical fixture repair.",
+    "Strict agent-runtime verify passed with a natural provider terminal, report contract pass, quiescent execution and exact H04 binding."
+  ],
+  "findings": ["FR2-H04-008", "FR2-H04-009"],
+  "kind": "targeted_tests",
+  "requirements": [],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H04 targeted tests independently validate all five typed resources and hook routes.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

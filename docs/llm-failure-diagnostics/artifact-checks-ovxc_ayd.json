@@ -1,0 +1,593 @@
+{
+  "schema": "llm-diagnostic-artifact-check-v1",
+  "source_commit": "898906ac30814dc14d4d5c4735504d8e0acfc191",
+  "source_clean": true,
+  "network": "denied",
+  "model_calls": 0,
+  "installed": false,
+  "scoped_evidence_reused": "fix-checks-v8ecbs2w.json",
+  "runner_sha256": "d7a25622f605eb3a0e6a0a753b00a4374573bbd5c48e7554581356d353c6cbf5",
+  "profile_sha256": "0a07252ceb4ec0e7753c0992842a291c9a8930a2d6dd97f9c878123b864b21fb",
+  "steps": [
+    {
+      "label": "stage_codex_posix",
+      "exit_code": 0,
+      "stdout_sha256": "74471b31dfdd764bb8d755cbab6c7a243bffea0de8fb0a09f9dfc2cc88458716",
+      "stderr_sha256": "b9eee5ebe7224e01ec25d6c9a46a0cafb5c24d3faf65f4f42ba1168c2a9efd6f"
+    },
+    {
+      "label": "python:auto-distill.py:help",
+      "exit_code": 0,
+      "stdout_sha256": "4a2620fb71e45da7aa0dc154b55527125820bee21e68d4f35ef5298c6d782f7d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "python:self-repair.py:help",
+      "exit_code": 0,
+      "stdout_sha256": "81b0630b610ea5df09fdf52c9fabf933e9bcdbdc3e3fea7b40c092d5b81f26c4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "python3:auto-distill.py:help",
+      "exit_code": 0,
+      "stdout_sha256": "5923a7636f271ac33babe2b555dcb70c89d174f90f0e4b3768d86e032c382dff",
+      "stderr_sha256": "52da4ce1f6f227d140f4216e956020d9fa7454b05c6c426ea609a03b3574dc3e"
+    },
+    {
+      "label": "python3:self-repair.py:help",
+      "exit_code": 0,
+      "stdout_sha256": "71a0806d11dbc9ed081d5e4383c0c57654153966470dfb6120abf02b40a07d8d",
+      "stderr_sha256": "84cd594ee35bd645659122d952836b4d819dc724601f3e20a2d1e1f8c7042408"
+    },
+    {
+      "label": "artifact_independent",
+      "exit_code": 0,
+      "stdout_sha256": "a5768637fca322c05ad8757cce3c3d9dbec7ac97502ce4be58187e1d6db1bd36",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "artifact_generation": {
+    "generation": "0.2.5+codex.20260923070231-1c75e2322a:cc7bbfa9b9b696c81bdd1af8cfdea050f430c3733e7a5f6ef4d7ec95d84b6c79",
+    "platform": "posix",
+    "plugin_version": "0.2.5+codex.20260923070231-1c75e2322a",
+    "provider": "codex",
+    "runtime_tree_sha256": "cc7bbfa9b9b696c81bdd1af8cfdea050f430c3733e7a5f6ef4d7ec95d84b6c79",
+    "schema": "sulde-delivery-generation-v1",
+    "schema_version": 1
+  },
+  "files": {
+    "scripts/kb/auto-distill.py": "7ad377ac2e25be699619933a0079ca074dabd457ea68c1f9cfb47f14410b1dbf",
+    "scripts/kb/self-repair.py": "2dc5d381ffc75112512cbf8189c81c1620f0b22d303537fdad68e3d2eef078e7",
+    "scripts/kb/llm_diagnostics.py": "d700eefb0b75f541d638eed6be7be5fc4e0187ce47a59b7dd2ba7d5e59ebce48"
+  },
+  "independent": {
+    "schema": "diagnostic-pilot-preflight-v1",
+    "final_acceptance": false,
+    "model_calls": 0,
+    "python": "3.10.7",
+    "source_sha256": {
+      "auto-distill.py": "7ad377ac2e25be699619933a0079ca074dabd457ea68c1f9cfb47f14410b1dbf",
+      "self-repair.py": "2dc5d381ffc75112512cbf8189c81c1620f0b22d303537fdad68e3d2eef078e7"
+    },
+    "supporting_python_inventory_sha256": "964c37bc77f35b7ec3fdb450263d4d07cfba0a311d1d1950a4516ad8283d2468",
+    "supporting_python_files": 193,
+    "verifier_sha256": "e32ed762721a3a4d2dce6e79a9697d1682a8230a97824234c7ca36a00f5401d8",
+    "fixture_sha256": "658d19a836d636f4359f07828e5bcbb747090a0912db59db45d364d4e1e9cf6d",
+    "checks": [
+      {
+        "id": "D01",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "27aac8bc886bf576b05515a16501276583d1a0b6c6738941d3839c11bbc8f17b"
+      },
+      {
+        "id": "D02",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "unknown",
+        "quota_tail_visible": false,
+        "surface_bytes": 198,
+        "surface_sha256": "6a5d2ba027b277a0d625e18a92c225588a9b2378c2be28e08307c63ecc89a2f2"
+      },
+      {
+        "id": "D03-text",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "timeout",
+        "quota_tail_visible": false,
+        "surface_bytes": 185,
+        "surface_sha256": "318401d537813c831a6d902557f820bf9f4a425cad66b75953a5c4766abf029d"
+      },
+      {
+        "id": "D06",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": null,
+        "quota_tail_visible": false,
+        "surface_bytes": 0,
+        "surface_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "D07",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "092664a94091eab763e46cfede27d8773f5ec4ecb23356365d635a1bc41b2b74"
+      },
+      {
+        "id": "D08-direct",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "af800af7bd1a3b45fd2eee884d3c4f5874953799647d83ad67637f1e842a0239"
+      },
+      {
+        "id": "D09-partial",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 178,
+        "surface_sha256": "81e52cfaa3a5dfe04b9ab6a0773ec90f5c3a98afdf4ca90642cd71858700c041"
+      },
+      {
+        "id": "D10-quoted",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "unknown",
+        "quota_tail_visible": false,
+        "surface_bytes": 197,
+        "surface_sha256": "5f74f439fe44d27deec26c6b9bb6c44ecd7d72113983cd4617ca268bdc0a9bad"
+      },
+      {
+        "id": "D10-conflicting",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "unknown",
+        "quota_tail_visible": false,
+        "surface_bytes": 197,
+        "surface_sha256": "c367c7a03317d742245b82114d17b0907842e73cb511b35b9de6274d2e6e7b2c"
+      },
+      {
+        "id": "D09-boundary-41",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 175,
+        "surface_sha256": "1fcda7f50f7d6b7fe17bca250b8ef485c734ede4572aa1c7413e7a3706a21415"
+      },
+      {
+        "id": "D09-boundary-42",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 175,
+        "surface_sha256": "4489f884e6b157b0dc9a5843a7b0ec26e8bfc638087fbbe039270dbbbf0116a7"
+      },
+      {
+        "id": "D09-boundary-341",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "0f6eb8920c6b60ac6dc3b362e11d7a0a00d60f90398ca5ee53890bc345ea0384"
+      },
+      {
+        "id": "D09-boundary-342",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "45d88b8a827c62fe883419ed1f15b6895138948d87a57fbd19d98e11dc49c529"
+      },
+      {
+        "id": "D04-enoent",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "startup_failure",
+        "quota_tail_visible": false,
+        "surface_bytes": 131,
+        "surface_sha256": "86c10f299ba9271f424ab10608c750352904aa39ec22bed69252f734a09619f3"
+      },
+      {
+        "id": "D04-eacces",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "startup_failure",
+        "quota_tail_visible": false,
+        "surface_bytes": 128,
+        "surface_sha256": "aab68afc562572f3af6ad58490ead0fa5b26d61f68a68d07a07c66deea6be1c6"
+      },
+      {
+        "id": "D03-exception",
+        "entry": "distill",
+        "evidence": "injected process-boundary exception",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "timeout",
+        "quota_tail_visible": false,
+        "surface_bytes": 135,
+        "surface_sha256": "1698418fa12befcd5f7b324ec8eabdb56ee037d24d12c01462053ea447e037c2"
+      },
+      {
+        "id": "D05-parser-only",
+        "entry": "distill",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "invalid_output",
+        "quota_tail_visible": false,
+        "surface_bytes": 70,
+        "surface_sha256": "b30ff30b196b69580035903216048246bd73d8c643781ee7a0aaa70eae75a08c"
+      },
+      {
+        "id": "D01",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "27aac8bc886bf576b05515a16501276583d1a0b6c6738941d3839c11bbc8f17b"
+      },
+      {
+        "id": "D02",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "unknown",
+        "quota_tail_visible": false,
+        "surface_bytes": 198,
+        "surface_sha256": "6a5d2ba027b277a0d625e18a92c225588a9b2378c2be28e08307c63ecc89a2f2"
+      },
+      {
+        "id": "D03-text",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "timeout",
+        "quota_tail_visible": false,
+        "surface_bytes": 185,
+        "surface_sha256": "318401d537813c831a6d902557f820bf9f4a425cad66b75953a5c4766abf029d"
+      },
+      {
+        "id": "D06",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": null,
+        "quota_tail_visible": false,
+        "surface_bytes": 0,
+        "surface_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "id": "D07",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "092664a94091eab763e46cfede27d8773f5ec4ecb23356365d635a1bc41b2b74"
+      },
+      {
+        "id": "D08-direct",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "af800af7bd1a3b45fd2eee884d3c4f5874953799647d83ad67637f1e842a0239"
+      },
+      {
+        "id": "D09-partial",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 178,
+        "surface_sha256": "81e52cfaa3a5dfe04b9ab6a0773ec90f5c3a98afdf4ca90642cd71858700c041"
+      },
+      {
+        "id": "D10-quoted",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "unknown",
+        "quota_tail_visible": false,
+        "surface_bytes": 197,
+        "surface_sha256": "5f74f439fe44d27deec26c6b9bb6c44ecd7d72113983cd4617ca268bdc0a9bad"
+      },
+      {
+        "id": "D10-conflicting",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "unknown",
+        "quota_tail_visible": false,
+        "surface_bytes": 197,
+        "surface_sha256": "c367c7a03317d742245b82114d17b0907842e73cb511b35b9de6274d2e6e7b2c"
+      },
+      {
+        "id": "D09-boundary-41",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 175,
+        "surface_sha256": "1fcda7f50f7d6b7fe17bca250b8ef485c734ede4572aa1c7413e7a3706a21415"
+      },
+      {
+        "id": "D09-boundary-42",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 175,
+        "surface_sha256": "4489f884e6b157b0dc9a5843a7b0ec26e8bfc638087fbbe039270dbbbf0116a7"
+      },
+      {
+        "id": "D09-boundary-341",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "0f6eb8920c6b60ac6dc3b362e11d7a0a00d60f90398ca5ee53890bc345ea0384"
+      },
+      {
+        "id": "D09-boundary-342",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "quota",
+        "quota_tail_visible": false,
+        "surface_bytes": 176,
+        "surface_sha256": "45d88b8a827c62fe883419ed1f15b6895138948d87a57fbd19d98e11dc49c529"
+      },
+      {
+        "id": "D04-enoent",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "startup_failure",
+        "quota_tail_visible": false,
+        "surface_bytes": 131,
+        "surface_sha256": "86c10f299ba9271f424ab10608c750352904aa39ec22bed69252f734a09619f3"
+      },
+      {
+        "id": "D04-eacces",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "startup_failure",
+        "quota_tail_visible": false,
+        "surface_bytes": 128,
+        "surface_sha256": "aab68afc562572f3af6ad58490ead0fa5b26d61f68a68d07a07c66deea6be1c6"
+      },
+      {
+        "id": "D03-exception",
+        "entry": "repair",
+        "evidence": "injected process-boundary exception",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "timeout",
+        "quota_tail_visible": false,
+        "surface_bytes": 135,
+        "surface_sha256": "1698418fa12befcd5f7b324ec8eabdb56ee037d24d12c01462053ea447e037c2"
+      },
+      {
+        "id": "D05-parser-only",
+        "entry": "repair",
+        "pass": true,
+        "semantic": true,
+        "safe": true,
+        "bounded": true,
+        "control_chars_absent": true,
+        "observed_category": "invalid_output",
+        "quota_tail_visible": false,
+        "surface_bytes": 71,
+        "surface_sha256": "f1d21d711a24db951b3b1c78a7079239cd3384dce12c3698b6cabbe1c8d3c7d0"
+      },
+      {
+        "id": "D11-distill",
+        "entry": "distill",
+        "pass": true,
+        "exit_code": 2,
+        "watermark_bytes_unchanged": true
+      },
+      {
+        "id": "D08-distill-sinks",
+        "entry": "distill",
+        "pass": true
+      },
+      {
+        "id": "D11-repair",
+        "entry": "repair",
+        "pass": true
+      },
+      {
+        "id": "D08-repair-sinks",
+        "entry": "repair",
+        "pass": true
+      },
+      {
+        "id": "D05-retry-budget",
+        "entry": "distill",
+        "calls": 2,
+        "pass": true
+      },
+      {
+        "id": "D05-no-process-retry",
+        "entry": "distill",
+        "calls": 1,
+        "pass": true
+      },
+      {
+        "id": "D06-main-state",
+        "entry": "distill",
+        "evidence": "real main; annotation/notification/backfill mocked",
+        "pass": true
+      },
+      {
+        "id": "D06-repair-draft",
+        "entry": "repair",
+        "evidence": "real draft; discovery/notification mocked",
+        "pass": true
+      },
+      {
+        "id": "D12-help-only",
+        "entry": "distill",
+        "pass": true,
+        "exit_code": 0
+      },
+      {
+        "id": "D12-help-only",
+        "entry": "repair",
+        "pass": true,
+        "exit_code": 0
+      }
+    ],
+    "uncovered": [
+      "D03 real host timeout",
+      "D06 real annotation/backfill and nonempty payload",
+      "D08 all new sinks audit",
+      "D09 truncation markers and exact byte-limit boundaries",
+      "D10 broader untrusted formats",
+      "D12 dependency audit",
+      "D13 persisted diagnostic retention",
+      "D14 scoped regressions"
+    ]
+  },
+  "artifact_unchanged": true,
+  "status": "passed"
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T27-release-blocker-remediation",
+  "kind": "task_report",
+  "baseline": "0dce1005d244af7e5b509513226bcfe8a2f11b4f",
+  "run_id": "run-gpe-75da4f180a9fb984f67db91a",
+  "verdict": "pass",
+  "summary": "T27 implements the three frozen release blockers while preserving same-resource effect safety and fail-closed host truth.",
+  "facts": [
+    "Worker candidate af90c9b changes exactly the twelve registered T27 paths and is integrated on dev as f8c830b.",
+    "The report discloses the managed-worker sandbox false negatives and the later full-suite cleanup-consumer finding instead of treating either as success."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T27-release-blocker-remediation.md",
+      "sha256": "9ca5917258d24037c13c950faf1da3c17cc598dd3777646a612524786a0576ac"
+    }
+  ]
+}

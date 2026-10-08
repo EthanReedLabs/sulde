@@ -92,6 +92,7 @@ from approval_timeout_policy import (
     timeout_disposition,
 )
 
+from intent_guardian_parts.intervention_control import prepare_effect_recovery
 from correction_intervention import (
     CorrectionInterventionError,
     apply_queued_corrections,

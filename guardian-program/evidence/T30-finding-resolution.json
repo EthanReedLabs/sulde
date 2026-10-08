@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "finding_resolution",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-f5c07f9049e7e2ba3dac7894",
+  "verdict": "pass",
+  "summary": "All five transferred findings retain their verified remedies, and F29-001 is bound to the new packaged-provenance source correction without claiming production closure.",
+  "facts": [
+    "F26-001 through F26-003 retain T27 evidence evi-082c9fb8de19970d1b0054e1 and the accepted T28 full-suite evidence; T30 does not modify their implementation paths.",
+    "F27-002 is preserved by the T29/T30 Sulde-owned acceptance boundary: no external iquokka task epoch, lane or write is consulted by this successor.",
+    "F29-001 is covered at source level by deterministic corpus-bound HISTORY.json generation, no-Git packaged-runtime execution and strict stager/installer validation; official install and scheduler 15/15 remain explicit system gates."
+  ],
+  "requirements": [],
+  "findings": ["F26-001", "F26-002", "F26-003", "F27-002", "F29-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "tests.test_knowledge_history", "tests.test_kb_aging", "tests.test_stage_plugin", "tests.test_codex_plugin_install"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

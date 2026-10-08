@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T24-p0-transaction-integration",
+  "kind": "targeted_tests",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-9d84a3e7e26d5694fbc0c75a",
+  "verdict": "pass",
+  "summary": "The complete guardian suite plus the new P0 integration module passed in dependency-complete direct, isolated and clean-clone runs.",
+  "facts": [
+    "183 tests passed directly from dev.",
+    "183 tests passed through the supported isolated runner from dev.",
+    "183 tests passed from a clean clone of 2d65284."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "-q", "tests.test_intent_guardian", "tests.test_p0_transaction_integration"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

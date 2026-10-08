@@ -23,17 +23,19 @@ from corpus_manifest import (
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo-root", type=Path, default=ROOT)
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--check", action="store_true")
     modes.add_argument("--verify", action="store_true")
     args = parser.parse_args()
+    root = args.repo_root.resolve()
     if args.verify:
-        manifest = load_manifest(ROOT, verify_files=True)
+        manifest = load_manifest(root, verify_files=True)
         print(f"knowledge/MANIFEST.json verified: {manifest.document_count} documents")
         return 0
-    manifest = build_manifest(ROOT, git_tracked_documents(ROOT))
+    manifest = build_manifest(root, git_tracked_documents(root))
     rendered = render_manifest(manifest)
-    output = ROOT / MANIFEST_RELATIVE
+    output = root / MANIFEST_RELATIVE
     if args.check:
         if not output.is_file() or output.read_text(encoding="utf-8") != rendered:
             print(
@@ -42,7 +44,7 @@ def main() -> int:
             return 1
         print(f"knowledge/MANIFEST.json is current: {manifest.document_count} documents")
         return 0
-    write_manifest(ROOT, manifest)
+    write_manifest(root, manifest)
     print(f"generated knowledge/MANIFEST.json: {manifest.document_count} documents")
     return 0
 

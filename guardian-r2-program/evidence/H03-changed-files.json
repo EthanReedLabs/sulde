@@ -1,0 +1,30 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H03-recovery-supervisor.md",
+      "sha256": "ccbd376477e02cc5fb3770ecf78afe47641a0d7924b33b6aa998fe7eed9d0c55"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "c5b6bcd8612e26e1f48b410a02f2557f2edfbe48"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Integrated commit c5b6bcd8612e26e1f48b410a02f2557f2edfbe48 has parent e9e043897fc093a61069b889a7a8307ba21925e6 and tree ed5e606726a8a12ce6cd0fb983691a1fb2da7e91.",
+    "Its changed paths are exactly the four frozen H03 owned paths and all four blobs are byte-identical to worker commit b718d1862e18cf2435188ce414f1735733ec7d9f; accepted H01/H02 projections retain SHA-256 6b5ec257... and 89432ec4...."
+  ],
+  "findings": [],
+  "kind": "changed_files",
+  "requirements": [],
+  "run_id": "run-gpe-911f4018e20b6c8d699f94e3",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "Integrated H03 commit contains exactly the four frozen task paths and byte-identical worker artifacts.",
+  "task_id": "H03-recovery-supervisor",
+  "verdict": "pass"
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "production_install",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "The verified dev tree was merged to main and released through the official Codex stager and transactional installer with exact 0.149.1 native authority readback.",
+  "facts": [
+    "main commit b8b96e9c12481f6dfdcf14a29bb07d395cbe2b0d has tree 1622d723d6cf3571e48003e61a0ae02a016f2c72, identical to the system-tested synchronized dev tree.",
+    "Official staging produced 577 files and 366 corpus documents at plugin version 0.2.5+codex.20260824084717; the sealed runtime contained no __pycache__ directory or .pyc file.",
+    "The official installer committed generation 0.2.5+codex.20260824084717:dbeaf8ce5708729998ffd79cfc0a367e216476d9cad756146212ce1b22d84b39 and reported installed_degraded only because scheduler reconciliation and a restarted live host were intentionally pending.",
+    "The stable launcher, runtime owner and installed native authority all bind runtime tree dbeaf8ce5708729998ffd79cfc0a367e216476d9cad756146212ce1b22d84b39.",
+    "Installed native authority binds codex-cli 0.149.1 and executable SHA-256 134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477; authority SHA-256 is de94c8b76ff4d57261a2d1e39b489d9a1f23392f4652edd9de3901b3741eff1b.",
+    "No installed cache, launcher, marketplace, native authority, contract or ledger was edited by hand; old live-session paths were handled only by the installer's controlled retirement bridges."
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-DELIVERY",
+    "DERIVED-RESOURCE",
+    "DERIVED-ISOLATION"
+  ],
+  "findings": [
+    "F31-001"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "scripts/release/stage_plugin.py",
+        "--target",
+        "codex",
+        "--platform",
+        "posix",
+        "--output",
+        "/private/tmp/sulde-t31-production-stage.IcHNMd"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "scripts/release/install_codex_plugin.py",
+        "--artifact-root",
+        "/private/tmp/sulde-t31-production-stage.IcHNMd",
+        "--codex",
+        "/Users/eric/.nvm/versions/node/v18.20.8/bin/codex",
+        "--platform",
+        "posix",
+        "--json"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

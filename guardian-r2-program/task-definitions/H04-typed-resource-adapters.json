@@ -1,0 +1,32 @@
+{
+  "acceptance": [
+    "GitMetadataResource 解析 linked worktree gitdir；已授权精确 add/commit/merge 可写 metadata，read/status/diff/rev-parse 不受 task lane degraded 影响",
+    "删除、Workspace、Figma 与 DeviceResource 均绑定 canonical identity、动作约束、world-state 和独立 verifier",
+    "use_figma 提取 fileKey、node/page、mutation/readback；空 target 或 terminal quarantine 历史不得阻断无关 apply_patch",
+    "I04、I09、I14、I15、I17、I19 的正反样本全部通过且不放宽 main、pathspec、购买、清数据或父目录边界"
+  ],
+  "base_commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "capability_tier": "deep",
+  "depends_on": ["H02-grant-broker"],
+  "supersedes": [],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/resource_adapters.py",
+    "scripts/kb/intent_guardian_parts/resources.py",
+    "scripts/kb/local_file_operations.py",
+    "scripts/kb/command_template.py",
+    "tests/test_resource_adapters.py",
+    "tests/test_intent_guardian.py",
+    "guardian-r2-program/reports/H04-typed-resource-adapters.md"
+  ],
+  "owner": "guardian-r2-worker-h04",
+  "requirements": ["R2-HUMAN-GRANT", "R2-TYPED-RESOURCES", "PROGRAM-GOVERNANCE"],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H04-typed-resource-adapters",
+  "title": "实现 Git、FS、Workspace、Figma 与 Device 强类型资源适配器"
+}

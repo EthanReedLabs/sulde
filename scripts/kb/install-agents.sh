@@ -707,9 +707,13 @@ targets = {
 def replace_machine_path(value: str) -> str:
     replacements = {
         "__SULDE_SOURCE_ROOT__": str(runtime_root),
+        "/Users/eric/ClaudePlugin/sulde-cc-pro": str(runtime_root),
         "__SULDE_KB_HOME__": str(kb_home),
+        "/Users/eric/.claude/plugins/data/sulde-cc/kb": str(kb_home),
         "__SULDE_CODEX_SESSIONS__": str(user_home / ".codex/sessions"),
+        "/Users/eric/.codex/sessions": str(user_home / ".codex/sessions"),
         "__SULDE_USER_BIN__": str(user_home / ".local/bin"),
+        "/Users/eric/.local/bin": str(user_home / ".local/bin"),
     }
     for old, new in replacements.items():
         value = value.replace(old, new)

@@ -26,17 +26,27 @@ kb_cli = SimpleNamespace(
 _command_template = runpy.run_path(str(Path(__file__).with_name("command_template.py")))
 split_command_template = _command_template["split_command_template"]
 DEFAULT_LLM_CMD = _command_template["default_llm_command"]()
+_llm_diagnostics = runpy.run_path(str(Path(__file__).with_name("llm_diagnostics.py")))
 WINDOWS_CREATE_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
 MAX_ENTRIES = 300
 MAX_CHARS = 40_000
 MIN_ENTRIES = 20
 ROLES = ("user", "assistant", "summary")
+# Mirrors memory_annotation.CONFLICT_EXIT_CODE. Deliberately a literal: this
+# script must still start under a minimal LaunchAgent environment, so it does
+# not load the annotation module. test_distill_conflict_resilience binds them.
+ANNOTATION_CONFLICT_EXIT = 3
+ENTITY_TYPES = (
+    "组件", "工具", "配置", "数据", "接口", "流程", "约束",
+    "缺陷", "现象", "根因", "决策", "任务", "环境", "角色",
+)
 
 EXTRACTION_INSTRUCTIONS = """\
 对窗口内容做三类提炼，只输出一个 JSON：
-{"entities":[{"name":"实体中文短名词","type":"类型"}],"edges":[{"src":"源实体","rel":"关系","dst":"目标实体","entry_id":123,"confidence":0.95}],"lessons":[{"text":"下次会再用到的通用教训","problem_type":"bug-fix|regression|performance|intent-drift|skill-mcp-misuse|host-inconsistency|workflow|platform-fact|design-decision|other","task_context":"什么任务和约束下发生","symptom":"可观察症状及期望/实际差异","root_cause":"已确认根因；不足时明确写 inconclusive 和缺失证据","evidence_status":"verified|inconclusive","evidence_entry_ids":[123],"route_positive":{"text":"应该召回的输入","reason":"命中哪些必要条件","source":"observed|constructed"},"route_negative":{"text":"最相似但不应召回的输入","reason":"缺少哪个必要条件","source":"observed|constructed"},"outcome_positive":{"text":"真正完成的做法或输出","reason":"满足哪些验收不变量","source":"observed|constructed"},"outcome_negative":{"text":"看似完成但仍错误的做法或输出","reason":"违反哪个验收不变量","source":"observed|constructed"}}]}
+{"entities":[{"name":"实体中文短名词","type":"__ENTITY_TYPES__"}],"edges":[{"src":"源实体","rel":"关系","dst":"目标实体","entry_id":123,"confidence":0.95}],"lessons":[{"text":"下次会再用到的通用教训","problem_type":"bug-fix|regression|performance|intent-drift|skill-mcp-misuse|host-inconsistency|workflow|platform-fact|design-decision|other","task_context":"什么任务和约束下发生","symptom":"可观察症状及期望/实际差异","root_cause":"已确认根因；不足时明确写 inconclusive 和缺失证据","evidence_status":"verified|inconclusive","evidence_entry_ids":[123],"route_positive":{"text":"应该召回的输入","reason":"命中哪些必要条件","source":"observed|constructed"},"route_negative":{"text":"最相似但不应召回的输入","reason":"缺少哪个必要条件","source":"observed|constructed"},"outcome_positive":{"text":"真正完成的做法或输出","reason":"满足哪些验收不变量","source":"observed|constructed"},"outcome_negative":{"text":"看似完成但仍错误的做法或输出","reason":"违反哪个验收不变量","source":"observed|constructed"}}]}
 抽取纪律：
 - 实体用中文短名词，同一事物全窗口统一叫法，做好共指消解。
+- type 只能取 entities.type 列出的枚举之一，不得自创；拿不准时选最接近的一个。
 - 边必须能从原文支撑，entry_id 标出处；推断的边 confidence 不高于 0.7。
 - 宁缺毋滥，一次蒸馏 5-15 条边是健康量，不要为凑数建边。
 - lessons 只收“下次会再用到”的内容，一次不超过 5 条；每条必须按 Layer1 问题卡结构输出。
@@ -58,6 +68,10 @@ LESSON_FIELDS = {
     "outcome_positive", "outcome_negative",
 }
 SAMPLE_FIELDS = {"text", "reason", "source"}
+
+
+class AnnotationRejected(Exception):
+    """One unusable sample, not a pipeline failure: the watermark still advances."""
 
 
 class DistillError(RuntimeError):
@@ -204,7 +218,10 @@ def build_prompt(entries: list[Entry], retry: bool = False) -> str:
     rendered = "\n\n".join(
         f"[id={entry.id} role={entry.role}]\n{entry.content}" for entry in entries
     )
-    prompt = f"{EXTRACTION_INSTRUCTIONS}\n待蒸馏窗口：\n{rendered}"
+    instructions = EXTRACTION_INSTRUCTIONS.replace(
+        "__ENTITY_TYPES__", "|".join(ENTITY_TYPES)
+    )
+    prompt = f"{instructions}\n待蒸馏窗口：\n{rendered}"
     if retry:
         prompt += "\n\n上次输出无法解析。只输出裸 JSON，不要 Markdown 围栏或任何解释。"
     return prompt
@@ -213,10 +230,11 @@ def build_prompt(entries: list[Entry], retry: bool = False) -> str:
 def run_llm(command_template: str, prompt: str) -> str:
     try:
         arguments = split_command_template(command_template)
-    except ValueError as error:
-        raise DistillError(f"invalid --llm-cmd: {error}") from error
+    except ValueError:
+        arguments = []
+    # Raise outside the handler: ``from None`` only hides the raw context.
     if not arguments:
-        raise DistillError("--llm-cmd cannot be empty")
+        raise DistillError(_llm_diagnostics["startup_failure"]())
 
     stdin_prompt: str | None = prompt
     expanded: list[str] = []
@@ -239,12 +257,18 @@ def run_llm(command_template: str, prompt: str) -> str:
             check=False,
             creationflags=WINDOWS_CREATE_NO_WINDOW if os.name == "nt" else 0,
         )
+    except subprocess.TimeoutExpired:
+        failure = _llm_diagnostics["timeout_failure"]()
     except OSError as error:
-        raise DistillError(f"LLM command failed to start: {error}") from error
+        failure = _llm_diagnostics["startup_failure"](error)
+    else:
+        failure = None
+    # Raise outside the handler: no raw command/output exception in the chain.
+    if failure is not None:
+        raise DistillError(failure)
     if completed.returncode != 0:
-        detail = completed.stderr.strip() or completed.stdout.strip()
         raise DistillError(
-            f"LLM command exited {completed.returncode}: {detail[:500]}"
+            _llm_diagnostics["process_failure"](completed.stderr, completed.stdout, completed.returncode, prompt)
         )
     return completed.stdout
 
@@ -260,9 +284,23 @@ def strip_json_fence(raw: str) -> str:
 
 def parse_result(raw: str) -> dict[str, Any]:
     try:
+        return _parse_result(raw)
+    except DistillError as error:
+        message = str(error)
+    except (TypeError, ValueError, RecursionError):
+        message = "malformed LLM schema; raw_output=omitted"
+    # The validators only produce fixed schema messages/indices. Do not retain
+    # JSONDecodeError.doc or the original parsing exception as a chained cause.
+    if not message.startswith("[invalid_output]"):
+        message = "[invalid_output] " + message
+    raise DistillError(message)
+
+
+def _parse_result(raw: str) -> dict[str, Any]:
+    try:
         payload = json.loads(strip_json_fence(raw))
     except json.JSONDecodeError as error:
-        raise DistillError(f"invalid LLM JSON: {error}") from error
+        raise DistillError(f"[invalid_output] invalid LLM JSON: line={error.lineno} column={error.colno}; raw_output=omitted") from None
     if not isinstance(payload, dict):
         raise DistillError("LLM JSON must be an object")
     if set(payload) != {"entities", "edges", "lessons"}:
@@ -334,6 +372,8 @@ def annotate(payload: dict[str, Any]) -> dict[str, int]:
     )
     if not completed.ok:
         detail = completed.stderr.strip() or completed.stdout.strip() or completed.detail
+        if completed.returncode == ANNOTATION_CONFLICT_EXIT:
+            raise AnnotationRejected(detail[:500])
         if completed.returncode is not None:
             raise DistillError(
                 f"mem-annotate exited {completed.returncode}: {detail[:500]}"
@@ -445,7 +485,21 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def distill_window(home: Path, llm_cmd: str, window: Window) -> tuple[dict[str, int], int]:
+def record_rejected_annotation(home: Path, parsed: dict[str, Any], reason: str) -> None:
+    """Keep an unusable sample reviewable instead of replaying it forever."""
+    record = {
+        "ts": utc_now(),
+        "reason": reason,
+        "entities": parsed["entities"],
+        "edges": parsed["edges"],
+    }
+    with (home / "distill-rejected.jsonl").open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def distill_window(
+    home: Path, llm_cmd: str, window: Window
+) -> tuple[dict[str, int], int, str | None]:
     parsed: dict[str, Any] | None = None
     parse_errors: list[str] = []
     for attempt in range(2):
@@ -473,15 +527,28 @@ def distill_window(home: Path, llm_cmd: str, window: Window) -> tuple[dict[str, 
                 f"inconclusive：窗口内没有可回读的一手 entry_id；{lesson['root_cause']}"
             )
 
-    counts = annotate(parsed)
+    rejection: str | None = None
+    try:
+        counts = annotate(parsed)
+    except AnnotationRejected as error:
+        rejection = str(error)
+        counts = {"entities_inserted": 0, "inserted": 0}
+        record_rejected_annotation(home, parsed, rejection)
+    # Lessons do not depend on graph annotation; a rejected sample must not take
+    # the window's sedimentation candidates down with it.
     append_candidates(home / "distill-candidates.md", parsed["lessons"])
-    return counts, len(parsed["lessons"])
+    return counts, len(parsed["lessons"]), rejection
 
 
-def notify_result(counts: dict[str, int], lesson_count: int) -> None:
+def notify_result(
+    counts: dict[str, int], lesson_count: int, rejection: str | None = None
+) -> None:
+    # A rejected sample reads as "0 entities, 0 edges". Say why, so a silent
+    # rejection cannot masquerade as a window with nothing worth extracting.
+    detail = ";图谱标注被拒,样本已留待复核" if rejection else ""
     notify(
         f"自动蒸馏:{counts['entities_inserted']}实体 "
-        f"{counts['inserted']}边入图,{lesson_count}条沉淀候选"
+        f"{counts['inserted']}边入图,{lesson_count}条沉淀候选{detail}"
     )
 
 
@@ -538,16 +605,17 @@ def run_backfill_phase(args: argparse.Namespace, home: Path, state_path: Path) -
             append_log(home, f"backfill no eligible entries; cursor={end}")
             continue
 
-        counts, lesson_count = distill_window(home, args.llm_cmd, window)
+        counts, lesson_count, rejection = distill_window(home, args.llm_cmd, window)
         max_id = window.entries[-1].id
         state["backfill"] = {"cursor": max_id, "end": end}
         state["ts"] = utc_now()
         write_state(state_path, state)
-        notify_result(counts, lesson_count)
+        notify_result(counts, lesson_count, rejection)
         append_log(
             home,
             f"backfill result entities={counts['entities_inserted']} "
-            f"edges={counts['inserted']} lessons={lesson_count} cursor={max_id}",
+            f"edges={counts['inserted']} lessons={lesson_count} cursor={max_id}"
+            + (f" rejected={rejection}" if rejection else ""),
         )
     return 0
 
@@ -573,16 +641,17 @@ def main() -> int:
             append_log(home, f"no work: fewer than {MIN_ENTRIES} entries; watermark unchanged")
 
         if entry_count >= MIN_ENTRIES:
-            counts, lesson_count = distill_window(home, args.llm_cmd, window)
+            counts, lesson_count, rejection = distill_window(home, args.llm_cmd, window)
             max_id = window.entries[-1].id
             state["last_id"] = max_id
             state["ts"] = utc_now()
             write_state(state_path, state)
-            notify_result(counts, lesson_count)
+            notify_result(counts, lesson_count, rejection)
             append_log(
                 home,
                 f"result entities={counts['entities_inserted']} edges={counts['inserted']} "
-                f"lessons={lesson_count} last_id={max_id}",
+                f"lessons={lesson_count} last_id={max_id}"
+                + (f" rejected={rejection}" if rejection else ""),
             )
         return run_backfill_phase(args, home, state_path)
     except (DistillError, OSError, UnicodeError) as error:

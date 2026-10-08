@@ -1,0 +1,47 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06E-codex-help-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-c6a54d6965683d2d8f39c3d0",
+  "verdict": "pass",
+  "kind": "targeted_tests",
+  "summary": "H06E focused real-host and installer matrices pass on the exact integrated coordinator tree.",
+  "facts": [
+    "The integrated tree passed 13 of 13 focused shared-helper, real Codex 0.150.1, runtime and installer tests in 3.523 seconds.",
+    "Real pipe and pseudo-terminal observations were identical: lengths 5731/3957/3206 and digest b20b713507ea6beccecf0208be2b7825c950375de305d456fa539eda0d4c5247.",
+    "The integrated complete installer module passed 42 of 42 tests in 99.090 seconds and repeatedly staged 605 files with 366 knowledge documents."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06E-001",
+    "FR2-H06E-002"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "<13-H06E-focused-real-tests>"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_codex_plugin_install"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

@@ -1,0 +1,29 @@
+{
+  "acceptance": [
+    "RecoverySupervisor 观察 task/worker heartbeat、progress cursor、lock lease、process、resource ownership、scheduler 与 runtime generation",
+    "owner 已死且 lease 到期后十秒内回收孤儿锁；并行冲突只暂停最小 lane 并保留双方状态",
+    "managed actor 静默五秒内显示状态、三十秒内更新进度，退出重启有退避和次数预算并最终终态化",
+    "生命体不能扩大路径、静默切 provider、终止健康会话、擅自合并或在无 verifier 时宣称成功"
+  ],
+  "base_commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "capability_tier": "deep",
+  "depends_on": ["H02-grant-broker"],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/recovery_supervisor.py",
+    "scripts/kb/supervisor_state.py",
+    "tests/test_recovery_supervisor.py",
+    "guardian-r2-program/reports/H03-recovery-supervisor.md"
+  ],
+  "owner": "guardian-r2-worker-h03",
+  "requirements": ["R2-RECOVERY-SUPERVISOR", "PROGRAM-GOVERNANCE"],
+  "schema": "sulde-guardian-program-task-v1",
+  "supersedes": [],
+  "task_id": "H03-recovery-supervisor",
+  "title": "让生命体主动处理锁、actor、冲突和 runtime liveness"
+}

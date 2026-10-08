@@ -62,6 +62,24 @@ from native_decision_journal import (  # noqa: E402
 
 
 class ApprovalPairStoreTests(unittest.TestCase):
+    def test_effective_open_predicate_ttl_boundary_and_missing_deadline(self) -> None:
+        from approval_invariant import request_is_open
+        now = datetime(2026, 9, 15, tzinfo=timezone.utc)
+        for typed in (False, True):
+            for offset in (-1, 0, 1):
+                row = {"status": "asked", "typed": typed,
+                    "expires_at": (now + timedelta(microseconds=offset)).isoformat()}
+                before = deepcopy(row)
+                with self.subTest(typed=typed, offset=offset):
+                    self.assertEqual(request_is_open(row, now=now), offset > 0)
+                    self.assertEqual(row, before)
+            for deadline in (None, "", "not-a-date"):
+                self.assertTrue(request_is_open({"status": "asked", "typed": typed,
+                    "expires_at": deadline}, now=now))
+            for status in ("decided", "replaced"):
+                self.assertFalse(request_is_open({"status": status, "typed": typed,
+                    "expires_at": (now + timedelta(days=1)).isoformat()}, now=now))
+
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
         self.root = Path(self.temporary.name)

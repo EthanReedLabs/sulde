@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "kind": "targeted_tests",
+  "baseline": "f8c830b02a814cf40c541ef861569882062174c0",
+  "run_id": "run-gpe-f218f0c4044547ecb9513656",
+  "verdict": "pass",
+  "summary": "The self-repair and T27 effect/readiness/status/scheduler component set passes after the consumer correction.",
+  "facts": [
+    "159 tests passed on both the managed worker and independent coordinator runs.",
+    "The original unresolved-intervention refusal remains green."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "T28-159-component-tests"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

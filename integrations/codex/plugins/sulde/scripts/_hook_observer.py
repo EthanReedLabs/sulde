@@ -308,7 +308,7 @@ def run(args):
     module_changed = command_module(args.command) != module_before
     if module_changed:
         module = "unknown"
-    row = facts(hook=args.hook, stage=args.stage, payload=payload, code=code, kind=kind,
+    row = facts(hook=args.hook, stage=args.stage or "wrapper", payload=payload, code=code, kind=kind,
                 module="unknown" if kind == "interpreter_or_executable_unavailable" else module,
                 artifact=args.artifact, permission=permission,
                 duration_ms=round((time.monotonic() - start) * 1000, 2))
@@ -330,7 +330,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--hook", default="unknown")
-    parser.add_argument("--stage", default="wrapper")
+    parser.add_argument("--stage", default=None)
     parser.add_argument("--module", default="unknown")
     parser.add_argument("--artifact", default="unknown")
     parser.add_argument("--timeout", type=float, default=110)
@@ -351,7 +351,7 @@ def main():
             payload = json.loads(raw or b"{}")
             if not isinstance(payload, dict):
                 payload = {}
-            row = facts(hook=args.hook, stage="bridge", payload=payload, code=args.record_shell_exit,
+            row = facts(hook=args.hook, stage=args.stage or "bridge", payload=payload, code=args.record_shell_exit,
                         kind=args.category, permission="deny" if args.category == "policy_rejection" else "unknown")
             return 0 if record(row) else 74
         except (ValueError, TypeError):

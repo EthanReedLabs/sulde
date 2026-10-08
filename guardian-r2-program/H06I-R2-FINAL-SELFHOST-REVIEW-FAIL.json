@@ -1,0 +1,129 @@
+{
+  "schema": "sulde-h06i-r2-final-selfhost-review-fail-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "task_id": "H06I-R2-interruption-authority",
+  "created_at": "2026-08-28T03:05:36Z",
+  "decision": "fail",
+  "supersedes_pass_interpretation_of": {
+    "path": "guardian-r2-program/H06I-R2-FINAL-SELFHOST-RESULT.json",
+    "sha256": "5583bf36840ea2b18abfd879dc67ca4ed2a063343c1c84db14d882f605211eab"
+  },
+  "preserved_raw_facts": {
+    "stage_two_status": "success",
+    "single_provider_invocation": true,
+    "cleanup_quiescent": true,
+    "five_candidate_hashes_unchanged": true,
+    "native_receipt_output_equals_report": true,
+    "canonical_last_equals_durable_report": true
+  },
+  "rejected_conclusion": "the managed status and native receipt success do not satisfy the frozen task acceptance or final repair brief",
+  "reviewers": [
+    {
+      "role": "independent_code_security_review",
+      "verdict": "fail"
+    },
+    {
+      "role": "independent_test_and_failure_injection_audit",
+      "verdict": "fail"
+    },
+    {
+      "role": "independent_report_and_control_review",
+      "verdict": "fail"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "FR2-H06I-R2-009",
+      "title": "run ledger remains pre-canonical while final authorities are canonical",
+      "evidence": {
+        "repair_brief_clause": "guardian-r2-program/briefs/H06I-R2-output-last-message-final-repair.md:31",
+        "run_ledger_file_sha256": "5d6173e6677e2d7c789c69bdd457826fe0c6ef9d252ab90e67894ac999c54f04",
+        "run_ledger_output_sha256": "a484b82c27b20a5d8156ea5d33edb1abb838fa87f513b34bba7de8e5a777e1f9",
+        "raw_provider_output_bytes": 18541,
+        "canonical_last_report_receipt_sha256": "f76718d8fb90b94205afc24971b69b0e5f85f94683b1e039d617eda550b7310a",
+        "canonical_bytes": 18542,
+        "difference": "one terminal LF"
+      },
+      "root_cause": "_settle_provider_result passes raw final_message to RunHandle.settle before _canonical_provider_final_bytes is applied during later receipt closure",
+      "impact": "run ledger, current last file, durable report and receipt do not bind one identical content authority"
+    },
+    {
+      "finding_id": "FR2-H06I-R2-010",
+      "title": "descriptor root identity is not bound and canonical writer can escape before failing",
+      "evidence": {
+        "reader_location": "scripts/kb/agent-runtime.py:_read_relative_regular_file",
+        "writer_location": "scripts/kb/agent-runtime.py:_persist_canonical_worker_report",
+        "root_swap_observation": "ROOT_DIRFD_SWAP_ACCEPTED FORGED!",
+        "write_escape_observation": "OUTSIDE_WRITE_OCCURRED True b'canonical\\n'"
+      },
+      "root_cause": "the reader does not compare lstat(root) with fstat(opened_root_dirfd), while the writer uses path-based atomic_write_bytes before descriptor-relative readback",
+      "impact": "a directory swap can redirect a trusted read or cause an external write before the later fail-closed check"
+    },
+    {
+      "finding_id": "FR2-H06I-R2-011",
+      "title": "production local interruption is forced through final-message authority",
+      "evidence": {
+        "production_probe": "provider=codex, test_mode=false, observed_status=awaiting_human, missing last file",
+        "result": "AgentRuntimeError before settle",
+        "settle_calls": 0,
+        "coverage_gap": "existing managed awaiting-human test sets SULDE_TEST_MODE=1 and bypasses the new branch"
+      },
+      "root_cause": "_settle_provider_result and later canonical report closure require output-last-message and durable report for every Codex terminal, including awaiting_human, paused and timeout",
+      "impact": "the H06H-authorized absent-output local interruption becomes an error instead of a durable awaiting-human terminal"
+    },
+    {
+      "finding_id": "FR2-H06I-R2-012",
+      "title": "default macOS temporary path aliases make the full acceptance commands non-reproducible",
+      "evidence": {
+        "default_tmpdir_shape": "/var/folders/... resolves to /private/var/folders/...",
+        "focused": "13 passed",
+        "runtime_default_environment": "67 run, 65 passed, 2 errors",
+        "broker": "52 passed",
+        "combined_default_environment": "119 run, 117 passed, 2 errors",
+        "fresh_clone_default_environment": "119 run, 117 passed, 2 errors and outer gate failure",
+        "private_tmp_control": "the two failing tests and 119-test fresh clone pass when TMPDIR=/private/tmp"
+      },
+      "root_cause": "temporary roots mix lexical /var identities with resolved /private/var identities",
+      "impact": "the exact successful commands recorded by the report depend on an unstated managed TMPDIR injection and fail in a normal macOS shell"
+    },
+    {
+      "finding_id": "FR2-H06I-R2-013",
+      "title": "worker report and result projection overstate current reproducible acceptance",
+      "evidence": {
+        "report_sha256": "f76718d8fb90b94205afc24971b69b0e5f85f94683b1e039d617eda550b7310a",
+        "conflicting_counts": [
+          "the same focused command is reported as 11 and 13 checks",
+          "the same runtime command is reported as 65 and 67 tests",
+          "the same combined and fresh-clone commands are reported as 117 and 119 tests"
+        ],
+        "validator_result": "task_report_verdict passed despite conflicting duplicated current-success claims",
+        "omissions": "Stage1 webrun denial and malformed apply_patch attempts are absent from the problem narrative",
+        "incorrect_result_projection": "H06I-R2-FINAL-SELFHOST-RESULT.json asserted self_hosted_verification_passed despite FR2-H06I-R2-009"
+      },
+      "root_cause": "the report validator checks text structure and success markers but does not bind each claim to one candidate hash, execution environment and unique command result",
+      "impact": "the report cannot serve as unambiguous current, reproducible acceptance evidence"
+    }
+  ],
+  "positive_evidence_retained": {
+    "stage_one_inherited_parent_failure_isolation": true,
+    "frozen_broker_sha256": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+    "frozen_broker_test_sha256": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "stage_two_native_receipt_sha256": "1fc8664891321a1616c33e59408ebc853875c4d647de635808546f3a77798f18",
+    "output_report_summary_sha256": "f76718d8fb90b94205afc24971b69b0e5f85f94683b1e039d617eda550b7310a",
+    "scope_and_git_diff_check": "clean",
+    "production_install": false,
+    "merge_or_push": false,
+    "h06j_started": false
+  },
+  "control_disposition": {
+    "task_transition": "running_to_blocked",
+    "accepted": false,
+    "integration_allowed": false,
+    "automatic_retry": false,
+    "authorized_repair_remaining": 0,
+    "new_task_allowed": false,
+    "h06j_allowed": false,
+    "candidate_bytes_frozen_as_red_evidence": true
+  },
+  "terminal_rule": "stop after recording the findings and blocked transition; no retry, candidate edit, successor, integration, install, merge, push or H06J under Amendment-003"
+}

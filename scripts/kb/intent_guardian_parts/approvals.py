@@ -2,6 +2,13 @@
 
 from __future__ import annotations
 
+from .historical_retirement import review as historical_retirement_review
+from .repository_relocation import (
+    relocation_review_context, _relocation_move_api, NATIVE_ACTION, NATIVE_CHOICE,
+)
+
+from .native_binding import _native_card_sha256, _native_binding_snapshot
+
 from . import memory_scope
 
 from contextlib import contextmanager
@@ -127,6 +134,7 @@ from intervention import (
     mark_attempt_result,
     mark_attempt_unknown,
     material_event_blocker,
+    effect_recovery_readiness,
     open_interventions,
     resolve_intervention as resolve_effect_intervention_store,
     resolve_attempt_target,
@@ -334,6 +342,8 @@ def agent_decision_eligibility(
     It may not classify an external, destructive, subjective, costly or
     unresolved task into that lane merely by claiming confidence.
     """
+    if current.get("runtime", {}).get("historical_retirement"):
+        return False, ["历史阶段已终止；新的执行阶段必须由人重新确认"]
     decision = proposal.get("decision")
     if not isinstance(decision, dict):
         return False, ["提案缺少结构化决断边界"]
@@ -1063,6 +1073,11 @@ def _effect_intervention_card(
     intervention: dict[str, Any],
     attempt: dict[str, Any],
 ) -> dict[str, Any]:
+    recovery = effect_recovery_readiness(attempt)
+    choices = ["提供能够观察到的成功证据", "提供能够观察到的失败证据"]
+    if recovery["reprobe_ready"]:
+        choices.append("只重新检查当前外部效果")
+    choices.extend(["对同一外部操作重试一次", "终止当前外部操作且不重试"])
     return {
         "要决定的结果": "处理一笔无法由系统证明最终结果的外部操作",
         "为什么需要决定": str(intervention.get("reason") or "外部结果缺少独立验证"),
@@ -1074,13 +1089,8 @@ def _effect_intervention_card(
             "派发时间": str(attempt.get("created_at") or "unknown"),
         },
         "仍然未知": "操作是否真正成功；成功回调本身不能替代外部读回证据",
-        "可处理的事项": [
-            "提供能够观察到的成功证据",
-            "提供能够观察到的失败证据",
-            "只重新检查当前外部效果",
-            "对同一外部操作重试一次",
-            "终止当前外部操作且不重试",
-        ],
+        "可处理的事项": choices,
+        "重查条件": recovery,
         "执行边界": (
             "事实证据可用自然语言说明，不要求固定格式。需要权限的重查、重试或终止由 "
             "Agent 展示原生 Allow/Deny，并在获准后原子执行；重试只授权同一事件一次。"
@@ -1426,6 +1436,9 @@ def native_decision_context(
         )
     contract = load_contract(path)
     requested_target = target.strip() or "current"
+    if (contract["runtime"].get("historical_retirement")
+            and selected_kind in {"intent", "resume", "task-continuation"}):
+        raise IntentGuardianError("historical epoch is retired; confirm a new revision instead")
 
     if selected_kind == "proposal":
         digest = contract["runtime"]["pending_proposal_digest"]
@@ -1530,6 +1543,20 @@ def native_decision_context(
         card = dict(handoff["card"])
         action = "handoff-workspace"
         choice = "把当前会话切换到卡片中的任务 worktree"
+    elif selected_kind == "historical-retirement":
+        return historical_retirement_review(kb_home(), path, requested_target,
+                      provider=selected_provider, session_id=session_id)
+    elif selected_kind == "repository-relocation-execution":
+        _relocation_move_api()
+        return relocation_review_context(kb_home(), path, requested_target,
+                                         provider=selected_provider, session_id=session_id, _execution=True)["context"]
+    elif selected_kind == "repository-relocation":
+        review = relocation_review_context(kb_home(), path, requested_target,
+                                          provider=selected_provider, session_id=session_id)
+        resolved_target = requested_target
+        card = review["card"]
+        action = NATIVE_ACTION
+        choice = NATIVE_CHOICE
     elif selected_kind == "observation-export":
         try:
             export_proposal = current_export_proposal(kb_home(), path)
@@ -1580,6 +1607,9 @@ def native_decision_context(
                 "historical intervention lacks replay authority; only abort is available"
             )
         resolved_target = str(intervention["intervention_id"])
+        if (selected_decision == "reprobe_authorized"
+                and not effect_recovery_readiness(attempt)["reprobe_ready"]):
+            raise IntentGuardianError("reprobe missing verification basis; inspect intervention recovery requirements")
         card = _effect_intervention_card(dict(intervention), dict(attempt))
         action = "intervention-resolve"
         choice = {
@@ -1655,6 +1685,16 @@ def native_decision_description(context: dict[str, Any]) -> str:
     if kind == "grant":
         scope = card.get("范围", [])
         rendered_scope = "、".join(str(item) for item in scope) if isinstance(scope, list) else str(scope)
+        if card.get("历史效果"):
+            # Residual-risk acceptance is part of what the person decides,
+            # not hidden technical metadata. Keep it in the native prompt.
+            choice = ("Allow 接受所述冲突风险并仅执行本次动作一次；Deny 不执行。"
+                      if decision == "allow" else "Allow 记录拒绝；不执行该动作。")
+            return (
+                f"操作：{card.get('操作', '当前动作')}。范围：{rendered_scope}。"
+                f"历史效果：{card['历史效果']}。{card.get('资源限制', '')}。"
+                f"{choice}{card.get('后续', '')}。"
+            )
         return (
             f"操作：{card.get('操作', '当前动作')}。范围：{rendered_scope or '当前卡片所列范围'}。"
             "Allow 仅执行一次；Deny 不执行。"
@@ -1691,6 +1731,38 @@ def native_decision_description(context: dict[str, Any]) -> str:
             f"HEAD：{card.get('目标 HEAD', 'unknown')}。"
             "只继承任务目标、约束与验收标准；不继承 grant、批准回执、"
             "未决事件、效果债务或 active skill。"
+        )[:1500]
+    if kind == "historical-retirement":
+        if "历史合同事务" in card:
+            return (
+                f"Sulde 当前会话确认：按 Allow 终止 {card['目标工作区']} 的 "
+                f"{len(card['历史合同事务'])} 笔历史合同事务的后续推进资格；按 Deny 不改变账本。"
+                f"冻结清单：{card['历史合同事务']}。"
+                "仅追加 superseded，保留旧记录及未知结果，目标仍暂停；"
+                "不重放旧操作、不补造成功或 committed、不继承旧权限；真实效果债务仍独立阻断。"
+            )[:1500]
+        return (
+            f"Sulde 当前会话确认：按 Allow 终止 {card['目标工作区']} 的历史执行阶段 "
+            f"revision {card['终止 revision']}，包含 {card['未闭合本地写入']} 个未闭合本地写入和 "
+            f"{card['历史监督缺口记录']} 条监督缺口；按 Deny 不改变目标。"
+            "保存全部原文和未知结果并保持目标暂停；不重试旧操作、不转移权限、不认定成功，"
+            "真实效果债务仍须独立结算；新业务必须重新确认。"
+        )[:1500]
+    if kind == "repository-relocation-execution":
+        return (
+            f"Sulde 当前会话确认：按 Allow 执行整仓迁移：{card['当前根目录']} → {card['目标根目录']}；"
+            f"包含 {card['worktree 数量']} 个 worktree。按 Deny 不执行迁移。"
+            + ("同时重绑定卡片列明的自动沉淀源码配置；等待其在途写者结束，迁移期间禁止启动新写入。"
+               if card.get("外部源码绑定") else "") +
+            "本次冻结受影响写者、移动精确根目录、修复已登记 Git 指针、发布暂停的继任合同和会话映射；"
+            "中断仅恢复同一事务，独立核验终态后释放屏障；不安装、不修改远端、不删除历史、不继承旧权限、不恢复业务执行。"
+        )[:1500]
+    if kind == "repository-relocation":
+        return (
+            f"Sulde 当前会话确认：按 Allow 确认整仓迁移计划：{card['当前根目录']} → {card['目标根目录']}；"
+            f"包含 {card['worktree 数量']} 个 worktree。按 Deny 不产生同意记录。"
+            "本命令仅记录精确计划的原生决定，不移动目录、不修改 Git 或合同路由；"
+            "后续执行器必须独立重验、建立写者屏障并防止重复执行；不继承旧任务权限。"
         )[:1500]
     if kind == "observation-export":
         verb = "批准" if decision == "approve" else "拒绝"
@@ -2271,48 +2343,7 @@ def native_decision_preview(
         ),
     }
 
-def _native_card_sha256(card: Any) -> str:
-    return hashlib.sha256(
-        json.dumps(
-            card,
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    ).hexdigest()
 
-def _native_binding_snapshot(
-    path: Path,
-    context: dict[str, Any],
-    session_id: str,
-) -> dict[str, Any]:
-    """Build the non-executing T12 request envelope shown by PermissionRequest."""
-    try:
-        workspace = str(Path(context["workspace"]).expanduser().resolve())
-    except OSError:
-        workspace = str(Path(context["workspace"]).expanduser().absolute())
-    workspace_sha256 = hashlib.sha256(
-        workspace.encode("utf-8", errors="replace")
-    ).hexdigest()
-    lane_sha256 = hashlib.sha256(
-        f"codex\0{session_id}".encode("utf-8", errors="replace")
-    ).hexdigest()
-    journal_proof = native_journal_head_proof(path.expanduser().resolve())
-    return {
-        "card_sha256": _native_card_sha256(context["card"]),
-        "provider": "codex",
-        "session_id": session_id,
-        "lane_sha256": lane_sha256,
-        "target_sha256": hashlib.sha256(
-            str(context["target"]).encode("utf-8", errors="replace")
-        ).hexdigest(),
-        "revision": int(context["intent_revision"]),
-        "journal_sha256": journal_proof["journal_sha256"],
-        "effect_sha256": hashlib.sha256(
-            str(context["action"]).encode("utf-8", errors="replace")
-        ).hexdigest(),
-        "world_state_sha256": workspace_sha256,
-    }
 
 def _native_transaction_binding(
     path: Path,
@@ -2688,6 +2719,9 @@ def _validate_native_binding_cas(
         return False
     if attempt.get("replay_authoritative") is not True and decision != "abort":
         return False
+    if (decision == "reprobe_authorized"
+            and not effect_recovery_readiness(attempt)["reprobe_ready"]):
+        return False
     choice = {
         "retry_authorized": "授权同一外部操作精确重试一次",
         "reprobe_authorized": "只重新检查当前外部效果",
@@ -2805,6 +2839,9 @@ def observe_native_permission_request(
             "resume": "intent-confirmation",
             "task-continuation": "intent-confirmation",
             "workspace-handoff": "intent-confirmation",
+            "repository-relocation": "intent-confirmation",
+            "historical-retirement": "intent-confirmation",
+            "repository-relocation-execution": "intent-confirmation",
             "observation-export": "observation-export",
             "effect-intervention": "effect-intervention",
         }[context["kind"]]

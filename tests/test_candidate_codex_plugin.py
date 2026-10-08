@@ -6,6 +6,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -41,9 +42,15 @@ class CandidateDeploymentTests(unittest.TestCase):
     def test_prepare_rejects_unaudited_versions_before_any_candidate_write(self):
         identity = {"codex_command": "/fixture/codex", "codex_command_sha256": "c" * 64}
         for code, output in ((0, "codex-cli 0.153.4\n"),
+                             (0, "codex-cli 0.154.0\n"),
                              (0, "codex-cli 0.155.0\n"),
-                             (0, "wrapper codex-cli 0.154.0\n"),
-                             (1, "codex-cli 0.154.0\n")):
+                             (0, "codex-cli 0.156.0\n"),
+                             (0, "codex-cli 0.155.1\n"),
+                             (0, "codex-cli 0.159.0\n"),
+                             (0, "codex-cli 0.160.1\n"),
+                             (0, "codex-cli 0.161.0\n"),
+                             (0, "wrapper codex-cli 0.160.0\n"),
+                             (1, "codex-cli 0.160.0\n")):
             with (
                 self.subTest(code=code, output=output),
                 mock.patch.object(self.installer, "_codex_command_identity", return_value=identity),
@@ -52,7 +59,7 @@ class CandidateDeploymentTests(unittest.TestCase):
                 mock.patch.object(self.module, "_candidate_python") as python_setup,
                 mock.patch.object(self.module, "_source_identity") as source_scan,
                 mock.patch.object(self.installer, "_stage_artifact") as stage,
-                self.assertRaisesRegex(self.module.CandidateError, "exactly codex-cli 0.154.0"),
+                self.assertRaisesRegex(self.module.CandidateError, "exactly codex-cli 0.160.0"),
             ):
                 self.module.prepare(candidate_home=self.root / "untouched", codex="/fixture/codex",
                                     platform="posix", candidate_id="rejected")
@@ -70,7 +77,7 @@ class CandidateDeploymentTests(unittest.TestCase):
                 self.subTest(changed=changed),
                 mock.patch.object(self.installer, "_codex_command_identity", side_effect=[first, second]),
                 mock.patch.object(self.installer, "run_command", return_value=
-                    self.installer.CommandResult(("codex", "--version"), 0, "codex-cli 0.154.0\n", "")),
+                    self.installer.CommandResult(("codex", "--version"), 0, "codex-cli 0.160.0\n", "")),
                 mock.patch.object(self.module, "_candidate_python",
                                   side_effect=self.module.CandidateError("reached Python preflight")) as setup,
                 self.assertRaisesRegex(self.module.CandidateError, error),
@@ -119,6 +126,114 @@ class CandidateDeploymentTests(unittest.TestCase):
                     'TMPDIR', 'TMP', 'TEMP', 'XDG_CONFIG_HOME', 'XDG_CACHE_HOME', 'XDG_DATA_HOME'):
             self.assertTrue(Path(env[key]).is_relative_to(self.root), key)
 
+    def _hook_environment(self):
+        identity = {"executable": sys.executable}
+        with mock.patch.object(self.module, "_install_isolated_python", return_value=Path(sys.executable)), \
+                mock.patch.object(self.module, "inspect_python", return_value=identity), \
+                mock.patch.object(self.module, "same_runtime", return_value=True):
+            env = self.module._candidate_environment(self.root.resolve(), "/fixture/codex", identity)
+        plugin = Path(env["CODEX_HOME"]) / "plugins/cache/sulde"
+        plugin.mkdir(parents=True)
+        return env, plugin
+
+    @unittest.skipIf(os.name == "nt", "POSIX stable transport only")
+    def test_isolated_hook_preparation_publishes_verified_stable_entry(self):
+        import codex_hook_entry as entry
+        env, plugin = self._hook_environment()
+        shutil.copytree(ROOT / "integrations/codex/plugins/sulde/scripts", plugin / "scripts")
+        (plugin / "hooks").mkdir()
+        shutil.copyfile(ROOT / "integrations/codex/plugins/sulde/hooks.posix.json",
+                        plugin / "hooks/hooks.json")
+        home, kb = Path(env["SULDE_HOME"]), Path(env["SULDE_KB_HOME"])
+        (home / "bin").mkdir(mode=0o700)
+        (home / "hook-entry").mkdir(mode=0o700)
+        with self.module._process_environment(env), \
+                mock.patch.object(self.installer, "_install_launchers", return_value={"healthy": True}) as launchers, \
+                mock.patch("launcher_contract.runtime_interpreter", return_value=Path(sys.executable)):
+            result = self.module._prepare_isolated_hook_launchers(
+                plugin, kb, mock.Mock(), platform="posix", environment=env)
+        self.assertEqual(result, {"healthy": True})
+        launchers.assert_called_once()
+        self.assertTrue(entry.verify(home)["healthy"])
+        self.assertTrue((home / "bin/sulde-codex-hook").is_file())
+
+    @unittest.skipIf(os.name == "nt", "POSIX directory ownership and symlink boundary")
+    def test_isolated_hook_preparation_rejects_unsafe_write_directories_before_writer(self):
+        import codex_hook_entry as entry
+        env, plugin = self._hook_environment()
+        (plugin / "hooks").mkdir()
+        shutil.copyfile(ROOT / "integrations/codex/plugins/sulde/hooks.posix.json",
+                        plugin / "hooks/hooks.json")
+        home = Path(env["SULDE_HOME"])
+        outside = self.root.resolve() / "production-substitute"
+        outside.mkdir()
+        for name in ("bin", "hook-entry"):
+            for kind in ("symlink", "dangling", "file", "unsafe-mode"):
+                target = home / name
+                if kind == "symlink":
+                    target.symlink_to(outside, target_is_directory=True)
+                elif kind == "dangling":
+                    target.symlink_to(outside / "missing", target_is_directory=True)
+                elif kind == "file":
+                    target.write_text("preserved", encoding="utf-8")
+                else:
+                    target.mkdir(mode=0o700)
+                    target.chmod(0o722)
+                def first_writer(*args, **kwargs):
+                    if name == "bin" and kind == "symlink":
+                        (target / "escaped").write_text("unexpected", encoding="utf-8")
+                    raise AssertionError("first writer reached unsafe directory")
+                try:
+                    with self.subTest(name=name, kind=kind), self.module._process_environment(env), \
+                            mock.patch.object(self.installer, "_install_launchers", side_effect=first_writer) as launchers, \
+                            mock.patch.object(entry, "prepare") as prepare:
+                        with self.assertRaisesRegex(self.module.CandidateError, "write directory"):
+                            self.module._prepare_isolated_hook_launchers(
+                                plugin, Path(env["SULDE_KB_HOME"]), mock.Mock(),
+                                platform="posix", environment=env)
+                        launchers.assert_not_called()
+                        prepare.assert_not_called()
+                        self.assertEqual(list(outside.iterdir()), [])
+                        self.assertTrue(os.path.lexists(target))
+                finally:
+                    if kind == "unsafe-mode":
+                        target.chmod(0o700)
+                        target.rmdir()
+                    else:
+                        target.unlink()
+
+    def test_isolated_hook_preparation_rejects_misdirected_roots_before_writes(self):
+        import codex_hook_entry as entry
+        env, plugin = self._hook_environment()
+        cases = []
+        production = self.root.resolve() / "production-sulde"
+        production.mkdir()
+        for key in ("SULDE_HOME", "SULDE_KB_HOME", "CODEX_HOME", "SULDE_LAUNCHER_HOME", "HOME"):
+            cases.append(({**env, key: str(production)}, plugin, Path(env["SULDE_KB_HOME"])))
+        cases.extend(((env, production, Path(env["SULDE_KB_HOME"])), (env, plugin, production)))
+        if os.name != "nt":
+            linked = self.root.resolve() / "alias"
+            linked.symlink_to(Path(env["SULDE_HOME"]), target_is_directory=True)
+            cases.append(({**env, "SULDE_HOME": str(linked)}, plugin, Path(env["SULDE_KB_HOME"])))
+        for selected, installed, kb in cases:
+            with self.subTest(selected=selected, installed=installed, kb=kb), \
+                    self.module._process_environment(selected), \
+                    mock.patch.object(self.installer, "_install_launchers") as launchers, \
+                    mock.patch.object(entry, "prepare") as prepare, \
+                    self.assertRaises(self.module.CandidateError):
+                self.module._prepare_isolated_hook_launchers(
+                    installed, kb, mock.Mock(), platform="posix", environment=selected)
+            launchers.assert_not_called()
+            prepare.assert_not_called()
+        self.assertEqual(list(production.iterdir()), [])
+        self.assertFalse((Path(env["SULDE_HOME"]) / "bin").exists())
+        with self.module._process_environment({**env, "SULDE_HOME": str(production)}), \
+                mock.patch.object(self.installer, "_install_launchers") as launchers, \
+                self.assertRaises(self.module.CandidateError):
+            self.module._prepare_isolated_hook_launchers(
+                plugin, Path(env["SULDE_KB_HOME"]), mock.Mock(), platform="posix", environment=env)
+        launchers.assert_not_called()
+
     def state(self, slot: Path, *, status: str = "prepared") -> dict[str, object]:
         artifact = slot / "artifact"
         plugin = artifact / "plugins" / "sulde"
@@ -139,7 +254,7 @@ class CandidateDeploymentTests(unittest.TestCase):
             "codex": {
                 "executable": "/opt/codex",
                 "executable_sha256": "c" * 64,
-                "version": "codex-cli 0.154.0",
+                "version": "codex-cli 0.160.0",
             },
             "python": self.module._python_identity(Path(sys.executable)),
             "artifact": {
@@ -368,7 +483,7 @@ class CandidateDeploymentTests(unittest.TestCase):
                 with (
                     mock.patch.object(self.installer, "_codex_command_identity", return_value={
                         "codex_command": "/opt/codex", "codex_command_sha256": "c" * 64}),
-                    mock.patch.object(self.installer, "_codex_version_preflight", return_value="codex-cli 0.154.0"),
+                    mock.patch.object(self.installer, "_codex_version_preflight", return_value="codex-cli 0.160.0"),
                     mock.patch.object(
                         self.installer,
                         "deployment_cas_snapshot",
@@ -603,7 +718,7 @@ class InstallerCandidateBoundaryTests(unittest.TestCase):
             "codex": {
                 "executable": "/opt/codex",
                 "executable_sha256": "e" * 64,
-                "version": "codex-cli 0.154.0",
+                "version": "codex-cli 0.160.0",
             },
             "python": self.installer.inspect_python(python_path),
             "live_prestate": live,
@@ -622,7 +737,7 @@ class InstallerCandidateBoundaryTests(unittest.TestCase):
 
         def codex_runner(command, **_kwargs):
             return self.installer.CommandResult(
-                tuple(command), 0, "codex-cli 0.154.0\n", ""
+                tuple(command), 0, "codex-cli 0.160.0\n", ""
             )
 
         with (

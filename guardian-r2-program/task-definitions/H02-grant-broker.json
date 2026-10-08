@@ -1,0 +1,31 @@
+{
+  "acceptance": [
+    "GrantBroker 把可读卡、PermissionRequest、HumanGrantV2、dispatch、effect receipt 与 verifier 串成一个 typed transaction/outbox",
+    "PermissionRequest 展示与 recovery transaction 不经过会在展示前拒绝它们的普通 PreToolUse gate",
+    "每个 crash boundary 幂等恢复且不产生第二次人类请求、第二次外部效果或第二个权威 receipt",
+    "长会话通过热更新 broker 协议配对决定；无原生桥接宿主使用等价 UI adapter 而非固定文字"
+  ],
+  "base_commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "capability_tier": "deep",
+  "depends_on": ["H01-human-grant-v2"],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/grant_broker.py",
+    "scripts/kb/native_decision_journal.py",
+    "scripts/kb/intent_guardian_parts/approvals.py",
+    "tests/test_grant_broker.py",
+    "tests/test_native_decision_journal.py",
+    "guardian-r2-program/reports/H02-grant-broker.md"
+  ],
+  "owner": "guardian-r2-worker-h02",
+  "requirements": ["R2-HUMAN-GRANT", "R2-GRANT-BROKER", "PROGRAM-GOVERNANCE"],
+  "schema": "sulde-guardian-program-task-v1",
+  "supersedes": [],
+  "task_id": "H02-grant-broker",
+  "title": "统一原生授权、执行与回证事务"
+}

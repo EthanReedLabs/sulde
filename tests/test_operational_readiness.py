@@ -931,7 +931,9 @@ class OperationalReadinessTests(unittest.TestCase):
             statusline_exit = STATUS.main()
             rendered = output.getvalue()
         self.assertEqual(statusline_exit, 1)
-        self.assertIn("交互可用·调度降级", rendered)
+        self.assertEqual(operational["readiness_scope"], "scheduler")
+        self.assertIn("后台视图·调度降级", rendered)
+        self.assertNotIn("交互可用", rendered)
         self.assertIn("scheduler_process_ready", rendered)
 
         with mock.patch.object(STATUS, "collect", return_value=status), mock.patch.object(

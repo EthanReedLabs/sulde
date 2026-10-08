@@ -1,0 +1,30 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T22-material-cas-lane-binding",
+  "kind": "system_tests",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-656b9b20b4b4882b1199d002",
+  "verdict": "pass",
+  "summary": "The integrated material CAS and lane candidate passed composed and host-boundary system gates.",
+  "facts": [
+    "The T21 through T23 composed gate passed 161 tests.",
+    "The 158-test cross-domain gate verified host identity, timeout CAS, unknown-action fail-closed behavior and readiness separation."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "T21-through-T23-composed-161-test-gate"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "native-cross-domain-158-test-gate"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

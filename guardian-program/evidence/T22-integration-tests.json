@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T22-material-cas-lane-binding",
+  "kind": "integration_tests",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-656b9b20b4b4882b1199d002",
+  "verdict": "pass",
+  "summary": "T22 was integrated second on dev and the composed T21 plus T22 gate passed all 134 tests.",
+  "facts": [
+    "Worker commit ba98d33 was cherry-picked as cf5358d after T21 integration.",
+    "Test-only correction c7e0fef was cherry-picked as c8dea7f and isolates CODEX_THREAD_ID without weakening production validation.",
+    "The composed gate passed all 134 authority, journal, CAS lane, split architecture and critic tests."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "T21-and-T22-composed-134-test-gate"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

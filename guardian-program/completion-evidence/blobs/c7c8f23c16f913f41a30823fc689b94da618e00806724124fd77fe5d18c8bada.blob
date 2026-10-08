@@ -1,0 +1,36 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "scheduler_owner",
+  "baseline": "program:guardian-remediation-r97",
+  "run_id": "program-final-t32-20260824",
+  "verdict": "pass",
+  "summary": "The active Codex scheduler owner and all 15 managed actors are healthy on the installed T32 generation.",
+  "facts": [
+    "Runtime owner is active, provider is codex, and generation plus runtime tree digest match the installed deployment.",
+    "Real host process truth reports managed=15, loaded=15, missing_labels=[], failed_labels={} and retired_loaded_labels=[].",
+    "Effect debt is clear with zero blocking, pending verification and open intervention."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["install-agents.sh", "--runtime-root", "<installed-runtime>", "--provider", "codex", "--accept-llm-data-egress"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["intent-guardian", "doctor", "--provider", "codex", "--session-id", "<current-session>"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/program-final-acceptance-t32.md",
+      "sha256": "c64dece515e276ea17d803fe2d8edbb3fba55ec78edbbec3366f1892f3c22d22"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T00-control-plane",
+  "kind": "requirement_traceability",
+  "baseline": "34dcbd0d6ea81ba330c701bc755f1f557978f515",
+  "run_id": "run-gpe-5902ccbd79317bd597055811",
+  "verdict": "pass",
+  "summary": "PROGRAM-GOVERNANCE is bound to the implemented single-writer event log, per-task evidence gates and final zero-omission gate.",
+  "facts": [
+    "Every task transition and finding disposition is represented by a validated append-only event.",
+    "Program completion requires all tasks, findings, requirement clauses and program evidence kinds."
+  ],
+  "requirements": ["PROGRAM-GOVERNANCE"],
+  "findings": [],
+  "acceptance": [
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "每个任务有证据包和问题处置，总纲零遗漏后才能关闭",
+      "fact": "The authority-bound control plane enforces per-task evidence, explicit finding disposition and a final all-requirement gate before completion."
+    }
+  ],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T00-control-plane.md",
+      "sha256": "bcef167c7e0a2c2f6967b48f4fbc1ea98eef3e08de5e10bc58b7c2298d77a4ec"
+    }
+  ]
+}

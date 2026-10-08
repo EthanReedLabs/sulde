@@ -1,5 +1,5 @@
 ---
-description: Add a new frontend (android / ios / flutter / harmony) to an existing sulde project.
+description: Add a new frontend (android / ios / flutter / harmony) to an existing sulde-cc project.
 argument-hint: "<name> <path> <stack>"
 ---
 

@@ -156,12 +156,12 @@ class GraphAuditTests(unittest.TestCase):
         connection = sqlite3.connect(self.database)
         connection.executemany(
             "INSERT INTO mem_entries VALUES (?, 'fixture', 's1', 'assistant', ?, ?, '2026-08-08T00:00:00Z', 0)",
-            [(1306, "SyntheticApplication定位为示例检索系统。当前状态 PLANNED/NOT_READY", "hash-1306"),
+            [(1306, "Apollo定位为顶尖教练系统。当前状态 PLANNED/NOT_READY", "hash-1306"),
              (407, "stale build 导致 iOS walkthrough probe 在没有最新 marker 的旧 app 上运行。", "hash-407")])
         connection.execute(
             "INSERT INTO mem_edges VALUES (407, 'stale build', '导致', 'iOS walkthrough probe', 407, 'codex', 1, '2026-08-08T00:00:00Z')")
         connection.execute(
-            "INSERT INTO mem_edges VALUES (1306, 'SyntheticApplication', '定位为', '示例检索系统', 1306, 'codex', 1, '2026-08-08T00:00:00Z')")
+            "INSERT INTO mem_edges VALUES (1306, 'Apollo', '定位为', '顶尖教练系统', 1306, 'codex', 1, '2026-08-08T00:00:00Z')")
         connection.commit()
         connection.close()
         self.mock_llm.write_text(

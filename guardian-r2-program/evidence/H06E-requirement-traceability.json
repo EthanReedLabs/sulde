@@ -1,0 +1,76 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06E-codex-help-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-c6a54d6965683d2d8f39c3d0",
+  "verdict": "pass",
+  "kind": "requirement_traceability",
+  "summary": "H06E maps every assigned recovery, live-acceptance and governance clause while deliberately preserving final host and release gates.",
+  "facts": [
+    "All four task acceptance clauses and every clause of the four assigned program requirements are mapped to reviewed, executed facts.",
+    "No H06E evidence claims production installation, scheduler ownership, Claude live, native Windows or R2 completion."
+  ],
+  "requirements": [
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "findings": [
+    "FR2-H06E-001",
+    "FR2-H06E-002",
+    "FR2-H06E-003",
+    "FR2-H06E-004",
+    "FR2-H06E-005"
+  ],
+  "acceptance": [
+    {
+      "requirement_id": "R2-RECOVERY-SUPERVISOR",
+      "clause": "生命体在 5 秒内报告卡顿并在能力边界内处理孤儿锁、退出 actor、冲突 lane 与 runtime drift",
+      "fact": "H06E makes the Codex help observation stable across pipe and real PTY parents so a healthy unchanged runtime is not misclassified as drift; the accepted H03 liveness implementation remains unchanged and its runtime tests pass."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-SUPERVISOR",
+      "clause": "干预有预算、有终态、有 receipt，不能扩大 allowed paths、静默换宿主或无限重试",
+      "fact": "Only the exact known complete warning is normalized; unknown diagnostics, bytes, executable, version, contract and generation drift fail closed, and the managed worker used one provider with six exact paths and terminal receipts."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-LANE",
+      "clause": "status、doctor、repair、uninstall、rollback 与 pending decision 在普通 lane 不可用时仍可达",
+      "fact": "The shared probe contract is consumed by both installer sealing and runtime preflight, eliminating environment-class self-lock before approved recovery entry points while retaining installer rollback and readback tests."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-LANE",
+      "clause": "等待使用可更新状态卡和本地完整日志，满足 5/30 秒进度 SLA 且不重复输出轮询文案",
+      "fact": "H06E does not change progress rendering; managed execution retained cursor logs and terminal reports, while the existing recovery/status behavior remains covered by the integrated runtime suite."
+    },
+    {
+      "requirement_id": "R2-LIVE-ACCEPTANCE",
+      "clause": "I01-I19、并发、进程死亡、receipt tamper、world-state drift、只读账本、scheduler degraded 与 rollback 全部通过",
+      "fact": "H06E proves the Codex help-authority and installer rollback subset only; full I01-I19, concurrency and scheduler evidence remains an explicit final-successor obligation."
+    },
+    {
+      "requirement_id": "R2-LIVE-ACCEPTANCE",
+      "clause": "Codex 与 Claude 真实宿主、macOS 与 Windows 证据齐全前不得宣称 R2 完成或 production accepted",
+      "fact": "Real Codex 0.150.1 pipe and PTY evidence is present on macOS, but no Claude or native Windows evidence was manufactured; the task report explicitly denies R2 or production acceptance."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并",
+      "fact": "H06E retained run1 findings, issued repair1 under the same six-path authority, passed two independent reviews, and integrated only byte-identical reviewed outputs before evidence promotion."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写",
+      "fact": "H06E ran in an independent full clone and integrated only into the R2 coordinator branch; accepted predecessor events, dev/main, installed runtime and production state were not rewritten."
+    }
+  ],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/H06E-codex-help-authority.md",
+      "sha256": "9b7ddf86ae94d26a5c7a65f9523a11cf7f3410c459641467450af66ec5e28a2b"
+    }
+  ]
+}

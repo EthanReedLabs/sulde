@@ -46,28 +46,28 @@ class MemoryGraphQualityTests(unittest.TestCase):
         self.db.commit()
         return identifier
 
-    def edge(self, identifier, src="SyntheticApplication", rel="定位为", dst="示例检索系统", **kwargs):
+    def edge(self, identifier, src="Apollo", rel="定位为", dst="顶尖教练系统", **kwargs):
         return {"src": src, "rel": rel, "dst": dst, "entry_id": identifier, **kwargs}
 
     def annotate(self, edge):
         return memory.annotate_memory(self.db, {"edges": [edge], "extracted_by": "codex"})
 
     def test_annotation_preserves_explicit_source_bound_status(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。当前状态：PLANNED/NOT_READY")
+        identifier = self.add("Apollo定位为顶尖教练系统。当前状态：PLANNED/NOT_READY")
         self.annotate(self.edge(identifier, truth_status="not_ready"))
         self.assertEqual(self.db.execute("SELECT truth_status FROM mem_edges").fetchone()[0], "not_ready")
         before = self.database.read_bytes()
-        self.assertEqual(memory.memory_graph(self.db, "SyntheticApplication", current_facts_only=True), [])
-        rows = memory.memory_graph(self.db, "SyntheticApplication", current_facts_only=False)
+        self.assertEqual(memory.memory_graph(self.db, "Apollo", current_facts_only=True), [])
+        rows = memory.memory_graph(self.db, "Apollo", current_facts_only=False)
         self.assertEqual(rows[0]["truth_status"], "not_ready")
         self.assertFalse(rows[0]["verified_current"])
         self.assertEqual(self.database.read_bytes(), before)
 
     def test_current_facts_remain_visible_and_conflicting_reannotation_is_atomic(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier, truth_status="current"))
-        self.assertEqual(memory.memory_graph(self.db, "SyntheticApplication", current_facts_only=True)[0]["truth_status"], "current")
-        proposed = self.add("计划：SyntheticApplication定位为示例检索系统。")
+        self.assertEqual(memory.memory_graph(self.db, "Apollo", current_facts_only=True)[0]["truth_status"], "current")
+        proposed = self.add("计划：Apollo定位为顶尖教练系统。")
         with self.assertRaisesRegex(ValueError, "human review"):
             self.annotate(self.edge(proposed))
         self.assertEqual(self.db.execute("SELECT COUNT(*) FROM mem_edges").fetchone()[0], 1)
@@ -83,7 +83,7 @@ class MemoryGraphQualityTests(unittest.TestCase):
     def test_modal_variants_and_current_positive_cases(self):
         for state in ("not_ready", "goal", "planned", "counterfactual", "uncertain", "current"):
             with self.subTest(state=state):
-                text = "SyntheticApplication 已作为教练系统运行；另一个产品目标是支持视频。"
+                text = "Apollo 已作为教练系统运行；另一个产品目标是支持视频。"
                 identifier = self.add(text + state)
                 self.annotate(self.edge(identifier, src=state, truth_status=state))
                 row = memory.memory_graph(self.db, state)[0]
@@ -101,27 +101,27 @@ class MemoryGraphQualityTests(unittest.TestCase):
             CREATE TABLE mem_edges(id INTEGER PRIMARY KEY, src TEXT, rel TEXT, dst TEXT,
                 entry_id INTEGER, extracted_by TEXT, confidence REAL, ts TEXT, UNIQUE(src,rel,dst));
             INSERT INTO mem_entries VALUES(1306,'fixture','s','assistant',
-                'SyntheticApplication定位为示例检索系统。PLANNED/NOT_READY','h','2026-09-04T02:00:00Z',0);
-            INSERT INTO mem_edges VALUES(1306,'SyntheticApplication','定位为','示例检索系统',1306,'codex',1,'2026-09-04T02:00:00Z');
+                'Apollo定位为顶尖教练系统。PLANNED/NOT_READY','h','2026-09-04T02:00:00Z',0);
+            INSERT INTO mem_edges VALUES(1306,'Apollo','定位为','顶尖教练系统',1306,'codex',1,'2026-09-04T02:00:00Z');
         """)
         db.close()
         before = legacy.read_bytes()
         readonly = sqlite3.connect(f"file:{legacy}?mode=ro", uri=True)
         readonly.row_factory = sqlite3.Row
-        self.assertEqual(len(memory.memory_graph(readonly, "SyntheticApplication")), 1)
-        self.assertEqual(memory.memory_graph(readonly, "SyntheticApplication")[0]["truth_basis"], "unverified")
-        self.assertEqual(len(memory.memory_graph(readonly, "SyntheticApplication", current_facts_only=False)), 1)
+        self.assertEqual(len(memory.memory_graph(readonly, "Apollo")), 1)
+        self.assertEqual(memory.memory_graph(readonly, "Apollo")[0]["truth_basis"], "unverified")
+        self.assertEqual(len(memory.memory_graph(readonly, "Apollo", current_facts_only=False)), 1)
         readonly.close()
         self.assertEqual(before, legacy.read_bytes())
         migrated = memory.connect(legacy)
         memory.create_schema(migrated)
         migrated.commit()
         self.assertEqual(tuple(migrated.execute("SELECT id,src,rel,dst,entry_id,truth_status FROM mem_edges").fetchone()),
-                         (1306, "SyntheticApplication", "定位为", "示例检索系统", 1306, "uncertain"))
+                         (1306, "Apollo", "定位为", "顶尖教练系统", 1306, "uncertain"))
         migrated.close()
 
     def test_pending_audit_candidate_is_metadata_without_projection_or_db_mutation(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier, truth_status="current"))
         script = self.home / "audit_llm.py"
         script.write_text(
@@ -135,14 +135,14 @@ class MemoryGraphQualityTests(unittest.TestCase):
                                 env=env, capture_output=True, text=True,
                                 encoding="utf-8", errors="replace")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(len(memory.memory_graph(self.db, "SyntheticApplication", current_facts_only=True)), 1)
-        row = memory.memory_graph(self.db, "SyntheticApplication", current_facts_only=False)[0]
+        self.assertEqual(len(memory.memory_graph(self.db, "Apollo", current_facts_only=True)), 1)
+        row = memory.memory_graph(self.db, "Apollo", current_facts_only=False)[0]
         self.assertEqual(row["truth_status"], "current")
         self.assertFalse(row["review_candidate"]["applied"])
         self.assertEqual(self.database.read_bytes(), before)
         candidate = next((self.home / "governance/graph-corrections").glob("*.json"))
         candidate.write_text("{}")
-        self.assertEqual(len(memory.memory_graph(self.db, "SyntheticApplication", current_facts_only=True)), 1)
+        self.assertEqual(len(memory.memory_graph(self.db, "Apollo", current_facts_only=True)), 1)
 
 
     def snapshot(self):
@@ -168,7 +168,7 @@ class MemoryGraphQualityTests(unittest.TestCase):
         return digest, path
 
     def current(self, *pins):
-        return memory.memory_graph(self.db, "SyntheticApplication", current_facts_only=True,
+        return memory.memory_graph(self.db, "Apollo", current_facts_only=True,
                                    approved_decision_sha256=pins)
 
     def test_legacy_multi_edge_compatibility_before_and_after_idempotent_migration(self):
@@ -185,7 +185,7 @@ class MemoryGraphQualityTests(unittest.TestCase):
             "在本次发布中，Hub 已实现缓存。", "Hub 已上线；另一个产品计划增加视频。",
             "此前目标已完成，Hub 现在提供导出。", "Hub 当前可用。如果断网则显示缓存。",
             "Hub 曾经过期，现在已经更新。", "监控确认 Hub 的构建成功。",
-            "Hub 为 probe 提供最新 marker。", "Hub定位为示例检索系统。PLANNED/NOT_READY",
+            "Hub 为 probe 提供最新 marker。", "Hub定位为顶尖教练系统。PLANNED/NOT_READY",
             "stale build 导致 iOS walkthrough probe 在没有最新 marker 的旧 app 上运行。",
         ]
         for i, content in enumerate(sources, 1):
@@ -195,7 +195,7 @@ class MemoryGraphQualityTests(unittest.TestCase):
             ("uses", "SQLite"), ("执行方式", "队列"), ("支持", "缓存"),
             ("状态", "已上线"), ("支持", "导出"), ("离线显示", "缓存"),
             ("状态", "已更新"), ("构建结果", "成功"), ("提供", "最新 marker"),
-            ("定位为", "示例检索系统"), ("导致", "iOS walkthrough probe"),
+            ("定位为", "顶尖教练系统"), ("导致", "iOS walkthrough probe"),
             ("适用于", "所有项目"),
         ]
         for i, (rel, dst) in enumerate(triples, 1):
@@ -227,15 +227,15 @@ class MemoryGraphQualityTests(unittest.TestCase):
             migrated.close()
 
     def test_absent_status_is_not_promoted_even_with_literal_current_source(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier))
-        row = memory.memory_graph(self.db, "SyntheticApplication")[0]
+        row = memory.memory_graph(self.db, "Apollo")[0]
         self.assertEqual(row["truth_basis"], "unverified")
         self.assertFalse(row["verified_current"])
         self.assertEqual(self.current(), [])
 
     def test_paraphrase_and_unrelated_modal_words_do_not_suppress_declared_current(self):
-        identifier = self.add("SyntheticApplication 已作为教练系统投入使用。其他产品计划支持视频，目标明年上线。")
+        identifier = self.add("Apollo 已作为教练系统投入使用。其他产品计划支持视频，目标明年上线。")
         self.annotate(self.edge(identifier, truth_status="current"))
         row = self.current()[0]
         self.assertEqual(row["truth_status"], "current")
@@ -243,21 +243,21 @@ class MemoryGraphQualityTests(unittest.TestCase):
         self.assertEqual(row["review_hint"]["temporal_modal"], "uncertain")
 
     def test_exact_approved_decision_excludes_current_projection_without_mutation(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier, truth_status="current"))
         pin, path = self.decision()
         before = self.database.read_bytes()
         immutable = path.read_bytes()
         self.assertEqual(len(self.current()), 1)  # A self-declared human is not authority.
         self.assertEqual(self.current(pin), [])
-        rows = memory.memory_graph(self.db, "SyntheticApplication", approved_decision_sha256=(pin,))
+        rows = memory.memory_graph(self.db, "Apollo", approved_decision_sha256=(pin,))
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["truth_basis"], "human_review")
         self.assertEqual(rows[0]["truth_status"], "unsupported")
         self.assertEqual(path.read_bytes(), immutable)
         self.assertEqual(self.database.read_bytes(), before)
         env = {**os.environ, "SULDE_KB_HOME": str(self.home), "PYTHONDONTWRITEBYTECODE": "1"}
-        command = [sys.executable, "-B", str(ROOT / "tools/kb-index/memory.py"), "graph", "SyntheticApplication"]
+        command = [sys.executable, "-B", str(ROOT / "tools/kb-index/memory.py"), "graph", "Apollo"]
         default = subprocess.run(command, env=env, text=True, capture_output=True,
                                  encoding="utf-8", errors="replace")
         current = subprocess.run(command + ["--current-facts-only", "--review-decision-sha256", pin],
@@ -269,7 +269,7 @@ class MemoryGraphQualityTests(unittest.TestCase):
         self.assertEqual(self.database.read_bytes(), before)
 
     def test_forged_and_tampered_decisions_cannot_hide_current(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier, truth_status="current"))
         pin, path = self.decision()
         self.assertEqual(len(self.current()), 1)
@@ -284,7 +284,7 @@ class MemoryGraphQualityTests(unittest.TestCase):
         self.assertEqual(len(self.current(pin)), 1)
 
     def test_mismatched_identity_source_and_malformed_decisions_have_no_authority(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier, truth_status="current"))
         edge = memory.edge_identity(self.snapshot())
         for changes in (
@@ -304,19 +304,19 @@ class MemoryGraphQualityTests(unittest.TestCase):
         self.assertEqual(len(self.current()), 1)
 
     def test_source_change_invalidates_declared_and_human_current_authority(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier))
         pin, _ = self.decision(truth_status="current")
         self.assertTrue(self.current(pin)[0]["verified_current"])
-        self.db.execute("UPDATE mem_entries SET content='SyntheticApplication PLANNED/NOT_READY' WHERE id=?", (identifier,))
+        self.db.execute("UPDATE mem_entries SET content='Apollo PLANNED/NOT_READY' WHERE id=?", (identifier,))
         self.db.commit()
-        row = memory.memory_graph(self.db, "SyntheticApplication", approved_decision_sha256=(pin,))[0]
+        row = memory.memory_graph(self.db, "Apollo", approved_decision_sha256=(pin,))[0]
         self.assertEqual(row["truth_basis"], "unverified")
         self.assertEqual(self.current(pin), [])
         self.assertNotIn("review_decision", row)
 
     def test_rejected_or_conflicting_approved_decisions_do_not_apply_correction(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier, truth_status="current"))
         rejected, _ = self.decision(decision="rejected")
         self.assertEqual(len(self.current(rejected)), 1)
@@ -334,13 +334,13 @@ class MemoryGraphQualityTests(unittest.TestCase):
             UNIQUE(src,rel,dst))""")
         self.db.commit()
         memory.create_schema(self.db)
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier))
-        self.assertEqual(memory.memory_graph(self.db, "SyntheticApplication")[0]["truth_basis"], "unverified")
+        self.assertEqual(memory.memory_graph(self.db, "Apollo")[0]["truth_basis"], "unverified")
         self.assertEqual(self.current(), [])
 
     def test_pending_stale_or_malformed_candidates_do_not_override_current(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。")
+        identifier = self.add("Apollo定位为顶尖教练系统。")
         self.annotate(self.edge(identifier, truth_status="current"))
         audit = module("quality_candidate_writer", "scripts/kb/graph-audit.py")
         directory = self.home / "governance/graph-corrections"
@@ -354,11 +354,11 @@ class MemoryGraphQualityTests(unittest.TestCase):
         self.assertEqual(len(self.current()), 1)
 
     def test_conflicting_batch_statuses_cannot_silently_drop_modality(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。PLANNED/NOT_READY")
+        identifier = self.add("Apollo定位为顶尖教练系统。PLANNED/NOT_READY")
         with self.assertRaisesRegex(ValueError, "conflicting batch"):
             memory.annotate_memory(self.db, {
                 "extracted_by": "codex",
-                "entities": [{"name": "SyntheticApplication", "type": "system"}],
+                "entities": [{"name": "Apollo", "type": "system"}],
                 "edges": [self.edge(identifier, truth_status="current"),
                           self.edge(identifier, truth_status="not_ready")],
             })
@@ -372,7 +372,7 @@ class MemoryGraphQualityTests(unittest.TestCase):
         self.assertEqual(self.db.execute("SELECT COUNT(*) FROM mem_entities").fetchone()[0], 0)
 
     def test_temporary_home_production_cli_and_governance_parsers(self):
-        identifier = self.add("SyntheticApplication定位为示例检索系统。PLANNED/NOT_READY")
+        identifier = self.add("Apollo定位为顶尖教练系统。PLANNED/NOT_READY")
         env = {**os.environ, "SULDE_KB_HOME": str(self.home), "PYTHONDONTWRITEBYTECODE": "1"}
         command = [sys.executable, "-B", str(ROOT / "tools/kb-index/memory.py")]
         annotated = subprocess.run(command + ["annotate", "--json", json.dumps({
@@ -381,12 +381,12 @@ class MemoryGraphQualityTests(unittest.TestCase):
                                  encoding="utf-8", errors="replace")
         self.assertEqual(annotated.returncode, 0, annotated.stderr)
         before = self.database.read_bytes()
-        current = subprocess.run(command + ["graph", "SyntheticApplication", "--current-facts-only"],
+        current = subprocess.run(command + ["graph", "Apollo", "--current-facts-only"],
                                  env=env, capture_output=True, text=True,
                                  encoding="utf-8", errors="replace")
         self.assertEqual(current.returncode, 0, current.stderr)
         self.assertEqual(json.loads(current.stdout), [])
-        review = subprocess.run(command + ["graph", "SyntheticApplication", "--include-noncurrent"],
+        review = subprocess.run(command + ["graph", "Apollo", "--include-noncurrent"],
                                 env=env, capture_output=True, text=True,
                                 encoding="utf-8", errors="replace")
         self.assertEqual(review.returncode, 0, review.stderr)

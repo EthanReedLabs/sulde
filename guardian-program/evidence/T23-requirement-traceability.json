@@ -1,0 +1,31 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T23-current-lane-readiness",
+  "kind": "requirement_traceability",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-29520e7a7b23276c16fbdd20",
+  "verdict": "pass",
+  "summary": "T23 readiness evidence keeps scheduler, interactive, artifact, effect and native decision truth in separate projections.",
+  "facts": [
+    "Only exact-current v4 authority can contribute a current CAS mismatch; history, other lanes and terminal rows are reported separately.",
+    "Operational readiness tests independently fail scheduler, interactive, delivery artifact, effect debt and native pairing domains."
+  ],
+  "requirements": ["DERIVED-READINESS"],
+  "findings": [],
+  "acceptance": [
+    {
+      "requirement_id": "DERIVED-READINESS",
+      "clause": "scheduler、interactive、artifact、effect 和 decision pairing 分域且不能互相冒充",
+      "fact": "The 27-test readiness matrix proves each domain separately and prevents historical or other-lane native rows from masquerading as a current decision-pairing blocker."
+    }
+  ],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "tests.test_operational_readiness"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

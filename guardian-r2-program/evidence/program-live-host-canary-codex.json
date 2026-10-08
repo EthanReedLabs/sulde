@@ -1,0 +1,28 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "live_host_canary_codex",
+  "baseline": "program:guardian-human-authority-lifeform-r2",
+  "run_id": "program-r2-release-20260828",
+  "verdict": "pass",
+  "summary": "A fresh real Codex 0.150.1 session loads the installed R2 runtime and completes an exact read-only tool boundary with live SessionStart, prompt, pre-tool and post-tool observations.",
+  "facts": [
+    "Codex session 01a04775-6b8b-79c3-a17a-89d25eefedcc ran on the final installed generation and returned R2_CODEX_LIVE_READY_CANARY_OK.",
+    "The in-turn doctor reports session_context, prompt_control, tool_guard and tool_result live_verified with verified tool call continuity.",
+    "The same in-turn doctor reports host status interactive_ready, scheduler status ready with 15/15 actors, effect debt clear and native decision pairing not_required/settled.",
+    "The canary contract was intentionally shadow and task_lane_bound=false; the canary proves live Hook/runtime readiness only and does not claim an enforce-mode mutation grant.",
+    "Session JSONL SHA-256 is 7e49c4d0c3b2f31a92f48c627a83b71fd8a382fd43b1e8fce52f07deed1f14a6 and final-message SHA-256 is afdefbc3a872b91ebef8031ac112391295e08a37a85eeba55e4b2eea952ad11b."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["codex", "exec", "-C", "/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/guardian-human-authority-lifeform", "--sandbox", "read-only", "--json", "-o", "/private/tmp/r2-codex-live-ready-canary.last.txt", "<frozen live-ready canary prompt>"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

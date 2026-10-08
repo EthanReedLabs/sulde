@@ -1,0 +1,21 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H06A2-integration-hygiene.md", "sha256": "a955c3318ba389f7f3bbb82bc2c10bd49697cb84abd08889d4c77e91a2d3ff43"}],
+  "baseline": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "commands": [
+    {"argv": ["agent-runtime.py", "verify", "<H06A2-full-clone>", "r2-h06a2-integration-hygiene-repair2", "--task-id", "H06A2-integration-hygiene"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The durable H06A2 report records the original failure, two report repairs, exact finding mappings, the single-layer formal wrapper digest, retained audit cursor and restored global Codex version.",
+    "The strict report contract returned passed=true with eight current checks and no failures; it makes no H06, installation, Windows, Claude-live or program-acceptance claim."
+  ],
+  "findings": ["FR2-H06-002", "FR2-H06-003", "FR2-H06-004", "FR2-H06-006", "FR2-H06-007", "FR2-H06-009", "FR2-H06A2-001", "FR2-H06A2-002", "FR2-H06A2-003", "FR2-H06A2-004", "FR2-H06A2-005"],
+  "kind": "task_report",
+  "requirements": [],
+  "run_id": "run-gpe-ee80c2b587197cdd2fa57479",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06A2 durable report preserves the repair history, current proof and explicit remaining H06B/H06 boundaries.",
+  "task_id": "H06A2-integration-hygiene",
+  "verdict": "pass"
+}

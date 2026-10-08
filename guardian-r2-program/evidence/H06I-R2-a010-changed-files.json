@@ -1,0 +1,28 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-8604a20166ecf047ad18291d",
+  "verdict": "pass",
+  "kind": "changed_files",
+  "summary": "The H06I portion of combined commit 809e9cd remains exactly within the original five owned paths; Amendment-010 changes only the already owned agent-runtime test.",
+  "facts": [
+    "native_agent_broker.py=9bd98acb7f257885c435be91b5fe2c586bf98684b52c421247a15395d37274a0",
+    "agent-runtime.py=043ea7f0bb207c2a20903aba4e698d96bb67be87c0cc137acd36bae86c6a20b2",
+    "test_native_agent_broker.py=0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "test_agent_runtime.py=0934cce32ec8c24d0679ea8dd86422c128827e7c9ceef12ef992bcca6f83e68f",
+    "H06I-R2-interruption-authority.md=cd373e9eca838cab5c7e7d26cf2d567e01da475c6759974ea36d78df6c322a16"
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-017"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "diff", "--name-only", "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2..809e9cd5fcf925a1196707a336e1bf96a406761e"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

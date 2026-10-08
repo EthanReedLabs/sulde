@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "failure_injection",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-158084839fe31c2cea3d4be9",
+  "verdict": "pass",
+  "summary": "T30 r2 fails closed on provenance tamper and now preserves the tracked-versus-explicit release inventory boundary.",
+  "facts": [
+    "Missing, malformed, tampered, duplicate, incomplete, unordered, invalid-timezone and corpus/content-drift history inputs remain rejected.",
+    "The history module must be Git tracked and is excluded from the legacy explicit-untracked runtime inventory; the staged artifact still contains it under tools/kb-index."
+  ],
+  "requirements": [],
+  "findings": ["F30-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "T30-r2-failure-and-inventory-matrix"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

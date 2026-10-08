@@ -1,0 +1,39 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-q",
+        "tests.test_human_grant.HumanGrantV2Tests.test_read_requires_internally_consistent_no_effect_facts",
+        "tests.test_human_grant.HumanGrantV2Tests.test_external_or_destructive_is_closed_over_both_facts",
+        "tests.test_human_grant.HumanGrantV2Tests.test_world_drift_returns_stable_readable_diff_and_does_not_mutate",
+        "tests.test_human_grant.HumanGrantV2Tests.test_concurrent_projections_share_one_cas_precondition_and_transition"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Four hostile focused tests passed in 0.002 seconds on the integrated commit.",
+    "Contradictory read facts fail closed, verified external/destructive facts remain high risk, world drift yields a stable fresh-decision result without mutation, and concurrent projections expose one identical CAS precondition."
+  ],
+  "findings": [
+    "FR2-H01-002"
+  ],
+  "kind": "failure_injection",
+  "requirements": [],
+  "run_id": "run-gpe-81c4eb66edd2ae4588c2648d",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H01 hostile risk, drift and concurrent-consumption cases fail closed or return the required bounded result.",
+  "task_id": "H01-human-grant-v2",
+  "verdict": "pass"
+}

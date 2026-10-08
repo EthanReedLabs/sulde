@@ -9,6 +9,7 @@ import os
 import shutil
 import sqlite3
 import time
+from pathlib import Path
 
 import jieba
 import numpy as np
@@ -107,10 +108,11 @@ def rebuild_edges(
 def main() -> int:
     configure_utf8_stdio()
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo-root", type=Path, default=repo_root())
     parser.add_argument("--full", action="store_true", help="rebuild every document")
     args = parser.parse_args()
     started = time.monotonic()
-    root = repo_root()
+    root = args.repo_root.resolve()
     path = db_path()
     temporary = path.with_name("kb.db.tmp")
     path.parent.mkdir(parents=True, exist_ok=True)

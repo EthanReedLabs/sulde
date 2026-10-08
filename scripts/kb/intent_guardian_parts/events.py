@@ -1,6 +1,7 @@
 """Intent Guardian events domain component."""
 
 from __future__ import annotations
+from .remote_identity import validate_ssh_identity
 
 from contextlib import contextmanager
 
@@ -328,6 +329,12 @@ def _effect_resource_identity(
         "schema": "sulde-effect-resource-relation-v1",
         "arguments_digest": arguments_digest,
     }
+    remote = event.get("remote_request")
+    if isinstance(remote, dict):
+        if (remote.get("target") == target
+                and validate_ssh_identity(target, remote.get("resource_key", ""))):
+            return remote["resource_key"], "", {"schema": "exact", "value": target}, relation
+        raise IntentGuardianError("remote request identity changed after normalization")
     local_path = bool(
         kind == "tool"
         and event.get("effect") in {"local_write", "read"}

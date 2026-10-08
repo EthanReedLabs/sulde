@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "kind": "failure_injection",
+  "baseline": "f8c830b02a814cf40c541ef861569882062174c0",
+  "run_id": "run-gpe-f218f0c4044547ecb9513656",
+  "verdict": "pass",
+  "summary": "Abort archives safely while all five nonterminal unknown projections fail before archive or worktree removal.",
+  "facts": [
+    "The three focused cleanup tests pass independently.",
+    "Unhandled, open, acknowledged, unconsumed retry-authorized and reprobe-authorized attempts retain both worktree and branch and never call archive."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "T28-three-cleanup-failure-tests"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

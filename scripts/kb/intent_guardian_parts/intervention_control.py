@@ -12,6 +12,8 @@ from intervention import (
     load_projection as load_intervention_projection,
     resolve_intervention as resolve_effect_intervention_store,
     summary as intervention_summary,
+    effect_recovery_readiness,
+    prepare_effect_recovery as prepare_effect_recovery_store,
 )
 
 from .state import (
@@ -34,7 +36,19 @@ def effect_intervention_report(path: Path) -> dict[str, Any]:
         "attempts": list(projection["attempts"].values()),
         "interventions": list(projection["interventions"].values()),
         "summary": intervention_summary(path),
+        "recovery": {identifier: effect_recovery_readiness(attempt)
+                     for identifier, attempt in projection["attempts"].items()
+                     if attempt.get("state") in {"unknown", "verifying"}},
     }
+
+
+def prepare_effect_recovery(path: Path, attempt_id: str, *, expected_binding_sha256: str) -> dict[str, Any]:
+    try:
+        with contract_lock(path):
+            return prepare_effect_recovery_store(
+                path, attempt_id, expected_binding_sha256=expected_binding_sha256)
+    except (InterventionError, OSError, UnicodeError) as error:
+        raise IntentGuardianError(f"cannot prepare effect recovery: {error}") from error
 
 
 def acknowledge_effect_intervention(

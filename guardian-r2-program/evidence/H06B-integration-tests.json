@@ -1,0 +1,23 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "commands": [
+    {"argv": ["git", "diff", "--exit-code", "93c9e5dad221d39a83de7a703a2fe40ef6aef69b", "f0e845617867c1710b636205c6798d03140d1646", "--", "<eight-owned-paths>"], "exit_code": 0, "result": "pass"},
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_agent_runtime.AgentRuntimeTests.test_audited_codex_0150_real_cli_contract", "tests.test_codex_plugin_install", "tests.test_stage_plugin"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The coordinator integration serializes H06B after control commit ea88b2d and preserves all reviewed blobs exactly.",
+    "The integrated tree passes the real authority roundtrip plus all 55 installer/stager cases, including rollback and process-death recovery.",
+    "No H06B commit, test or evidence changed dev/main, installed runtime, scheduler or the unrelated Harmony workspace."
+  ],
+  "findings": ["FR2-H06-001", "FR2-H06B-002", "FR2-H06B-005"],
+  "kind": "integration_tests",
+  "requirements": [],
+  "run_id": "run-gpe-be866b2fa440a994860b63a9",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06B composes byte-identically with the accepted R2 coordinator tree and passes integrated native-authority tests.",
+  "task_id": "H06B-codex-0150-authority",
+  "verdict": "pass"
+}

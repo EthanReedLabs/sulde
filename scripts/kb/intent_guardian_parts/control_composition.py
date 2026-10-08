@@ -14,6 +14,7 @@ from shell_composition import CompositionError, literal_shell_plan
 from command_template import split_command_template
 from .state import READ_ONLY_AGENT_CONTROL_ACTIONS
 from .event_identity import bind_host_call_identity
+from .semantic_proofs import trusted_guardian_help
 
 
 @dataclass(frozen=True)
@@ -98,7 +99,16 @@ def _filter_is_proven(command: str, effect: str) -> bool:
                        or (arg.startswith("-") and not arg.startswith("--") and "o" in arg[1:])
                        for arg in args)
     if name == "sed":
-        return bool(len(args) == 2 and args[0] == "-n" and re.fullmatch(r"[0-9,$]*p", args[1]))
+        if len(args) < 2 or args[0] != "-n" or not re.fullmatch(r"(?:[0-9]+|\$)?(?:,(?:[0-9]+|\$))?p", args[1]):
+            return False
+        files = args[2:]
+        if files[:1] == ["--"]:
+            files = files[1:]
+        else:
+            # A filename beginning with '-' must not become another sed option.
+            if any(value.startswith("-") for value in files):
+                return False
+        return all(bool(value) for value in files)
     return False
 
 
@@ -189,6 +199,8 @@ def normalize_composition(
         if invocation:
             if not control or not invocation["runtime_sha256"]:
                 reason = "控制入口身份未被证明"
+            elif trusted_guardian_help(invocation):
+                pass
             elif control["route"] != "agent":
                 reason = "该步骤没有绑定整个组合的原生授权；已有单条审批不能授权后续片段"
             elif control["action"] not in READ_ONLY_AGENT_CONTROL_ACTIONS | AUDIT_CONTROL_ACTIONS:

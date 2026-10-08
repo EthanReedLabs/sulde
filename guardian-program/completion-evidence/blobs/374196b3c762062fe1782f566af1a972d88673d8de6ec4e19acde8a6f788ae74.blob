@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "task_report",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "T32 fixes exact Codex linked-worktree Git attribution and top-level native decision aliases, restores the component budget and closes production plus historical acceptance without creating another task.",
+  "facts": [
+    "Product commits 6c3ef24 and 8881570 plus release metadata 60995fc entered dev and main before official installation.",
+    "F32-005 was caught before evidence acceptance; c7fd29a restores the one unowned duplicate test to the frozen baseline, leaving exactly seven owned product paths in the net delta.",
+    "The report discloses failed command shapes, grant resealing, the old-chain fork boundary and the persistent installer phase label instead of converting them into unsupported success claims."
+  ],
+  "requirements": [],
+  "findings": ["F32-001", "F32-002", "F32-003", "F32-004", "F32-005"],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T32-codex-worktree-git-trace.md",
+      "sha256": "917722adc17a1774098fd8a73fea910c67487d1ad75aa8635ca17501baac5c5b"
+    }
+  ]
+}

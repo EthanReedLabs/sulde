@@ -1,0 +1,43 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-06659d2260308adf552e6d68",
+  "verdict": "pass",
+  "kind": "changed_files",
+  "summary": "The frozen H06I-R2 candidate remains limited to its exact five owned paths; Amendment-006 changes only the durable report bytes and preserves all four behavior and test hashes.",
+  "facts": [
+    "The candidate production hashes remain native_agent_broker.py=0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7 and agent-runtime.py=9effefc5f477dc7d78a985ad028e9dcf790b548b1d846c7c6a2c46870fb7e740.",
+    "The candidate test hashes remain test_native_agent_broker.py=0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850 and test_agent_runtime.py=a637b37445adad801ae865d83852890b1c40bd24706823ed5c1525d7a40b2b76.",
+    "The durable report hash is f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183 and is byte-identical across the prevalidated projection, provider last message, run ledger output and native receipt bindings.",
+    "No candidate integration, dev/main change, installation, scheduler mutation, live canary, H06J start or R2 completion is claimed by this evidence."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06I-R2-015"
+  ],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "shasum",
+        "-a",
+        "256",
+        "scripts/kb/native_agent_broker.py",
+        "scripts/kb/agent-runtime.py",
+        "tests/test_native_agent_broker.py",
+        "tests/test_agent_runtime.py",
+        "guardian-r2-program/reports/H06I-R2-interruption-authority.md"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "H06I-R2-REPORT-EVIDENCE-CLOSURE.json",
+      "sha256": "713291eec01406dcbc5a07545fd2ba42f06a92a387fbbeaf39d28cdf9f3b7d24"
+    }
+  ]
+}

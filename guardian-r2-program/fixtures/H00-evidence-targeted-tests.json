@@ -1,0 +1,40 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "fixtures/baseline.json",
+      "sha256": "883a3b81876a707f370d8ecd1f976b620a9da72d16f6f9130e1bbb7e32df30d7"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "/Users/eric/.claude/plugins/data/sulde-cc/kb/venv/bin/python",
+        "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_intent_guardian",
+        "tests.test_intervention",
+        "tests.test_agent_runtime",
+        "tests.test_native_decision_journal",
+        "tests.test_operational_readiness",
+        "tests.test_sulde_statusline"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The supported isolated runner completed 423 tests in 88.896 seconds with exit 0.",
+    "The production write guard remained clear; the earlier raw-system-Python selector run is retained only as inconclusive environment evidence."
+  ],
+  "findings": [],
+  "kind": "targeted_tests",
+  "requirements": [],
+  "run_id": "run-gpe-f128db6f4146d085f1391fa8",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "Six Guardian control domains pass the supported isolated baseline under the installed Sulde interpreter.",
+  "task_id": "H00-fixture-baseline",
+  "verdict": "pass"
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "kind": "changed_files",
+  "baseline": "f8c830b02a814cf40c541ef861569882062174c0",
+  "run_id": "run-gpe-f218f0c4044547ecb9513656",
+  "verdict": "pass",
+  "summary": "T28 is bound to its exact two source/test consumers plus the registered task report.",
+  "facts": [
+    "scripts/kb/self-repair.py sha256 f37375e15424b5b18073565cb385f33f2a8fbe7599ad63ecbb6f6e5d46bfea1c.",
+    "tests/test_self_repair.py sha256 73b9e1bff48809d8c83b3b3ba97c2896cf2ce3468f46e58dd79d7be230e28179; report sha256 1db2dfeebd422e2e2645bd4bbae5098d0ee17574763a3074d71a5665736c785a."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "show", "--stat", "b2b73cce77f7aef4a09d8dc40c2b9247029c73d0"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

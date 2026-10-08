@@ -1,0 +1,23 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H06A2-integration-hygiene.md", "sha256": "a955c3318ba389f7f3bbb82bc2c10bd49697cb84abd08889d4c77e91a2d3ff43"}],
+  "baseline": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "commands": [
+    {"argv": ["run-h06a2-formal-with-audited-codex.zsh"], "exit_code": 0, "result": "pass"},
+    {"argv": ["agent-runtime.py", "verify", "<H06A2-full-clone>", "r2-h06a2-integration-hygiene-repair2"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The 439-test formal run executed real-CLI authority positive, stderr-help drift, executable alias, future and substring version, generation, profile and broker negative paths without adaptation.",
+    "Nested isolation, isolated-HOME authority lookup, immutable run slug reuse, report provenance and historical-status parsing failures are all retained as findings with bounded repairs rather than erased.",
+    "The wrapper restored global codex-cli 0.150.1 on terminal; 0.150.1 audited production compatibility remains open as FR2-H06-001 and is not claimed here."
+  ],
+  "findings": ["FR2-H06A2-001", "FR2-H06A2-002", "FR2-H06A2-003", "FR2-H06A2-004", "FR2-H06A2-005", "FR2-H06-009"],
+  "kind": "failure_injection",
+  "requirements": [],
+  "run_id": "run-gpe-ee80c2b587197cdd2fa57479",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06A2 negative boundaries fail closed and every execution/report failure has an append-only resolution.",
+  "task_id": "H06A2-integration-hygiene",
+  "verdict": "pass"
+}

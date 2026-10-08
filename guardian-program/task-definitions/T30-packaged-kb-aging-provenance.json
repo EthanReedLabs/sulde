@@ -1,0 +1,62 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "title": "为不可变安装包封装 KB 老化历史凭据并恢复 15/15 调度",
+  "owner": "release-kb-aging-worker",
+  "capability_tier": "deep",
+  "base_commit": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "depends_on": [
+    "T25-release-gate-closure",
+    "T23-current-lane-readiness",
+    "T28-cleanup-quarantine-consumer",
+    "T00-control-plane"
+  ],
+  "supersedes": [
+    "T29-sulde-local-live-acceptance"
+  ],
+  "owned_paths": [
+    "tools/kb-index/knowledge_history.py",
+    "scripts/kb/kb-aging.py",
+    "scripts/release/stage_plugin.py",
+    "scripts/release/install_codex_plugin.py",
+    "tests/test_knowledge_history.py",
+    "tests/test_kb_aging.py",
+    "tests/test_stage_plugin.py",
+    "tests/test_codex_plugin_install.py",
+    "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+    "guardian-program/reports/T30-packaged-kb-aging-provenance.md"
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-READINESS",
+    "DERIVED-DELIVERY",
+    "DERIVED-RESOURCE",
+    "DERIVED-ISOLATION",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "acceptance": [
+    "源码 checkout 中 kb-aging 继续使用权威 Git 末次提交时间，不以文件 mtime 或开发 checkout 依赖替代",
+    "官方 stager 在封印 generation 前生成确定性 knowledge/HISTORY.json，并将 corpus 指纹、逐文档路径、内容哈希、带时区末次提交时间和自校验摘要绑定",
+    "无 .git 的 packaged runtime 可直接运行 kb-aging；历史凭据缺失、被篡改、路径或内容与 corpus 不一致时 fail closed",
+    "stager、installer 和 packaged-runtime 回归通过，完整隔离套件无新增失败，且不修改生产 contract、ledger 或外部项目",
+    "候选依次合并 dev 与 main，经官方安装链部署后 com.sulde.kb-aging 成功且 15 个 scheduler actor 全部当前 generation 就绪",
+    "仅在 15/15 后使用一个安装后启动的 Sulde 自有 Codex 会话完成真实 hooks 与 doctor ready 验收，再执行程序 final-check"
+  ],
+  "evidence_gates": {
+    "implemented": [
+      "task_report",
+      "changed_files"
+    ],
+    "task_verified": [
+      "targeted_tests",
+      "failure_injection"
+    ],
+    "integrated": [
+      "integration_tests"
+    ],
+    "system_verified": [
+      "system_tests",
+      "requirement_traceability"
+    ]
+  }
+}

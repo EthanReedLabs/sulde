@@ -1,0 +1,50 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T27-release-blocker-remediation",
+  "title": "修复发布阻断、自锁投影和 scheduler 失败并完成真实恢复",
+  "owner": "release-recovery-worker",
+  "capability_tier": "deep",
+  "base_commit": "0dce1005d244af7e5b509513226bcfe8a2f11b4f",
+  "depends_on": [
+    "T25-release-gate-closure",
+    "T23-current-lane-readiness",
+    "T00-control-plane"
+  ],
+  "supersedes": [
+    "T26-production-session-recovery"
+  ],
+  "owned_paths": [
+    "scripts/kb/intervention.py",
+    "scripts/kb/operational_readiness.py",
+    "scripts/kb/sulde-status.py",
+    "scripts/kb/auto-distill.py",
+    "scripts/kb/mem-sync.py",
+    "tests/test_intervention.py",
+    "tests/test_operational_readiness.py",
+    "tests/test_sulde_statusline.py",
+    "tests/test_scheduler_entrypoints.py",
+    "tests/test_mem_sync.py",
+    "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+    "guardian-program/reports/T27-release-blocker-remediation.md"
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-READINESS",
+    "DERIVED-DELIVERY",
+    "DERIVED-RESOURCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "acceptance": [
+    "已 abort 的历史 effect debt 保持可审计且继续拦截同一资源，但不再让无关 current lane 全局自锁",
+    "SessionStart 等待首提示和空闲 TTL 显示黄色等待态，真实 runtime、hook、generation、authority 或 effect 故障仍显示红色",
+    "auto-distill 在真实 LaunchAgent Python 最小环境可解析，mem-sync 只对唯一显式 upstream 执行 pull 并对缺失或多值配置 fail closed",
+    "完整定向、故障注入、集成和全仓隔离测试通过，且未修改生产账本或安装缓存",
+    "官方安装后 15 个 scheduler actor 就绪，两个指定 Codex 会话以当前 generation 完成真实宿主恢复且未重放 Figma 副作用"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"]
+  }
+}

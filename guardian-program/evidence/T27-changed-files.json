@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T27-release-blocker-remediation",
+  "kind": "changed_files",
+  "baseline": "0dce1005d244af7e5b509513226bcfe8a2f11b4f",
+  "run_id": "run-gpe-75da4f180a9fb984f67db91a",
+  "verdict": "pass",
+  "summary": "Every T27 implementation byte is bound to af90c9b and the frozen twelve-path ownership set.",
+  "facts": [
+    "intervention.py 3842bf7643076f21f5907dd29dfa4c097f0a87b7b343ed1dcce55771f7d3daa7; operational_readiness.py a9bfd22ff7be8401d8c54c12bf5293346878bbcfce899bb3fee3c2580556893f.",
+    "sulde-status.py ec7fa1fe191435394686478144475e2c194aaa3eed139a94b57ad7ae32a615cf; auto-distill.py 1ccd0e3b4cd7e09e04f8a6b5447684f9b1325f7422d9d3e51866a61a78d841f9; mem-sync.py 439f1011001a5d2676754a9f0eeed4daa0418785d65858436b8999a1ef7d4aed.",
+    "The five changed/new test files, plugin cachebuster and task report are the remaining seven registered paths; no production ledger, installed cache or LaunchAgent plist is in the commit."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "show", "--stat", "af90c9b35d9ce42db11e3d812b83253bc004cd8a"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

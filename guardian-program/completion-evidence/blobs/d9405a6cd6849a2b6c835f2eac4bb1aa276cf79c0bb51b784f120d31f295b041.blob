@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "system_tests",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "The exact dev-integrated T31 candidate passes the complete official OS-isolated repository suite with production writes denied.",
+  "facts": [
+    "A fresh full clone bound both HEAD and local main to dev commit bfc570409fc9b4903b224f93f9d3b9ac812a3f44.",
+    "Python 3.10.7 with numpy 2.2.6 and PyYAML 6.0.3 ran 1368 tests in 330.515 seconds: all passed with six platform skips.",
+    "PYTHONDONTWRITEBYTECODE was active and SULDE_PRODUCTION_KB_HOME pointed to a new empty sentinel; the official isolation runner reported no production-write violation."
+  ],
+  "requirements": [],
+  "findings": ["F31-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

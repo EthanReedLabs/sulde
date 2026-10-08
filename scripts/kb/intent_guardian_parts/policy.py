@@ -3,6 +3,7 @@
 from __future__ import annotations
 from .state import READ_ONLY_AGENT_CONTROL_ACTIONS
 from .control_composition import AUDIT_CONTROL_ACTIONS
+from decision_kernel import consumed_grant_decision
 
 from .memory_scope import advance_sequence as _advance_material_sequence_for_allowed_event
 
@@ -67,11 +68,13 @@ from intervention import (
     blocking_attempts,
     canonical_resource_key,
     effect_operation_fingerprint,
+    effect_risk_acceptance_matches,
     git_ref_verification_digest,
     load_projection as load_intervention_projection,
     mark_attempt_result,
     mark_attempt_unknown,
     material_event_blocker,
+    material_blocker_description,
     is_legacy_git_control_attempt,
     open_interventions,
     resolve_intervention as resolve_effect_intervention_store,
@@ -439,6 +442,12 @@ def evaluate_event(
     )
 
     if (
+        contract["runtime"].get("historical_retirement", {}).get("epoch") == contract["task_epoch"]
+        and effect in {"local_write", "external_write", "destructive", "unknown"}
+    ):
+        violation, severity = "历史执行阶段已终止；旧授权不可复用，须重新确认新阶段", "critical"
+        pause, pause_class = True, "historical_retirement"
+    elif (
         contract["confirmation"]["required"]
         and contract["confirmed_by"] in {"unconfirmed", "unconfirmed-proposal"}
         and effect in {"local_write", "external_write", "destructive", "unknown"}
@@ -1299,33 +1308,15 @@ class GuardianSession:
                 raise IntentGuardianError(
                     f"cannot prove the external-effect barrier state: {error}"
                 ) from error
+            review = event["human_grant_dispatch"].get("effect_risk_review")
+            if blocker and isinstance(review, dict):
+                if effect_risk_acceptance_matches(self.path, event, review):
+                    blocker = None
             if blocker:
-                decision = Decision(
-                    dispatch="deny", would_dispatch="deny",
-                    lifecycle="continue", authority="none",
-                    verification="none", evidence_state="observed",
-                    severity="critical",
-                    reason="同一目标仍有未结算的实质效果；一次性授权未被执行",
-                    fingerprint=fingerprint,
-                    reason_code="effect_barrier_denied",
-                    decision_stage="safety",
-                )
-            else:
-                decision = Decision(
-                    dispatch="allow", would_dispatch="allow",
-                    lifecycle="continue", authority="human_grant",
-                    verification=(
-                        "required"
-                        if event.get("effect") in {"external_write", "unknown"}
-                        else "none"
-                    ),
-                    evidence_state="observed", severity="info",
-                    reason="当前会话原生 Allow 已按精确绑定消费一次",
-                    fingerprint=fingerprint,
-                    reason_code="human_grant_consumed",
-                    decision_stage="authority",
-                    secondary_reasons=("default_policy_recheck:false",),
-                )
+                event["blocker_match_reason"] = blocker["match_reason"]
+            decision = consumed_grant_decision(
+                event, fingerprint, material_blocker_description(blocker) if blocker else "",
+            )
             blocker = None
         elif event.get("control_plane"):
             if event.get("control_route") == "composition":
@@ -1467,20 +1458,23 @@ class GuardianSession:
         ):
             pass
         elif not event.get("control_plane") and blocker:
+            event["blocker_match_reason"] = blocker["match_reason"]
             event["blocked_by_attempt_id"] = blocker["attempt_id"]
             if blocker.get("intervention_id"):
                 event["blocked_by_intervention_id"] = blocker["intervention_id"]
             decision = Decision(
-                dispatch="defer", would_dispatch="defer",
+                dispatch="deny", would_dispatch="deny",
                 lifecycle="continue", authority="none",
                 verification="none", evidence_state="observed",
                 severity="critical",
                 reason=(
-                    "同一目标或显式依赖链仍有无法证明或尚未验证的外部副作用；"
-                    f"attempt={blocker['attempt_id']} "
+                    material_blocker_description(blocker) + "；"
+                    + f"attempt={blocker['attempt_id']} "
                     f"intervention={blocker.get('intervention_id') or 'not-opened'}"
                 ),
                 fingerprint=fingerprint,
+                reason_code="effect_barrier_denied",
+                decision_stage="safety",
             )
         elif not event.get("control_plane"):
             decision = evaluate_event(self.contract, event, contract_path=self.path)
@@ -1674,6 +1668,9 @@ class GuardianSession:
         if tracks_external_effect:
             call_identity = str(event.get("call_id") or f"sequence:{event['sequence']}")
             effect_target = _effect_attempt_target(event)
+            risk_grant = event.get("human_grant_dispatch") or {}
+            if not isinstance(risk_grant.get("effect_risk_review"), dict):
+                risk_grant = {}
             try:
                 attempt = begin_attempt(
                     self.path,
@@ -1710,6 +1707,9 @@ class GuardianSession:
                     semantic_retry_intervention_id=str(
                         event.get("semantic_retry_intervention_id") or ""
                     ),
+                    risk_grant_transaction_id=str(risk_grant.get("transaction_id") or ""),
+                    risk_event=event if risk_grant else None,
+                    risk_dispatch=risk_grant.get("dispatch"),
                 )
             except (InterventionError, OSError, UnicodeError) as error:
                 raise IntentGuardianError(

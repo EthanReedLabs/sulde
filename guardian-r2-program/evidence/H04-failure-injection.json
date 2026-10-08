@@ -1,0 +1,26 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["python3", "-m", "unittest", "tests.test_resource_adapters", "tests.test_intent_guardian.H04TypedResourceHookRoutingTests", "-v"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Git main, broad pathspec, direct control metadata, writer collision, replay, ref/index/content drift and linked-worktree substitution fail closed.",
+    "Delete sibling, root, home, symlink, parent/tree drift; workspace sibling/provider/session drift; Figma empty target/readback drift; and device purchase/data-clear/original-data attempts fail closed.",
+    "Terminal quarantined debt does not globally block an unrelated local patch, while unresolved live external-write debt remains blocking."
+  ],
+  "findings": ["FR2-H04-006", "FR2-H04-007", "FR2-H04-008"],
+  "kind": "failure_injection",
+  "requirements": [],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H04 negative matrices cover authority, filesystem, Git, cross-project, Figma, device and debt failure axes.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

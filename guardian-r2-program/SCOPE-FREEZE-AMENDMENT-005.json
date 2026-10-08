@@ -1,0 +1,152 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-amendment-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-005",
+  "parent_chain": [
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE.json",
+      "sha256": "40bd0ba4bcb342209302bb1c71166fbd9136a655c5df6088f2b6abb50e5bccc8"
+    },
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-001.json",
+      "sha256": "ba553436f3b3fa90ee0a059d2a6523bdbe0df4094fcd19dd917e6ab8c93bafe4"
+    },
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-002.json",
+      "sha256": "58fe1f989b65577881e8ab14168434346385751022f3f758c1df2826b64c11f8"
+    },
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-003.json",
+      "sha256": "28e82c75f1b760889d7d4ad174e7984d4c2f88a70b19e9ccc8e26c570192651e"
+    },
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-004.json",
+      "sha256": "cba930bbed31506408109a524bf75f93962db8f9dbcae78479468c6a8355d4ba"
+    }
+  ],
+  "frozen_controller_event_head_sha256": "3a2f8bac7163fdee6c2e9ace578c824c66c44299663b9c214f579223397b813c",
+  "frozen_coordinator_commit": "6781e90",
+  "authority": "human-confirmed-h06i-r2-amendment-005-2026-08-28-current-session",
+  "authority_scope": "continue the preserved Amendment-004 candidate once, then let the coordinator perform the remaining environment matrix and one previously unconsumed self-hosted verification",
+  "task": {
+    "task_id": "H06I-R2-interruption-authority",
+    "task_definition_path": "guardian-r2-program/task-definitions/H06I-R2-interruption-authority.json",
+    "task_definition_sha256": "55ebd49197d5c940394fd405224b2814d28b290a81e3cd481c4c5d4bcac377c2",
+    "continuation_brief_path": "guardian-r2-program/briefs/H06I-R2-review-repair-continuation.md",
+    "owned_paths": [
+      "scripts/kb/native_agent_broker.py",
+      "scripts/kb/agent-runtime.py",
+      "tests/test_native_agent_broker.py",
+      "tests/test_agent_runtime.py",
+      "guardian-r2-program/reports/H06I-R2-interruption-authority.md"
+    ]
+  },
+  "continuation_input_sha256": {
+    "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+    "scripts/kb/agent-runtime.py": "9effefc5f477dc7d78a985ad028e9dcf790b548b1d846c7c6a2c46870fb7e740",
+    "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "tests/test_agent_runtime.py": "a637b37445adad801ae865d83852890b1c40bd24706823ed5c1525d7a40b2b76",
+    "guardian-r2-program/reports/H06I-R2-interruption-authority.md": "f76718d8fb90b94205afc24971b69b0e5f85f94683b1e039d617eda550b7310a"
+  },
+  "red_timeout_authority": {
+    "path": "guardian-r2-program/H06I-R2-REVIEW-REPAIR-STAGE1-FAIL.json",
+    "sha256": "d863adc72018a2d06b9b6efcba276708ffcf4c74c9e523d8255423a7e6939097",
+    "finding": "FR2-H06I-R2-014"
+  },
+  "accepted_historical_evidence_policy": {
+    "accepted_evidence_may_be_referenced": true,
+    "accepted_evidence_may_be_reexecuted": false,
+    "partial_timeout_evidence_is_input_only": true,
+    "old_current_success_claims_are_not_authoritative": true
+  },
+  "stage_one_continuation": {
+    "authorized_candidate_ordinal": 4,
+    "provider_invocations": 1,
+    "provider_timeout_seconds": 1500,
+    "behavioral_write_paths": [
+      "scripts/kb/agent-runtime.py",
+      "tests/test_agent_runtime.py"
+    ],
+    "evidence_write_path": "guardian-r2-program/reports/H06I-R2-interruption-authority.md",
+    "must_remain_byte_identical": {
+      "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+      "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850"
+    },
+    "required_work": [
+      "inspect only the preserved current diff and the exact unresolved acceptance list",
+      "finish any incomplete runtime or test correction without rebuilding the plan or repeating historical review",
+      "run the narrow review-repair tests and at most the runtime and frozen broker modules inside the managed environment",
+      "replace the stale report with one unambiguous current evidence set bound to the current execution binding",
+      "reach a natural provider terminal and leave cleanup quiescent"
+    ],
+    "explicitly_delegated_to_coordinator": [
+      "default macOS TMPDIR verification",
+      "explicit /private/tmp verification",
+      "fresh no-hardlink clone verification",
+      "cross-environment failure injection",
+      "stage-boundary creation",
+      "self-hosted verification",
+      "independent final review"
+    ],
+    "automatic_retry": false
+  },
+  "coordinator_verification": {
+    "provider_invocations": 0,
+    "candidate_source_write": false,
+    "environments": [
+      "outer native default macOS TMPDIR with no TMPDIR override",
+      "outer native explicit TMPDIR=/private/tmp"
+    ],
+    "required_checks": [
+      "focused review-repair tests",
+      "tests/test_agent_runtime.py",
+      "tests/test_native_agent_broker.py",
+      "combined runtime and broker modules",
+      "fresh no-hardlink full clone",
+      "root-swap read, parent-swap write, post-read replacement and production local-interruption failure injection",
+      "report duplicate, conflicting-count and missing-binding rejection"
+    ],
+    "required_artifact": "guardian-r2-program/H06I-R2-CONTINUATION-FREEZE.json"
+  },
+  "stage_two_self_hosted_verification": {
+    "authorized_verification_ordinal": 3,
+    "ordinal_note": "Amendment-004 reserved ordinal 3 but never started it, so this remains the third actual self-hosted verification rather than a fourth attempt",
+    "provider_invocations": 1,
+    "candidate_source_write": false,
+    "authority_mode": "fresh isolated nonproduction projection of the coordinator-frozen runtime and unchanged broker",
+    "required_before_start": "guardian-r2-program/H06I-R2-CONTINUATION-FREEZE.json is green and binds all five owned path hashes plus both environment matrices",
+    "postconditions": [
+      "all five stage-boundary path hashes remain unchanged",
+      "fresh interpreter verifies the isolated runtime tree and native authority",
+      "run ledger, output-last-message, durable report and native receipt bind one identical canonical byte sequence",
+      "one provider invocation reaches a natural terminal and cleanup is quiescent"
+    ],
+    "automatic_retry": false
+  },
+  "review_policy": {
+    "critical_claims_require_multiple_independent_evidence_sources": true,
+    "report_claims_require_actual_command_evidence": true,
+    "declaration_only_acceptance_forbidden": true,
+    "test_pass_does_not_imply_integration_acceptance": true
+  },
+  "findings_to_close": [
+    "FR2-H06I-R2-009",
+    "FR2-H06I-R2-010",
+    "FR2-H06I-R2-011",
+    "FR2-H06I-R2-012",
+    "FR2-H06I-R2-013",
+    "FR2-H06I-R2-014"
+  ],
+  "unchanged_boundaries": {
+    "new_task_identity": false,
+    "owned_path_expansion": false,
+    "acceptance_weakening": false,
+    "production_install": false,
+    "production_descriptor_write": false,
+    "scheduler_change": false,
+    "dev_or_main_merge": false,
+    "push": false,
+    "h06j_changed": false
+  },
+  "terminal_rule": "any managed continuation, coordinator matrix or self-hosted verification failure stops with append-only red evidence and no automatic retry, successor, integration, installation or H06J start"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T22-material-cas-lane-binding",
+  "kind": "changed_files",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-656b9b20b4b4882b1199d002",
+  "verdict": "pass",
+  "summary": "Every T22 candidate byte is bound to one worker commit and the frozen ownership set.",
+  "facts": [
+    "scripts/kb/intent-guardian.py sha256 is 5dd43da43cca224772021dae6cfc67bcfe7adcbd61eb95c166c5860a1584b7e1.",
+    "scripts/kb/intent_guardian_parts/policy.py sha256 is 04be12765c34979da770a87f19909334602792cc9fa95ad8d74f351280ee6d5f.",
+    "scripts/kb/task_ownership.py sha256 is 23c569ac14a83ce6491db92337c764c8b3191bc764f6dc666ba3d01aa32bab72.",
+    "tests/test_material_cas_lane_binding.py sha256 is 4145160c18462613939f4d5b1948d04f6a81a782555b4bcbb67637651db44b44."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T22-material-cas-lane-binding.md",
+      "sha256": "84960edf9d284b8919ff7e40d06a582e53ab7a0496d3eeb2b2892d87008ba013"
+    }
+  ]
+}

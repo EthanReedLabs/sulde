@@ -1,0 +1,30 @@
+{
+  "acceptance": [
+    "停车方案摘要、G0-G6/T32 final gate、main/dev/worktree 状态和当前原生 revision 152 receipt 均有独立回读",
+    "I01-I19 以脱敏真实 transcript shape 固化，Apollo 空 target、git status task-lane deny、相对 workdir 误归因与 generated pyc 均作为新鲜反样本",
+    "Codex 0.149.1、macOS 26.3 arm64、installed generation 与 423 项受支持隔离基线被冻结；Claude live 明确 deferred 而非通过",
+    "H00-H06 依赖、owned paths、failure axes 和 guardian-r2-independent-reviewer 身份固定"
+  ],
+  "base_commit": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "capability_tier": "deep",
+  "depends_on": [],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "fixture_validation"]
+  },
+  "owned_paths": [
+    "guardian-r2-program/manifest.json",
+    "guardian-r2-program/promotion-receipt.json",
+    "guardian-r2-program/briefs/SULDE-R2-HALG-20260825.md",
+    "guardian-r2-program/fixtures/**",
+    "guardian-r2-program/task-definitions/**",
+    "guardian-r2-program/reports/H00-fixture-baseline.md"
+  ],
+  "owner": "guardian-r2-coordinator",
+  "requirements": ["PROGRAM-GOVERNANCE", "R2-LIVE-ACCEPTANCE"],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H00-fixture-baseline",
+  "title": "冻结十九组真实事件、宿主代际与可执行基线"
+}

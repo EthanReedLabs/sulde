@@ -97,9 +97,12 @@ def substantive_staged_change(path: Path, status: str) -> bool:
 
 
 def main() -> int:
+    global ROOT
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo-root", type=Path, default=ROOT)
     parser.add_argument("paths", nargs="*", type=Path)
     args = parser.parse_args()
+    ROOT = args.repo_root.resolve()
     changes = staged_changes()
     explicit = bool(args.paths)
     candidates = args.paths if explicit else tracked_documents()
@@ -131,7 +134,7 @@ def main() -> int:
         validated += 1
         violations.extend(
             (relative, error)
-            for error in validate_document(markdown, root=ROOT, require_v2=require_v2)
+            for error in validate_document(markdown, require_v2=require_v2)
         )
     if violations:
         print(f"sedimentation lint failed: {len(violations)} violation(s)")

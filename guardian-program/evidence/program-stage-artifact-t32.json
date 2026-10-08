@@ -1,0 +1,31 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "stage_artifact",
+  "baseline": "program:guardian-remediation-r97",
+  "run_id": "program-final-t32-20260824",
+  "verdict": "pass",
+  "summary": "The final T32 Codex artifact is persistent, self-contained and binds 577 staged files plus 366 verified knowledge documents.",
+  "facts": [
+    "The artifact is stored at /Users/eric/.sulde/artifacts/sulde-0.8.4-0.2.5-codex.20260824145354-ce28ce210c/codex rather than a temporary worktree.",
+    "The official artifact contains 577 regular files and the knowledge manifest plus history each contain 366 documents.",
+    "MANIFEST and HISTORY bind corpus SHA-256 4e3f86d41df4bbc194afe29a7f270d88da51e40197955508022d1dfa532b46ea."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["stage_plugin.py", "--target", "codex", "--platform", "posix", "--output", "<persistent-artifact>"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/program-final-acceptance-t32.md",
+      "sha256": "c64dece515e276ea17d803fe2d8edbb3fba55ec78edbbec3366f1892f3c22d22"
+    }
+  ]
+}

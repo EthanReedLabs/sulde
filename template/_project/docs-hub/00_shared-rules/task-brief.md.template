@@ -19,11 +19,32 @@ Record the inspected revision, relevant existing behavior, exact allowed paths
 and effects, and what must remain unchanged. Include applicable design or API
 evidence for the actual task; do not require unrelated project artifacts.
 
+## Execution agreement
+
+Name the executor and freeze the review point, permitted in-scope repairs, expected
+impact, evidence location, budget and genuine stop conditions. The executor
+continues through implementation and scoped verification without requiring a new
+user instruction after each test. Updates do not require approval. Preserve any
+explicit audit-only/tests-only limit; amend earlier stop lines explicitly.
+
+For fault-injection repairs: valid normal controls on old/candidate → identical
+fault tests → actual entry chain → affected modules. Fixture failure is not an
+old defect. Small changes use targeted checks; medium changes cover affected
+consumers; refactors require full regression. Documentation-only changes use
+structural checks. Two attempts without new evidence require a different diagnosis,
+not blind reruns. Missing authority, exhausted budget or unavailable prerequisites
+produce a precise blocker/checkpoint, never a false completion.
+
 ## Acceptance and verification
 
 State success and negative cases, test scope, needed host/platform evidence and
 how results will bind to the tested candidate. Record unavailable checks as
 unverified rather than passed.
+
+Identify old defects, candidate fixes, new regressions and invalid tests separately.
+Bind code, tests, fixtures/configuration, commands and results to durable evidence.
+Submit one consolidated independent-review handoff when scoped checks pass; do not
+self-accept. Keep unrelated discoveries in follow-ups, not new acceptance gates.
 
 ## Recovery and open decisions
 

@@ -1,0 +1,53 @@
+{
+  "acceptance": [
+    "I01-I19 and all thirteen required failure axes pass on the exact integrated commit, with every reviewer finding receiving one append-only disposition",
+    "Allow-to-dispatch P95, second-deny count, card visibility, orphan-lock recovery, progress SLA, repeated-output count and effect exactly-once metrics all satisfy the frozen hard gates",
+    "the isolated full suite, historical replay, failure injection, installer rollback, scheduler, Codex live, Claude live and native Windows gates each have independent evidence rather than synthetic substitution",
+    "source, staged tree, installed runtime, scheduler owner, Codex and Claude observations are the same generation before any dev/main merge, installation publication or program acceptance"
+  ],
+  "base_commit": "f0e845617867c1710b636205c6798d03140d1646",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H00-fixture-baseline",
+    "H01-human-grant-v2",
+    "H02-grant-broker",
+    "H03-recovery-supervisor",
+    "H04-typed-resource-adapters",
+    "H05-recovery-lane",
+    "H06A2-integration-hygiene",
+    "H06B-codex-0150-authority"
+  ],
+  "supersedes": ["H06C-r2-final-acceptance"],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "tests/fixtures/r2-guardian-incidents/replay-cases.json",
+    "tests/test_r2_guardian_integration.py",
+    "guardian-r2-program/evidence/H06D-task-report.json",
+    "guardian-r2-program/evidence/H06D-changed-files.json",
+    "guardian-r2-program/evidence/H06D-targeted-tests.json",
+    "guardian-r2-program/evidence/H06D-failure-injection.json",
+    "guardian-r2-program/evidence/H06D-integration-tests.json",
+    "guardian-r2-program/evidence/H06D-system-tests.json",
+    "guardian-r2-program/evidence/H06D-finding-resolution.json",
+    "guardian-r2-program/evidence/H06D-requirement-traceability.json",
+    "guardian-r2-program/reports/H06D-r2-final-acceptance.md"
+  ],
+  "owner": "guardian-r2-coordinator",
+  "requirements": [
+    "R2-HUMAN-GRANT",
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-TYPED-RESOURCES",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06D-r2-final-acceptance",
+  "title": "以精确原生 authority 完成 R2 总纲验收"
+}

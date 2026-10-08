@@ -1,0 +1,55 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-8604a20166ecf047ad18291d",
+  "verdict": "pass",
+  "kind": "finding_resolution",
+  "summary": "Amendment-010 preserves every inherited H06I resolution obligation and closes FR2-H06I-R2-017 with focused, direct, isolated and control-plane proof.",
+  "facts": [
+    "All Amendment-007 production bytes and historical finding resolutions remain unchanged and covered by the final combined candidate.",
+    "Only the already owned production-path regression test changed to create a restoring local environment scope.",
+    "Official isolated 214/214 completed without failure, skip, production write attempt or concurrent production-KB warning."
+  ],
+  "requirements": [],
+  "findings": [
+    "FR2-H06I-R2-001",
+    "FR2-H06I-R2-002",
+    "FR2-H06I-R2-003",
+    "FR2-H06I-R2-004",
+    "FR2-H06I-R2-005",
+    "FR2-H06I-R2-006",
+    "FR2-H06I-R2-007",
+    "FR2-H06I-R2-008",
+    "FR2-H06I-R2-009",
+    "FR2-H06I-R2-010",
+    "FR2-H06I-R2-011",
+    "FR2-H06I-R2-012",
+    "FR2-H06I-R2-013",
+    "FR2-H06I-R2-014",
+    "FR2-H06I-R2-015",
+    "FR2-H06I-R2-016",
+    "FR2-H06I-R2-017",
+    "FR2-H06H-002",
+    "FR2-H06I-001",
+    "FR2-H06I-002",
+    "FR2-H06I-003",
+    "FR2-H06I-004",
+    "FR2-H06H-001",
+    "FR2-H06I-R1-001",
+    "FR2-H06I-R1-002",
+    "FR2-H06I-R1-003",
+    "FR2-H06I-R1-004",
+    "FR2-H06I-R1-005",
+    "FR2-H06I-R1-006"
+  ],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "SCOPE-FREEZE-AMENDMENT-010.json",
+      "sha256": "34ff43ad468d8ea9d7372c7f522428c20627068282cade64d3f24846491cfa70"
+    }
+  ]
+}

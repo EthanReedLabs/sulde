@@ -1,0 +1,34 @@
+{
+  "acceptance": [
+    "the intent guardian maintenance authorization digest covers the exact complete REQUIRED_RUNTIME_SOURCE_FILES tuple including scripts/kb/codex_cli_contract.py",
+    "a focused regression proves every explicit staged runtime input changes the maintenance authorization digest and no unknown or duplicate runtime path is admitted",
+    "the three-path repair passes focused and affected isolated tests without production installation, scheduler mutation, dev/main merge or external effects"
+  ],
+  "base_commit": "f0e845617867c1710b636205c6798d03140d1646",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H06A2-integration-hygiene",
+    "H06B-codex-0150-authority"
+  ],
+  "supersedes": [],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/intent_guardian_parts/state.py",
+    "tests/test_stage_release_inventory.py",
+    "guardian-r2-program/reports/H06F-release-inventory-authority.md"
+  ],
+  "owner": "guardian-r2-worker-h06f",
+  "requirements": [
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06F-release-inventory-authority",
+  "title": "补齐 Codex shared contract 的 release authorization inventory"
+}

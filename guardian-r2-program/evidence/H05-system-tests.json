@@ -1,0 +1,22 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H05-recovery-lane.md", "sha256": "7ed793f24d4965b11888426fb37790d8c1f89dd86b3ecc9daab993c55f5ba6e8"}],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {"argv": ["<kb-venv-python>", "-B", "-m", "unittest", "<H01-H05-system-composition-modules>"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The exact integrated coordinator tree ran 484 H01-H05 system-composition tests in 48.642 seconds with zero failures or errors under the supported KB interpreter and no-bytecode mode.",
+    "The run covers recovery capability/card/replay, 5/30-second progress, supervisor bridge, malformed/absent readiness truth, statusline compatibility and all upstream authority/resource domains.",
+    "Installed-runtime patch classification and native Codex 0.150.1 authority compatibility remain explicitly transferred to H06."
+  ],
+  "findings": ["FR2-H05-007", "FR2-H05-011"],
+  "kind": "system_tests",
+  "requirements": [],
+  "run_id": "run-gpe-f0547c16e9416c1a0ef60559",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H05 recovery lane passes the supported integrated H01-H05 system composition while retaining H06 install and live gates.",
+  "task_id": "H05-recovery-lane",
+  "verdict": "pass"
+}

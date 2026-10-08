@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+from .relocation_storage import relocation_registration_write
+
 import hashlib
+import copy
 import json
 import os
 from pathlib import Path
@@ -34,6 +37,7 @@ from .state import (
     session_contract_path,
     workspace_root,
     _write_contract_unlocked,
+    validate_contract,
 )
 
 
@@ -42,6 +46,82 @@ HANDOFF_PREPARE_SCHEMA = "sulde-workspace-handoff-prepare-v1"
 WORKSPACE_CLEANUP_SCHEMA = "sulde-workspace-cleanup-v1"
 _OBJECT_ID = re.compile(r"[0-9a-f]{40}(?:[0-9a-f]{24})?")
 _TASK_BRANCH = re.compile(r"(?:task|fix|feature|feat|repair)/[^\s]+")
+
+
+def _relocated_path_facts(constraints: dict[str, Any], source: Path, destination: Path) -> dict[str, Any]:
+    """Rebase explicit workspace locators, never prose, grants or other roots.
+
+    These are facts for a paused review, not automatically renewed permission.
+    Use path components (not text replacement) and do not resolve glob/symlink
+    patterns. Relative constraints already follow their workspace locator.
+    """
+    result = copy.deepcopy(constraints)
+    for key in ("allowed_paths", "frozen_paths"):
+        for index, raw in enumerate(result.get(key, [])):
+            path = Path(raw)
+            if path.is_absolute() and path.is_relative_to(source):
+                # An ambiguous path is retained for review, not normalized into
+                # broader destination scope by a convenience rename function.
+                if ".." not in path.parts:
+                    result[key][index] = str(destination / path.relative_to(source))
+    return result
+
+
+def relocation_review_contract(source: dict[str, Any], workspace: Path, plan_id: str, *,
+                               repository_source: Path | None = None,
+                               repository_destination: Path | None = None,
+                               rebase_paths: bool = False) -> dict[str, Any]:
+    """Pure, non-authorizing successor draft; never copy an execution runtime.
+
+    This is not the rebind writer. Its caller must verify the physical migration
+    and native transaction before publishing any contract or session mapping.
+    Ordinary handoff/rebind same-common-dir rules stay unchanged.
+    """
+    if not re.fullmatch(r"[0-9a-f]{64}", plan_id):
+        raise IntentGuardianError("relocation successor requires an exact plan id")
+    old = validate_contract(copy.deepcopy(source))
+    if (repository_source is None) != (repository_destination is None):
+        raise IntentGuardianError("relocation path facts require both repository locators")
+    old_root = repository_source if repository_source is not None else Path(old["workspace_root"])
+    new_root = repository_destination if repository_destination is not None else workspace
+    if (not old_root.is_absolute() or not new_root.is_absolute()
+            or ".." in old_root.parts or ".." in new_root.parts
+            or not Path(old["workspace_root"]).is_relative_to(old_root)
+            or new_root / Path(old["workspace_root"]).relative_to(old_root) != workspace):
+        raise IntentGuardianError("relocation task locator differs from repository mapping")
+    # Seed only human-readable task facts. Unknown extensions, selection state,
+    # approval receipts, grants, provider sessions and continuation capsules
+    # cannot leak into the new authorization lineage via a wholesale dict copy.
+    candidate = default_contract(intent_id=old["intent_id"], objective=old["objective"],
+        acceptance_criteria=old["acceptance_criteria"], workspace=workspace,
+        rationale=old["rationale"], mode="enforce", confirmation_required=True,
+        confirmed_by="workspace-rebind-pending-intent-review")
+    candidate["workspace_root"] = str(workspace.expanduser().resolve())
+    # Old frozen plans must rebuild exactly their original paused draft. Only
+    # a new plan that explicitly binds path-fact rebasing selects the new rule.
+    candidate["constraints"] = (_relocated_path_facts(old["constraints"], old_root, new_root)
+                                if rebase_paths else copy.deepcopy(old["constraints"]))
+    candidate["revision"] = old["revision"] + 1
+    candidate["permissions"] = {"local_write": False, "external_write": "deny", "destructive": "deny"}
+    candidate["mcp"]["unknown_effect"] = "deny"
+    candidate["status"] = "paused"
+    reason = "工作区根目录已迁移；必须审阅新的意图提案，不继承旧会话执行权限"
+    candidate["confirmation"] = {"required": True, "reason": reason}
+    candidate["runtime"].update(pause_scope="global", pause_class="semantic",
+        pause_reason=reason, pause_origin_reason=reason, pause_requires_revision=True,
+        pause_revision=candidate["revision"])
+    # Stable draft bytes across interrupted preparation. Actual publication time
+    # belongs to the future transaction receipt, not to this pure projection.
+    candidate["created_at"] = old["created_at"]
+    candidate["updated_at"] = old["created_at"]
+    binding = {"plan_id": plan_id, "source_workspace": old["workspace_root"],
+        "target_workspace": candidate["workspace_root"], "source_epoch": old["task_epoch"],
+        "source_revision": old["revision"], "authority_transferred": False}
+    candidate["repository_relocation"] = {**binding, "binding_sha256": _canonical_sha256(binding)}
+    # validate_contract derives the new epoch from the existing intent/revision
+    # protocol. Plan and destination are a separate exact migration binding;
+    # do not introduce a competing epoch derivation for one workflow.
+    return validate_contract(candidate)
 
 
 def _canonical_sha256(value: Any) -> str:
@@ -358,9 +438,10 @@ def _write_mapping_unlocked(home: Path, mapping: dict[str, Any]) -> dict[str, An
     sealed = dict(mapping)
     sealed["mapping_sha256"] = _canonical_sha256(_mapping_material(sealed))
     path = session_workspace_path(home, sealed["provider"], sealed["session_id"])
-    atomic_write(path, json.dumps(sealed, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
-    if os.name != "nt":
-        path.chmod(0o600)
+    with relocation_registration_write(path, workspace=Path(sealed["workspace_root"])):
+        atomic_write(path, json.dumps(sealed, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+        if os.name != "nt":
+            path.chmod(0o600)
     return sealed
 
 
@@ -513,9 +594,11 @@ def apply_session_mapping_rebind(
     except Exception:
         for item in reversed(applied):
             path = Path(item["path"]).expanduser().resolve()
-            atomic_write(path, str(item["before"]))
-            if os.name != "nt":
-                path.chmod(0o600)
+            with _exclusive_path_lock(path.with_name("." + path.name + ".lock")):
+                with relocation_registration_write(path, workspace=Path(json.loads(item["before"])["workspace_root"])):
+                    atomic_write(path, str(item["before"]))
+                    if os.name != "nt":
+                        path.chmod(0o600)
         raise
     return [dict(item["mapping"]) for item in plan]
 

@@ -20,6 +20,7 @@ from typing import Any, Iterable
 _annotation = runpy.run_path(str(Path(__file__).resolve().parents[2] / "scripts/kb/memory_annotation.py"))
 normalize_annotation = _annotation["normalize"]
 AnnotationConflict = _annotation["AnnotationConflict"]
+CONFLICT_EXIT_CODE = _annotation["CONFLICT_EXIT_CODE"]
 
 
 MODEL_NAME = "BAAI/bge-small-zh-v1.5"
@@ -1058,6 +1059,20 @@ def main() -> int:
                 result = annotate_memory(
                     connection, payload, extracted_by=args.extracted_by
                 )
+            except AnnotationConflict as error:
+                # Keep the conflict identity across the process boundary so a
+                # caller can reject one sample instead of stalling its pipeline.
+                print(
+                    json.dumps(
+                        {
+                            "code": getattr(error, "code", "memory_annotation_conflict"),
+                            "error": str(error),
+                        },
+                        ensure_ascii=False,
+                    ),
+                    file=sys.stderr,
+                )
+                return CONFLICT_EXIT_CODE
             except (ValueError, sqlite3.Error) as error:
                 print(str(error), file=sys.stderr)
                 return 2

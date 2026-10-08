@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "changed_files",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-158084839fe31c2cea3d4be9",
+  "verdict": "pass",
+  "summary": "T30 r2 retains the frozen ten-path implementation boundary and changes no production or external-project state.",
+  "facts": [
+    "knowledge_history.py 7cd1d8e2b6be34c7034a5f863010ff75bad66f2b851c6292d7266b76059026c2; kb-aging.py 4b99fb6325e8357fb59ce47283ace4f597b9379765e454b72bd0ab9245cb2924.",
+    "stage_plugin.py c9c1e020ad1aed8fcd452f537ee47261481df19046cc7f9afbbb6af0582078a1; test_stage_plugin.py 92f921276bf058a4e01885d4fa361a25f91cbeb861e279f5cff5529a93cff5f3.",
+    "5ef399c changes only stage_plugin.py and test_stage_plugin.py, both already owned by T30; no new path, production ledger, installed cache or iquokka path was added."
+  ],
+  "requirements": [],
+  "findings": ["F30-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "show", "--stat", "5ef399cc6abf9975a3e48c09800c494bb87ecd58"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

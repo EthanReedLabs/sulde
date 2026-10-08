@@ -1,0 +1,37 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06I-R2-interruption-authority",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-8604a20166ecf047ad18291d",
+  "verdict": "pass",
+  "kind": "task_report",
+  "summary": "Amendment-010 closes the official isolated-runner environment mismatch and composes the frozen H06I implementation with the fresh H06H acceptance candidate at commit 809e9cd.",
+  "facts": [
+    "The production agent-runtime and native broker bytes are unchanged from the Amendment-007 task-verified candidate.",
+    "The test removes SULDE_TEST_MODE only inside a restoring mock.patch.dict scope around the production-path module load and broker round trip.",
+    "The final combined candidate passes 214 direct tests, 214 official isolated tests in a quiet production-KB window, and 64 control-plane tests.",
+    "The combined branch contains exactly the five frozen H06I paths and four frozen H06H paths."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06I-R2-017"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3", "-B", "-m", "unittest", "-v", "<eight combined R2 modules>"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["python3", "-B", "scripts/kb/run-isolated-tests.py", "<eight combined R2 modules>"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "SCOPE-FREEZE-AMENDMENT-010.json",
+      "sha256": "34ff43ad468d8ea9d7372c7f522428c20627068282cade64d3f24846491cfa70"
+    }
+  ]
+}

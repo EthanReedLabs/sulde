@@ -1,0 +1,36 @@
+{"case_id":"postmortem-route-apply-p1","kind":"route","query":"修过的问题过几周又被 Agent 误用，我要把事故整理成能判断适用边界的长期规则","expected_doc_id":"work-model/postmortem-generalization","expected":"apply","note":"通用复盘路由正例的独立改写"}
+{"case_id":"postmortem-route-skip-p1","kind":"route","query":"这里只要保存当前分支完成到哪里和明天继续的待办，没有跨项目规律","expected_doc_id":"work-model/postmortem-generalization","expected":"skip","note":"项目私有进度不应跨项目沉淀"}
+{"case_id":"postmortem-outcome-pass-p1","kind":"outcome","query":"沉淀产物包含触发语境、证据、边界、应用和排除样例、正确与错误验收，并接进实际门禁","expected_doc_id":"work-model/postmortem-generalization","expected":"pass","note":"完整沉淀闭环的独立改写"}
+{"case_id":"postmortem-outcome-fail-p1","kind":"outcome","query":"只总结这次错因和最终修改就宣布复盘完整","expected_doc_id":"work-model/postmortem-generalization","expected":"fail","note":"叙事总结冒充可执行沉淀"}
+{"case_id":"curate-route-apply-p1","kind":"route","query":"内部 bugbook 含路径、业务名和一手根因，需要脱敏后上浮成跨项目案例","expected_doc_id":"work-model/skills/curate-to-kb","expected":"apply","note":"Layer1 到 Layer2 精选路由正例"}
+{"case_id":"curate-route-skip-p1","kind":"route","query":"这份 Layer1 记录只是未合入分支的当前进度，没有最终根因和可迁移结论","expected_doc_id":"work-model/skills/curate-to-kb","expected":"skip","note":"未成工程真值的来源不得上浮"}
+{"case_id":"curate-outcome-pass-p1","kind":"outcome","query":"把带内部路径和业务名的 Layer1 故障稿脱敏、判重并选容器，补齐边界样本后通过 C/A/B 与结构门","expected_doc_id":"work-model/skills/curate-to-kb","expected":"pass","note":"精选流水线完整通过的独立改写"}
+{"case_id":"curate-outcome-fail-p1","kind":"outcome","query":"把 Layer1 内部复盘直接复制到公开案例，只删项目名便宣布精选完成","expected_doc_id":"work-model/skills/curate-to-kb","expected":"fail","note":"浅层删名不等于脱敏精选"}
+{"case_id":"session-route-apply-p1","kind":"route","query":"手机主程序登录正常，但桌面卡片在覆盖安装后却显示账号失效","expected_doc_id":"ap-0240","expected":"apply","note":"跨进程会话分裂的独立改写"}
+{"case_id":"session-route-skip-p1","kind":"route","query":"服务器已经确认凭证撤销，应用和所有扩展一起退出","expected_doc_id":"ap-0240","expected":"skip","note":"权威鉴权失效不是本地恢复分叉"}
+{"case_id":"session-outcome-pass-p1","kind":"outcome","query":"统一会话恢复器先验证可信快照，写回后复读，并主动刷新所有 Widget","expected_doc_id":"ap-0240","expected":"pass","note":"共享恢复与消费者刷新形成闭环"}
+{"case_id":"session-outcome-fail-p1","kind":"outcome","query":"只给主应用做 token fallback，卡片还是自己读加密区并把空当退出","expected_doc_id":"ap-0240","expected":"fail","note":"单端修复仍让会话契约分叉"}
+{"case_id":"privacy-route-apply-p1","kind":"route","query":"业务没访问设备标识，可最终签名安装包被第三方库带入权限并被商店扫描","expected_doc_id":"tech-docs/端侧应用隐私政策与商店声明对齐方法","expected":"apply","note":"传递 SDK 与最终产物触发披露对齐"}
+{"case_id":"privacy-route-skip-p1","kind":"route","query":"不上架、不联网、不碰设备数据、也没有任何外部 SDK 的本地演示程序","expected_doc_id":"tech-docs/端侧应用隐私政策与商店声明对齐方法","expected":"skip","note":"无数据链路和发布面的原型不适用"}
+{"case_id":"privacy-outcome-pass-p1","kind":"outcome","query":"把数据流、锁文件、最终包、SDK 开关、同意时序、政策和商店表单逐层核对一致","expected_doc_id":"tech-docs/端侧应用隐私政策与商店声明对齐方法","expected":"pass","note":"多事实层一致的完整验收"}
+{"case_id":"privacy-outcome-fail-p1","kind":"outcome","query":"只审业务源码没调 API，就把商店声明填成不收集，完全没解包发布物","expected_doc_id":"tech-docs/端侧应用隐私政策与商店声明对齐方法","expected":"fail","note":"业务源码不能代表最终审核面"}
+{"case_id":"sqlx-win-wsl-route-apply-p1","kind":"route","query":"Windows 上的正式程序一直能读历史数据，换成 Linux 环境交叉编译的 exe 后立刻声称旧迁移被篡改，但源码审查没有 SQL 内容差异","expected_doc_id":"ap-0241","expected":"apply","note":"Windows 存量库与非 Windows 构建宿主的迁移字节漂移"}
+{"case_id":"sqlx-win-wsl-route-skip-p1","kind":"route","query":"正式版和自编译版携带的迁移资源逐字节相同，同时数据库完整性检查已经失败","expected_doc_id":"ap-0241","expected":"skip","note":"字节一致且数据库损坏时不应归因于行尾"}
+{"case_id":"sqlx-win-wsl-outcome-pass-p1","kind":"outcome","query":"先做在线数据库快照，枚举已执行版本并对照发布基线的两种行尾哈希，固定构建资源字节后再跑旧库升级与真实启动","expected_doc_id":"ap-0241","expected":"pass","note":"保护数据、证明字节根因并验证升级链"}
+{"case_id":"sqlx-win-wsl-outcome-fail-p1","kind":"outcome","query":"手工把 migration 元数据表里的历史 checksum 改成新程序期望值，看到进程能启动就结束验收","expected_doc_id":"ap-0241","expected":"fail","note":"篡改数据库校验记录掩盖不兼容产物"}
+{"case_id":"floating-ui-motion-route-apply-p1","kind":"route","query":"选中装饰还在拉长移动，我不断反向点选，结果它一次比一次宽甚至跑出容器。","expected_doc_id":"ap-0253","expected":"apply","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-motion-route-skip-p1","kind":"route","query":"这个标记就是静止的矩形，只设定固定宽度，从未播放动画也不接受中途改目标。","expected_doc_id":"ap-0253","expected":"skip","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-motion-outcome-pass-p1","kind":"outcome","query":"改选时保留屏幕当前轮廓，对左右端点分别过渡，连续反向操作的采样均未越过合法范围，过期动画也写不回。","expected_doc_id":"ap-0253","expected":"pass","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-motion-outcome-fail-p1","kind":"outcome","query":"虽然最后落在正确选项上，但一旦打断转场，就继续在已经放大的尺寸上增加下一段拉伸。","expected_doc_id":"ap-0253","expected":"fail","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-clearance-route-apply-p1","kind":"route","query":"导航改成盖在整页上方后，滚到最后那张卡片和右下操作键都会藏在底栏后面，页面还是旧的底部间距。","expected_doc_id":"platform-kb/harmony/arkui-layout-scroll-shell","expected":"apply","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-clearance-route-skip-p1","kind":"route","query":"系统导航已经占去底部高度，页面只拿到剩余区域，这时是否还应该额外预留一整份悬浮导航的尾部空间？","expected_doc_id":"platform-kb/harmony/arkui-layout-scroll-shell","expected":"skip","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-clearance-outcome-pass-p1","kind":"outcome","query":"由页面宿主计算覆盖高度，长列表只补不足的尾距，固定操作键另行避开，换主题后内容露出并实际打开入口。","expected_doc_id":"platform-kb/harmony/arkui-layout-scroll-shell","expected":"pass","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-clearance-outcome-fail-p1","kind":"outcome","query":"只把导航放到安全区上方就收工，但没有动旧按钮的底部偏移，测得按钮仍和导航相交。","expected_doc_id":"platform-kb/harmony/arkui-layout-scroll-shell","expected":"fail","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-slot-route-apply-p1","kind":"route","query":"换了一种导航容器，外部高度看着没问题，图标和标签却挤出了内部可摆放的区域，布局数值还是上一种组件的。","expected_doc_id":"ap-0248","expected":"apply","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-slot-route-skip-p1","kind":"route","query":"这次只替换卡片背景的颜色 token，节点树、尺寸、文字和内部留白全都保持原样，是否还需要重建内容槽布局？","expected_doc_id":"ap-0248","expected":"skip","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-slot-outcome-pass-p1","kind":"outcome","query":"读出新容器的实际可用矩形后重排图标和文字，同时核查浅深主题及长短内容，边界检查没有重叠和裁切。","expected_doc_id":"ap-0248","expected":"pass","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-slot-outcome-fail-p1","kind":"outcome","query":"迁移验收只是在默认截图中逐个找到了所有元素，没有检查内部矩形能否容下这些内容。","expected_doc_id":"ap-0248","expected":"fail","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-touch-route-apply-p1","kind":"route","query":"底栏周围看不见的留白吞掉了拖动，缩小父层触控范围也没用，下面的列表仍停在原地。","expected_doc_id":"ap-0151","expected":"apply","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-touch-route-skip-p1","kind":"route","query":"列表只放了一行信息，远不够填满屏幕；没有遮罩也没添加任何手势监听，这种不滚动需要改命中策略吗？","expected_doc_id":"ap-0151","expected":"skip","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-touch-outcome-pass-p1","kind":"outcome","query":"按照实体与留白分别处理后代命中，留白滑动时列表的实际位置发生变化，点可见按钮仍然正常导航。","expected_doc_id":"ap-0151","expected":"pass","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}
+{"case_id":"floating-ui-touch-outcome-fail-p1","kind":"outcome","query":"已经缩小父容器的触摸响应范围，但在透明边缘拖动，底下列表的实测位置依旧完全不动。","expected_doc_id":"ap-0151","expected":"fail","note":"新增UI知识的独立改写回归；保留既有用例与原检索阈值"}

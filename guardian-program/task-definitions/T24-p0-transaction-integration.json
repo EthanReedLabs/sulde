@@ -1,0 +1,30 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T24-p0-transaction-integration",
+  "title": "集成 P0 authority、CAS、lane 与 readiness 并完成总纲验收",
+  "owner": "guardian-coordinator",
+  "capability_tier": "deep",
+  "base_commit": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "depends_on": [
+    "T21-authority-ledger-compat",
+    "T22-material-cas-lane-binding",
+    "T23-current-lane-readiness"
+  ],
+  "owned_paths": [
+    "tests/test_intent_guardian.py",
+    "tests/fixtures/guardian-production-ledger-sanitized.jsonl",
+    "tests/test_p0_transaction_integration.py"
+  ],
+  "requirements": ["DERIVED-ISOLATION", "PROGRAM-GOVERNANCE"],
+  "acceptance": [
+    "脱敏生产账本形状只读回放、双 session 并发和崩溃恢复全部通过",
+    "三个实现任务按冻结顺序集成且共享契约未漂移",
+    "七项冻结 P0 outcome 均有直接证据且没有未处置 finding"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"]
+  }
+}

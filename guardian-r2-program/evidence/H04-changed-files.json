@@ -1,0 +1,35 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H04-typed-resource-adapters.md",
+      "sha256": "9940017396bdcd986811704368334754352d9e32c63f847c52572723987f9c05"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "cb8d806cc1facba561bd957cf9b0620c2320d2fe"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "diff", "--exit-code", "9cb8fb85a6906c06b30fc0c7c5e049cb47a1cb15", "cb8d806cc1facba561bd957cf9b0620c2320d2fe", "--", "<seven-owned-paths>"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Worker commit 9cb8fb85 has parent 0eb4fb65 and contains exactly the seven frozen H04 paths.",
+    "Coordinator integration commit cb8d806c has parent ea741771; all seven integrated blobs are byte-identical to the worker commit and no H05 path is present."
+  ],
+  "findings": [],
+  "kind": "changed_files",
+  "requirements": [],
+  "run_id": "run-gpe-93061ab0b76b060b5fe98bd5",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "Integrated H04 commit contains exactly seven frozen paths with byte-identical worker artifacts.",
+  "task_id": "H04-typed-resource-adapters",
+  "verdict": "pass"
+}

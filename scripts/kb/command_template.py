@@ -318,9 +318,85 @@ def execution_domain_commands(command: str) -> list[tuple[str, str]] | None:
     return domains
 
 
+def _literal_git_cwd_body(command: str) -> str:
+    """Recognize one literal cd && prefix; never rewrite an executed command."""
+    if os.name == "nt" or len(command) > 65536:
+        return command
+    segments = read_pipeline_segments(command)
+    if not segments or len(segments) < 2:
+        return command
+    first = segments[0]
+    try:
+        tokens = split_command_template(first, os_name="posix")
+    except ValueError:
+        return command
+    if not tokens or tokens[0] != "cd":
+        return command
+    arguments = tokens[1:]
+    if arguments[:1] == ["--"]:
+        arguments = arguments[1:]
+    if (len(arguments) != 1 or not arguments[0]
+            or arguments[0].startswith("-")
+            or any(char in first for char in "$`~*?[]{}!")):
+        return command
+    remaining = command.strip()[len(first):].lstrip()
+    if not remaining.startswith("&&"):
+        return command
+    return remaining[2:].lstrip()
+
+
+def git_stdin_review_pipeline(command: str) -> bool:
+    """Prove Git followed only by bounded, stdin-only head/tail/wc filters.
+
+    This small proof is mirrored in the static fallback adapter and tested
+    against the same cases. It must not import Guardian state into fallback.
+    Git retains host authority; only the non-Git stages are proven read-only.
+    """
+    if os.name == "nt" or len(command) > 65536:
+        return False
+    body = _literal_git_cwd_body(command)
+    segments = read_pipeline_segments(body)
+    if not segments or not 2 <= len(segments) <= 8:
+        return False
+    remaining = body.strip()
+    for index, segment in enumerate(segments):
+        if not remaining.startswith(segment):
+            return False
+        remaining = remaining[len(segment):].lstrip()
+        if index < len(segments) - 1:
+            if not remaining.startswith("|") or remaining.startswith("||"):
+                return False
+            remaining = remaining[1:].lstrip()
+        try:
+            tokens = split_command_template(segment, os_name="posix")
+        except ValueError:
+            return False
+        if not tokens:
+            return False
+        executable = Path(tokens[0]).name.lower()
+        if index == 0:
+            if executable != "git":
+                return False
+            continue
+        if executable not in {"head", "tail", "wc"} or tokens[0] not in {
+            executable, "/usr/bin/" + executable, "/bin/" + executable,
+        }:
+            return False
+        args = tokens[1:]
+        if executable == "wc":
+            if any(arg not in {"-l", "-w", "-c", "-m"} for arg in args):
+                return False
+        elif args and not (
+            len(args) == 2 and args[0] in {"-n", "-c"}
+            and re.fullmatch(r"[0-9]{1,7}", args[1])
+        ):
+            return False
+    return not remaining
+
+
 def git_execution_passthrough(command: str) -> bool:
     """Whether every executable segment belongs to Git's execution domain."""
-    domains = execution_domain_commands(command)
+    domains = execution_domain_commands(_literal_git_cwd_body(command))
     return bool(domains) and all(domain == "git" for domain, _ in domains)
 
 

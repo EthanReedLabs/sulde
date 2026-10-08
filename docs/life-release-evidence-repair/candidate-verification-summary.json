@@ -1,0 +1,96 @@
+{
+  "schema": "life-r1-integration-candidate-v1",
+  "source_commit": "8711c79fba3af47c69b462bc107c9aabc9eaaef1",
+  "candidate_id": "integration-8711c79fba3a-20260908T030813Z",
+  "production_promotion": false,
+  "scope": "official candidate CLI in OS-enforced isolated host/data roots; scheduler dry-run fixture",
+  "phases": [
+    {
+      "phase": "prepare",
+      "exit_code": 0,
+      "seconds": 1.728,
+      "stdout_sha256": "fb6c6f38593f6073c8d7dd3093dc253f77d6ff94636d8190069005ca4968f643",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "phase": "verify",
+      "exit_code": 0,
+      "seconds": 18.35,
+      "stdout_sha256": "89b8298361a761b4001d286ba8e72f94dbac9100a79cbd4906aab7c954b6ab6e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "production_write_attempts": [],
+  "passed": true,
+  "receipt_sha256": "61fd8c73f013f3b35cb3fa9350a10fc0a5cbb4c0e5e7a63c34985de87999d2c3",
+  "receipt_file_sha256": "ac890e94c48ae9da26ccb3363ddf3be36aa57729b5a522073b2b0a996de33934",
+  "artifact": {
+    "generation": "0.2.5+codex.20260907071718-6e84c50faf:43df54af2ac09970a400b15a27b369cfd2f6a47734873470e5ac2ccd0d79ed52",
+    "path": "/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/life-release-evidence-repair/.sulde/data/life-r1-candidates/integration-8711c79fba3a-20260908T030813Z/artifact",
+    "platform": "posix",
+    "plugin_tree_sha256": "f17901aef5a3642e56ca2f7afe869a11eea77a3257caa9125603ff18ca1fa137",
+    "plugin_version": "0.2.5+codex.20260907071718-6e84c50faf",
+    "runtime_tree_sha256": "43df54af2ac09970a400b15a27b369cfd2f6a47734873470e5ac2ccd0d79ed52"
+  },
+  "source": {
+    "commit": "8711c79fba3af47c69b462bc107c9aabc9eaaef1",
+    "plugin_version": "0.2.5+codex.20260907071718-6e84c50faf",
+    "tree": "37b837d2f50f86bd25adc84eb494673b97e132b9"
+  },
+  "native_preexecution": {
+    "artifact_generation": "0.2.5+codex.20260907071718-6e84c50faf:43df54af2ac09970a400b15a27b369cfd2f6a47734873470e5ac2ccd0d79ed52",
+    "contract_activation": {
+      "decision_authority": "agent-policy",
+      "mode": "enforce",
+      "proposal_digest": "caf6d49682e02dd574ff6fce0993ae3403aba004a364f0ab0f3254954efe539c",
+      "revision": 2,
+      "status": "ready"
+    },
+    "destructive_pre_denied": true,
+    "executor": "unified_exec",
+    "external_model_requests": 0,
+    "hook": "PreToolUse",
+    "loaded_module_generation": "24758f0ed469d1a52f74d12983f7cb75d11e778ef0cce7ec816707b7c08c7d5d",
+    "marker_absent": true,
+    "native_denial_run_id": "pre-tool-use:0:/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/life-release-evidence-repair/.sulde/data/life-r1-candidates/integration-8711c79fba3a-20260908T030813Z/isolated/codex-home/plugins/cache/sulde-local/sulde/0.2.5+codex.20260907071718-6e84c50faf/hooks/hooks.json:candidate_native_2",
+    "native_tool": "exec_command",
+    "outside_plan_write_executed": true,
+    "permission_decision": "deny",
+    "positive_executed": true,
+    "probe_id": "929819835308dbf51635bbccec9b1cf9",
+    "proof_id": "73f11b4b73cf3931d8c0ce8e2e41ffd6893648a430a1ca3a8e657d62805a9ebf",
+    "scope_denial_event_id": "ed00c7ea465f535c731e1de6",
+    "session_id": "01a07efc-fb49-70e0-8760-27e1e0f19f53",
+    "started_call_id": "candidate_native_2",
+    "started_event_id": "ed00c7ea465f535c731e1de6",
+    "status": "ready",
+    "transport": "codex-cli-app-server"
+  },
+  "verification_statuses": {
+    "artifact": "ready",
+    "doctor": "ready",
+    "hooks": "ready",
+    "isolated_registry": "ready",
+    "mcp": "ready",
+    "native_permission_ui": "unobserved",
+    "preexecution_chain": "ready",
+    "scheduler_entrypoint": "ready",
+    "scheduler_host": "unobserved"
+  },
+  "discovery_before_native_fixture": "review_required",
+  "doctor_semantic_status": "degraded",
+  "native_permission_ui": {
+    "exit_code": 78,
+    "reason": "isolated CLI has no attachable current-session PermissionRequest surface",
+    "status": "unobserved"
+  },
+  "scheduler_host": {
+    "exit_code": 79,
+    "reason": "candidate must not load production launchd labels before promotion",
+    "status": "unobserved"
+  },
+  "notes": [
+    "Exact Hook trust configured only inside candidate fixture then candidate config restored; no production trust write",
+    "Doctor command exit 0 is not global operational ready; scheduler and current interactive lane remain unbound in candidate"
+  ]
+}

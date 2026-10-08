@@ -1,0 +1,22 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H06A2-integration-hygiene.md", "sha256": "a955c3318ba389f7f3bbb82bc2c10bd49697cb84abd08889d4c77e91a2d3ff43"}],
+  "baseline": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "commands": [
+    {"argv": ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "695c418248a4ee130eb74a1296391e996296de3d"], "exit_code": 0, "result": "pass"},
+    {"argv": ["git", "diff", "--exit-code", "695c418248a4ee130eb74a1296391e996296de3d", "1d81294eb931fb9106b5dc713809fa944b597a30", "--", "<nine-owned-paths>"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "Worker commit 695c4182 has parent 1b793c6b and contains exactly the nine frozen H06A2 paths.",
+    "Coordinator integration commit 1d81294e has parent 6f77fb4e; all nine integrated blobs are byte-identical to the reviewed worker commit and no control projection was committed by the worker."
+  ],
+  "findings": ["FR2-H06-006", "FR2-H06-007", "FR2-H06-009"],
+  "kind": "changed_files",
+  "requirements": [],
+  "run_id": "run-gpe-ee80c2b587197cdd2fa57479",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06A2 integration contains exactly nine frozen paths with byte-identical reviewed artifacts.",
+  "task_id": "H06A2-integration-hygiene",
+  "verdict": "pass"
+}

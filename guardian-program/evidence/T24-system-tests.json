@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T24-p0-transaction-integration",
+  "kind": "system_tests",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-9d84a3e7e26d5694fbc0c75a",
+  "verdict": "pass",
+  "summary": "All seven frozen P0 outcomes pass their composed system gates; the separate full-repository non-pass is disclosed in the task report.",
+  "facts": [
+    "The typed ledger, journal, material CAS, lane, readiness and T24 integration gates pass together.",
+    "Full isolated discovery executed 1338 tests with seven baseline red tests and one obsolete duplicate-lifecycle assertion; it is not represented as a passing command or a release claim.",
+    "No production install, scheduler action, cache mutation, live canary or dev-to-main merge occurred."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "-q", "tests.test_intent_guardian", "tests.test_p0_transaction_integration"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

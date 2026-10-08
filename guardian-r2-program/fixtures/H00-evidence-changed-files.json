@@ -1,0 +1,28 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "briefs/SULDE-R2-HALG-20260825.md",
+      "sha256": "8c5c41522ee4b6457555ae1f778bcfc4e62c8ad851ec0eda6c78bf5b17f416ed"
+    },
+    {
+      "path": "promotion-receipt.json",
+      "sha256": "8aa633485bdc1ec97d6a05274b89f3497a4de5344ff397fbcb4f876f9945aed7"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "Commit 683f01a91fe25b3592b77a6769680e40f8689ac0 has parent 0eb4fb6553e652b0352750f4bac24aa6bae746d7 and contains exactly the 15 declared H00 control paths.",
+    "The primary main worktree and dev worktree were not modified; no production, install, push or merge path is present."
+  ],
+  "findings": [],
+  "kind": "changed_files",
+  "requirements": [],
+  "run_id": "run-gpe-f128db6f4146d085f1391fa8",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "The first H00 commit is a scope-exact tracked control-plane activation on the isolated task branch.",
+  "task_id": "H00-fixture-baseline",
+  "verdict": "pass"
+}

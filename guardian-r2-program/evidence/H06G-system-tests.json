@@ -1,0 +1,23 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06G-release-inventory-authority",
+  "baseline": "f0e845617867c1710b636205c6798d03140d1646",
+  "run_id": "run-gpe-1634746746868f08cb98ff7d",
+  "verdict": "pass",
+  "kind": "system_tests",
+  "summary": "H06G passes the supported release-inventory and installer system scope while preserving native Windows and final live-host gates.",
+  "facts": [
+    "The exact integrated release inventory system scope passed 26 tests with one native Windows PowerShell conditional skip.",
+    "The integrated installer system scope passed 42 of 42 tests in 102.213 seconds and retained rollback, staging readback and authority-tamper rejection.",
+    "No production install, scheduler switch, live Codex or Claude canary, or native Windows execution is inferred from these local fixture results."
+  ],
+  "requirements": [],
+  "findings": ["FR2-H06E-004", "FR2-H06G-001", "FR2-H06G-002"],
+  "acceptance": [],
+  "commands": [
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_stage_release_inventory", "tests.test_stage_plugin"], "exit_code": 0, "result": "pass"},
+    {"argv": ["python3", "-B", "-m", "unittest", "-v", "tests.test_codex_plugin_install"], "exit_code": 0, "result": "pass"}
+  ],
+  "artifacts": [{"path": "reports/H06G-release-inventory-authority.md", "sha256": "66db2a7e1229d0c301e719e05d383bb9bd32db45365336d34e5bcda6fd83abea"}]
+}

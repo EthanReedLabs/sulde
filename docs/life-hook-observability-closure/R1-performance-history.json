@@ -1,0 +1,722 @@
+[
+  {
+    "artifact": "life-r1-latency-9e4e571-py310.json",
+    "sha256": "5f2dbdd0d3d6b19a868bf7da3e9ec9883a5888e1e83f4f77eb2e45cb6aab48ae",
+    "python": "3.10.7",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 19.87,
+        "p95_ms": 22.889
+      },
+      "no_observer/bridge/normal": {
+        "n": 60,
+        "median_ms": 31.915,
+        "p95_ms": 33.864
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 63.273,
+        "p95_ms": 65.706
+      },
+      "before/bridge/normal": {
+        "n": 60,
+        "median_ms": 82.192,
+        "p95_ms": 85.032
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 37.677,
+        "p95_ms": 40.563
+      },
+      "after/bridge/normal": {
+        "n": 60,
+        "median_ms": 45.332,
+        "p95_ms": 49.669
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 20.075,
+        "p95_ms": 23.702
+      },
+      "no_observer/bridge/failure": {
+        "n": 30,
+        "median_ms": 32.186,
+        "p95_ms": 37.672
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 63.618,
+        "p95_ms": 90.54
+      },
+      "before/bridge/failure": {
+        "n": 30,
+        "median_ms": 82.8,
+        "p95_ms": 88.852
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 38.267,
+        "p95_ms": 46.522
+      },
+      "after/bridge/failure": {
+        "n": 30,
+        "median_ms": 74.993,
+        "p95_ms": 84.503
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 12.143,
+        "p95_ms": 12.952
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 28.127,
+        "p95_ms": 29.41
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.359,
+        "p95_ms": 0.515
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.102,
+        "p95_ms": 0.116
+      }
+    },
+    "normal_median_delta_ms": 17.807,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": false
+  },
+  {
+    "artifact": "life-r1-latency-9e4e571-py314.json",
+    "sha256": "8cb05a51b55cf0f9399c95473300b68f3be73d04b6a20b526341561e760caaa7",
+    "python": "3.14.6",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 27.042,
+        "p95_ms": 27.942
+      },
+      "no_observer/bridge/normal": {
+        "n": 60,
+        "median_ms": 43.69,
+        "p95_ms": 45.035
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 75.034,
+        "p95_ms": 95.965
+      },
+      "before/bridge/normal": {
+        "n": 60,
+        "median_ms": 93.817,
+        "p95_ms": 98.052
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 41.652,
+        "p95_ms": 43.365
+      },
+      "after/bridge/normal": {
+        "n": 60,
+        "median_ms": 54.863,
+        "p95_ms": 56.56
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 27.582,
+        "p95_ms": 30.926
+      },
+      "no_observer/bridge/failure": {
+        "n": 30,
+        "median_ms": 44.277,
+        "p95_ms": 49.43
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 76.052,
+        "p95_ms": 95.407
+      },
+      "before/bridge/failure": {
+        "n": 30,
+        "median_ms": 94.252,
+        "p95_ms": 129.972
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 42.442,
+        "p95_ms": 43.935
+      },
+      "after/bridge/failure": {
+        "n": 30,
+        "median_ms": 98.093,
+        "p95_ms": 102.674
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 20.706,
+        "p95_ms": 21.44
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 32.596,
+        "p95_ms": 34.289
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.401,
+        "p95_ms": 0.529
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.101,
+        "p95_ms": 0.129
+      }
+    },
+    "normal_median_delta_ms": 14.61,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": true
+  },
+  {
+    "artifact": "life-r1-latency-after.json",
+    "sha256": "e1adcee9aa85230ae456950154d6c5444d03245515dfcb1c83c65f7e98f6d836",
+    "python": "3.14.6",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 27.541,
+        "p95_ms": 30.949
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 77.493,
+        "p95_ms": 104.57
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 43.392,
+        "p95_ms": 49.823
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 26.639,
+        "p95_ms": 27.546
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 75.076,
+        "p95_ms": 90.849
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 42.052,
+        "p95_ms": 43.28
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 20.014,
+        "p95_ms": 20.77
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 32.224,
+        "p95_ms": 33.174
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.356,
+        "p95_ms": 0.509
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.093,
+        "p95_ms": 0.104
+      }
+    },
+    "normal_median_delta_ms": 15.851,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": false
+  },
+  {
+    "artifact": "life-r1-latency-after2.json",
+    "sha256": "89b37031199bea1de73875e79c2a858b614e6397edd2148fd38a937efea662d4",
+    "python": "3.14.6",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 27.109,
+        "p95_ms": 27.91
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 75.565,
+        "p95_ms": 95.51
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 41.394,
+        "p95_ms": 43.33
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 27.387,
+        "p95_ms": 41.748
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 77.23,
+        "p95_ms": 102.434
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 41.796,
+        "p95_ms": 70.36
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 19.746,
+        "p95_ms": 21.668
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 31.913,
+        "p95_ms": 33.211
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.348,
+        "p95_ms": 0.396
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.093,
+        "p95_ms": 0.101
+      }
+    },
+    "normal_median_delta_ms": 14.285,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": true
+  },
+  {
+    "artifact": "life-r1-latency-before.json",
+    "sha256": "545c97a3804fb19bf32cc1d4d5655a9ce3af2923135d4b77cc1aa1d9aff2fb06",
+    "python": "3.14.6",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 27.23,
+        "p95_ms": 30.918
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 76.153,
+        "p95_ms": 94.044
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 75.463,
+        "p95_ms": 96.657
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 26.291,
+        "p95_ms": 27.9
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 73.591,
+        "p95_ms": 91.961
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 73.861,
+        "p95_ms": 91.58
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 19.483,
+        "p95_ms": 20.295
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 33.432,
+        "p95_ms": 42.431
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.366,
+        "p95_ms": 0.466
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.094,
+        "p95_ms": 0.122
+      }
+    },
+    "normal_median_delta_ms": 48.233,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": false
+  },
+  {
+    "artifact": "life-r1-latency-final-py310.json",
+    "sha256": "0c87341c0b9ddb8ba4a29caf2121ab790efe9b779c8f8371048aac06a028a3c5",
+    "python": "3.10.7",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 19.489,
+        "p95_ms": 20.568
+      },
+      "no_observer/bridge/normal": {
+        "n": 60,
+        "median_ms": 31.467,
+        "p95_ms": 33.987
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 62.576,
+        "p95_ms": 67.906
+      },
+      "before/bridge/normal": {
+        "n": 60,
+        "median_ms": 81.654,
+        "p95_ms": 86.473
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 33.636,
+        "p95_ms": 37.662
+      },
+      "after/bridge/normal": {
+        "n": 60,
+        "median_ms": 42.323,
+        "p95_ms": 45.512
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 19.096,
+        "p95_ms": 20.084
+      },
+      "no_observer/bridge/failure": {
+        "n": 30,
+        "median_ms": 30.971,
+        "p95_ms": 32.289
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 61.537,
+        "p95_ms": 64.532
+      },
+      "before/bridge/failure": {
+        "n": 30,
+        "median_ms": 80.18,
+        "p95_ms": 83.29
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 32.638,
+        "p95_ms": 35.694
+      },
+      "after/bridge/failure": {
+        "n": 30,
+        "median_ms": 66.225,
+        "p95_ms": 68.663
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 11.895,
+        "p95_ms": 12.404
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 27.134,
+        "p95_ms": 28.702
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.364,
+        "p95_ms": 0.61
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.101,
+        "p95_ms": 0.121
+      }
+    },
+    "normal_median_delta_ms": 14.147,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": true
+  },
+  {
+    "artifact": "life-r1-latency-final-py314.json",
+    "sha256": "cfa8c015458aa647bb446ad3e3c344638a767ef56e81298b65b4dc323d087eb9",
+    "python": "3.14.6",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 26.367,
+        "p95_ms": 28.179
+      },
+      "no_observer/bridge/normal": {
+        "n": 60,
+        "median_ms": 42.57,
+        "p95_ms": 46.037
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 73.993,
+        "p95_ms": 93.891
+      },
+      "before/bridge/normal": {
+        "n": 60,
+        "median_ms": 93.397,
+        "p95_ms": 98.02
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 39.251,
+        "p95_ms": 41.467
+      },
+      "after/bridge/normal": {
+        "n": 60,
+        "median_ms": 54.48,
+        "p95_ms": 58.528
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 25.587,
+        "p95_ms": 27.938
+      },
+      "no_observer/bridge/failure": {
+        "n": 30,
+        "median_ms": 41.392,
+        "p95_ms": 44.833
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 72.242,
+        "p95_ms": 78.472
+      },
+      "before/bridge/failure": {
+        "n": 30,
+        "median_ms": 92.797,
+        "p95_ms": 97.176
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 37.793,
+        "p95_ms": 43.085
+      },
+      "after/bridge/failure": {
+        "n": 30,
+        "median_ms": 91.625,
+        "p95_ms": 98.606
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 18.578,
+        "p95_ms": 19.64
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 30.303,
+        "p95_ms": 31.239
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.401,
+        "p95_ms": 0.507
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.102,
+        "p95_ms": 0.168
+      }
+    },
+    "normal_median_delta_ms": 12.884,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": true
+  },
+  {
+    "artifact": "life-r1-latency-final.json",
+    "sha256": "6f6b13ecceece777c45a82c8c4b1adabed6b48f61bf7444f831c17e652f206c7",
+    "python": "3.14.6",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 27.435,
+        "p95_ms": 30.628
+      },
+      "no_observer/bridge/normal": {
+        "n": 60,
+        "median_ms": 44.164,
+        "p95_ms": 46.669
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 75.702,
+        "p95_ms": 93.215
+      },
+      "before/bridge/normal": {
+        "n": 60,
+        "median_ms": 94.897,
+        "p95_ms": 109.732
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 42.285,
+        "p95_ms": 44.122
+      },
+      "after/bridge/normal": {
+        "n": 60,
+        "median_ms": 56.086,
+        "p95_ms": 59.895
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 27.3,
+        "p95_ms": 31.075
+      },
+      "no_observer/bridge/failure": {
+        "n": 30,
+        "median_ms": 43.873,
+        "p95_ms": 46.148
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 76.299,
+        "p95_ms": 105.429
+      },
+      "before/bridge/failure": {
+        "n": 30,
+        "median_ms": 93.954,
+        "p95_ms": 135.649
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 41.833,
+        "p95_ms": 44.003
+      },
+      "after/bridge/failure": {
+        "n": 30,
+        "median_ms": 96.684,
+        "p95_ms": 112.886
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 20.125,
+        "p95_ms": 20.897
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 32.012,
+        "p95_ms": 32.771
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.333,
+        "p95_ms": 0.415
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.095,
+        "p95_ms": 0.109
+      }
+    },
+    "normal_median_delta_ms": 14.85,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": true
+  },
+  {
+    "artifact": "life-r1-latency-lazy-py310.json",
+    "sha256": "1c977100df67692bc2eff7bd9756bbad11974f5ca71c3e923cac01e760b34698",
+    "python": "3.10.7",
+    "summaries": {
+      "no_observer/normal": {
+        "n": 60,
+        "median_ms": 18.999,
+        "p95_ms": 19.925
+      },
+      "no_observer/bridge/normal": {
+        "n": 60,
+        "median_ms": 30.719,
+        "p95_ms": 31.576
+      },
+      "before/normal": {
+        "n": 60,
+        "median_ms": 61.212,
+        "p95_ms": 62.592
+      },
+      "before/bridge/normal": {
+        "n": 60,
+        "median_ms": 79.13,
+        "p95_ms": 82.275
+      },
+      "after/normal": {
+        "n": 60,
+        "median_ms": 35.16,
+        "p95_ms": 36.115
+      },
+      "after/bridge/normal": {
+        "n": 60,
+        "median_ms": 43.862,
+        "p95_ms": 45.232
+      },
+      "no_observer/failure": {
+        "n": 30,
+        "median_ms": 19.039,
+        "p95_ms": 19.971
+      },
+      "no_observer/bridge/failure": {
+        "n": 30,
+        "median_ms": 30.641,
+        "p95_ms": 31.86
+      },
+      "before/failure": {
+        "n": 30,
+        "median_ms": 60.314,
+        "p95_ms": 62.905
+      },
+      "before/bridge/failure": {
+        "n": 30,
+        "median_ms": 79.705,
+        "p95_ms": 82.687
+      },
+      "after/failure": {
+        "n": 30,
+        "median_ms": 35.09,
+        "p95_ms": 36.104
+      },
+      "after/bridge/failure": {
+        "n": 30,
+        "median_ms": 71.411,
+        "p95_ms": 73.245
+      },
+      "process": {
+        "n": 60,
+        "median_ms": 11.607,
+        "p95_ms": 12.121
+      },
+      "imports": {
+        "n": 60,
+        "median_ms": 27.191,
+        "p95_ms": 27.719
+      },
+      "sqlite_insert": {
+        "n": 60,
+        "median_ms": 0.355,
+        "p95_ms": 0.416
+      },
+      "sqlite_duplicate": {
+        "n": 60,
+        "median_ms": 0.1,
+        "p95_ms": 0.109
+      }
+    },
+    "normal_median_delta_ms": 16.161,
+    "normal_median_budget_ms": 15,
+    "normal_median_budget_passed": false
+  }
+]

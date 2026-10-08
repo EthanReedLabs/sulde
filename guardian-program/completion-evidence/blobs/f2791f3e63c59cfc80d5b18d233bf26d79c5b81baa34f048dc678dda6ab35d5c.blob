@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T24-p0-transaction-integration",
+  "kind": "changed_files",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-9d84a3e7e26d5694fbc0c75a",
+  "verdict": "pass",
+  "summary": "Every T24 source byte is bound to commit 2d65284 and the frozen ownership set.",
+  "facts": [
+    "tests/test_intent_guardian.py sha256 is 003df39862b2cb4dd959d6cae037c20c4fa6570780830be478d0c4907515cbae.",
+    "tests/fixtures/guardian-production-ledger-sanitized.jsonl sha256 is ae961b7820d7171e9c1a496bf374a15bd0e42e05d404a660e021ab6ce759b75d.",
+    "tests/test_p0_transaction_integration.py sha256 is 2ae2bed69f63e92c12b595e7c7e0d6b77750c92e4795eb1f52fcc5b79f9312da."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "show", "--stat", "2d65284"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

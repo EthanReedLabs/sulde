@@ -1,0 +1,24 @@
+{
+  "acceptance": [
+    {"requirement_id": "R2-LIVE-ACCEPTANCE", "clause": "I01-I19、并发、进程死亡、receipt tamper、world-state drift、只读账本、scheduler degraded 与 rollback 全部通过", "fact": "H06A2 repairs and verifies the shared architecture, encoding and production-isomorphic CLI test prerequisites used by the final matrix; it does not claim the I01-I19, scheduler or rollback matrix itself, which remains a hard H06 gate."},
+    {"requirement_id": "R2-LIVE-ACCEPTANCE", "clause": "Codex 与 Claude 真实宿主、macOS 与 Windows 证据齐全前不得宣称 R2 完成或 production accepted", "fact": "H06A2 explicitly leaves native Codex 0.150.1, Claude live, Windows, installation and production acceptance open for H06B/H06, so no host or release completion is inferred from the formal 0.149.1 test projection."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并", "fact": "H06A2 used a frozen nine-path authority, retained five repair findings and independent reviews, passed strict verify plus 8, 333 and 439-test gates, and integrated only byte-identical reviewed files."},
+    {"requirement_id": "PROGRAM-GOVERNANCE", "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写", "fact": "H06A2 ran in an independent physical full clone and integrated only into the R2 coordinator branch; predecessor events/evidence, accepted G0-G6/T32 history, dev/main, installed runtime and production state were not rewritten."}
+  ],
+  "artifacts": [{"path": "reports/H06A2-integration-hygiene.md", "sha256": "a955c3318ba389f7f3bbb82bc2c10bd49697cb84abd08889d4c77e91a2d3ff43"}],
+  "baseline": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "commands": [],
+  "facts": [
+    "All four H06A2 acceptance clauses are mapped to executed and independently reviewed facts.",
+    "FR2-H06-001 remains open for H06B; Windows, Claude live, installer rollback, scheduler and final R2 acceptance are intentionally excluded."
+  ],
+  "findings": ["FR2-H06-001", "FR2-H06-002", "FR2-H06-003", "FR2-H06-004", "FR2-H06-006", "FR2-H06-007", "FR2-H06-009", "FR2-H06A2-001", "FR2-H06A2-002", "FR2-H06A2-003", "FR2-H06A2-004", "FR2-H06A2-005"],
+  "kind": "requirement_traceability",
+  "requirements": ["R2-LIVE-ACCEPTANCE", "PROGRAM-GOVERNANCE"],
+  "run_id": "run-gpe-ee80c2b587197cdd2fa57479",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06A2 traces every assigned integration-hygiene and governance clause while retaining H06B/H06 live-release gates.",
+  "task_id": "H06A2-integration-hygiene",
+  "verdict": "pass"
+}

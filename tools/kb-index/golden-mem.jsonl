@@ -1,0 +1,28 @@
+{"id": "gm-01", "query": "口令青铜门是什么", "project": "sulde-cc-pro", "expect_substring": "答案是 42", "note": "压缩存活验证口令,同项目强命中"}
+{"id": "gm-02", "query": "百炼的 key 为什么突然 invalid_api_key", "project": "sulde-cc-pro", "expect_substring": "无效", "note": "key 危机记忆(workspace 结论条目归属历史分区,期望校正为实际召回的正确条目)"}
+{"id": "gm-03", "query": "Spill has sent an error 的根因是什么", "project": "sulde-cc-pro", "expect_substring": "维度", "note": "spill 归因"}
+{"id": "gm-04", "query": "sulde-mem 的设计原则第一条", "project": "sulde-cc-pro", "expect_substring": "raw", "note": "raw-first 原则"}
+{"id": "gm-05", "query": "mem-sync 设备漫游怎么控制哪些项目出境", "project": "sulde-cc-pro", "expect_substring": "允许清单", "note": "同步允许清单制"}
+{"id": "gm-06", "query": "跨项目召回的绝对证据门阈值是多少", "project": "sulde-cc-pro", "expect_substring": "0.68", "note": "裸余弦标定"}
+{"id": "gm-07", "query": "记忆蒸馏的 L1、L2、L3 三层分别是什么？", "project": "sulde-cc-pro", "expect_substring": "L2", "note": "人工修正(2026-08-11):原查询中的‘三层架构’同时指向召回/同步/存储隔离与蒸馏层级，断言无法唯一判真；补齐 L1/L2/L3 术语后保留同一蒸馏意图与断言，不调召回阈值"}
+{"id": "gm-08", "query": "codex 的状态灯是怎么显示出来的", "project": "sulde-cc-pro", "expect_substring": "状态灯", "note": "状态灯机制(2026-08-09 修正:原期望 stderr 过严——实际召回的双端形态对比表已正确回答该问题,用例不该因缺特定实现词而判负)"}
+{"id": "gm-09", "query": "深圳音视频面试题库补全到什么程度了", "project": "简历", "expect_substring": "题库", "note": "简历项目内命中"}
+{"id": "gm-10", "query": "健身动作识别很难触发的问题", "project": "Apollo", "expect_substring": "识别", "note": "Apollo 项目内命中"}
+{"id": "gm-11", "query": "归一化打分为什么拦不住第一名", "project": "new-api-portal", "expect_none": true, "note": "2026-08-08 组硬隔离翻案:组外一律不注入(原跨项目放行用例,三泄漏零收益后废除)"}
+{"id": "gm-12", "query": "继续", "project": "简历", "expect_none": true, "note": "口头禅门:短提示词不召回"}
+{"id": "gm-13", "query": "今天天气怎么样适合出门跑步吗", "project": "sulde-cc-pro", "expect_none": true, "note": "无关查询不注入"}
+{"id": "gm-14", "query": "路由与计费巡检功能怎么使用", "project": "new-api-portal", "forbid_project": "Apollo", "note": "串场回归:措辞撞车绝不放 Apollo 进来"}
+{"id": "gm-15", "query": "cognee 退役时 API 成本是多少", "project": "sulde-cc-pro", "expect_substring": "0", "note": "退役里程碑"}
+{"id": "gm-16", "query": "我打算先把RAG用的古籍补全,用你上次给的古籍目录,然后再按照这个计划提升", "project": "天机阁", "forbid_project": "new-api-portal", "note": "跨机实证串场(2026-08-08 天机阁):新项目空分区+部署措辞撞车,外项目记忆不得注入"}
+{"id": "gm-17", "query": "让 sulde 具备和 cognee 的能力,但更高度自定义化,这样就可以将每轮", "project": "sulde-cc-pro", "expect_substring": "cognee", "note": "golden扩充官起草(2026-08-10),人工筛选合入;候选分类=suspected_miss; query_head 明确点名 cognee 且属 sulde 能力对标议题，库内确有 cognee 相关沉淀（成本哲学出处），top1=0.50 低于 0.55 未注入属真漏召"}
+{"id": "gm-18", "query": "不能直接使用 cladue code/codex 的摘要入图吗?", "project": "sulde-cc-pro", "expect_substring": "codex", "note": "人工修正(2026-08-11):原期望'蒸馏'过严(该轮讨论尚未定名);改验命中 codex 摘要入图主题"}
+{"id": "gm-19", "query": "现在有一套普通的 4 核 8G 和 一台 2 核 4G ECS, RDS,就可以", "project": "new-api-portal", "note": "人工修正(2026-08-11):草案 project 字段默认填错,实际会话属 new-api-portal;golden扩充官起草(2026-08-10),人工筛选合入;候选分类=cross_group_blocked; 跨组拦截生效的正样本：查询为通用 ECS/RD", "expect_substring": "ECS"}
+{"id": "gm-20", "query": "分片数量和节点数怎么选择?", "project": "new-api-portal", "expect_substring": "分片", "note": "人工修正(2026-08-11):草案 project 字段默认填错,实际会话属 new-api-portal;golden扩充官起草(2026-08-10),人工筛选合入;候选分类=repeated_injection; query_head 以问号自然结束、未被截断，"}
+{"id": "gm-21", "query": "只凭注入的上下文回答:①开头的 sulde 状态行?②有无 [sulde-kb]", "project": "new-api-portal", "note": "人工修正(2026-08-11):原草案 expect_none 不合理——召回该查询自身历史原文是正常记忆行为;改为验证注入内容属本项目语境", "expect_substring": "sulde"}
+{"id": "gm-22", "query": "现在是已经完成修改了吗?", "project": "sulde-cc-pro", "expect_none": true, "note": "golden扩充官起草(2026-08-10),人工筛选合入;候选分类=suspected_miss; 「现在是已经完成修改了吗?」是无实质检索意图的会话式追问，不应召回任何 kb 条目；top1=0.52 低于阈值属正确行为，可固化为 expect_none 回归用例防止阈值下调"}
+{"id": "gm-23", "query": "我看到 cogenn 旁边有个状态灯, sulde 也加上,codex 支持吗?", "project": "sulde-cc-pro", "note": "人工修正(2026-08-11):同 gm-21,元探针≠零注入;改验注入与状态灯主题相关", "expect_substring": "状态"}
+{"id": "gm-cand-509503525d", "query": "只回复两个字:可用", "project": "sulde-cc-pro", "expect_none": true, "note": "人工复核(2026-08-11):短控制指令无持久检索意图，冻结快照零注入；覆盖短噪声边界；evidence=509503525d18613b"}
+{"id": "gm-cand-c07b40ddf9", "query": "有未推送的吗?", "project": "sulde-cc-pro", "expect_none": true, "note": "人工复核(2026-08-11):即时 git 推送状态不应从持久记忆推断，冻结快照零注入；evidence=c07b40ddf9defc4d"}
+{"id": "gm-cand-ab222c9d3d", "query": "随便一个查询测延迟基线", "project": "sulde-cc-pro", "expect_none": true, "note": "人工复核(2026-08-11):纯延迟探针误召回无关基线历史，保留为可复现红例；evidence=ab222c9d3dcbd9ee"}
+{"id": "gm-cand-63826d4f2e", "query": "继续全部跑完", "project": "sulde-cc-pro", "expect_none": true, "note": "人工复核(2026-08-11):六字推进语处于 memory 提示长度门边界，冻结快照零注入；evidence=63826d4f2e2aef4b"}
+{"id": "gm-cand-8389947f09", "query": "你是 /sediment 的 headless 合并成文器。只输出裸 JSON，", "project": "sulde-cc-pro", "expect_none": true, "note": "人工复核(2026-08-11):固定 headless 提示会召回其他系统提示，保留为系统自回声红例；evidence=8389947f09ca7b3e"}

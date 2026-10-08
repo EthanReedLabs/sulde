@@ -124,6 +124,7 @@ def scan(paths: list[Path], deny_patterns: list[str]) -> list[tuple[Path, int, s
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     parser.add_argument(
         "paths",
         nargs="*",
@@ -134,8 +135,11 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    global REPO_ROOT, KNOWLEDGE_ROOT
     try:
         args = parse_args()
+        REPO_ROOT = args.repo_root.resolve()
+        KNOWLEDGE_ROOT = REPO_ROOT / "knowledge"
         paths = resolve_paths(args.paths)
         violations = scan(paths, load_deny_patterns(kb_home()))
     except DenyLintError as error:

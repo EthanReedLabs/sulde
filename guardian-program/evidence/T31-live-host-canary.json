@@ -1,0 +1,59 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "live_host_canary",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "A post-install Codex host resumed the original bound Sulde thread and proved current-runtime SessionStart, prompt and tool roundtrip observations with operational readiness fully ready.",
+  "facts": [
+    "Post-install host process resumed Codex thread 01a00d6f-65b3-7663-b51b-f88684ffa561 in /Users/eric/ClaudePlugin/sulde-cc-pro; the current task lane remained bound and the active enforce contract remained revision 118.",
+    "Current-runtime SessionStart and UserPromptSubmit observations are live_verified for the exact session and workspace.",
+    "A read-only clean-main Git probe produced a current-runtime PreToolUse/PostToolUse pair with verified call-id continuity; host status is interactive_ready and supervision_status is live_verified.",
+    "Exact session doctor and the real-time status projection report operational readiness ready with every interactive gate true and no readiness reason.",
+    "Scheduler readiness remains ready with 15 managed and 15 loaded labels, no missing or failed label; native decision pairing is not_required and settled; effect debt is clear with zero blocking or pending verification.",
+    "No synthetic callback, pre-install session, external-project session, old receipt, direct ledger edit or fabricated host observation was used."
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-READINESS",
+    "DERIVED-DELIVERY",
+    "DERIVED-RESOURCE",
+    "DERIVED-ISOLATION",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": [
+        "/Users/eric/.claude/plugins/data/sulde-cc/kb/bin/intent-guardian",
+        "doctor",
+        "--workspace",
+        "/Users/eric/ClaudePlugin/sulde-cc-pro",
+        "--provider",
+        "codex",
+        "--session-id",
+        "01a00d6f-65b3-7663-b51b-f88684ffa561"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/T31-live-acceptance.md",
+      "sha256": "4371c037eea1998972abdf3b60e97d3853f6354c8a280f7c74073cf2d0e6fbc5"
+    }
+  ]
+}

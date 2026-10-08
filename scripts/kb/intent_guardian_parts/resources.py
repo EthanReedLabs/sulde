@@ -23,6 +23,7 @@ from memory_annotation import normalize as normalize_memory_annotation, digest a
 from command_template import (
     execution_domain_commands as _execution_domain_commands,
     git_execution_passthrough as _git_execution_passthrough,
+    git_stdin_review_pipeline as _git_stdin_review_pipeline,
     has_unquoted_shell_control as _has_unquoted_shell_control,
     is_read_only_command as _is_read_only_command,
     read_pipeline_segments as _read_pipeline_segments,
@@ -34,6 +35,8 @@ from file_lock import lock_exclusive_nonblocking, unlock
 from python_data_methods import (
     inline_source, literal_shell_transport, proven_data_method_calls, proven_path_method_calls,
 )
+from .semantic_proofs import proven_datetime_method_calls, ssh_readonly_probe, trusted_guardian_help
+from .remote_identity import ssh_material_request, ssh_read_request
 from human_control import codex_text_control_requires_native, parse_human_control
 from host_capabilities import (
     HostCapabilityError,
@@ -64,6 +67,11 @@ from .orchestrator_resources import (
 )
 from .control_composition import CompositionServices, normalize_composition
 from .event_identity import bind_host_call_identity
+from .resource_memory import (
+    _system_memory_annotation_candidate,
+    _memory_receipt_verification,
+    _local_memory_annotation_verification,
+)
 from .resource_preflight import (
     codex_plugin_read_only_maintenance_command
     as _codex_plugin_read_only_maintenance_command,
@@ -314,180 +322,6 @@ def contract_from_brief(
 
 
 
-def _system_memory_annotation_candidate(
-    tool_input: dict[str, Any],
-    *,
-    provider: str,
-    expected_digest: str,
-) -> dict[str, Any] | None:
-    """Return a fixed local policy lane for a small, attributable graph write."""
-    normalized_provider = provider.strip().lower()
-    if normalized_provider not in {"claude", "codex"}:
-        return None
-    try:
-        normalized = normalize_memory_annotation(tool_input, extracted_by=normalized_provider, bounded=True)
-    except (ValueError, TypeError):
-        return None
-    if set(tool_input) != {"entities", "edges", "extracted_by"}:
-        return None
-    if tool_input.get("extracted_by") != normalized_provider:
-        return None
-    entities = tool_input.get("entities")
-    edges = tool_input.get("edges")
-    if (
-        not isinstance(entities, list)
-        or not isinstance(edges, list)
-        or not 1 <= len(entities) <= 6
-        or not 1 <= len(edges) <= 3
-    ):
-        return None
-    entity_names: set[str] = set()
-    for entity in entities:
-        if not isinstance(entity, dict) or set(entity) != {"name", "type"}:
-            return None
-        name = entity.get("name")
-        if not isinstance(name, str) or not name.strip() or name.strip() in entity_names:
-            return None
-        entity_names.add(name.strip())
-    for edge in edges:
-        if not isinstance(edge, dict) or not set(edge).issubset(
-            {"src", "rel", "dst", "entry_id", "confidence"}
-        ):
-            return None
-        if not {"src", "rel", "dst"}.issubset(edge):
-            return None
-        if str(edge.get("src") or "").strip() not in entity_names:
-            return None
-        if str(edge.get("dst") or "").strip() not in entity_names:
-            return None
-        entry_id = edge.get("entry_id")
-        if entry_id is not None and (isinstance(entry_id, bool) or not isinstance(entry_id, int)):
-            return None
-        confidence = edge.get("confidence", 1.0)
-        if (
-            isinstance(confidence, bool)
-            or not isinstance(confidence, (int, float))
-            or not 0.0 <= float(confidence) <= 1.0
-        ):
-            return None
-    postcondition = _memory_annotation_postcondition(tool_input)
-    if (
-        postcondition is None
-        or not expected_digest
-        or expected_digest not in {_verification_digest(postcondition), memory_annotation_digest(normalized)}
-    ):
-        return None
-    return {
-        "profile_id": SYSTEM_MEMORY_PROFILE,
-        "effect": "local_write",
-        "capability": "mcp:sulde_kb:memory_annotate",
-        "target": f"[memory-annotation:{expected_digest}]",
-        "verification_kind": "relation",
-        "verification_sha256": expected_digest,
-        "entity_count": len(entities),
-        "edge_count": len(edges),
-        "extracted_by": normalized_provider,
-    }
-
-
-def _memory_receipt_verification(expected_digest: str) -> dict[str, Any] | None:
-    """Resolve a digest-only recipe through an independent read-only connection."""
-    if not re.fullmatch(r"[0-9a-f]{64}", expected_digest):
-        return None
-    database = kb_home() / "memory.db"
-    try:
-        connection = sqlite3.connect(f"{database.resolve().as_uri()}?mode=ro", uri=True, timeout=0.25)
-        try:
-            connection.execute("PRAGMA query_only=ON")
-            connection.execute("BEGIN")
-            result = verify_memory_receipt(connection, expected_digest)
-        finally:
-            connection.close()
-    except (OSError, sqlite3.Error, ValueError, TypeError):
-        return None
-    if result is None:
-        return None
-    return {"capability": "mcp:sulde_kb:memory_graph", "evidence": {"relation": [expected_digest]},
-            "source": "local_memory_db_read", "recipe_schema": "sulde-memory-annotation-v2"}
-
-def _local_memory_annotation_verification(
-    tool_input: dict[str, Any],
-    *,
-    expected_digest: str,
-) -> dict[str, Any] | None:
-    """Prove every declared memory row through an independent read-only DB handle."""
-    try:
-        request = normalize_memory_annotation(tool_input)
-    except (ValueError, TypeError):
-        request = None
-    if request is not None and memory_annotation_digest(request) == expected_digest:
-        return _memory_receipt_verification(expected_digest)
-    # v1 evidence remains v1: never silently rehash or relabel historical rows.
-    postcondition = _memory_annotation_postcondition(tool_input)
-    if (
-        postcondition is None
-        or not expected_digest
-        or _verification_digest(postcondition) != expected_digest
-    ):
-        return None
-    database_path = kb_home() / "memory.db"
-    try:
-        database_uri = f"{database_path.resolve().as_uri()}?mode=ro"
-        connection = sqlite3.connect(
-            database_uri,
-            uri=True,
-            timeout=0.25,
-        )
-        try:
-            connection.execute("PRAGMA query_only = ON")
-            connection.execute("PRAGMA busy_timeout = 250")
-            connection.execute("BEGIN")
-            for entity in postcondition["entities"]:
-                row = connection.execute(
-                    "SELECT 1 FROM mem_entities WHERE name = ? AND type = ? LIMIT 1",
-                    (entity["name"], entity["type"]),
-                ).fetchone()
-                if row is None:
-                    return None
-            for relation in postcondition["relations"]:
-                matching_edge = next(
-                    edge
-                    for edge in tool_input["edges"]
-                    if str(edge.get("src") or "").strip() == relation["subject"]
-                    and str(edge.get("rel") or "").strip() == relation["predicate"]
-                    and str(edge.get("dst") or "").strip() == relation["object"]
-                )
-                row = connection.execute(
-                    """
-                    SELECT 1 FROM mem_edges
-                    WHERE src = ? AND rel = ? AND dst = ?
-                      AND entry_id IS ? AND extracted_by = ? AND confidence = ?
-                    LIMIT 1
-                    """,
-                    (
-                        relation["subject"],
-                        relation["predicate"],
-                        relation["object"],
-                        matching_edge.get("entry_id"),
-                        tool_input.get("extracted_by"),
-                        float(matching_edge.get("confidence", 1.0)),
-                    ),
-                ).fetchone()
-                if row is None:
-                    return None
-        finally:
-            connection.close()
-    except (OSError, sqlite3.Error, UnicodeError, ValueError):
-        return None
-    return {
-        "capability": "mcp:sulde_kb:memory_graph",
-        "evidence": {"relation": [expected_digest]},
-        "source": "local_memory_db_read",
-    }
-
-
-
-
 def _input_digest(tool_input: dict[str, Any]) -> str:
     scrubbed = {
         str(key): "[redacted]" if SECRET_KEY.search(str(key)) else value
@@ -637,6 +471,8 @@ def _guardian_control_command(command: str) -> dict[str, Any] | None:
     invocation = _guardian_invocation(command)
     if invocation is None:
         return None
+    if trusted_guardian_help(invocation):
+        return {**invocation, "action": "--help", "route": "agent", "metadata_query": True}
     action = str(invocation["action"])
     if action not in (
         AGENT_CONTROL_ACTIONS
@@ -1196,6 +1032,8 @@ def _python_source_effect(source: str, *, cwd: str | Path | None, risks: list[st
     except SyntaxError:
         return "unknown"
     data_calls = proven_data_method_calls(tree) if literal_transport else set()
+    if literal_transport:
+        data_calls.update(proven_datetime_method_calls(tree))
     effects: list[str] = []
     process_calls = {
         "os.system",
@@ -1582,6 +1420,86 @@ def _structured_command_effect(
             return _node_source_effect(tokens[2], cwd=cwd, risks=risks)
     return None
 
+def _ssh_effect(tokens: list[str]) -> str | None:
+    """Respect the remote execution boundary; never resolve remote paths locally.
+
+    This proves effects for literal commands only, not host identity or read
+    safety (SSH configuration can execute local helpers). Unknown shapes remain
+    unknown. No SSH connection or config evaluation is performed here.
+    """
+    readonly = ssh_readonly_probe(tokens)
+    wrappers = {"env", "sudo", "doas", "command", "exec", "nohup", "timeout"}
+    # Unwrap only executable/option positions, never search inside argv data.
+    for _ in range(8):
+        if not tokens:
+            return None
+        wrapper = Path(tokens[0]).name.lower()
+        if wrapper not in wrappers:
+            break
+        original = tokens
+        tokens = tokens[1:]
+        if wrapper == "command" and tokens and tokens[0] in {"-v", "-V"}:
+            return None  # command lookup, not remote dispatch
+        while tokens:
+            word = tokens[0]
+            if word == "--":
+                tokens = tokens[1:]
+                break
+            if wrapper == "env" and re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", word):
+                tokens = tokens[1:]
+                continue
+            if not word.startswith("-"):
+                break
+            noarg = {"env": {"-i", "--ignore-environment"}, "sudo": {"-n", "-E", "-H", "-S", "-b"},
+                     "doas": {"-n"}, "command": {"-p"}, "exec": {"-c", "-l"}}
+            witharg = {"env": {"-u", "--unset"}, "sudo": {"-u", "-g", "-h", "-p", "-C", "-T", "-R", "-D"},
+                       "doas": {"-u"}, "exec": {"-a"}, "timeout": {"-s", "-k", "--signal", "--kill-after"}}
+            if word in noarg.get(wrapper, set()):
+                tokens = tokens[1:]
+            elif word in witharg.get(wrapper, set()) and len(tokens) >= 2:
+                tokens = tokens[2:]
+            else:
+                # Unknown wrapper options cannot justify local-path treatment.
+                return "unknown" if any(Path(item).name.lower() in {"ssh", "ssh.exe"} for item in original[1:]) else None
+        if wrapper == "timeout" and tokens:
+            tokens = tokens[1:]
+    if not tokens or Path(tokens[0]).name.lower() not in {"ssh", "ssh.exe"}:
+        return None
+    index = 1
+    while index < len(tokens) and tokens[index].startswith("-"):
+        option = tokens[index]
+        if option == "--":
+            index += 1
+            break
+        if len(option) < 2:
+            return "unknown"
+        if option[1] in "BbcDEeFIiJLlmOopQRSWw":
+            index += 1 if len(option) > 2 else 2
+        elif all(letter in "46AaCfGgKkMNnqsTtVvXxYy" for letter in option[1:]):
+            index += 1
+        else:
+            return "unknown"
+    if index >= len(tokens) - 1:
+        return "unknown"
+    remote = " ".join(tokens[index + 1:])
+    # Only interpret shell payloads syntactically; local script manifests and
+    # local cwd facts cannot establish what exists on a remote machine.
+    for _ in range(8):
+        payload = _shell_wrapper_payload(remote)
+        if payload is None:
+            break
+        remote = payload
+    if _composition_has_destructive_segment(remote):
+        return "destructive"
+    domains = _execution_domain_commands(remote)
+    if domains and any(domain in {"mkdir", "touch", "cp", "install", "tee", "deploy", "scp", "rsync"}
+                       for domain, _ in domains):
+        return "external_write"
+    if readonly:
+        return "read"
+    return "unknown"
+
+
 def _command_effect(command: str, *, cwd: str | Path | None = None, risks: list[str] | None = None) -> str:
     lowered = command.lower()
     if _composition_has_destructive_segment(command, cwd=cwd):
@@ -1591,6 +1509,8 @@ def _command_effect(command: str, *, cwd: str | Path | None = None, risks: list[
         action = str(guardian["action"])
         if not guardian["runtime_sha256"]:
             return "destructive"
+        if trusted_guardian_help(guardian):
+            return "read"
         if guardian["chained"]:
             # A trusted read-only Guardian query may be composed with output
             # filters. Classify each remaining segment instead of turning the
@@ -1622,6 +1542,8 @@ def _command_effect(command: str, *, cwd: str | Path | None = None, risks: list[
         return "read"
     if _git_execution_passthrough(command):
         return "unknown"
+    if _git_stdin_review_pipeline(command):
+        return "read"
     if _codex_plugin_read_only_maintenance_command(command, cwd=cwd):
         return "read"
     structured_effect = _structured_command_effect(command, cwd=cwd, risks=risks)
@@ -1667,12 +1589,32 @@ def _command_effect(command: str, *, cwd: str | Path | None = None, risks: list[
         # Git segments are outside Guardian's policy domain. Other segments
         # retain normal policy so composition cannot launder a mutation.
         return _strongest_effect(non_git_effects) if non_git_effects else "unknown"
+    remote_effect = _ssh_effect(command_tokens)
+    if remote_effect is not None:
+        if risks is not None:
+            risks.append("remote_execution")
+        if remote_effect == "unknown" and risks is not None:
+            risks.append("remote_execution_unresolved")
+        return remote_effect
     # Classify the executable shape before scanning argument text.  A quoted
     # search pattern such as `rg "git push"` is data, not an external effect.
     if _is_read_only_command(command):
         return "read"
-    if re.search(r"\b(gh\s+(?:pr|issue|release)\s+(?:create|merge|comment)|curl\b.*\s-X\s*(?:POST|PUT|PATCH|DELETE)|scp\b|rsync\b.*:|npm\s+publish|deploy)\b", lowered, re.IGNORECASE):
+    if re.search(r"\b(gh\s+(?:pr|issue|release)\s+(?:create|merge|comment)|curl\b.*\s-X\s*(?:POST|PUT|PATCH|DELETE)|scp\b|rsync\b.*:|npm\s+publish)\b", lowered, re.IGNORECASE):
         return "external_write"
+    if re.search(r"\bdeploy\b", lowered):
+        # An argument path (e.g. vpn-deploy/tests) is not an invocation.
+        # Only narrow the legacy classification when the existing shell
+        # parser proves a single executable. Opaque composition and wrappers
+        # retain the conservative boundary; this is not a Python/test allowlist.
+        executable = execution_domains[0][0] if execution_domains else ""
+        if (
+            not execution_domains
+            or executable == "deploy"
+            or executable in {"env", "sudo", "doas", "command", "exec", "nohup", "time", "timeout", "xargs", "eval"}
+            or (command_tokens and re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", command_tokens[0]))
+        ):
+            return "external_write"
     local_write_patterns = (
         r"(?:^|[;&|]\s*)(?:mv\b|cp\b|touch\b|mkdir\b|sed\s+-i\b)",
         r"(?:^|[;&|]\s*)(?:tee\b|(?:python\d*|node|ruby|perl)\b.*(?:write|open\s*\(|write_text|write_bytes))",
@@ -2360,6 +2302,7 @@ def normalize_hook_event(
     action = tool_name
     control: dict[str, Any] | None = None
     continuation_candidate: dict[str, Any] | None = None
+    remote_request: dict[str, Any] | None = None
     git_ref: dict[str, Any] | None = None
     write_targets: list[str] = []
     local_file_operations: list[dict[str, str]] = []
@@ -2588,7 +2531,24 @@ def normalize_hook_event(
                 )
             )
         )
-        if command_risks and effect != "destructive" and invocation_violation is None:
+        remote_unresolved = "remote_execution_unresolved" in command_risks
+        remote_execution = "remote_execution" in command_risks
+        read_request = ssh_read_request(command) if invocation_violation is None else None
+        if read_request is not None:
+            remote_request = read_request
+            effect = "read"
+            remote_unresolved = False
+            uncertainty_kind = ""
+        if invocation_violation is None and (remote_execution or remote_unresolved) and read_request is None:
+            remote_request = ssh_material_request(command)
+            if remote_request is not None:
+                effect = "external_write"
+                remote_execution = True
+                remote_unresolved = False
+                uncertainty_kind = ""
+        destructive_risks = [risk for risk in command_risks
+                             if risk not in {"remote_execution", "remote_execution_unresolved"}]
+        if destructive_risks and effect != "destructive" and invocation_violation is None:
             # A known write in the same program cannot hide an unresolved
             # delete/replace receiver behind the ordinary local_write class.
             effect = "unknown"
@@ -2598,6 +2558,11 @@ def normalize_hook_event(
                 "target": "[unresolved-destructive-receiver]", "write_targets": [],
             }
             uncertainty_kind = "unresolved_destructive_receiver"
+        elif remote_unresolved and effect in {"read", "local_write", "unknown"}:
+            # Unknown transport behavior is not a proved read or a local path.
+            # Preserve the material barrier without inventing an external write.
+            effect = "unknown"
+            uncertainty_kind = "unresolved_external_write"
         trusted_composition = (
             None if git_passthrough or not _has_unquoted_shell_control(command)
             else _trusted_script_command(command, cwd=command_cwd)
@@ -2647,6 +2612,12 @@ def normalize_hook_event(
             target = continuation_candidate["target"]
         elif invocation_violation is not None:
             target = invocation_violation["target"]
+        elif remote_request is not None:
+            target = remote_request["target"]
+        elif remote_execution:
+            # Distinct command hashes are not proof of different SSH resources.
+            # Keep the resource unresolved until a transport-aware binding exists.
+            target = "[unresolved-remote-target:" + hashlib.sha256(command.encode("utf-8")).hexdigest()[:16] + "]"
         elif effect == "local_write" and write_targets:
             target = _local_target_label(write_targets)
         elif effect == "local_write":
@@ -2773,6 +2744,12 @@ def normalize_hook_event(
     if supervision_domain != "intent_guardian":
         event["supervision_domain"] = supervision_domain
         event["execution_domain"] = execution_domain
+    if remote_request is not None:
+        event["remote_request"] = remote_request
+        event["effect_resource_key"] = remote_request["resource_key"]
+        event["effect_resource_context"] = remote_request["resource_context"]
+        event["effect_resource_base"] = ""
+        event["resource_base"] = ""
     if uncertainty_kind:
         event["uncertainty_kind"] = uncertainty_kind
     if typed_resource is not None:

@@ -1,0 +1,98 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-amendment-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "amendment_id": "SCOPE-FREEZE-AMENDMENT-002",
+  "parent_chain": [
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE.json",
+      "sha256": "40bd0ba4bcb342209302bb1c71166fbd9136a655c5df6088f2b6abb50e5bccc8"
+    },
+    {
+      "path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-001.json",
+      "sha256": "ba553436f3b3fa90ee0a059d2a6523bdbe0df4094fcd19dd917e6ab8c93bafe4"
+    }
+  ],
+  "frozen_controller_event_head_sha256": "18e6ddd9b556c28cfeffdf7ae27f06dec29098cc0f6836445067e9ac6796ad8a",
+  "frozen_coordinator_commit": "5fc3c1032feef33722c58ee4de00d5fcfa548aa2",
+  "authority": "human-confirmed-self-hosted-verification-thaw-2026-08-28-current-session",
+  "authority_scope": "one verification-only self-hosted run of the already frozen H06I-R2 replacement bytes",
+  "task": {
+    "task_id": "H06I-R2-interruption-authority",
+    "task_definition_path": "guardian-r2-program/task-definitions/H06I-R2-interruption-authority.json",
+    "task_definition_sha256": "55ebd49197d5c940394fd405224b2814d28b290a81e3cd481c4c5d4bcac377c2",
+    "verification_brief_path": "guardian-r2-program/briefs/H06I-R2-interruption-authority-selfhost-verification.md",
+    "verification_brief_sha256": "16107473ab7b4cee797e5c0726fe25db1eebed0c78ff0f755bfd18d3c67b3f70",
+    "owned_paths": [
+      "scripts/kb/native_agent_broker.py",
+      "scripts/kb/agent-runtime.py",
+      "tests/test_native_agent_broker.py",
+      "tests/test_agent_runtime.py",
+      "guardian-r2-program/reports/H06I-R2-interruption-authority.md"
+    ]
+  },
+  "frozen_candidate_sha256": {
+    "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+    "scripts/kb/agent-runtime.py": "d8d7406595174dc9379c998327a0b6665aac09128840d95471df6e9eca9082a9",
+    "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "tests/test_agent_runtime.py": "59533ccdcf701ccd72c0b1e3882a2b4e839a99b7a56e6254d13fe7c78f2795f6",
+    "guardian-r2-program/reports/H06I-R2-interruption-authority.md": "f8d1e5a984870c81cd8bb659254c820840ded41ef0ea0ce1fe45f76b2efccf18"
+  },
+  "failed_parent_receipt": {
+    "finding_id": "FR2-H06I-R2-007",
+    "last_sha256": "4b5bd947c36d4fe5de2caacd7e600fbbb64eba2b74e38e206128cec90122484d",
+    "last_byte_count": 10588,
+    "durable_report_sha256": "f8d1e5a984870c81cd8bb659254c820840ded41ef0ea0ce1fe45f76b2efccf18",
+    "durable_report_byte_count": 10589,
+    "native_receipt_file_sha256": "d37ccf619f98a311ddfa34d6c37b38e11b8208315896ab416dd52293af3ba267",
+    "native_receipt_sha256": "c3bd7ad1099b5c393fa6f351c6603c638f94d90257ddc18d4d724c0ba5f64a52",
+    "root_cause": "the already-running parent runtime cannot hot-load the candidate runtime edited by its child provider"
+  },
+  "self_hosted_authority": {
+    "mode": "isolated-nonproduction-projection",
+    "temporary_root_prefix": "/private/tmp/sulde-h06i-r2-selfhost.",
+    "template_runtime_root": "/private/tmp/sulde-h06h-authority.jB4ItX/marketplace/plugins/sulde/runtime",
+    "template_runtime_tree_sha256": "acd3c514d76d59fb1b4f42aa155372038ddad230a0d1635ebe11bac382e85916",
+    "template_deployment_sha256": "6e978d52744d0fd4ac49083a0c441f53bbcd8e01270462117555bc9cdcc714e7",
+    "unchanged_codex_cli_contract_sha256": "a19c8bf4a4ccbafc340eb220f9ba13c62bff1b6e9d66a7a7c5e822456a55875f",
+    "projection": [
+      "copy the sealed template runtime into the isolated temporary root without symlinks or hardlinks",
+      "replace only runtime/scripts/kb/agent-runtime.py and native_agent_broker.py with the frozen candidate bytes",
+      "reject Python bytecode and recompute runtime tree, file and canonical native-authority digests",
+      "write deployment-generation.json only in the isolated temporary kb-home",
+      "load the descriptor in a fresh interpreter and require the candidate runtime to verify its own generation"
+    ],
+    "production_install": false,
+    "production_descriptor_write": false,
+    "scheduler_change": false,
+    "plugin_registry_change": false
+  },
+  "verification_budget": {
+    "formal_implementation_candidates_before": 2,
+    "formal_implementation_candidates_after": 2,
+    "self_hosted_verification_runs_before": 0,
+    "authorized_self_hosted_verification_run": 1,
+    "remaining_after_launch": 0,
+    "provider_invocations": 1,
+    "automatic_retry": false
+  },
+  "verification_postconditions": [
+    "all five frozen candidate paths retain their exact pre-run SHA-256 values",
+    "provider performs no repository write and returns only the existing durable report text",
+    "self-hosted runtime and broker hashes in native authority equal the frozen candidate production-file hashes",
+    ".last.md and durable report are byte-identical at 10589 bytes with exactly one terminal LF",
+    "native receipt output_summary and report_summary are identical and bind f8d1e5a984870c81cd8bb659254c820840ded41ef0ea0ce1fe45f76b2efccf18",
+    "task_report_verdict passes, terminal invariants pass, provider invocation count is one and cleanup is quiescent"
+  ],
+  "unchanged_boundaries": {
+    "new_task_identity": false,
+    "new_implementation_candidate": false,
+    "candidate_source_write": false,
+    "owned_path_expansion": false,
+    "acceptance_weakening": false,
+    "production_install": false,
+    "dev_or_main_merge": false,
+    "push": false,
+    "h06j_changed": false
+  },
+  "terminal_rule": "if the single self-hosted verification run fails any postcondition, stop with append-only red evidence; do not retry, edit the candidate, create another candidate or start H06J"
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "H06H-r2-final-acceptance",
+  "baseline": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "run_id": "run-gpe-4efe615231a4f18a96ee09f8",
+  "verdict": "pass",
+  "kind": "requirement_traceability",
+  "summary": "Amendment-009 binds every H06H requirement and acceptance clause to the fresh candidate and keeps live-only clauses explicitly pending independent evidence.",
+  "facts": [
+    "candidate commit 21b5c8c0a2ac4fe5c43102b19d31c00d491619ca",
+    "all seven requirements and fourteen clauses are enumerated exactly"
+  ],
+  "requirements": [
+    "R2-HUMAN-GRANT",
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-TYPED-RESOURCES",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "findings": [
+    "FR2-H06H-003"
+  ],
+  "acceptance": [
+    {
+      "requirement_id": "R2-HUMAN-GRANT",
+      "clause": "一次当前会话原生 Allow 形成 provider、session、task epoch、subject、effect、constraints、world state 与 verifier 全绑定的单次 HumanGrantV2",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-HUMAN-GRANT",
+      "clause": "同一 grant 获准后普通默认策略不得对同一未漂移 effect 二次 deny",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-GRANT-BROKER",
+      "clause": "PermissionRequest 展示和授权结算先于普通 task/tool guard，paused 或 degraded lane 不得遮蔽恢复卡",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-GRANT-BROKER",
+      "clause": "crash、retry、reprobe 与 abort 按 transaction id 幂等推进且不重放人类决定或外部效果",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-SUPERVISOR",
+      "clause": "生命体在 5 秒内报告卡顿并在能力边界内处理孤儿锁、退出 actor、冲突 lane 与 runtime drift",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-SUPERVISOR",
+      "clause": "干预有预算、有终态、有 receipt，不能扩大 allowed paths、静默换宿主或无限重试",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-TYPED-RESOURCES",
+      "clause": "Git、worktree、文件删除、跨项目、Figma、设备与 Skill/runtime 操作均使用可验证的强类型资源身份",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-TYPED-RESOURCES",
+      "clause": "空 target、unknown effect 或已隔离历史债务不得级联阻断无关 subject",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-LANE",
+      "clause": "status、doctor、repair、uninstall、rollback 与 pending decision 在普通 lane 不可用时仍可达",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-RECOVERY-LANE",
+      "clause": "等待使用可更新状态卡和本地完整日志，满足 5/30 秒进度 SLA 且不重复输出轮询文案",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "R2-LIVE-ACCEPTANCE",
+      "clause": "I01-I19、并发、进程死亡、receipt tamper、world-state drift、只读账本、scheduler degraded 与 rollback 全部通过",
+      "fact": "Candidate fixture and local composition bind this clause; host, OS and release portions remain gated by independent program evidence before acceptance."
+    },
+    {
+      "requirement_id": "R2-LIVE-ACCEPTANCE",
+      "clause": "Codex 与 Claude 真实宿主、macOS 与 Windows 证据齐全前不得宣称 R2 完成或 production accepted",
+      "fact": "Candidate fixture and local composition bind this clause; host, OS and release portions remain gated by independent program evidence before acceptance."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    },
+    {
+      "requirement_id": "PROGRAM-GOVERNANCE",
+      "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写",
+      "fact": "Fresh H06H candidate commit 21b5c8c and its focused, hostile-mutation and 198-test composition evidence cover this clause through accepted public boundaries."
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "-v",
+        "tests.test_r2_guardian_integration"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

@@ -1,0 +1,83 @@
+{
+  "schema": "sulde-guardian-r2-scope-freeze-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "frozen_from_event_sha256": "3c4a849dbbd30f898e4236bfd84e317139ae7583bc728aa88f560afb46fa47d9",
+  "authority": "human-explicit-freeze-2026-08-27",
+  "reason": "阻止总纲验收继续拆分微型返修、扩大路径或把非阻断观察升级为当前主链任务",
+  "frozen_inputs": {
+    "guardian-r2-program/task-definitions/H06I-R2-interruption-authority.json": "55ebd49197d5c940394fd405224b2814d28b290a81e3cd481c4c5d4bcac377c2",
+    "guardian-r2-program/briefs/H06I-R2-interruption-authority.md": "9ad0e5db3d88d6960973d378bdd1e6fce85befc516591b4b1824969f47dc39ae"
+  },
+  "allowed_future_task_ids": [
+    "H06I-R2-interruption-authority",
+    "H06J-r2-final-acceptance"
+  ],
+  "maximum_formal_managed_candidates": {
+    "H06I-R2-interruption-authority": 1,
+    "H06J-r2-final-acceptance": 1
+  },
+  "frozen_open_findings": [
+    "FR2-H06H-001",
+    "FR2-H06I-R1-001",
+    "FR2-H06I-R1-002",
+    "FR2-H06I-R1-003",
+    "FR2-H06I-R1-004",
+    "FR2-H06I-R1-005",
+    "FR2-H06I-R1-006"
+  ],
+  "task_path_envelopes": {
+    "H06I-R2-interruption-authority": [
+      "scripts/kb/native_agent_broker.py",
+      "scripts/kb/agent-runtime.py",
+      "tests/test_native_agent_broker.py",
+      "tests/test_agent_runtime.py",
+      "guardian-r2-program/reports/H06I-R2-interruption-authority.md"
+    ],
+    "H06J-r2-final-acceptance": [
+      "guardian-program/MASTER.md",
+      "tests/fixtures/r2-guardian-incidents/replay-cases.json",
+      "tests/test_r2_guardian_integration.py",
+      "guardian-r2-program/evidence/H06J-task-report.json",
+      "guardian-r2-program/evidence/H06J-changed-files.json",
+      "guardian-r2-program/evidence/H06J-targeted-tests.json",
+      "guardian-r2-program/evidence/H06J-failure-injection.json",
+      "guardian-r2-program/evidence/H06J-integration-tests.json",
+      "guardian-r2-program/evidence/H06J-system-tests.json",
+      "guardian-r2-program/evidence/H06J-finding-resolution.json",
+      "guardian-r2-program/evidence/H06J-requirement-traceability.json",
+      "guardian-r2-program/reports/H06J-r2-final-acceptance.md",
+      "guardian-r2-program/evidence/program-final-traceability.json",
+      "guardian-r2-program/evidence/program-full-isolated-suite.json",
+      "guardian-r2-program/evidence/program-failure-injection-suite.json",
+      "guardian-r2-program/evidence/program-incident-fixture-matrix.json",
+      "guardian-r2-program/evidence/program-installed-generation.json",
+      "guardian-r2-program/evidence/program-scheduler-owner.json",
+      "guardian-r2-program/evidence/program-live-host-canary-codex.json",
+      "guardian-r2-program/evidence/program-live-host-canary-claude.json",
+      "guardian-r2-program/evidence/program-rollback-evidence.json"
+    ]
+  },
+  "discovery_policy": {
+    "inside_current_envelope": "record_on_same_task_and_resolve_without_successor",
+    "outside_envelope_non_blocking": "record_post_r2_backlog_without_expanding_current_program",
+    "outside_envelope_security_or_acceptance_blocker": "stop_and_request_explicit_human_thaw"
+  },
+  "forbidden_without_thaw": [
+    "new_task_identity",
+    "repair_successor",
+    "owned_path_expansion",
+    "acceptance_weakening",
+    "synthetic_live_or_windows_evidence",
+    "automatic_second_formal_candidate"
+  ],
+  "thaw_protocol": {
+    "required_authority": "explicit_current_session_human_instruction",
+    "required_artifact": "append-only scope freeze amendment committed before any task registration or dispatch",
+    "automatic_thaw": false
+  },
+  "terminal_path": [
+    "H06I-R2-interruption-authority:accepted",
+    "H06J-r2-final-acceptance:accepted",
+    "program:complete"
+  ]
+}

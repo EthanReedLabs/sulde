@@ -1,0 +1,30 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T21-authority-ledger-compat",
+  "title": "兼容交错审批账本并统一 typed native authority",
+  "owner": "worker-t21",
+  "capability_tier": "deep",
+  "base_commit": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "depends_on": ["T00-control-plane"],
+  "owned_paths": [
+    "scripts/kb/approval_invariant.py",
+    "scripts/kb/native_decision_journal.py",
+    "scripts/kb/intent_guardian_parts/approvals.py",
+    "scripts/kb/intent_guardian_parts/recovery.py",
+    "tests/test_approval_invariant.py",
+    "tests/test_native_decision_journal.py",
+    "tests/test_guardian_recovery.py"
+  ],
+  "requirements": ["WP56-A", "WP56-F", "DERIVED-JOURNAL"],
+  "acceptance": [
+    "历史 untyped 行与 typed lifecycle 交错时可只读投影且 untyped 永不形成 authority",
+    "新 proposal 不再向 canonical authority store 写入可混淆的非权威审批生命周期",
+    "prepared native transaction 可 append-only supersede 或幂等恢复且 apply exactly once"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests"]
+  }
+}

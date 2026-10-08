@@ -1,0 +1,12 @@
+diff --git a/.codex/hooks.json b/.codex/hooks.json
+--- a/.codex/hooks.json
++++ b/.codex/hooks.json
+@@ -6,7 +6,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "bash /d/HarmonyProject/iquokkaApp/scripts/check-task-md-phase-split.sh"
++            "command": "bash \"$(git rev-parse --show-toplevel)/scripts/check-task-md-phase-split.sh\""
+           }
+         ]
+       }

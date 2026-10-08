@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "targeted_tests",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "Exact 0.149.1 host, dual-interpreter owned modules and the coordinator reproduction topology all pass after F31-001 correction.",
+  "facts": [
+    "The worker passed agent-runtime 54/54 and installer 39/39 under CPython 3.9.6 and production KB venv CPython 3.10.7.",
+    "The coordinator independently passed the five formerly failing, production-loader and bytecode-injection tests, then all 93 owned tests under CPython 3.10.7.",
+    "The real executable still reports exactly codex-cli 0.149.1 and passes top-level help, exec help, strict profile, hook parse, app-server initialize, broker and installed-authority binding."
+  ],
+  "requirements": [],
+  "findings": ["F31-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "-m", "unittest", "tests.test_agent_runtime", "tests.test_codex_plugin_install"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

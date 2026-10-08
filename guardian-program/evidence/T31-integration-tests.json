@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "integration_tests",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "The dev-integrated T31 candidate passes the composed host, installer, staging, launcher, provider and packaged-history integration gate in a real full clone.",
+  "facts": [
+    "Dev merge a8ca1adf924402c563f25fee2448c62adc123c67 was cloned with a real .git directory and passed 180 integration tests in 157.722 seconds with one platform skip.",
+    "The first linked-worktree attempt was not counted: its full-clone identity assertion saw the shared git common dir and its pre-existing source bytecode was correctly rejected by launcher integrity.",
+    "The passing full clone covered agent-runtime, installer, official staging inventory, launcher contract, dual-runtime/provider, packaged HISTORY and kb-aging consumers."
+  ],
+  "requirements": [],
+  "findings": ["F31-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "-m", "unittest", "T31-dev-integration-modules"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "installed_generation",
+  "baseline": "program:guardian-remediation-r97",
+  "run_id": "program-final-t32-20260824",
+  "verdict": "pass",
+  "summary": "The official installer, stable launcher, executing module and runtime owner bind one immutable T32 production generation.",
+  "facts": [
+    "Installed plugin version is 0.2.5+codex.20260824145354-ce28ce210c.",
+    "Generation is 0.2.5+codex.20260824145354-ce28ce210c:51871da47829fc47ec66978207d40e44c4c2df99580c266826753f2c19b52484.",
+    "Artifact generation readiness is ready and all generation, tree digest, runtime root and executing-module gates are true.",
+    "The stale pre-commit grant changed no production state; the current-tree one-shot grant was consumed once and independently verified."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/release/install_codex_plugin.py", "--json"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/program-final-acceptance-t32.md",
+      "sha256": "c64dece515e276ea17d803fe2d8edbb3fba55ec78edbbec3366f1892f3c22d22"
+    }
+  ]
+}

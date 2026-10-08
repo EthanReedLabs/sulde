@@ -487,7 +487,9 @@ def _protected_json_object(path: Path, label: str) -> dict[str, object]:
     return payload
 
 
-def ensure_contract_identity_map(destination: SuldeLayout) -> dict[str, object] | None:
+def ensure_contract_identity_map(
+    destination: SuldeLayout, *, allow_upgrade: bool = True,
+) -> dict[str, object] | None:
     """Seal legacy contract identities for an active byte-preserving move.
 
     Older V1 pointers did not include this map.  They can be upgraded only
@@ -525,6 +527,8 @@ def ensure_contract_identity_map(destination: SuldeLayout) -> dict[str, object] 
             raise MigrationError("contract identity map differs from active migration")
         return pointer
 
+    if not allow_upgrade:
+        raise MigrationError("contract identity map requires a separately authorized upgrade")
     source_intent_records = _records(source / "intent")
     migrated_intent_records = _records(destination.kb / "intent")
     if source_intent_records != migrated_intent_records:

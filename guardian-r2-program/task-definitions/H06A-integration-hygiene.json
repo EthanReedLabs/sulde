@@ -1,0 +1,38 @@
+{
+  "acceptance": [
+    "installed Codex real-CLI contract derives the exact audited version from native authority instead of hard-coding 0.149.1, and fails closed on version or executable drift",
+    "intent-guardian component graph has no delayed facade import and every split component remains at or below 3000 lines without changing public behavior",
+    "all newly introduced text-mode subprocess calls fix encoding=utf-8 and errors=replace, including invalid-byte negative coverage",
+    "the eight-path repair passes its focused guards plus the supported isolated suite without production writes, installation, dev/main merge or external effects"
+  ],
+  "base_commit": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H02-grant-broker",
+    "H03-recovery-supervisor",
+    "H04-typed-resource-adapters",
+    "H05-recovery-lane"
+  ],
+  "supersedes": [],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"]
+  },
+  "owned_paths": [
+    "scripts/kb/intent_guardian_parts/approvals.py",
+    "scripts/kb/intent_guardian_parts/recovery.py",
+    "scripts/kb/intent_guardian_parts/resources.py",
+    "tests/test_agent_runtime.py",
+    "tests/test_grant_broker.py",
+    "tests/test_intent_guardian.py",
+    "tests/test_recovery_supervisor.py",
+    "tests/test_resource_adapters.py"
+  ],
+  "owner": "guardian-r2-worker-h06a",
+  "requirements": ["R2-LIVE-ACCEPTANCE", "PROGRAM-GOVERNANCE"],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06A-integration-hygiene",
+  "title": "修复总纲验收发现的跨任务架构、CLI 合约与 UTF-8 守卫回归"
+}

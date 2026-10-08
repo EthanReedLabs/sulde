@@ -118,7 +118,7 @@ def _path_digest(path: Path) -> str:
 
 def _protected_json(path: Path, label: str) -> tuple[dict[str, object], bytes]:
     try:
-        metadata = path.stat(follow_symlinks=False)
+        metadata = path.lstat()
         payload_bytes = path.read_bytes()
         payload = json.loads(payload_bytes)
     except (OSError, UnicodeError, json.JSONDecodeError) as error:

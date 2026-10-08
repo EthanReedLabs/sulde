@@ -1,0 +1,31 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "full_isolated_suite",
+  "baseline": "program:guardian-remediation-r97",
+  "run_id": "program-final-t32-20260824",
+  "verdict": "pass",
+  "summary": "The complete official isolated repository suite passes 1370 tests on the final T32 product bytes without production KB writes.",
+  "facts": [
+    "A clean full clone ran 1370 tests in 301.396 seconds and exited zero with six disclosed platform skips.",
+    "The run used an empty production KB sentinel and the official isolation runner reported no production-write violation.",
+    "The later c7fd29a commit only removes a repository-only duplicate test assertion; all staged and installed product bytes are identical to the full-suite candidate."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "scripts/kb/run-isolated-tests.py"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/program-final-acceptance-t32.md",
+      "sha256": "c64dece515e276ea17d803fe2d8edbb3fba55ec78edbbec3366f1892f3c22d22"
+    }
+  ]
+}

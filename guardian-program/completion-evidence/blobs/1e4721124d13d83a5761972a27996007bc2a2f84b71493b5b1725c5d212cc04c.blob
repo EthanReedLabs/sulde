@@ -1,0 +1,26 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T31-codex-0149-1-host-audit",
+  "kind": "changed_files",
+  "baseline": "096226c1b70e3cde51f97906d45ff266ec25a0b8",
+  "run_id": "run-gpe-6bd785c9de9ff3713fb2550d",
+  "verdict": "pass",
+  "summary": "The implementation candidate changes exactly the six frozen T31 owned paths; coordinator control records are separate program artifacts.",
+  "facts": [
+    "agent-runtime.py a485a0982d8d886f828f9f64109df1feb82954ad176b0a1b014efccab2709cc0; install_codex_plugin.py c3516575a97e466359a6e7be3372302e7b08a1a1b8987e796c7435ff973b8d46.",
+    "test_agent_runtime.py 96b3f78ba75e76a32c41601f31eba3a58100a761cdde982844e901bbf76bc1f6; test_codex_plugin_install.py b50f463570fc63a7105826010e782af275d96c36139ee4ad990e89b05c0e7ce3.",
+    "plugin.json 6ca879bb4c0fa73fae5f3d8298d51ec8a6d0883afe623e79f13fde35ae508c6b; report 96787202c46f21c239f839df4ca52c0ef1733491515699d7162706259ee681d5."
+  ],
+  "requirements": [],
+  "findings": ["F31-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "show", "--stat", "f6ef03d2d9a2715b9ebf1b8e781159543fe55c41"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

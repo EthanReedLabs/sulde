@@ -1,0 +1,105 @@
+{
+  "schema": "life-candidate-probe-v1",
+  "source_commit": "4b22406cd01c80fe298b7c27e322cd28e7383275",
+  "codex_sha256": "61b0194f3bb6534439c8d26a3ed57d0805f84b884588b761795323eeb92fcf70",
+  "candidate_root": "isolated temporary root; local locator retained in tool execution",
+  "production_touched": false,
+  "runs": [
+    {
+      "candidate": "normal",
+      "phase": "prepare",
+      "exit_code": 0,
+      "seconds": 1.032,
+      "status": "prepared",
+      "timings_ms": {
+        "prepare_total": 949.443
+      },
+      "verification_keys": [],
+      "promotion_consumed": false,
+      "state_sha256": "04796e75cd3c8f735f05634a34de433309b58ea3b75fc7dcd30620eee175e56e"
+    },
+    {
+      "candidate": "normal",
+      "phase": "verify",
+      "exit_code": 0,
+      "seconds": 12.93,
+      "status": "verified",
+      "timings_ms": {
+        "prepare_total": 949.443,
+        "verify_total": 12845.593
+      },
+      "verification_keys": [],
+      "promotion_consumed": false,
+      "state_sha256": "6d248dc194e881fdc281741ba1bf01a711123ef4b3f0c1040db23d97ffca2c79"
+    },
+    {
+      "candidate": "failure",
+      "phase": "prepare",
+      "exit_code": 0,
+      "seconds": 1.016,
+      "status": "prepared",
+      "timings_ms": {
+        "prepare_total": 928.508
+      },
+      "verification_keys": [],
+      "promotion_consumed": false,
+      "state_sha256": "6eae755ad8f501956c103c97498f663dbfba30f26a004203c0a5a91899f93296"
+    },
+    {
+      "candidate": "failure",
+      "phase": "verify",
+      "exit_code": 1,
+      "seconds": 2.927,
+      "status": "verification_failed",
+      "timings_ms": {
+        "prepare_total": 928.508
+      },
+      "verification_keys": [],
+      "promotion_consumed": false,
+      "state_sha256": "43a6ecb2e543bb2acd0b168d2a0a77c88095698b7ecaf7fb77bb0f7d71bc8bba"
+    }
+  ],
+  "verified_components": {
+    "artifact": {
+      "status": "ready"
+    },
+    "doctor": {
+      "status": "ready",
+      "exit_code": 0
+    },
+    "hooks": {
+      "status": "ready"
+    },
+    "isolated_registry": {
+      "status": "ready"
+    },
+    "mcp": {
+      "status": "ready"
+    },
+    "native_permission_ui": {
+      "status": "unobserved",
+      "exit_code": 78
+    },
+    "preexecution_chain": {
+      "status": "ready"
+    },
+    "scheduler_entrypoint": {
+      "status": "ready",
+      "mode": "production-entrypoint-isolated-dry-run"
+    },
+    "scheduler_host": {
+      "status": "unobserved",
+      "exit_code": 79
+    }
+  },
+  "receipt_sha256": "ea16e6c4b26f17b74c38c9932fe35997308d0f4bb80d4f62da965efd17e39fba",
+  "failure_live_preserved": true,
+  "failure_snapshot_equality": true,
+  "earlier_attempt": {
+    "status": "dependency_preflight_failed",
+    "exit_code": 1,
+    "reason": "default Python 3.14.6 has no PyYAML; selected existing 3.10.7 for isolated copy",
+    "production_install": false
+  },
+  "source_binding_note": "Prepared from clean task commit; subsequent report-only amendment does not change runtime content. This is isolated evidence, not a production promotion candidate."
+}

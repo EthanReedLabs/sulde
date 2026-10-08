@@ -193,6 +193,61 @@ class InstallTransactionJournalTests(unittest.TestCase):
                 snapshot_paths=(self.old_tree,),
             )
 
+    def test_detached_lookup_reuses_strict_authority_and_never_recreates_active(self):
+        journal = load_journal()
+        transaction = journal.begin_transaction(self.recovery, self.descriptor(),
+                                                snapshot_paths=(self.old_tree,))
+        transaction.append("prepared")
+        transaction.append("rollback_started")
+        transaction.append("rolled_back")
+        transaction.clear_active()
+
+        def load():
+            return journal.load_transaction(self.recovery, transaction.transaction_id,
+                expected_descriptor_sha256=transaction.descriptor_sha256)
+
+        self.assertEqual(load().stage, "rolled_back")
+        self.assertIsNone(journal.load_active_transaction(self.recovery))
+        original = transaction.journal_path.read_bytes()
+        first = json.loads(original.splitlines()[0])
+        cases = [b"[]\n", b"{}\n", original[:-1], b"{broken\n"]
+        for key, value in (("schema", "unknown"), ("schema_version", True),
+                           ("sequence", 9), ("transaction_id", "b" * 32),
+                           ("record_sha256", "0" * 64), ("previous_sha256", "1" * 64)):
+            cases.append((json.dumps({**first, key: value}) + "\n").encode("utf-8"))
+        for corrupt in cases:
+            with self.subTest(corrupt=corrupt[:80]):
+                transaction.journal_path.write_bytes(corrupt)
+                with self.assertRaises(journal.JournalError):
+                    load()
+                self.assertFalse(transaction.active_path.exists())
+        transaction.journal_path.write_bytes(original)
+        for transaction_id, digest in (("../escape", transaction.descriptor_sha256),
+                                       (transaction.transaction_id, "0" * 64),
+                                       (transaction.transaction_id, None)):
+            with self.assertRaises(journal.JournalError):
+                journal.load_transaction(self.recovery, transaction_id,
+                                         expected_descriptor_sha256=digest)
+        for ancestor in (self.recovery, self.recovery / "transactions", self.recovery / "snapshots"):
+            with self.subTest(ancestor=ancestor.name):
+                ancestor.chmod(0o755)
+                try:
+                    with self.assertRaisesRegex(journal.JournalError, "mode"):
+                        load()
+                finally:
+                    ancestor.chmod(0o700)
+                held = ancestor.with_name(ancestor.name + "-held")
+                ancestor.rename(held)
+                ancestor.symlink_to(held, target_is_directory=True)
+                try:
+                    with self.assertRaisesRegex(journal.JournalError, "linked"):
+                        load()
+                finally:
+                    ancestor.unlink()
+                    held.rename(ancestor)
+        self.assertEqual(load().stage, "rolled_back")
+        self.assertFalse(transaction.active_path.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,22 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H05-recovery-lane.md", "sha256": "7ed793f24d4965b11888426fb37790d8c1f89dd86b3ecc9daab993c55f5ba6e8"}],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {"argv": ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "8496fb757e88f66b2d211f89fdd19d2e6ee5159a"], "exit_code": 0, "result": "pass"},
+    {"argv": ["git", "diff", "--exit-code", "8496fb757e88f66b2d211f89fdd19d2e6ee5159a", "5aa31b6a39a37cad6858156b79985dddf92980aa", "--", "<eight-owned-paths>"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "Worker commit 8496fb75 has parent 0eb4fb65 and contains exactly the eight frozen H05 paths.",
+    "Coordinator integration commit 5aa31b6a has parent 0d093409; all eight integrated blobs are byte-identical to the worker commit and no H04 implementation path changed."
+  ],
+  "findings": [],
+  "kind": "changed_files",
+  "requirements": [],
+  "run_id": "run-gpe-f0547c16e9416c1a0ef60559",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "Integrated H05 commit contains exactly eight frozen paths with byte-identical worker artifacts.",
+  "task_id": "H05-recovery-lane",
+  "verdict": "pass"
+}

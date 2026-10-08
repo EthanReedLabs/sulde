@@ -1,0 +1,25 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T27-release-blocker-remediation",
+  "kind": "integration_tests",
+  "baseline": "0dce1005d244af7e5b509513226bcfe8a2f11b4f",
+  "run_id": "run-gpe-75da4f180a9fb984f67db91a",
+  "verdict": "pass",
+  "summary": "The integrated dev candidate passes the T27 modules and the previously sandbox-inconclusive correction, host-capability and dual-runtime modules.",
+  "facts": [
+    "146 T27 tests and 42 adjacent integration tests passed on the same source candidate.",
+    "The official full suite progressed through 1353 tests and exposed one separate cleanup-consumer regression as F27-001; it is not concealed by this component integration verdict."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python", "-m", "unittest", "T27-targeted-plus-adjacent-integration"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

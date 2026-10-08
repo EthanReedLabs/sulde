@@ -1,0 +1,109 @@
+{
+  "generatorVersion": "sulde-life-problems-v1",
+  "queues": {
+    "golden-candidates.jsonl": {
+      "collected_at": "2026-09-07T11:34:32.356327+00:00",
+      "count": 24,
+      "duplicate_groups": [],
+      "plan": "review each duplicate; preserve unresolved, terminal evidence and candidates; no automatic deletion",
+      "related_evidence_status": "review_required_not_duplicate_verdict",
+      "related_issue_groups": [],
+      "scope": "exact content duplicates only",
+      "sourceVersion": "42126b5200a04edbbda787e552a04f794e0e046e32fa60db3f3bbc0e15c7cfd1",
+      "status": "observed",
+      "status_counts": {
+        "unknown": 24
+      }
+    },
+    "self-repair/pending.json": {
+      "collected_at": "2026-09-07T11:34:32.355728+00:00",
+      "count": 43,
+      "duplicate_groups": [],
+      "plan": "review each duplicate; preserve unresolved, terminal evidence and candidates; no automatic deletion",
+      "related_evidence_status": "review_required_not_duplicate_verdict",
+      "related_issue_groups": [
+        [
+          {
+            "id": "3b2bc1ece023a8f2bedbc6a3b79054451712304121298d11fcc6ac4776794831",
+            "status": "pending"
+          },
+          {
+            "id": "05d8f860e7d26e3952903901b89ffcd87f9f409a3c2dd1df88b0b06d242747ed",
+            "status": "pending"
+          }
+        ],
+        [
+          {
+            "id": "a3f674d462e5663ce51cb0616e03c6c16bcedbf1354947cbb68771aaef57ed39",
+            "status": "pending"
+          },
+          {
+            "id": "8f8b6a5a95acc6a520c09bcd0f5a403e749f6c2d7898b2c6c5995de8c45ca953",
+            "status": "draft_error"
+          }
+        ],
+        [
+          {
+            "id": "814a44f0978d5154215a1a930693afeeae3e762e411b75fec4347f24950524dd",
+            "status": "pending"
+          },
+          {
+            "id": "ec945d56f0b7cec83d5659f0bb0802e3e94820d7b6900055a69444639b58fc92",
+            "status": "pending"
+          }
+        ],
+        [
+          {
+            "id": "8c44c74f5d3f38c83367039a98d144a76a8f12547baacd661b661a9ed8d81fa2",
+            "status": "pending"
+          },
+          {
+            "id": "a60730ea197387f79c70bee33298f2d3dcb5c141f83dcc9657f7181fdfd8db22",
+            "status": "pending"
+          }
+        ],
+        [
+          {
+            "id": "083eee827d0a8c7c5992b2ee0a90dddbb7b375aca1a2cc81eccd34906b656310",
+            "status": "draft_error"
+          },
+          {
+            "id": "e9a355e6bf022f8d17638ab4b9e029e5c1bab60c92b938d62e0941c5738432f0",
+            "status": "pending"
+          }
+        ],
+        [
+          {
+            "id": "ac982192484dad30a6728797002fa048261477200c3034308a449ab91e8c9ef6",
+            "status": "draft_error"
+          },
+          {
+            "id": "c07f7c98b4804bd09d1b1c63197f24a4cdd3abca99eb66231902fad4693e388d",
+            "status": "pending"
+          }
+        ],
+        [
+          {
+            "id": "a7be8ce6267052e11c6eb8a003cfe2712cc915cbb9a7bd2ec66182b95eb9947e",
+            "status": "draft_error"
+          },
+          {
+            "id": "3451fa0d5a3f6ba8331f12874ebde135315d6e9c77bd4621de8cd5a39ddb0284",
+            "status": "pending"
+          }
+        ]
+      ],
+      "scope": "exact content duplicates only",
+      "sourceVersion": "410812ab79fde2f2e6771a1fc9aae57b9639806bcf8008e012e274b480b25d8a",
+      "status": "observed",
+      "status_counts": {
+        "diagnosed": 1,
+        "draft_error": 7,
+        "pending": 25,
+        "rejected": 2,
+        "resolved": 8
+      }
+    }
+  },
+  "writes": 0
+}

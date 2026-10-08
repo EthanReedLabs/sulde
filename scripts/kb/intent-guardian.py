@@ -34,6 +34,7 @@ from intent_guardian import (
     decide_proposal_as_agent,
     acknowledge_effect_intervention,
     effect_intervention_report,
+    prepare_effect_recovery,
     guardian_doctor,
     guardian_inventory,
     guardian_report,
@@ -784,6 +785,9 @@ def parse_args() -> argparse.Namespace:
                 "resume",
                 "task-continuation",
                 "workspace-handoff",
+                "repository-relocation",
+                "historical-retirement",
+                "repository-relocation-execution",
                 "observation-export",
                 "effect-intervention",
             ),
@@ -833,6 +837,54 @@ def parse_args() -> argparse.Namespace:
     handoff.add_argument("--provider", choices=("claude", "codex"), required=True)
     handoff.add_argument("--session-id", required=True)
     handoff.add_argument("--home", type=Path)
+
+    relocation = actions.add_parser(
+        "repository-relocation-preflight",
+        help="read-only physical Git and Guardian evidence; grants no relocation authority",
+    )
+    relocation.add_argument("source", type=Path)
+    relocation.add_argument("destination", type=Path)
+    relocation.add_argument("--provider", choices=("claude", "codex"), required=True)
+    relocation.add_argument("--session-id", required=True)
+    relocation.add_argument("--home", type=Path)
+    relocation.add_argument("--assessment-only", action="store_true",
+                            help="cheap local diagnosis only; no content snapshot or execution evidence")
+
+    relocation_inspect = actions.add_parser(
+        "inspect-repository-relocation", help="read-only recovery diagnosis without resolving a stale session route",
+    )
+    relocation_inspect.add_argument("plan_id")
+    relocation_inspect.add_argument("--provider", choices=("codex",), required=True)
+    relocation_inspect.add_argument("--session-id", required=True)
+    relocation_inspect.add_argument("--home", type=Path)
+
+    relocation_recover = actions.add_parser(
+        "recover-repository-relocation", help="recover only an already approved exact relocation; creates no decision",
+    )
+    relocation_recover.add_argument("plan_id")
+    relocation_recover.add_argument("--provider", choices=("codex",), required=True)
+    relocation_recover.add_argument("--session-id", required=True)
+    relocation_recover.add_argument("--home", type=Path)
+
+    relocation_plan = actions.add_parser(
+        "prepare-repository-relocation", help="freeze an owner-only relocation review plan; no execution authority",
+    )
+    relocation_plan.add_argument("source", type=Path)
+    relocation_plan.add_argument("destination", type=Path)
+    relocation_plan.add_argument("--contract", type=Path, required=True)
+    relocation_plan.add_argument("--provider", choices=("codex",), required=True)
+    relocation_plan.add_argument("--session-id", required=True)
+    relocation_plan.add_argument("--home", type=Path)
+
+    retirement = actions.add_parser("prepare-historical-retirement",
+        help="freeze a historical epoch termination card; creates no permission")
+    retirement.add_argument("source_contract", type=Path)
+    retirement.add_argument("--contract", type=Path, required=True)
+    retirement.add_argument("--provider", choices=("codex",), required=True)
+    retirement.add_argument("--session-id", required=True)
+    retirement.add_argument("--home", type=Path)
+    retirement.add_argument("--native-transactions", action="store_true",
+        help="freeze obsolete contract transactions of an already retired epoch; no replay")
 
     observations = actions.add_parser(
         "rebuild-host-observations",
@@ -895,6 +947,12 @@ def parse_args() -> argparse.Namespace:
     interventions.add_argument("--contract", type=Path)
     interventions.add_argument("--workspace", type=Path, default=Path.cwd())
     interventions.add_argument("--home", type=Path)
+    recovery = actions.add_parser("prepare-effect-recovery", help="open an evidence-bound review after abort; grants no authority")
+    recovery.add_argument("attempt_id")
+    recovery.add_argument("--expected-binding-sha256", required=True)
+    recovery.add_argument("--contract", type=Path)
+    recovery.add_argument("--workspace", type=Path, default=Path.cwd())
+    recovery.add_argument("--home", type=Path)
 
     corrections = actions.add_parser(
         "corrections",
@@ -1235,6 +1293,52 @@ def main() -> int:
                 provider=selected_provider, session_id=selected_session)
             print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
             return 0
+        if args.action == "recover-repository-relocation":
+            from intent_guardian_parts.repository_relocation import recover_repository_relocation
+            selected_provider, selected_session = _current_host(args.provider, args.session_id)
+            result = recover_repository_relocation(home, args.plan_id, provider=selected_provider, session_id=selected_session)
+            print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True))
+            return 0
+        if args.action == "native-decision" and args.kind == "repository-relocation-execution":
+            from intent_guardian_parts.repository_relocation import execute_native_relocation
+            selected_provider, selected_session = _current_host(args.provider, args.session_id)
+            if args.contract is None:
+                raise IntentGuardianError("relocation requires an explicit source contract")
+            result = execute_native_relocation(home, args.contract, args.target, decision=args.decision,
+                                               provider=selected_provider, session_id=selected_session)
+            print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True))
+            return 0
+        if args.action == "inspect-repository-relocation":
+            from intent_guardian_parts.repository_relocation import inspect_relocation_plan
+            selected_provider, selected_session = _current_host(args.provider, args.session_id)
+            result = inspect_relocation_plan(home, args.plan_id, provider=selected_provider, session_id=selected_session)
+            print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True))
+            return 0
+        if args.action == "prepare-historical-retirement":
+            from intent_guardian_parts.historical_retirement import prepare
+            selected_provider, selected_session = _current_host(args.provider, args.session_id)
+            result = prepare(home, args.contract, args.source_contract,
+                             provider=selected_provider, session_id=selected_session,
+                             native_transactions=args.native_transactions)
+            print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+            return 0
+        if args.action == "prepare-repository-relocation":
+            from intent_guardian_parts.repository_relocation import prepare_relocation_plan
+            selected_provider, selected_session = _current_host(args.provider, args.session_id)
+            result = prepare_relocation_plan(home, args.contract, args.source, args.destination,
+                                             provider=selected_provider, session_id=selected_session)
+            print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True))
+            return 0
+        if args.action == "repository-relocation-preflight":
+            from intent_guardian_parts.repository_relocation import assess_repository_relocation, freeze_relocation_preflight
+            selected_provider, selected_session = _current_host(args.provider, args.session_id)
+            observe = assess_repository_relocation if args.assessment_only else freeze_relocation_preflight
+            result = observe(
+                home, args.source, args.destination,
+                provider=selected_provider, session_id=selected_session,
+            )
+            print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True))
+            return 0
         if args.action == "prepare-workspace-handoff":
             selected_provider, selected_session = _current_host(
                 args.provider,
@@ -1465,6 +1569,10 @@ def main() -> int:
                     session_id=args.session_id,
                 )
             print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+        elif args.action == "prepare-effect-recovery":
+            print(json.dumps(prepare_effect_recovery(
+                path, args.attempt_id, expected_binding_sha256=args.expected_binding_sha256
+            ), ensure_ascii=False, indent=2, sort_keys=True))
         elif args.action == "interventions":
             print(
                 json.dumps(

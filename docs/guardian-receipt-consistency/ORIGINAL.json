@@ -1,0 +1,37 @@
+{
+  "base": "3d4df5412193633b3f26ad1cfa90844068e9489c",
+  "files": [
+    {
+      "path": "scripts/kb/intent_guardian_parts/control_composition.py",
+      "sha256": "e89d7c0c175260ac076ccf8c4540ee24e7b785ec384e3887e22426ba27b55b24"
+    },
+    {
+      "path": "scripts/kb/intent_guardian_parts/policy.py",
+      "sha256": "4e7f782c4afccd88447dbd3d5d38379622952f3ade292c5c4eb406a755f9d129"
+    },
+    {
+      "path": "scripts/kb/intent_guardian_parts/recovery.py",
+      "sha256": "172f19847276be7bdaf2448d76eb53caec29bfaeecbd7bcb7250b2576cc6a0cb"
+    },
+    {
+      "path": "scripts/kb/intent_guardian_parts/resources.py",
+      "sha256": "62b52791a518b3839f212e386c49fc6b5a02c8c6b3a1fd8db49de0c7dcbe411e"
+    },
+    {
+      "path": "scripts/kb/native_decision_journal.py",
+      "sha256": "d8e31978d46b82902b2b9a837272f7e47477dd13244b8ab7fb1352d85a7b493c"
+    },
+    {
+      "path": "tests/test_control_composition_architecture.py",
+      "sha256": "b8b7ca84b7833d6ea0f94b0322ac2a2a7033f4240785b8fbfe2fd8a4ad398680"
+    },
+    {
+      "path": "tests/test_native_receipt_consistency.py",
+      "sha256": "4a50f60c2bd48909e6d47f1c6f80607c637152e2a054bd7e6e1e80b6163dd7a1"
+    },
+    {
+      "path": "tests/test_native_receipt_validation_reuse.py",
+      "sha256": "9ee4a49ff151b3ce9ddce7324b92bc32a67aa36e5b014b4cca63f26716870468"
+    }
+  ]
+}

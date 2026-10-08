@@ -1,0 +1,36 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {"path": "reports/H06B-codex-0150-authority.md", "sha256": "27b52eb201865503691830f436ecb5538a73bd95b875ea72e9a4c8fe85ef2a5c"},
+    {"path": "task-definitions/H06C-r2-final-acceptance.json", "sha256": "fbf01c6d1a18e5016436eb3f071f06cebc85bc628dc64b5643c6fb631dbb76c0"},
+    {"path": "briefs/H06C-r2-final-acceptance.md", "sha256": "e652fa0a39768798bfd408fe664a96106f42dda4e0ab8ca89a11fae35b2869ef"}
+  ],
+  "baseline": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "commands": [
+    {"argv": ["guardian_program.py", "task-add", "H06C-r2-final-acceptance"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "FR2-H04-007 and FR2-H05-007 remain installed-runtime positive-sample obligations; H06B does not claim them fixed and reifies them as FR2-H06B-007 for H06C.",
+    "FR2-H05-011 and FR2-H06-001 have isolated exact-0.150.1 implementation proof but still require installed, scheduler and live-host generation equality; FR2-H06B-008 carries that final gate.",
+    "FR2-H06B-005 preserves the contaminated formal-window fact and assigns a fresh fleet-safe run to H06C without terminating the unrelated Harmony session.",
+    "FR2-H06B-009 records the control-plane promotion rejection and the explicit supplemental-evidence repair instead of hiding the failed transition."
+  ],
+  "findings": [
+    "FR2-H04-007",
+    "FR2-H05-007",
+    "FR2-H05-011",
+    "FR2-H06-001",
+    "FR2-H06B-005",
+    "FR2-H06B-007",
+    "FR2-H06B-008",
+    "FR2-H06B-009"
+  ],
+  "kind": "finding_resolution",
+  "requirements": ["R2-LIVE-ACCEPTANCE", "PROGRAM-GOVERNANCE"],
+  "run_id": "run-gpe-be866b2fa440a994860b63a9",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06B preserves and reissues every inherited installed or fleet-safe obligation to H06C, with explicit evidence for the rejected promotion and no release claim.",
+  "task_id": "H06B-codex-0150-authority",
+  "verdict": "pass"
+}

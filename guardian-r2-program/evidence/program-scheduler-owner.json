@@ -1,0 +1,32 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "scheduler_owner",
+  "baseline": "program:guardian-human-authority-lifeform-r2",
+  "run_id": "program-r2-release-20260828",
+  "verdict": "pass",
+  "summary": "The active Codex scheduler owner and all 15 managed actors run on the installed R2 generation.",
+  "facts": [
+    "runtime-owner.json status is active for provider codex and generation 0.2.5+codex.20260828081159:efac6801160919fbbc4e7a638982b1c45e53efa7d6e83601acf1817a6ad6b46a.",
+    "The live doctor process probe reports managed=15, loaded=15, missing_labels=[], failed_labels={} and retired_loaded_labels=[].",
+    "All scheduler generation, runtime root, runtime tree, provider, inventory and process gates are true.",
+    "Effect debt is clear with zero blocking, pending verification and open intervention."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["install-agents.sh", "--runtime-root", "/Users/eric/.codex/plugins/cache/sulde-local/sulde/0.2.5+codex.20260828081159/runtime", "--provider", "codex", "--accept-llm-data-egress"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["intent-guardian", "doctor", "--workspace", "/Users/eric/ClaudePlugin/sulde-cc-pro/.worktrees/guardian-human-authority-lifeform", "--provider", "codex"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

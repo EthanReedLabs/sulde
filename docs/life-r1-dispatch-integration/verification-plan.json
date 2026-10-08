@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-test-plan-v1",
+  "base": "c0fa7a04ffe2194dbf92baedf04d9d21f376ebe4",
+  "baseline_commit": "c0fa7a04ffe2194dbf92baedf04d9d21f376ebe4",
+  "head": "492cf12e0201f6d2b73267011c8119fc3ae639a7",
+  "risk": "medium",
+  "suite": "targeted",
+  "tests": [
+    "tests.test_runtime_provider",
+    "tests.test_model_dispatch_contract",
+    "tests.test_codex_plugin_install",
+    "tests.test_candidate_codex_plugin",
+    "tests.test_python_environment_preflight",
+    "tests.test_codex_hook_bridge",
+    "tests.test_hook_observer_closure",
+    "tests.test_native_posttool_delivery"
+  ],
+  "scope": {
+    "selection": "explicit_integration_impact_set",
+    "baseline_full_evidence": "docs/life-hook-observability-closure/R1-tests.json",
+    "shared_file": "scripts/release/install_codex_plugin.py",
+    "rationale": "No new core semantic change; verify the combined installer, dispatch, candidate environment and CLI Hook boundary. Retain R1 full-suite evidence only for unchanged scope."
+  }
+}

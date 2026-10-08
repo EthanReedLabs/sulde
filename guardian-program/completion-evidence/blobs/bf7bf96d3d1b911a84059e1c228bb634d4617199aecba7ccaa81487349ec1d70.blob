@@ -1,0 +1,33 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "finding_resolution",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "All five T32 implementation, release-order and governance findings have direct current-task resolutions with no successor task.",
+  "facts": [
+    "F32-001 is fixed by controlled linked-worktree identity plus literal/safe Git attribution and a production add/commit/merge canary.",
+    "F32-002 is fixed by restricting human-readable action aliases to the native card top level while retaining top-level tamper rejection.",
+    "F32-003 is fixed by moving bounded helpers into local_file_operations.py and passing the 3000-line plus full isolated gates.",
+    "F32-004 is fixed operationally by ordering final release commit before sealing and executing the one-shot installer grant; no stale grant was reused.",
+    "F32-005 is fixed by c7fd29a restoring the unowned duplicate test to baseline and rerunning 263 scoped tests."
+  ],
+  "requirements": ["WP56-D", "DERIVED-SPLIT", "PROGRAM-GOVERNANCE"],
+  "findings": ["F32-001", "F32-002", "F32-003", "F32-004", "F32-005"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["python3.10", "-m", "unittest", "T32-seven-scoped-modules"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/T32-codex-worktree-git-trace.md",
+      "sha256": "917722adc17a1774098fd8a73fea910c67487d1ad75aa8635ca17501baac5c5b"
+    }
+  ]
+}

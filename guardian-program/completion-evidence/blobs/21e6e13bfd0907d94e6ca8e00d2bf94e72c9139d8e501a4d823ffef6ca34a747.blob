@@ -1,0 +1,43 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T32-codex-worktree-git-trace",
+  "kind": "live_host_canary",
+  "baseline": "f019ee9a5d371475315f92ded0447acd8cb7ab00",
+  "run_id": "run-gpe-e7c3801f12abd10cda71ee39",
+  "verdict": "pass",
+  "summary": "The same bound Codex session uses the installed T32 runtime for live tool guards and completes real worktree Git canaries with operational readiness ready.",
+  "facts": [
+    "Session 01a00d6f-65b3-7663-b51b-f88684ffa561 remains bound to the active T32 lane in the Sulde workspace.",
+    "SessionStart and prompt observations are accepted through verified hot rebind; current-runtime tool_guard and tool_result observations are live_verified with verified call-id continuity.",
+    "T31 worktree exact add and commit succeeded; dev safe merge and main ff-only succeeded through installed PreToolUse, proving actual worktree attribution rather than a synthetic parser call.",
+    "An unsupported merge -m shape was denied before state change, demonstrating that repository attribution does not authorize arbitrary metadata operations.",
+    "Doctor reports status ready and operational readiness ready; every selected interactive gate is true, scheduler is 15/15, effect debt clear and native pairing settled."
+  ],
+  "requirements": ["WP56-D", "PROGRAM-GOVERNANCE"],
+  "findings": ["F32-001"],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "-C", "<T31-worktree>", "add", "--", "four-exact-evidence-paths"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "-C", "<T31-worktree>", "commit", "-m", "chore(guardian): record T31 live acceptance"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["intent-guardian", "doctor", "--provider", "codex", "--session-id", "01a00d6f-65b3-7663-b51b-f88684ffa561"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/T32-codex-worktree-git-trace.md",
+      "sha256": "917722adc17a1774098fd8a73fea910c67487d1ad75aa8635ca17501baac5c5b"
+    }
+  ]
+}

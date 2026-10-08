@@ -1,0 +1,41 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T22-material-cas-lane-binding",
+  "kind": "requirement_traceability",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-656b9b20b4b4882b1199d002",
+  "verdict": "pass",
+  "summary": "T22 evidence binds session ownership, incremental hot-path state and unknown-material fail-closed behavior to the integrated candidate.",
+  "facts": [
+    "Material CAS advances once only after an allowed material action and task lanes bind exact provider, session, task epoch and proposal digest.",
+    "The split-state and critic checkpoint gates preserve incremental persisted state and bounded lock ownership rather than replaying authority history in the hook path."
+  ],
+  "requirements": ["DERIVED-OWNERSHIP", "DERIVED-HOTPATH", "WP56-C"],
+  "findings": [],
+  "acceptance": [
+    {
+      "requirement_id": "DERIVED-OWNERSHIP",
+      "clause": "一个 lane 的暂停、任务切换和授权不会污染无关会话",
+      "fact": "Denied or read-only observations from another session leave the proposal material CAS unchanged, while the current task lane requires an exact session and epoch binding."
+    },
+    {
+      "requirement_id": "DERIVED-HOTPATH",
+      "clause": "Hook 不全量重放历史，慢验证不占状态锁，审计 cursor 可持久恢复",
+      "fact": "The hook consumes persisted material sequence and task-lane/checkpoint projections; exact contract writes occur under the short state lock while independent critic evidence remains outside that mutation path."
+    },
+    {
+      "requirement_id": "WP56-C",
+      "clause": "未知或物质动作在守卫不可用时拒绝，窄只读诊断仍可用",
+      "fact": "Unknown or material execution remains fail closed at the session-bound authority boundary, while denied and read-only observations remain non-authorizing and do not mutate material CAS."
+    }
+  ],
+  "commands": [
+    {
+      "argv": ["env", "PYTHONDONTWRITEBYTECODE=1", "python3", "-m", "unittest", "-q", "tests.test_material_cas_lane_binding", "tests.test_intent_guardian_state", "tests.test_critic_checkpoint", "tests.test_host_capabilities"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

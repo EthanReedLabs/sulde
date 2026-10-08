@@ -1,0 +1,33 @@
+{
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "T26-production-session-recovery",
+  "title": "官方安装并恢复两个既有 Codex 会话的真实运行就绪",
+  "owner": "guardian-coordinator",
+  "capability_tier": "deep",
+  "base_commit": "f87d58689968372cf4332860ac0ee155241e5424",
+  "depends_on": [
+    "T25-release-gate-closure",
+    "T00-control-plane"
+  ],
+  "owned_paths": [
+    "integrations/codex/plugins/sulde/.codex-plugin/plugin.json",
+    "guardian-program/reports/T26-production-session-recovery.md"
+  ],
+  "requirements": [
+    "WP56-G",
+    "DERIVED-READINESS",
+    "DERIVED-DELIVERY",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "acceptance": [
+    "dev 候选经独立全量验证后进入 main 且 cachebuster、stage、installed runtime 和执行摘要属于同一 generation",
+    "官方事务安装链及 generation-fenced scheduler reconciliation 成功且保留可验证回滚边界",
+    "两个指定旧会话均产生当前 installed generation 的真实宿主证据并在不编辑历史账本、不重放审批或副作用的前提下恢复 current-lane operational readiness"
+  ],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "task_verified": ["targeted_tests", "failure_injection"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"]
+  }
+}

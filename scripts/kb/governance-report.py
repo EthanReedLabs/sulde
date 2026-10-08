@@ -49,7 +49,10 @@ CONFIG_THRESHOLD_KEYS = {
     "governance_breach_counter_start_backfilled",
     "degradation_drop_ratio",
 }
-DECISION_TRACE = "本分发不包含历史提案处置记录；结论与批准状态须以本地可核验记录为准"
+DECISION_TRACE = (
+    "P-01：通过(eric)已实施；P-02：通过(eric)已实施；P-03：通过(eric)已实施；"
+    "P-04：通过(eric)；P-05：通过(eric)；P-06：通过(eric)；P-07：通过(eric)"
+)
 
 
 
@@ -522,8 +525,54 @@ def collect_latest_report(report_dir: Path, pattern: str, label: str, field: str
     return {field: int(match.group(1)), "path": str(path)}
 
 
-def collectors(home: Path, now: datetime) -> dict[str, Callable[[], Any]]:
+def collect_policy_review(home: Path, now: datetime, *, ingest: bool = False) -> dict[str, Any]:
+    module = runpy.run_path(str(Path(__file__).with_name("guardian_policy_review.py")))
+    ingestion = module["ingest_audits"](home) if ingest else {"status": "not_requested", "recorded": 0}
+    projection = module["project"](home, now=now.isoformat())
+    projection["ingestion"] = ingestion
+    return projection
+
+
+def collect_retrospectives(home: Path, now: datetime) -> dict[str, Any]:
+    module = runpy.run_path(str(Path(__file__).with_name("experience_maintenance.py")))
+    return module["project_retrospectives"](home, now=now.isoformat())
+
+
+def retrospective_section(snapshot: dict[str, Any]) -> str:
+    row = snapshot.get("sources", {}).get("agent_retrospectives", {})
+    lines = ["### 任务复盘每日聚合与每周候选", "", "后台归并最终一致；自动观察不等于 verified，不改变既定任务结论。"]
+    if row.get("status") != "available":
+        return "\n".join([*lines, "复盘源 unavailable；不推断为无问题。", ""])
+    lines.extend(["仅覆盖已归并记录；managed 逐工具审计仍缺全局可信注册，不宣称全来源覆盖。",
+                  "候选须独立评审，原始经验与未解决历史不属于详情清理对象。", "", "```json",
+                  json.dumps(row["data"], ensure_ascii=False, sort_keys=True), "```", ""])
+    return "\n".join(lines)
+
+
+def policy_review_section(snapshot: dict[str, Any]) -> str:
+    source_row = snapshot.get("sources", {}).get("guardian_policy_review", {})
+    lines = ["### Guardian 规则争议复核", "", "仅形成独立人工评审候选；不授予执行权限、不修改生产规则，unknown 效果保持 unknown。"]
+    if source_row.get("status") != "available":
+        return "\n".join([*lines, "", "争议反馈源 unavailable；不得推断为无争议。", ""])
+    data = source_row["data"]
+    lines.extend(["", f"观察时间：{data['observed_at']}；滚动窗口：{data['window_days']} 天。"])
+    if data.get("ingestion", {}).get("status") == "degraded":
+        lines.append("自动登记 degraded：存在未消费或损坏审计源；本窗口候选不代表完整拒绝历史。")
+    if data.get("ingestion", {}).get("discovery_complete") is False:
+        lines.append("目录发现未完成（discovery_complete=false）：仅覆盖已发现源；未发现日志尚未纳入，不宣称全量覆盖。")
+    for row in data["weekly_candidates"]:
+        lines.append(f"- {row['rule_id']}@{row['rule_version']} / {row['reason_code']}：{row['disposition']}；复发 {row['recurrence']}；建议 {row['suggested_disposition']}；指纹 `{row['fingerprint']}`。")
+    if not data["weekly_candidates"]:
+        lines.append("本窗口无已登记争议；不代表生产拒绝均正确。")
+    # Deterministic, replayable evidence projection survives optional LLM failure.
+    lines.extend(["", "```json", json.dumps(data, ensure_ascii=False, sort_keys=True), "```", ""])
+    return "\n".join(lines)
+
+
+def collectors(home: Path, now: datetime, *, ingest_policy_feedback: bool = False) -> dict[str, Callable[[], Any]]:
     return {
+            "agent_retrospectives": (lambda: collect_retrospectives(home, now)),
+            "guardian_policy_review": (lambda: collect_policy_review(home, now, ingest=ingest_policy_feedback)),
             "status": (lambda: collect_status(home)),
             "fleet": collect_fleet,
             "kb_golden": collect_kb_golden,
@@ -550,11 +599,11 @@ def collectors(home: Path, now: datetime) -> dict[str, Callable[[], Any]]:
     }
 
 
-def collect(home: Path | None = None, now: datetime | None = None) -> dict[str, Any]:
+def collect(home: Path | None = None, now: datetime | None = None, *, ingest_policy_feedback: bool = False) -> dict[str, Any]:
     home = home or kb_home()
     now = now or datetime.now().astimezone()
     return {"collected_at": now.isoformat(), "kb_home": str(home),
-            "sources": {name: source(call, name=name, collected_at=now.isoformat()) for name, call in collectors(home, now).items()}}
+            "sources": {name: source(call, name=name, collected_at=now.isoformat()) for name, call in collectors(home, now, ingest_policy_feedback=ingest_policy_feedback).items()}}
 
 
 def load_thresholds(path: Path = THRESHOLDS_PATH) -> dict[str, dict[str, Any]]:
@@ -1365,7 +1414,7 @@ def main() -> int:
     home = kb_home()
     try:
         thresholds = load_thresholds()
-        snapshot = collect(home)
+        snapshot = collect(home, ingest_policy_feedback=not (args.dry_run or args.collect_only))
         lights = prepare_lights(snapshot, thresholds, home)
     except (GovernanceError, OSError, UnicodeError, json.JSONDecodeError) as error:
         print(f"ERROR governance-report: {error}", file=sys.stderr)
@@ -1393,6 +1442,7 @@ def main() -> int:
     else:
         mode = "RESULT"
 
+    report = report.rstrip() + "\n\n" + policy_review_section(snapshot) + "\n" + retrospective_section(snapshot)
     if args.dry_run:
         print(report, end="")
         return 0

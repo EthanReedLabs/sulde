@@ -107,12 +107,13 @@ def render_index(root: Path) -> tuple[str, int]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo-root", type=Path, default=repo_root())
     parser.add_argument(
         "--check", action="store_true", help="fail if knowledge/INDEX.md is stale"
     )
     args = parser.parse_args()
 
-    root = repo_root()
+    root = args.repo_root.resolve()
     output_path = root / "knowledge" / "INDEX.md"
     rendered, total = render_index(root)
     if args.check:

@@ -1,0 +1,441 @@
+{
+  "schema": "sediment-candidate-dedup-v1",
+  "source_head": "11c8f9063da32606caeccd4355be8d8d5b44b9c8",
+  "purpose": "recall",
+  "search": {
+    "type": [
+      {
+        "query": "read_text 后字符串 replace 被误判为破坏性文件替换",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "ap-0243",
+            "title": "控制命令组合违规被误升级为破坏性暂停",
+            "score": 0.829245,
+            "source_path": "knowledge/anti-patterns/0243-control-composition-misclassified-as-destructive-pause.md",
+            "role": "route_negative",
+            "applicability": "skip"
+          },
+          {
+            "doc_id": "tech-docs/user-visible-model-output-contract",
+            "title": "用户可见模型输出的事实、叙事与清洗契约",
+            "score": 0.731208,
+            "source_path": "knowledge/tech-docs/user-visible-model-output-contract.md",
+            "role": "outcome_negative",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0162",
+            "title": "0162 MVI reducer 硬编码用户可见字符串导致 i18n 泄漏",
+            "score": 0.604935,
+            "source_path": "knowledge/anti-patterns/0162-mvi-reducer-hardcoded-english-toast-i18n-leak.md",
+            "role": "general",
+            "applicability": "apply"
+          }
+        ]
+      },
+      {
+        "query": "同名方法缺少接收对象类型 顺序赋值 有界前向证明",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "ap-0019",
+            "title": "Service 为每种类型写单独的方法",
+            "score": 0.724154,
+            "source_path": "knowledge/anti-patterns/0019-aiservice.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0164",
+            "title": "0164 响应 DTO 按假设强类型建模而未对照真实响应",
+            "score": 0.543074,
+            "source_path": "knowledge/anti-patterns/0164-response-dto-typed-by-assumption-not-capture.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0135",
+            "title": "0135 跨端导航 routing id 串单一 extra 传 vs 分离参数传 — Android 易污染下游",
+            "score": 0.5,
+            "source_path": "knowledge/anti-patterns/0135-cross-end-routing-id-single-extra-vs-separate-params.md",
+            "role": "general",
+            "applicability": "apply"
+          }
+        ]
+      }
+    ],
+    "registration": [
+      {
+        "query": "重复记忆登记被拒绝 丢失 PostToolUse 后存在待验证债务",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "ap-0210",
+            "title": "NNNN — 用 worker 日志 SUCCESS 代替 UI 落屏与设备端 DB 验收",
+            "score": 0.5,
+            "source_path": "knowledge/anti-patterns/0210-log-success-not-acceptance-evidence.md",
+            "role": "outcome_negative",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "tech-docs/案例研究/02-iOS-TCA架构实践/TCA依赖注入scope错配与占位值",
+            "title": "TCA 依赖注入 Scope 错配与占位值案例研究",
+            "score": 0.5,
+            "source_path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/TCA依赖注入scope错配与占位值.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0243",
+            "title": "控制命令组合违规被误升级为破坏性暂停",
+            "score": 0.494094,
+            "source_path": "knowledge/anti-patterns/0243-control-composition-misclassified-as-destructive-pause.md",
+            "role": "applicability",
+            "applicability": "apply"
+          }
+        ]
+      },
+      {
+        "query": "幂等请求规范 存储来源 事务回执 独立 verifier 契约不一致",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "tech-docs/端侧文本推理连续请求的状态边界",
+            "title": "端侧文本推理连续请求的状态边界",
+            "score": 0.511499,
+            "source_path": "knowledge/tech-docs/端侧文本推理连续请求的状态边界.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则",
+            "title": "流式快照合并的单调性守则",
+            "score": 0.5,
+            "source_path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "work-model/canonical-byte-authority-self-hosted-verification",
+            "title": "规范化字节权威与自托管验证",
+            "score": 0.5,
+            "source_path": "knowledge/work-model/canonical-byte-authority-self-hosted-verification.md",
+            "role": "route_positive",
+            "applicability": "apply"
+          }
+        ]
+      }
+    ],
+    "dependency": [
+      {
+        "query": "无关记忆变化导致业务提案反复失效",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "tech-docs/案例研究/02-iOS-TCA架构实践/观察系统条件读取与依赖追踪失稳",
+            "title": "观察系统条件读取与依赖追踪失稳",
+            "score": 0.773958,
+            "source_path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/观察系统条件读取与依赖追踪失稳.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "tech-docs/派生产物缓存双失效与负缓存",
+            "title": "派生产物缓存:双失效与负缓存纪律",
+            "score": 0.5,
+            "source_path": "knowledge/tech-docs/派生产物缓存双失效与负缓存.md",
+            "role": "problem_context",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0061",
+            "title": "0061 协调端凭印象不查技术真值",
+            "score": 0.418322,
+            "source_path": "knowledge/anti-patterns/0061-placeholder-3-42.md",
+            "role": "general",
+            "applicability": "apply"
+          }
+        ]
+      },
+      {
+        "query": "审批 freshness 全局序列与显式资源依赖范围不一致",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "ap-0245",
+            "title": "人工审批超时不是授权结果",
+            "score": 0.625643,
+            "source_path": "knowledge/anti-patterns/0245-permission-request-timeout-is-not-authority.md",
+            "role": "applicability",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "work-model/skills/multi-source-review",
+            "title": "multi-source-review — 多源评审 + 分类决策",
+            "score": 0.5,
+            "source_path": "knowledge/work-model/skills/multi-source-review.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "work-model/governance-observation-contract",
+            "title": "治理观察的时间、范围与暂态契约",
+            "score": 0.5,
+            "source_path": "knowledge/work-model/governance-observation-contract.md",
+            "role": "general",
+            "applicability": "apply"
+          }
+        ]
+      }
+    ],
+    "continuation": [
+      {
+        "query": "新会话隔离后找不到旧任务续接 lane",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "ap-0181",
+            "title": "长寿命会话跨越插件热更新持有悬空路径",
+            "score": 1,
+            "source_path": "knowledge/anti-patterns/0181-live-session-plugin-hot-update-dangling-path.md",
+            "role": "root_cause",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0094",
+            "title": "Wizard ViewModel 会话 ID 凭本地随机 UUID 不接 server 返回 ID → 后端报错",
+            "score": 0.381557,
+            "source_path": "knowledge/anti-patterns/0094-wizard-viewmodel-threadid-random-uuid-not-flowuuid.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0242",
+            "title": "只读 MCP 中断被升级为外部效果干预",
+            "score": 0.373753,
+            "source_path": "knowledge/anti-patterns/0242-read-only-mcp-interruption-false-effect-intervention.md",
+            "role": "applicability",
+            "applicability": "apply"
+          }
+        ]
+      },
+      {
+        "query": "独立会话合同和共享合同续接前置条件不兼容",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "tech-docs/端侧文本推理连续请求的状态边界",
+            "title": "端侧文本推理连续请求的状态边界",
+            "score": 0.623412,
+            "source_path": "knowledge/tech-docs/端侧文本推理连续请求的状态边界.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则",
+            "title": "流式快照合并的单调性守则",
+            "score": 0.5,
+            "source_path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0201",
+            "title": "XXXX — 沙箱权限噪声掩盖脚本真实行为,preflight 结论前需提升权限干净复跑",
+            "score": 0.5,
+            "source_path": "knowledge/anti-patterns/0201-sandbox-permission-noise-masks-preflight-verdict.md",
+            "role": "route_negative",
+            "applicability": "skip"
+          }
+        ]
+      }
+    ],
+    "locks": [
+      {
+        "query": "合并后回执尾部只锁一个合同遗漏源合同和会话路由",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "tech-docs/案例研究/05-诊断方法论/流式连接三类终止路径与终态闸门",
+            "title": "流式连接三类终止路径与终态闸门",
+            "score": 0.5,
+            "source_path": "knowledge/tech-docs/案例研究/05-诊断方法论/流式连接三类终止路径与终态闸门.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "work-model/evidence-gate-contract",
+            "title": "证据门禁的来源、格式与时序契约",
+            "score": 0.5,
+            "source_path": "knowledge/work-model/evidence-gate-contract.md",
+            "role": "route_positive",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "work-model/canonical-byte-authority-self-hosted-verification",
+            "title": "规范化字节权威与自托管验证",
+            "score": 0.311509,
+            "source_path": "knowledge/work-model/canonical-byte-authority-self-hosted-verification.md",
+            "role": "route_positive",
+            "applicability": "apply"
+          }
+        ]
+      },
+      {
+        "query": "集成所有权模型变化 多对象有序锁 中断恢复只提交一次",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "tech-docs/端侧文本推理连续请求的状态边界",
+            "title": "端侧文本推理连续请求的状态边界",
+            "score": 0.754967,
+            "source_path": "knowledge/tech-docs/端侧文本推理连续请求的状态边界.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则",
+            "title": "流式快照合并的单调性守则",
+            "score": 0.5,
+            "source_path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0151",
+            "title": "滚动容器内多手势共存:先划事件所有权矩阵,再写手势代码",
+            "score": 0.5,
+            "source_path": "knowledge/anti-patterns/0151-scroll-container-gesture-ownership.md",
+            "role": "general",
+            "applicability": "apply"
+          }
+        ]
+      }
+    ],
+    "preflight": [
+      {
+        "query": "测试跑很久才发现默认 Python 缺少 PyYAML",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "tech-docs/案例研究/05-诊断方法论/性能诊断方法论与常见误区",
+            "title": "移动端感知延迟性能诊断方法论与常见误区",
+            "score": 0.5,
+            "source_path": "knowledge/tech-docs/案例研究/05-诊断方法论/性能诊断方法论与常见误区.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0065",
+            "title": "0065 简单任务用 ultrathink",
+            "score": 0.5,
+            "source_path": "knowledge/anti-patterns/0065-ultrathink.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0200",
+            "title": "NNNN — 并发测试任务共写同一结果/缓存目录导致假失败",
+            "score": 0.474871,
+            "source_path": "knowledge/anti-patterns/0200-parallel-test-tasks-shared-output-dir-flaky-failures.md",
+            "role": "problem_context",
+            "applicability": "apply"
+          }
+        ]
+      },
+      {
+        "query": "实际解释器依赖预检未在昂贵测试最外层执行",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "tech-docs/案例研究/01-Android媒体与性能工程/音频预览预加载与起播延迟",
+            "title": "音频预览预加载与起播延迟优化案例研究",
+            "score": 0.502435,
+            "source_path": "knowledge/tech-docs/案例研究/01-Android媒体与性能工程/音频预览预加载与起播延迟.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "tech-docs/案例研究/02-iOS-TCA架构实践/观察系统条件读取与依赖追踪失稳",
+            "title": "观察系统条件读取与依赖追踪失稳",
+            "score": 0.5,
+            "source_path": "knowledge/tech-docs/案例研究/02-iOS-TCA架构实践/观察系统条件读取与依赖追踪失稳.md",
+            "role": "general",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0235",
+            "title": "launcher 规范已更新，但已生成包装器仍是旧壳",
+            "score": 0.5,
+            "source_path": "knowledge/anti-patterns/0235-generated-launcher-not-refreshed-after-spec-change.md",
+            "role": "general",
+            "applicability": "apply"
+          }
+        ]
+      }
+    ],
+    "release": [
+      {
+        "query": "安装成功缺少授权消费和独立验证证据",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "work-model/verify-build",
+            "title": "验证流程:simulator/真机 install 必含显式 5 步(三端共享)",
+            "score": 0.75403,
+            "source_path": "knowledge/work-model/verify-build.md",
+            "role": "root_cause",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0247",
+            "title": "人工 Allow 未被消费，执行层再次决策",
+            "score": 0.709186,
+            "source_path": "knowledge/anti-patterns/0247-human-allow-not-consumed-as-authority.md",
+            "role": "route_positive",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0245",
+            "title": "人工审批超时不是授权结果",
+            "score": 0.494893,
+            "source_path": "knowledge/anti-patterns/0245-permission-request-timeout-is-not-authority.md",
+            "role": "root_cause",
+            "applicability": "apply"
+          }
+        ]
+      },
+      {
+        "query": "旧进程自证新运行时 prepare finalize 无法证明中间真实 denial 代际",
+        "exit_code": 0,
+        "hits": [
+          {
+            "doc_id": "work-model/schema-fixture-migration-and-real-execution",
+            "title": "Schema 收紧后的 fixture 迁移与真实执行覆盖",
+            "score": 0.716398,
+            "source_path": "knowledge/work-model/schema-fixture-migration-and-real-execution.md",
+            "role": "applicability",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "ap-0241",
+            "title": "Windows 与 WSL 构建的迁移行尾不一致导致 SQLx 校验冲突",
+            "score": 0.715901,
+            "source_path": "knowledge/anti-patterns/0241-windows-wsl-sqlx-migration-line-ending-checksum.md",
+            "role": "outcome_negative",
+            "applicability": "apply"
+          },
+          {
+            "doc_id": "work-model/canonical-byte-authority-self-hosted-verification",
+            "title": "规范化字节权威与自托管验证",
+            "score": 0.5,
+            "source_path": "knowledge/work-model/canonical-byte-authority-self-hosted-verification.md",
+            "role": "problem_context",
+            "applicability": "apply"
+          }
+        ]
+      }
+    ]
+  }
+}

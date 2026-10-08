@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T28-cleanup-quarantine-consumer",
+  "kind": "task_report",
+  "baseline": "f8c830b02a814cf40c541ef861569882062174c0",
+  "run_id": "run-gpe-f218f0c4044547ecb9513656",
+  "verdict": "pass",
+  "summary": "T28 corrects the sole cleanup consumer without weakening authoritative same-resource effect safety.",
+  "facts": [
+    "Worker commit b2b73cce77f7aef4a09d8dc40c2b9247029c73d0 changes exactly three registered paths and is integrated on dev as 1908872.",
+    "The report records the projection mismatch, archive-before-remove ordering, failure matrix and sedimentation candidate."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T28-cleanup-quarantine-consumer.md",
+      "sha256": "1db2dfeebd422e2e2645bd4bbae5098d0ee17574763a3074d71a5665736c785a"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T21-authority-ledger-compat",
+  "kind": "task_report",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-c4d6a18cabdc0a254f1a2eb5",
+  "verdict": "pass",
+  "summary": "T21 made mixed-generation authority replay safe, unified new Codex authority on one typed lifecycle and added append-only exact-once recovery.",
+  "facts": [
+    "Worker commit 78ce09fd3528e66f7998be583a6dd038a1dbfe64 is clean and changes only T21-owned paths.",
+    "The report explicitly preserves baseline-red and T24 shared-fixture work as integration obligations."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T21-authority-ledger-compat.md",
+      "sha256": "7f5ef163dbc02017da21c0634c96c819c5f54fc4b0bfadff87579054a37f7caf"
+    }
+  ]
+}

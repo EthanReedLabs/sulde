@@ -1,0 +1,24 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T23-current-lane-readiness",
+  "kind": "changed_files",
+  "baseline": "9f21a09576f1267612ccf8990e7dfee1ffab3127",
+  "run_id": "run-gpe-29520e7a7b23276c16fbdd20",
+  "verdict": "pass",
+  "summary": "The T23 source and test bytes are bound to commit 74061a6 and the frozen ownership set.",
+  "facts": [
+    "scripts/kb/operational_readiness.py sha256 is 4de0ab11504028fe14a3d902505b24f191958dd6217e99fa14d2ddce60c26dbf.",
+    "tests/test_operational_readiness.py sha256 is 5adaca46b76d1162a7114e3b84a0c923c03e2a01e549baf3461c7a794a89c6aa."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [],
+  "artifacts": [
+    {
+      "path": "reports/T23-current-lane-readiness.md",
+      "sha256": "0045897ec6e27e329213c585e0a53900e827e4e187caae9c0ab482c76ca2449c"
+    }
+  ]
+}

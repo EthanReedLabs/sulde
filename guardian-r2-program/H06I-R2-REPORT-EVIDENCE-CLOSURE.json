@@ -1,0 +1,95 @@
+{
+  "schema": "sulde-h06i-r2-report-evidence-closure-v1",
+  "program_id": "guardian-human-authority-lifeform-r2",
+  "task_id": "H06I-R2-interruption-authority",
+  "created_at": "2026-08-28T05:16:46Z",
+  "decision": "pass",
+  "authority": {
+    "amendment_path": "guardian-r2-program/SCOPE-FREEZE-AMENDMENT-006.json",
+    "amendment_sha256": "873050a9588d864e2c09cd1cb61e1125135e388d574c50849c1c164b4e0edaa6",
+    "brief_sha256": "3f5ceef24ea7c233a854b78a26fdfab05cae30c1d8f95dad4439d2a315793b67",
+    "report_projection_sha256": "f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183",
+    "provider_invocations_authorized": 1,
+    "provider_invocations_consumed": 1,
+    "automatic_retry": false
+  },
+  "managed_run": {
+    "slug": "r2-h06i-r2-report-evidence-closure",
+    "run_id": "run-7981543b5a264a9b8d819802",
+    "execution_binding_sha256": "b1d7aa032ebb9cabe293ef4202db219fc1dff502548460058a2cb718bd3daaf3",
+    "runtime_authority_sha256": "bcbe08e8cac991deff0a482c3f84d4adcc02d42a33609909310282287aaf77df",
+    "runtime_tree_sha256": "05099b2c71c273a0a60ab214143b1887b9289a7ec34420c10146e2c2aba973f7",
+    "duration_seconds": 61,
+    "provider_returncode": 0,
+    "provider_stop_reason": "completed",
+    "provider_terminal_event": "turn.completed",
+    "provider_natural_terminal": true,
+    "cleanup_quiescent": true,
+    "runtime_status": "success",
+    "report_verdict": "passed",
+    "report_failure_count": 0,
+    "allowed_verification_command_completed": 1,
+    "test_commands_completed": 0,
+    "candidate_writes_by_provider": 0
+  },
+  "artifacts": {
+    "status": {
+      "sha256": "1fdb703c83e7c9ed4e7ffdf6ad480762a8e46a50cba652be0425a2a55f2b12b1"
+    },
+    "events": {
+      "sha256": "95ccf966c1d67dfd732212701eb617eeca0ef8256389a95a7670611b268ff5b1",
+      "bytes": 21226,
+      "lines": 12,
+      "turn_completed": 1
+    },
+    "stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "run_ledger": {
+      "sha256": "dbbb98e8404c6b08fc6bece1a5b1a15ddbcb83d53cb9de3f469bbc010eb6897e",
+      "bytes": 1267,
+      "execution_binding_sha256": "b1d7aa032ebb9cabe293ef4202db219fc1dff502548460058a2cb718bd3daaf3",
+      "output_sha256": "f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183",
+      "disposed_quiescent": true
+    },
+    "output_last_message": {
+      "sha256": "f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183",
+      "bytes": 5875
+    },
+    "durable_report": {
+      "sha256": "f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183",
+      "bytes": 5875,
+      "current_success_claims": 1,
+      "verdict_passed": true
+    },
+    "native_receipt": {
+      "file_sha256": "cd46c335710188f8afd7c0c7492fb2676ea88c9ab50746d62f59431cfd7ae175",
+      "receipt_sha256": "b524153d5760eef1e6395a329e661e128f3086be16973ced51e4920291082845",
+      "terminal_status": "succeeded",
+      "termination_domain": "provider_natural",
+      "output_sha256": "f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183",
+      "report_sha256": "f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183"
+    }
+  },
+  "frozen_candidate_sha256": {
+    "scripts/kb/native_agent_broker.py": "0393e1bb5c2cee278f06eb3c2ca2a068aba481cff82beacb28ae0205a0af39c7",
+    "scripts/kb/agent-runtime.py": "9effefc5f477dc7d78a985ad028e9dcf790b548b1d846c7c6a2c46870fb7e740",
+    "tests/test_native_agent_broker.py": "0ed8ced54a46fe6fbcbb1ee746aa6dec33692ba1ef644d1d4d38bce679f88850",
+    "tests/test_agent_runtime.py": "a637b37445adad801ae865d83852890b1c40bd24706823ed5c1525d7a40b2b76",
+    "guardian-r2-program/reports/H06I-R2-interruption-authority.md": "f7558b1449d53d17e6051c927235ae14bbc730cc35d6e62c292fb8a6c250f183"
+  },
+  "finding_resolution": {
+    "finding_id": "FR2-H06I-R2-015",
+    "status": "resolved",
+    "resolution": "the failed three-command projection was replaced by one truthful current-execution seven-path hash claim; command text and command digest match, report verdict passes, and all canonical terminal surfaces bind identical bytes"
+  },
+  "next_authorized_stage": "coordinator dual-TMPDIR, failure-injection and fresh no-hardlink clone verification",
+  "unchanged_boundaries": {
+    "behavior_or_test_change": false,
+    "test_reexecution": false,
+    "production_install": false,
+    "merge_or_push": false,
+    "h06j_started": false
+  }
+}

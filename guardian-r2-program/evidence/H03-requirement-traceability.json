@@ -1,0 +1,49 @@
+{
+  "acceptance": [
+    {
+      "clause": "生命体在 5 秒内报告卡顿并在能力边界内处理孤儿锁、退出 actor、冲突 lane 与 runtime drift",
+      "fact": "H03 derives 5/30-second liveness from trusted supervisor receipt time, reclaims only exact dead-owner plus expired-lease locks inside the 10-second bound, applies deterministic restart budgets, pauses only minimal conflict lanes and rejects generation drift.",
+      "requirement_id": "R2-RECOVERY-SUPERVISOR"
+    },
+    {
+      "clause": "干预有预算、有终态、有 receipt，不能扩大 allowed paths、静默换宿主或无限重试",
+      "fact": "Recommendations, current-world authorizations, durable prepare, one-shot adapter apply, reprobe and independent verifier receipts are separately bound; path/provider/task/generation/command drift fails closed and restart exhaustion produces one terminal receipt.",
+      "requirement_id": "R2-RECOVERY-SUPERVISOR"
+    },
+    {
+      "clause": "H00-H06 均有严格 owned paths、证据包、finding 处置和独立 reviewer，失败候选不合并",
+      "fact": "H03 changed exactly four frozen paths; its first candidate and repair1 were held after nine verified findings, repair2 passed strict verification, and all findings have append-only fixed_current dispositions before promotion.",
+      "requirement_id": "PROGRAM-GOVERNANCE"
+    },
+    {
+      "clause": "G0-G6/T32 accepted 历史不被重建、重放或改写",
+      "fact": "H03 was developed in a preserved full clone from frozen dev and integrated only into the R2 coordinator after accepted H01/H02; predecessor events/evidence, dev/main, installed runtime and production state were not rewritten.",
+      "requirement_id": "PROGRAM-GOVERNANCE"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/H03-recovery-supervisor.md",
+      "sha256": "ccbd376477e02cc5fb3770ecf78afe47641a0d7924b33b6aa998fe7eed9d0c55"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "Every acceptance clause assigned to H03's R2-RECOVERY-SUPERVISOR and PROGRAM-GOVERNANCE requirements is mapped exactly once.",
+    "The mapping claims the local supervisor protocol and synthetic adapters only; H04 real resource adapters, H05 recovery lane, installation and live-host acceptance remain downstream work."
+  ],
+  "findings": [
+    "FR2-H03-001", "FR2-H03-002", "FR2-H03-003",
+    "FR2-H03-004", "FR2-H03-005", "FR2-H03-006",
+    "FR2-H03-007", "FR2-H03-008", "FR2-H03-009"
+  ],
+  "kind": "requirement_traceability",
+  "requirements": ["R2-RECOVERY-SUPERVISOR", "PROGRAM-GOVERNANCE"],
+  "run_id": "run-gpe-911f4018e20b6c8d699f94e3",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H03 traces all assigned recovery-supervisor and governance clauses without claiming H04-H06 or live-host completion.",
+  "task_id": "H03-recovery-supervisor",
+  "verdict": "pass"
+}

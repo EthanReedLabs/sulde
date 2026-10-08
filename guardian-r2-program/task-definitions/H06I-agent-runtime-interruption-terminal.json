@@ -1,0 +1,39 @@
+{
+  "acceptance": [
+    "external_effect_outcome_unknown maps to awaiting_human and a real ordered interrupt-result-disposed ledger with returncode zero and quiescent cleanup is accepted as valid local interruption evidence",
+    "missing, duplicate, reordered, mismatched reason, non-integer returncode and non-quiescent disposal ledgers still fail closed with precise tests",
+    "a managed Codex awaiting-human terminal is preserved without a post-terminal mismatch, duplicate human decision, blind retry or external effect replay",
+    "the worker report binds the H06H run1 red evidence and claims only the H06I candidate, leaving integration, H06J and final R2 acceptance to the coordinator"
+  ],
+  "base_commit": "10ad8d876d74fe5c4dea8e3b1cc27e178078bdc2",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H06A2-integration-hygiene",
+    "H06B-codex-0150-authority",
+    "H06E-codex-help-authority",
+    "H06G-release-inventory-authority"
+  ],
+  "supersedes": [],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/agent-runtime.py",
+    "tests/test_agent_runtime.py",
+    "guardian-r2-program/reports/H06I-agent-runtime-interruption-terminal.md"
+  ],
+  "owner": "guardian-r2-worker-h06i",
+  "requirements": [
+    "R2-GRANT-BROKER",
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06I-agent-runtime-interruption-terminal",
+  "title": "修复受管 awaiting-human 终态证据自相矛盾"
+}

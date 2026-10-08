@@ -1,0 +1,29 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H02-grant-broker.md",
+      "sha256": "29cb6a2b2e8ccdd56f4d550e5d2160789402a441d7c51b57ad29070061934208"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [],
+  "facts": [
+    "H02 implements a typed durable transaction from readable question through HumanGrantV2 consumption, single-winner dispatch, effect receipt and verifier receipt, with sealed question and recovery control routes evaluated before ordinary policy.",
+    "The repair2 report records FR2-H02-001 through FR2-H02-004, exact six-path scope, winner-only executable dispatch, canonical-parent plus no-follow leaf security, test counts and explicit downstream limits without claiming H03, installation or live-host release acceptance."
+  ],
+  "findings": [
+    "FR2-H02-001",
+    "FR2-H02-002",
+    "FR2-H02-003",
+    "FR2-H02-004"
+  ],
+  "kind": "task_report",
+  "requirements": [],
+  "run_id": "run-gpe-142abf817c36c4687d1480b1",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H02 report binds the GrantBroker transaction, two repair rounds, security boundaries, limits and exact six-path scope.",
+  "task_id": "H02-grant-broker",
+  "verdict": "pass"
+}

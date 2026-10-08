@@ -1,0 +1,24 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H06A2-integration-hygiene.md", "sha256": "a955c3318ba389f7f3bbb82bc2c10bd49697cb84abd08889d4c77e91a2d3ff43"}],
+  "baseline": "1b793c6ba8b76acd069510ed893de77228d581c6",
+  "commands": [
+    {"argv": ["python3", "-B", "-m", "unittest", "<eight-H06A2-focused-tests>"], "exit_code": 0, "result": "pass"},
+    {"argv": ["run-h06a2-formal-with-audited-codex.zsh"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "FR2-H06-003 is closed by the module-level approvals import and base-nonblank-preserving recovery/resources reductions to 2993/3000 lines.",
+    "FR2-H06-004 is closed by explicit UTF-8 plus replacement-error handling at all four reported subprocess call sites and invalid-byte coverage.",
+    "FR2-H06-006 is closed by the registered H06A2 successor with exact authority over the eight predecessor implementation/test paths; original H06 authority was not widened retroactively.",
+    "FR2-H06-007 is closed by the ninth owned path for the durable H06A2 report, which passes the strict report contract and is present in both worker and coordinator commits."
+  ],
+  "findings": ["FR2-H06-003", "FR2-H06-004", "FR2-H06-006", "FR2-H06-007"],
+  "kind": "finding_resolution",
+  "requirements": ["R2-LIVE-ACCEPTANCE", "PROGRAM-GOVERNANCE"],
+  "run_id": "run-gpe-ee80c2b587197cdd2fa57479",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06A2 supplies current implementation and executed proof for all four findings transferred from H06/H06A.",
+  "task_id": "H06A2-integration-hygiene",
+  "verdict": "pass"
+}

@@ -1,0 +1,37 @@
+{
+  "acceptance": [],
+  "artifacts": [
+    {
+      "path": "reports/H02-grant-broker.md",
+      "sha256": "29cb6a2b2e8ccdd56f4d550e5d2160789402a441d7c51b57ad29070061934208"
+    }
+  ],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "diff-tree",
+        "--no-commit-id",
+        "--name-only",
+        "-r",
+        "50e01afb3e21bed908cb233bfa5d3d7e3df3b8f2"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "Integrated commit 50e01afb3e21bed908cb233bfa5d3d7e3df3b8f2 has parent f2b33961f17edf7f71d430301fcd94674ce0f47c and tree eacbf7b7a3ac2083076b0f5de66f7ac0df9fa04c.",
+    "Its changed paths are exactly the six frozen H02 owned paths; all six blobs equal worker commit 74a0ea1b33808bff11aae3a2791e5b4e8c9fe54a, and H01 human_grant.py remains at SHA-256 6b5ec257cb4ca0edb446f861aab1aea19f43bec17ff6711804bcb7ecbc0cb2d8."
+  ],
+  "findings": [],
+  "kind": "changed_files",
+  "requirements": [],
+  "run_id": "run-gpe-142abf817c36c4687d1480b1",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "Integrated H02 commit contains exactly the six frozen task paths and byte-identical worker artifacts.",
+  "task_id": "H02-grant-broker",
+  "verdict": "pass"
+}

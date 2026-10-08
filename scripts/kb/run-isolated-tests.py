@@ -1464,6 +1464,10 @@ def unittest_command(names: Iterable[str], *, start: str, pattern: str) -> list[
 
 def os_isolated_test_command(command: list[str], production_kb: Path) -> list[str]:
     """Apply an OS-enforced read-only boundary to the production KB."""
+    # Seatbelt matches physical paths: /tmp and /var aliases must not silently
+    # leave their /private counterparts writable. Enforce this at the boundary,
+    # not just in main(), because tests and other callers also use this helper.
+    production_kb = production_kb.expanduser().resolve()
     if sys.platform == "darwin":
         executable = shutil.which("sandbox-exec")
         if executable is None:

@@ -1,0 +1,31 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "task_id": "T30-packaged-kb-aging-provenance",
+  "kind": "changed_files",
+  "baseline": "0bbce250c399c7b8e7d430bf4612157d32adb7a1",
+  "run_id": "run-gpe-f5c07f9049e7e2ba3dac7894",
+  "verdict": "pass",
+  "summary": "The controlled candidate dbaf5b4 is restricted to the frozen ten-path T30 ownership set.",
+  "facts": [
+    "knowledge_history.py 7cd1d8e2b6be34c7034a5f863010ff75bad66f2b851c6292d7266b76059026c2; kb-aging.py 4b99fb6325e8357fb59ce47283ace4f597b9379765e454b72bd0ab9245cb2924.",
+    "stage_plugin.py 3117d54bc32eb0804055aef0e46de8755b041edc6920d57767bdc1569f97c45b; install_codex_plugin.py c2e9f96ea98bbda3d5909fd47f94143eaae78f617cd901d88d83fcb6a46f1882.",
+    "The four test files, Codex cachebuster and task report are the remaining six frozen paths; no production contract, ledger, installed cache, scheduler definition or external project is changed."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "show", "--stat", "dbaf5b446abbec8afd77a5d521e403bda30b5274"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "diff", "--check", "0bbce250c399c7b8e7d430bf4612157d32adb7a1..dbaf5b446abbec8afd77a5d521e403bda30b5274"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": []
+}

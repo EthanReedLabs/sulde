@@ -56,7 +56,9 @@ from execution_backend import (
     ExecutionBackend,
     ExecutionBackendError,
     RunHandle,
+    RunResult,
     recover_incomplete_run,
+    replay_run_ledger,
 )
 from file_lock import lock_exclusive_nonblocking, unlock
 from correction_intervention import (
@@ -92,7 +94,49 @@ from intent_critic import (
     run_critic,
     secret_matches as critic_secret_matches,
 )
-from runtime_provider import ProviderError, select_provider, task_command
+from runtime_provider import (
+    AGENT_PROVIDER_ENV,
+    ProviderError,
+    resolve_managed_run_provider,
+    task_command,
+)
+from launch_description import (
+    LaunchDescriptionError,
+    LaunchPreflightError,
+    build_launch_description,
+    command_digest_for,
+    launch_description_artifact,
+    launch_description_identity,
+    parse_launch_description_artifact,
+    preflight_failure_evidence,
+    preflight_launch_description,
+)
+from dispatch_registry import (
+    DispatchConflictError,
+    DispatchRegistryError,
+    derive_request_id,
+    lookup as lookup_dispatch_request,
+    lookup_retry_op,
+    open_request,
+    open_retry,
+    retryable as dispatch_attempt_retryable,
+    record_closed as record_dispatch_closed,
+    record_launched as record_dispatch_launched,
+)
+import dispatch_registry
+from run_concurrency import (
+    RunConcurrencyError,
+    acquire_run_slot,
+    max_concurrent_runs,
+)
+import prediction_feedback
+from execution_method import execution_method_prompt
+from execution_backend import append_run_ledger_event
+from usage_ledger import (
+    UsageLedgerError,
+    scan_usage_incremental,
+    write_usage_report,
+)
 from terminal_invariants import terminal_invariant_failures
 from guardian_program import GuardianProgramError, materialize_completion_permissions
 import native_agent_broker
@@ -157,6 +201,12 @@ ARTIFACT_SUFFIXES = (
     "heartbeat.json",
     "heartbeat.jsonl",
     "preflight.json",
+    "launch-preflight.json",
+    "usage.json",
+    "usage-cursor.json",
+    # Note: launch.json and {slug}.dispatch.jsonl are deliberately NOT
+    # archived — the current launch description must survive into the
+    # pre-start drift check, and dispatch segments must span rounds.
 )
 
 _MAX_CONTROL_BYTES = 2 * 1024 * 1024
@@ -827,6 +877,259 @@ def validate_phase_heartbeat_rows(
             + current["default_action"]
         )
     return current
+
+
+def _task_conclusion_for_run(
+    state: Path,
+    slug: str,
+    run_id: str,
+) -> tuple[str | None, int | None]:
+    """R2-01: find one run's authoritative TASK conclusion, if it exists.
+
+    The task conclusion is the final status line the original process wrote
+    (report verdict, integrity, and provider result already folded in) —
+    never the provider process exit code alone.  A missing, damaged, or
+    not-yet-settled conclusion returns (None, None): callers must reconcile
+    instead of recomputing success from a returncode.
+    """
+    candidates = [
+        state / f"{slug}.status",
+        *sorted(state.glob(f"{slug}.round*.status")),
+    ]
+    for path in candidates:
+        if not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if not re.search(
+            rf"(?:^|\s)run={re.escape(run_id)}(?:\s|$)", text
+        ):
+            continue
+        matched = re.search(r"(?:^|\n)status=(\S+) rc=(-?\d+)", text)
+        if matched is None:
+            # The original run's status row is damaged: do not guess.
+            return None, None
+        return matched.group(1), int(matched.group(2))
+    return None, None
+
+
+def _append_duplicate_receipt(status_path: Path, line: str) -> None:
+    """Append one duplicate-replay receipt without touching original facts."""
+    receipt_path = status_path.with_name(status_path.name + ".duplicate-replay.log")
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    with receipt_path.open("a", encoding="utf-8") as handle:
+        handle.write(line)
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
+def _replay_dispatch_result(
+    state: Path,
+    slug: str,
+    segment: dict[str, Any],
+    *,
+    provider: str,
+    report: Path,
+    status_path: Path,
+) -> int:
+    """Replay one closed attempt's original authoritative result.
+
+    R2-01: provider process exit, report verdict, and permission/effect
+    verification are distinct facts; the replayed conclusion is the original
+    task status exactly as settled — a failed task is never rewritten into a
+    success and an unresolved conclusion is reconciled, never fabricated.
+    """
+    run_id = segment.get("run_id")
+    task_status = segment.get("task_status")
+    task_returncode = segment.get("task_returncode")
+    if task_status is None and run_id:
+        task_status, task_returncode = _task_conclusion_for_run(
+            state, slug, run_id
+        )
+    if task_status in (None, "", "running") or task_returncode is None:
+        # Unresolved: reconcile without touching the original facts.
+        receipt = (
+            f"conclusion=unresolved run={run_id} provider={provider}\n"
+        )
+        _append_duplicate_receipt(status_path, receipt)
+        print(
+            f"SULDE AGENT DONE slug={slug} provider={provider} "
+            f"status=awaiting_human rc=2 duplicate_of_run={run_id} "
+            "(task conclusion unresolved; reconciliation required, "
+            "no relaunch, no synthesized success)"
+        )
+        return 1
+    exit_code = 0 if task_status == "success" else 1
+    # R3-05: the original status file (with its `run=<id>` provenance) is
+    # NEVER overwritten by a replay — the duplicate receipt goes to a
+    # separate append-only log so repeated replays keep resolving the
+    # original conclusion.
+    receipt = (
+        f"conclusion={task_status} rc={task_returncode} "
+        f"duplicate_of_run={run_id} provider={provider}\n"
+    )
+    _append_duplicate_receipt(status_path, receipt)
+    print(
+        f"SULDE AGENT DONE slug={slug} provider={provider} "
+        f"status={task_status} rc={task_returncode} "
+        f"duplicate_of_run={run_id} (original task conclusion replayed; "
+        "no new launch)"
+    )
+    return exit_code
+
+
+def _generation_switch_fence_refusal(kb_home: Path, *, run_generation: str):
+    """R3 followup 2: delegate to the shared admission-fence protocol."""
+    from generation_fence import fence_refusal
+
+    return fence_refusal(kb_home, run_generation=run_generation)
+
+
+def _record_terminal_retrospective(
+    state: Path, *, slug: str, root: Path, task_id: str,
+    guardian: GuardianSession | None, run_ledger_path: Path, status_path: Path,
+    status: str, report_passed: bool,
+    summary: dict[str, Any] | None = None, test_mode: bool = False,
+) -> dict[str, Any]:
+    """Observe resolved task facts, never make an execution/verification decision."""
+    observation: dict[str, Any] = {
+        "status": "degraded", "execution_authorized": False,
+        "task_status_changed": False,
+    }
+    try:
+        from experience_maintenance import record_run_retrospective
+        from sulde_paths import kb_home
+
+        if not run_ledger_path.is_file():
+            observation.update(status="non_run", reason_code="no_launched_run")
+        else:
+            projection = replay_run_ledger(run_ledger_path)
+            result = projection.result
+            if not projection.started:
+                observation.update(status="non_run", reason_code="no_launched_run")
+            elif result is None or guardian is None:
+                observation["reason_code"] = "terminal_facts_unavailable"
+            else:
+                facts = summary if summary is not None else guardian.summary()
+                counts = [facts[key] for key in (
+                    "open_events", "pending_verifications", "effect_unknown",
+                    "interventions_open", "approvals_open", "corrections_open",
+                )]
+                if any(type(count) is not int or count < 0 for count in counts):
+                    raise ValueError("invalid terminal counts")
+                # Test-mode providers never write the production experience home,
+                # even when a legacy fixture forgot to isolate its environment.
+                home = state / "test-kb-home" if test_mode else kb_home()
+                observation = record_run_retrospective(
+                    home, task_id=task_id, run_id=projection.run_id,
+                    project_id=str(root), session_id=str(guardian.session_id),
+                    task_instance_id=str(guardian.contract["task_epoch"]),
+                    occurred_at=result.get("at"), status=status,
+                    returncode=result["returncode"],
+                    stop_reason=result["stop_reason"], report_passed=report_passed,
+                    quiescent=bool(projection.disposed and projection.disposed.get("quiescent") is True),
+                    findings_count=facts["findings"], open_effects=sum(counts),
+                    evidence_sha256={
+                        "terminal": hashlib.sha256(json.dumps(
+                            result, sort_keys=True, separators=(",", ":")
+                        ).encode("utf-8")).hexdigest(),
+                        "summary": hashlib.sha256(status_path.read_bytes()).hexdigest(),
+                    },
+                )
+    except Exception as error:
+        # Observation failure must not replace an already resolved task outcome.
+        # Keep exception type only; messages can contain secrets/private paths.
+        observation["reason_code"] = "retrospective_" + type(error).__name__
+    try:
+        atomic_write(state / f"{slug}.retrospective.json", json.dumps(
+            observation, sort_keys=True, ensure_ascii=False
+        ) + "\n")
+    except (OSError, ValueError, UnicodeError) as error:
+        observation = {**observation, "status": "degraded",
+                       "reason_code": "receipt_" + type(error).__name__}
+    try:
+        print("SULDE AGENT RETROSPECTIVE: " + json.dumps(observation, sort_keys=True))
+    except (OSError, ValueError) as error:
+        observation = {**observation, "status": "degraded",
+                       "reason_code": "observation_output_" + type(error).__name__}
+    return observation
+
+
+def _record_usage_report(
+    state: Path,
+    events_path: Path,
+    *,
+    provider: str,
+    run_id: str,
+    slug: str,
+    intent_id: str | None,
+    session_id: str | None,
+) -> dict[str, Any] | None:
+    """C4/R1-05: project one run's usage report from the durable stream.
+
+    Cursor, prefix digest, stream identity, and the accumulated report are
+    persisted atomically (``{slug}.usage-cursor.json``); repeated scans
+    consume only the appended tail but re-hash the consumed prefix, so
+    truncation and rewrites fail closed instead of fabricating numbers.  A
+    usage projection failure is a reporting gap, never an authorization or
+    execution fault: the run's terminal state is unaffected.
+    """
+    if not events_path.is_file():
+        return None
+    try:
+        report, _cursor = scan_usage_incremental(
+            events_path,
+            state / f"{slug}.usage-cursor.json",
+            provider=provider,
+            run_id=run_id,
+            slug=slug,
+            intent_id=intent_id,
+            session_id=session_id,
+        )
+        write_usage_report(report, state / f"{slug}.usage.json")
+        return report
+    except (UsageLedgerError, OSError, UnicodeError) as error:
+        print(
+            f"SULDE USAGE: report unavailable; task result is unaffected: {error}",
+            file=sys.stderr,
+        )
+        return None
+
+
+def _refuse_stale_phase_heartbeat(
+    current_path: Path,
+    *,
+    expected_run_id: str,
+) -> None:
+    """Fail closed when an unarchived heartbeat from another run is current.
+
+    A stale non-terminal heartbeat would otherwise be silently overwritten by
+    the new run's first publish, hiding the fact that some other attempt
+    still considered itself live.
+    """
+    if not current_path.is_file():
+        return
+    try:
+        last_row = json.loads(current_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise AgentRuntimeError(
+            f"stale phase heartbeat file is unreadable; refusing to overwrite: {error}"
+        ) from error
+    if not isinstance(last_row, dict):
+        raise AgentRuntimeError(
+            "stale phase heartbeat file has no row; refusing to overwrite"
+        )
+    if last_row.get("run_id") == expected_run_id:
+        return
+    if last_row.get("terminal") is True:
+        return
+    raise AgentRuntimeError(
+        "a non-terminal phase heartbeat from run "
+        f"{last_row.get('run_id')} remains current; refusing to start "
+        f"run {expected_run_id} over it"
+    )
 
 
 class PhaseHeartbeat:
@@ -2201,13 +2504,27 @@ def monitor_process(
     timeout: float,
     heartbeat: PhaseHeartbeat,
     require_reader_termination: bool = False,
+    on_input_delivered=None,
 ) -> tuple[int, str, str, IntentGuardianError | None]:
     """Stream provider events through the guardian without losing timeouts."""
     process = handle.process
     assert process.stdin is not None
     assert process.stdout is not None
-    process.stdin.write(prompt)
-    process.stdin.close()
+    try:
+        process.stdin.write(prompt)
+        process.stdin.close()
+    except (BrokenPipeError, OSError) as send_error:
+        # R3-closeout 二: spawn 成功 ≠ 输入发送成功。发送失败时消费确认
+        # 不发生,反馈工件保留以待恢复;降级事实写入账本。
+        if on_input_delivered is not None:
+            try:
+                on_input_delivered(send_failed=str(send_error)[:200])
+            except Exception:  # noqa: BLE001 - 降级记录失败不掩盖原始错误
+                pass
+        raise
+    if on_input_delivered is not None:
+        # 发送成功:此刻才允许登记消费(输入已完整写入 provider stdin)
+        on_input_delivered()
     queue: Queue[str | None] = Queue()
 
     def read_stdout() -> None:
@@ -2521,6 +2838,7 @@ def execution_prompt(
     intent_path: Path,
     intent_id: str,
     resume_context: dict[str, Any] | None = None,
+    prediction_feedback: dict[str, Any] | None = None,
 ) -> str:
     contract = report_contract_for_brief(brief)
     skill_boundary = ""
@@ -2567,6 +2885,20 @@ Codex 当前没有可依赖的原生 Skill 生命周期事件。每次读取/采
             + "\n".join(instructions)
             + "\n"
         )
+    feedback_section = ""
+    if prediction_feedback is not None:
+        facts = "\n".join(
+            f"- {fact}" for fact in (prediction_feedback.get("facts") or [])
+        )
+        feedback_section = (
+            "\n--- 监督端预测对照反馈（持久化事实，已纳入本次执行输入） ---\n"
+            f"来源 attempt: run_id_sha256={prediction_feedback.get('run_id_sha256', '')[:24]}\n"
+            f"预测: {prediction_feedback.get('prediction_id')} "
+            f"v{prediction_feedback.get('prediction_version')}\n"
+            f"判定: {prediction_feedback.get('verdict')}\n"
+            f"{facts}\n"
+            "请阅读以上事实并调整本次执行；监督端将独立验证结果。\n"
+        )
     return f"""{brief.rstrip()}
 
 --- Sulde 执行协议（优先级高于任务书中的效率建议） ---
@@ -2574,8 +2906,9 @@ Codex 当前没有可依赖的原生 Skill 生命周期事件。每次读取/采
 只能修改该 worktree；禁止 commit、push、修改全局配置或触碰主工作区。
 所有 Skill、MCP、工具调用与副作用都必须保持 intent_id={intent_id} 的同一可审计谱系。
 MCP/外部写入成功后必须独立读取并核对结果；工具返回 success 本身不算验收证据。
+{execution_method_prompt()}
 {skill_boundary.rstrip()}
-{intervention_boundary.rstrip()}
+{intervention_boundary.rstrip()}{feedback_section}
 最终回复必须满足版本化 report contract `{contract['schema']}`。
 标题必须逐字、各出现一次；✅ 证据必须包含实际命令、exit 0 和可观察结果。
 使用以下同源模板（不要翻译、编号或改名）：
@@ -4626,6 +4959,71 @@ def _persist_codex_preflight_failure(
     return evidence
 
 
+def _iso_now() -> str:
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).isoformat()
+
+
+def build_input_delivered_callback(
+    *,
+    ledger_path: Path,
+    run_id: str,
+    provider: str,
+    task_id: str,
+    state_dir: Path,
+    consuming_session_id: str,
+    pending_feedback: dict,
+    delivery_reason: str,
+    consuming_run_id: str,
+):
+    """Wire the post-stdin-delivery callback (R3-followup 一).
+
+    现状(D1 缺陷,注入收尾轮修复):send_failed 参数被丢弃,失败分支
+    也执行成功消费确认 —— 见冻结矩阵 A1/A2。
+    """
+
+    def _on_input_delivered(send_failed: str | None = None):
+        # 在 stdin 完整写入并关闭后调用。R3-closeout 修复:
+        # 发送失败 → 只记录失败事实(账本+registry send_unconfirmed),
+        # 不登记消费、不删工件 —— 反馈保留以待恢复/显式决定。
+        append_run_ledger_event(
+            ledger_path,
+            run_id=run_id,
+            provider=provider,
+            event_type="prediction.feedback_consumed",
+            payload={
+                "prediction_id": pending_feedback.get("prediction_id"),
+                "prediction_version": pending_feedback.get("prediction_version"),
+                "verdict": pending_feedback.get("verdict"),
+                "request_id": pending_feedback.get("request_id"),
+                "delivery_reason": delivery_reason,
+                "send_failed": send_failed,
+            },
+        )
+        if send_failed:
+            registry_path = Path(state_dir) / "prediction-feedback-consumed.json"
+            registry = {"consumed": {}, "send_unconfirmed": {}}
+            if registry_path.exists():
+                registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            registry.setdefault("send_unconfirmed", {})[
+                str(pending_feedback.get("request_id"))
+            ] = {"send_failed": send_failed, "at": _iso_now()}
+            registry_path.parent.mkdir(parents=True, exist_ok=True)
+            registry_path.write_text(
+                json.dumps(registry, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8")
+            return
+        prediction_feedback.confirm_feedback_consumed(
+            state_dir=state_dir,
+            task_id=task_id,
+            request_id=str(pending_feedback.get("request_id")),
+            consuming_run_id=consuming_run_id,
+            consuming_session_id=consuming_session_id,
+        )
+
+    return _on_input_delivered
+
+
 def run_task(args: argparse.Namespace) -> int:
     validate_slug(args.slug)
     root = validated_root(args.worktree)
@@ -4706,25 +5104,36 @@ def run_task(args: argparse.Namespace) -> int:
         validate_execution_binding(binding_payload, expected=binding)
     else:
         binding_payload = expected_binding_payload
-    requested = args.provider or os.environ.get("SULDE_AGENT_PROVIDER")
-    configured_provider = (
-        requested
-        or os.environ.get("SULDE_LLM_PROVIDER")
-        or os.environ.get("SULDE_HOST_PROVIDER")
-        or "auto"
-    ).strip().lower()
-    codex_host_only = configured_provider == "auto" and any(
-        os.environ.get(name) for name in ("CODEX_THREAD_ID", "CODEX_CI")
-    ) and not any(
-        os.environ.get(name)
-        for name in ("CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT", "CLAUDE_SESSION_ID")
+    # C1: one managed-run provider selection path (runtime_provider), consumed
+    # by the launch description below; no inline duplicate chain here.
+    requested = args.provider or os.environ.get(AGENT_PROVIDER_ENV)
+    provider_source = (
+        "explicit"
+        if args.provider
+        else "environment"
+        if any(
+            os.environ.get(name)
+            for name in (
+                AGENT_PROVIDER_ENV,
+                "SULDE_LLM_PROVIDER",
+                "SULDE_HOST_PROVIDER",
+            )
+        )
+        else "auto"
     )
-    if not test_mode and (configured_provider == "codex" or codex_host_only):
-        # Do not even resolve a caller projection or PATH alias in production.
-        provider, selected_executable = "codex", ""
-    else:
-        provider, selected_executable = select_provider(requested)
+    provider, selected_executable = resolve_managed_run_provider(
+        requested,
+        test_mode=test_mode,
+    )
     executable = selected_executable
+    durable_report_relative: str | None = None
+    generation_fence_kb_home: Path | None = None
+    if provider == "codex" and not test_mode:
+        # R1-03: the finalize-time durable-report authority parse, executed
+        # here before any provider interaction.  Identical path, scope, and
+        # contract resolution as `_close_canonical_worker_report_authority`;
+        # a task that could not be closed properly is refused pre-launch.
+        durable_report_relative = _durable_worker_report_relative_path(owned_paths)
     installed_authority: dict[str, Any] | None = None
     broker_request: dict[str, Any] | None = None
     broker_probe_evidence: dict[str, Any] | None = None
@@ -4735,6 +5144,12 @@ def run_task(args: argparse.Namespace) -> int:
     if provider == "codex" and not test_mode:
         installed_authority = load_installed_native_authority()
         executable = str(installed_authority["production_codex_executable"])
+        generation_fence_kb_home = Path(
+            os.environ.get(
+                "SULDE_KB_HOME",
+                str(Path.home() / ".sulde" / "data" / "kb"),
+            )
+        ).expanduser()
     planned_report = root / STATE_DIRECTORY / f"{args.slug}.last.md"
     command = task_command(
         provider,
@@ -4854,6 +5269,92 @@ def run_task(args: argparse.Namespace) -> int:
             )
         except native_agent_broker.ProtocolError as error:
             raise AgentRuntimeError(f"native broker failed closed: {error}") from error
+    # C1: one versioned launch description, consumed identically by the
+    # pre-launch checks below and by execution (its digest is embedded in the
+    # run ledger's first event).  Digest-only: no argv, no prompts.
+    provider_executable_evidence = (
+        "installed-native-runtime-authority"
+        if (provider == "codex" and not test_mode)
+        else ("resolved" if executable else "")
+    )
+    launch_preflight_evidence: list[dict[str, str]]
+    try:
+        launch_preflight_evidence = preflight_launch_description(
+            {
+                "report_relative_path": f"{STATE_DIRECTORY}/{args.slug}.last.md",
+                "report_contract": {
+                    "schema": REPORT_CONTRACT_VERSION,
+                    "headings": list(report_contract_for_brief(brief_text)["headings"]),
+                    "evidence_schema": REPORT_CONTRACT["evidence_schema"],
+                },
+            },
+            state_dir=state,
+            provider_executable_evidence=provider_executable_evidence,
+        )
+    except LaunchPreflightError as error:
+        atomic_write(
+            state / f"{args.slug}.launch-preflight.json",
+            json.dumps(
+                preflight_failure_evidence(args.slug, error),
+                ensure_ascii=False,
+                sort_keys=True,
+            )
+            + "\n",
+        )
+        raise AgentRuntimeError(str(error)) from error
+    launch_description = build_launch_description(
+        provider=provider,
+        provider_source=provider_source,
+        effort=args.effort,
+        report_relative_path=f"{STATE_DIRECTORY}/{args.slug}.last.md",
+        durable_report_relative_path=durable_report_relative,
+        require_durable_report=(provider == "codex" and not test_mode),
+        command_sha256=command_digest_for(command),
+        profile_arguments_sha256=(
+            hashlib.sha256(
+                "\0".join(str(value) for value in profile_arguments).encode(
+                    "utf-8", errors="replace"
+                )
+            ).hexdigest()
+            if provider == "codex"
+            else None
+        ),
+        execution_binding_sha256=execution_binding_sha256,
+        task_id=task_definition["task_id"],
+        base_commit=task_definition["base_commit"],
+        report_contract={
+            "schema": REPORT_CONTRACT_VERSION,
+            "headings": list(report_contract_for_brief(brief_text)["headings"]),
+            "evidence_schema": REPORT_CONTRACT["evidence_schema"],
+        },
+        dependency_checks=launch_preflight_evidence,
+    )
+    launch_payload, launch_description_sha256 = launch_description_artifact(
+        launch_description
+    )
+    launch_description_path = state / f"{args.slug}.launch.json"
+    if launch_description_path.is_file():
+        # Same slug + changed launch semantics (provider, effort, brief, task,
+        # binding, report contract) is an explicit conflict, not a silent new
+        # launch.  A changed provider executable alone is tolerated: recovery
+        # flows legitimately swap in a finisher binary.
+        try:
+            existing_description = parse_launch_description_artifact(
+                launch_description_path.read_bytes()
+            )[0]
+        except LaunchDescriptionError as error:
+            raise AgentRuntimeError(
+                f"existing launch description is unreadable; resolve the "
+                f"state conflict or use a new slug: {error}"
+            ) from error
+        if launch_description_identity(existing_description) != (
+            launch_description_identity(launch_description)
+        ):
+            raise AgentRuntimeError(
+                "launch description changed for this slug since the last "
+                "attempt; resolve the state conflict or use a new slug"
+            )
+    atomic_write_bytes(launch_description_path, launch_payload)
     brief = install_static_brief(
         state,
         args.slug,
@@ -4892,6 +5393,27 @@ def run_task(args: argparse.Namespace) -> int:
         lock_handle.close()
         raise AgentRuntimeError(f"task lock is already held: {lock}") from error
 
+    # C2: dispatch-request identity.  The per-slug lock above already
+    # serializes concurrent submissions; the registry below makes the request
+    # identity survive process death so a crash window cannot double-dispatch.
+    request_content_sha256 = hashlib.sha256(
+        _canonical_json_bytes(
+            {
+                "slug": args.slug,
+                "provider": provider,
+                "effort": args.effort,
+                "execution_binding_sha256": execution_binding_sha256,
+                "launch_identity_sha256": launch_description_identity(
+                    launch_description
+                ),
+            }
+        )
+    ).hexdigest()
+    request_id = args.request_id or derive_request_id(
+        "managed-run",
+        args.slug,
+        request_content_sha256,
+    )
     report = state / f"{args.slug}.last.md"
     events = state / f"{args.slug}.events.jsonl"
     events_cursor = state / f"{args.slug}.events.cursor.json"
@@ -4899,12 +5421,212 @@ def run_task(args: argparse.Namespace) -> int:
     status_path = state / f"{args.slug}.status"
     baseline_path = state / f"{args.slug}.baseline"
     run_ledger_path = state / f"{args.slug}.run.jsonl"
+
+    retry_created = False
+    dispatch_registry_path = state / f"{args.slug}.dispatch.jsonl"
+
+    def _dispatch_ledger_projection(run_id: str):
+        """Find a provably terminal ledger fact for one run (R1-04)."""
+        for ledger_candidate in (
+            state / f"{args.slug}.run.jsonl",
+            *sorted(state.glob(f"{args.slug}.round*.run.jsonl")),
+        ):
+            if not ledger_candidate.is_file():
+                continue
+            try:
+                candidate_projection = replay_run_ledger(ledger_candidate)
+            except ExecutionBackendError:
+                continue
+            if (
+                candidate_projection is not None
+                and candidate_projection.run_id == run_id
+                and candidate_projection.terminal
+            ):
+                return candidate_projection
+        return None
+
+    existing_segment = lookup_dispatch_request(dispatch_registry_path, request_id)
+    if (
+        existing_segment is not None
+        and existing_segment.get("state") == "launched"
+        and existing_segment.get("run_id")
+    ):
+        # A previous process died between settling the run and closing the
+        # attempt.  The run ledger (current or archived rounds) is
+        # authoritative: a provable terminal fact closes the attempt with its
+        # real stop reason so the duplicate/decision paths below act on facts,
+        # not on the missing close row.  An unprovable state stays non-closed
+        # and the recovery path below blocks it as unknown.
+        segment_run_id = existing_segment["run_id"]
+        segment_projection = _dispatch_ledger_projection(segment_run_id)
+        segment_stop = (
+            str(segment_projection.result.get("stop_reason") or "")
+            if segment_projection is not None and segment_projection.result is not None
+            else ""
+        )
+        if segment_projection is not None and segment_projection.result is not None:
+            if segment_stop == "policy_paused":
+                # R2-02: a policy pause is an interrupt with intent to
+                # continue — the attempt stays resumable by plain
+                # resubmission (applied corrections are processed on resume).
+                pass
+            else:
+                # R3-05: persist the independently provable task conclusion
+                # (from the original status facts) with the close, so every
+                # later duplicate resolves without degrading anything.
+                conclusion_status, conclusion_rc = _task_conclusion_for_run(
+                    state, args.slug, segment_run_id
+                )
+                try:
+                    record_dispatch_closed(
+                        dispatch_registry_path,
+                        request_id=request_id,
+                        attempt=int(existing_segment["attempt"]),
+                        run_id=segment_run_id,
+                        outcome="terminal",
+                        stop_reason=segment_stop or None,
+                        task_status=conclusion_status,
+                        returncode=conclusion_rc,
+                    )
+                except DispatchRegistryError as error:
+                    print(
+                        f"SULDE AGENT DISPATCH: registry close deferred: {error}",
+                        file=sys.stderr,
+                    )
+            existing_segment = lookup_dispatch_request(
+                dispatch_registry_path, request_id
+            )
+    dispatch_segment = open_request(
+        dispatch_registry_path,
+        request_id=request_id,
+        request_sha256=request_content_sha256,
+        slug=args.slug,
+    )
+    retry_binding = None
+    if args.retry and args.retry_op:
+        # R3 followup 1: locate the attempt THIS retry operation is bound to
+        # first — never derive a registered operation's predecessor or
+        # conclusion from the latest attempt of the chain.
+        retry_binding = lookup_retry_op(
+            dispatch_registry_path, args.retry_op, request_id
+        )
+    if args.retry and retry_binding is not None and retry_binding["state"] != "closed":
+        # The operation's own attempt is still active: resume it.
+        dispatch_segment = retry_binding
+        retry_created = False
+        print(
+            "SULDE AGENT DISPATCH: retry operation "
+            f"{args.retry_op} resumes its active attempt "
+            f"#{dispatch_segment['attempt']} (run={dispatch_segment.get('run_id')})",
+            file=sys.stderr,
+        )
+    elif (
+        args.retry
+        and retry_binding is not None
+        and retry_binding["state"] == "closed"
+    ):
+        # The operation's own attempt has settled: replay ITS conclusion —
+        # even when newer attempts or retries exist on the chain.
+        return _replay_dispatch_result(
+            state,
+            args.slug,
+            retry_binding,
+            provider=provider,
+            report=report,
+            status_path=status_path,
+        )
+
+    if not dispatch_segment.get("created") and dispatch_segment.get("state") == "closed":
+        # R2-01/R2-02: an ordinary duplicate of a closed attempt replays the
+        # original authoritative task conclusion (or reconciles an unresolved
+        # one) and never starts a new launch.  A new attempt requires the
+        # explicit --retry operation, and even that refuses human gates and
+        # completed requests.
+        previous_run_id = dispatch_segment.get("run_id")
+        previous_stop_reason = dispatch_segment.get("stop_reason")
+        if args.retry and previous_stop_reason != "completed":
+            if not args.retry_op:
+                raise AgentRuntimeError(
+                    "--retry requires a stable --retry-op identity so the "
+                    "same retry operation always resolves to the same attempt"
+                )
+            if not dispatch_attempt_retryable(previous_stop_reason):
+                atomic_write(
+                    status_path,
+                    f"status=awaiting_human rc=2 "
+                    f"reason=retry_refused_human_gate run={previous_run_id} "
+                    f"stop={previous_stop_reason} last={report}\n",
+                )
+                print(
+                    "SULDE AGENT DISPATCH: retry refused — request "
+                    f"{request_id} is a human gate "
+                    f"(stop={previous_stop_reason}); no automatic relaunch",
+                    file=sys.stderr,
+                )
+                return 1
+            retry_created = False
+            retry_segment = open_retry(
+                dispatch_registry_path,
+                retry_op_id=args.retry_op,
+                request_id=request_id,
+                request_sha256=request_content_sha256,
+                slug=args.slug,
+                from_run_id=previous_run_id,
+            )
+            retry_created = bool(retry_segment.get("created"))
+            # A freshly registered operation opens the newest attempt, so the
+            # latest projection IS its own attempt here; repeats are resolved
+            # by lookup_retry_op above and never reach this branch.
+            dispatch_segment = lookup_dispatch_request(
+                dispatch_registry_path, request_id
+            )
+            print(
+                "SULDE AGENT DISPATCH: explicit retry operation "
+                f"{args.retry_op} -> attempt #{dispatch_segment['attempt']} "
+                f"of request {request_id} (created={retry_segment.get('created')}; "
+                f"retrying run {previous_run_id}, stop={previous_stop_reason})",
+                file=sys.stderr,
+            )
+            if not retry_segment.get("created") and dispatch_segment.get(
+                "state"
+            ) == "closed":
+                return _replay_dispatch_result(
+                    state,
+                    args.slug,
+                    dispatch_segment,
+                    provider=provider,
+                    report=report,
+                    status_path=status_path,
+                )
+        else:
+            # R3-04: a completed request replays its original result for any
+            # submission — with or without a retry operation identity —
+            # because a completed request has no retry.
+            return _replay_dispatch_result(
+                state,
+                args.slug,
+                dispatch_segment,
+                provider=provider,
+                report=report,
+                status_path=status_path,
+            )
+    elif not dispatch_segment.get("created") and dispatch_segment.get("run_id"):
+        print(
+            "SULDE AGENT DISPATCH: resuming request "
+            f"{request_id} attempt #{dispatch_segment['attempt']} bound to run "
+            f"{dispatch_segment['run_id']}",
+            file=sys.stderr,
+        )
+
     started = time.monotonic()
     status = "failed"
     returncode = 2
     observed_status = "running"
     phase_heartbeat: PhaseHeartbeat | None = None
     guardian: GuardianSession | None = None
+    run_lease = None
+    run_result: RunResult | None = None
+    usage_report: dict[str, Any] | None = None
     try:
         recovered_baseline: str | None = None
         if run_ledger_path.is_file():
@@ -4947,6 +5669,79 @@ def run_task(args: argparse.Namespace) -> int:
                 and baseline_path.is_file()
             ):
                 recovered_baseline = baseline_path.read_text(encoding="utf-8")
+            if recovered_run is not None and recovered_run.terminal:
+                # The previous attempt provably ended; close its dispatch
+                # attempt with the real stop reason so the duplicate/retry
+                # decision acts on facts.  A resumed attempt owns the
+                # recovered run; a freshly opened retry owns its predecessor.
+                # A policy pause stays resumable and is never closed.
+                recovered_attempt = (
+                    dispatch_segment["attempt"]
+                    if not retry_created
+                    else max(1, int(dispatch_segment.get("attempt", 1)) - 1)
+                )
+                recovered_stop = str(
+                    recovered_run.result.get("stop_reason") or ""
+                ) or None
+                if recovered_stop != "policy_paused":
+                    # R3-05: persist any provable task conclusion with the
+                    # close (crash-recovered runs have none — unknown stays
+                    # unknown rather than borrowing another run's result).
+                    conclusion_status, conclusion_rc = _task_conclusion_for_run(
+                        state, args.slug, recovered_run.run_id
+                    )
+                    try:
+                        record_dispatch_closed(
+                            dispatch_registry_path,
+                            request_id=request_id,
+                            attempt=recovered_attempt,
+                            run_id=recovered_run.run_id,
+                            outcome="terminal",
+                            stop_reason=recovered_stop,
+                            task_status=conclusion_status,
+                            returncode=conclusion_rc,
+                        )
+                    except DispatchRegistryError as error:
+                        print(
+                            f"SULDE AGENT DISPATCH: registry close deferred: {error}",
+                            file=sys.stderr,
+                        )
+                if (
+                    not retry_created
+                    and dispatch_segment.get("attempt") == recovered_attempt
+                    and recovered_run.result is not None
+                    and recovered_run.result.get("stop_reason") == "completed"
+                ):
+                    # R1-04/R2-01: the registry lost its launched/closed rows
+                    # (crash window), but the ledger proves this request's run
+                    # settled — replay the original authoritative TASK
+                    # conclusion, never a success recomputed from the
+                    # provider's process exit code.
+                    return _replay_dispatch_result(
+                        state,
+                        args.slug,
+                        {
+                            "run_id": recovered_run.run_id,
+                            "task_status": None,
+                            "task_returncode": None,
+                        },
+                        provider=provider,
+                        report=report,
+                        status_path=status_path,
+                    )
+                if events.is_file():
+                    # C4: usage already observed before a crash stays
+                    # readable even though the run never settled — scan
+                    # before the round is archived.
+                    _record_usage_report(
+                        state,
+                        events,
+                        provider=str(recovered_run.provider),
+                        run_id=recovered_run.run_id,
+                        slug=args.slug,
+                        intent_id=None,
+                        session_id=None,
+                    )
         archive_previous(state, args.slug)
         baseline_text = (
             recovered_baseline
@@ -5051,6 +5846,31 @@ def run_task(args: argparse.Namespace) -> int:
                 "selected provider does not match the adjudicated effect attempt"
             )
         guardian.provider = provider
+        current_contract_version = (
+            str(guardian.contract.get("intent_id") or "")
+            + "#"
+            + str(guardian.contract.get("revision") or 1)
+        )
+        # R3-followup 一: rebind the task's prediction to THIS attempt
+        # (session + contract binding, pre-spawn), then deliver any pending
+        # feedback as part of the execution input.  Ordinary tasks without
+        # predictions pay one stat() and continue unchanged.
+        rebind_disclosure = prediction_feedback.rebind_open_prediction(
+            state_dir=state,
+            task_id=str(checked_task_definition["task_id"]),
+            session_id=(str(guardian.session_id) if guardian is not None else ""),
+            contract_version=current_contract_version,
+            reason="managed attempt started (prompt composition)",
+        )
+        pending_feedback, feedback_delivery_reason = (
+            prediction_feedback.load_pending_feedback(
+                state_dir=state,
+                task_id=str(checked_task_definition["task_id"]),
+                contract_version=current_contract_version,
+                # 消费方 run id 在 spawn 前未知;来源=消费 的拒收在
+                # load 的可选参数与 D3 场景中由调用方传入时强制。
+            )
+        )
         prompt = execution_prompt(
             brief_text,
             root,
@@ -5058,12 +5878,85 @@ def run_task(args: argparse.Namespace) -> int:
             intent_path=intent_path,
             intent_id=guardian.contract["intent_id"],
             resume_context=resume_context,
+            prediction_feedback=pending_feedback,
         )
         initial_side_effects = observable_worktree_snapshot(root)
         static_controls = [baseline_path, brief, frozen_task, frozen_binding]
         if args.resume_context is not None:
             static_controls.append(args.resume_context.expanduser().resolve())
         control_before = static_control_snapshot(static_controls)
+        # C1: the executed description must be the persisted one — preflight
+        # and execution consumed one parse, and nothing drifted since.
+        _rechecked_payload = (state / f"{args.slug}.launch.json").read_bytes()
+        _rechecked_digest = parse_launch_description_artifact(_rechecked_payload)[1]
+        if _rechecked_digest != launch_description_sha256:
+            raise AgentRuntimeError(
+                "persisted launch description drifted before start; "
+                "resolve the state conflict or use a new slug"
+            )
+        # C2: bounded launch concurrency, fail-closed.  C3: the lease records
+        # this run's runtime generation so upgrade/GC decisions can respect
+        # in-flight executions.
+        _lease_generation = (
+            str(installed_authority.get("runtime_generation"))
+            if installed_authority is not None
+            else os.environ.get("SULDE_RUNTIME_GENERATION")
+        )
+        admission_environment = (
+            generation_fence_kb_home
+            if (provider == "codex" and not test_mode and installed_authority is not None)
+            else None
+        )
+        if admission_environment is not None:
+            # R3 closeout A3: the shared fence lock is never held while
+            # waiting for quota.  Each admission round checks the fence and
+            # attempts an IMMEDIATE lease publication inside the lock; when
+            # the quota is exhausted the lock is released and the wait
+            # happens outside it, so other scopes keep admitting promptly.
+            # The re-check on every round keeps the fence check -> lease
+            # publication pair atomic.
+            from generation_fence import (
+                GenerationFenceError,
+                admission_fence,
+            )
+            from run_concurrency import RunConcurrencyLimitError
+
+            _admission_generation = _lease_generation or str(
+                installed_authority.get("runtime_generation") or ""
+            )
+            admission_deadline = time.monotonic() + 30.0
+            while True:
+                try:
+                    with admission_fence(
+                        admission_environment,
+                        run_generation=_admission_generation,
+                    ):
+                        run_lease = acquire_run_slot(
+                            state,
+                            max_concurrent=max_concurrent_runs(),
+                            timeout_seconds=0.0,
+                            label=args.slug,
+                            runtime_generation=_lease_generation,
+                        )
+                    break
+                except RunConcurrencyLimitError:
+                    if time.monotonic() >= admission_deadline:
+                        raise
+                    time.sleep(0.2)
+                except GenerationFenceError as fence_error:
+                    atomic_write(
+                        status_path,
+                        f"status=awaiting_human rc=2 "
+                        f"reason=generation_switch_in_progress last={report}\n",
+                    )
+                    raise AgentRuntimeError(str(fence_error)) from fence_error
+        else:
+            run_lease = acquire_run_slot(
+                state,
+                max_concurrent=max_concurrent_runs(),
+                label=args.slug,
+                runtime_generation=_lease_generation,
+            )
         backend = ExecutionBackend()
         initial_correction_store, initial_correction_projection = (
             correction_authoritative_snapshot(intent_path)
@@ -5091,8 +5984,27 @@ def run_task(args: argparse.Namespace) -> int:
                     "SULDE_GUARDIAN_STREAM_OWNER": "1",
                     "SULDE_GUARDIAN_STREAM_PROVIDER": provider,
                 },
+                launch_description_sha256=launch_description_sha256,
             )
             provider_pid = handle.process.pid
+            try:
+                record_dispatch_launched(
+                    dispatch_registry_path,
+                    request_id=request_id,
+                    attempt=int(dispatch_segment["attempt"]),
+                    run_id=handle.id,
+                )
+            except DispatchRegistryError as error:
+                # The opened row is already durable; the launched row is
+                # reconstructed by the next submission's ledger replay.
+                print(
+                    f"SULDE AGENT DISPATCH: launched row deferred: {error}",
+                    file=sys.stderr,
+                )
+            _refuse_stale_phase_heartbeat(
+                state / f"{args.slug}.heartbeat.json",
+                expected_run_id=handle.id,
+            )
             phase_heartbeat = PhaseHeartbeat(
                 state / f"{args.slug}.heartbeat.json",
                 state / f"{args.slug}.heartbeat.jsonl",
@@ -5104,6 +6016,34 @@ def run_task(args: argparse.Namespace) -> int:
                 default_action="interrupt_and_fail_closed",
             )
             try:
+                # R2-03: bind the task's open prediction to THIS attempt
+                # explicitly (identity only; no authority inheritance).
+                run_rebind = prediction_feedback.confirm_attempt_run(
+                    state_dir=state,
+                    task_id=str(checked_task_definition["task_id"]),
+                    run_id=handle.id,
+                )
+                if run_rebind.get("status") != "skipped":
+                    append_run_ledger_event(
+                        run_ledger_path,
+                        run_id=handle.id,
+                        provider=provider,
+                        event_type="prediction.attempt_started",
+                        payload=run_rebind,
+                    )
+                _on_input_delivered = build_input_delivered_callback(
+                    ledger_path=run_ledger_path,
+                    run_id=handle.id,
+                    provider=provider,
+                    task_id=str(checked_task_definition["task_id"]),
+                    state_dir=state,
+                    consuming_session_id=(
+                        str(guardian.session_id) if guardian is not None else ""
+                    ),
+                    pending_feedback=pending_feedback,
+                    delivery_reason=feedback_delivery_reason,
+                    consuming_run_id=handle.id,
+                )
                 project_run_ledger_binding(
                     run_ledger_path,
                     run_id=handle.id,
@@ -5136,6 +6076,11 @@ def run_task(args: argparse.Namespace) -> int:
                     timeout=args.timeout,
                     heartbeat=phase_heartbeat,
                     require_reader_termination=(provider == "codex" and not test_mode),
+                    on_input_delivered=(
+                        (_on_input_delivered
+                         if pending_feedback is not None and guardian is not None
+                         else None)
+                    ),
                 )
                 run_result, final_message = _settle_provider_result(
                     handle,
@@ -5147,12 +6092,72 @@ def run_task(args: argparse.Namespace) -> int:
                     returncode=returncode,
                     streamed_final_message=final_message,
                 )
+                # C4: usage observed up to settle (including timeouts and
+                # interruptions) is projected now, from durable stream bytes.
+                usage_report = _record_usage_report(
+                    state,
+                    events,
+                    provider=provider,
+                    run_id=run_result.run_id,
+                    slug=args.slug,
+                    intent_id=str(
+                        guardian.contract.get("intent_id") or ""
+                    ) or None,
+                    session_id=(
+                        str(guardian.session_id) if guardian is not None else None
+                    ),
+                )
                 phase_heartbeat.publish(
                     "result_persisted",
                     expires_after_seconds=5,
                     default_action="interrupt_and_fail_closed",
                     reason=run_result.stop_reason,
                 )
+                # R1-04: production prediction-feedback consumer. Tasks
+                # without a prediction store pay one stat() call; any
+                # consumer failure degrades to a logged disclosure and the
+                # managed chain continues.
+                try:
+                    feedback_disclosure = prediction_feedback.record_completion_feedback(
+                        state_dir=state,
+                        repo=root,
+                        task_id=str(checked_task_definition["task_id"]),
+                        baseline_revision=str(
+                            checked_task_definition["base_commit"]
+                        ),
+                        run_id=run_result.run_id,
+                        session_id=(
+                            str(guardian.session_id) if guardian is not None else ""
+                        ),
+                        provider=provider,
+                        intent_id=str(
+                            guardian.contract.get("intent_id") or ""
+                        ),
+                        intent_revision=int(
+                            guardian.contract.get("revision") or 1
+                        ),
+                        contract_version=(
+                            str(guardian.contract.get("intent_id") or "")
+                            + "#"
+                            + str(guardian.contract.get("revision") or 1)
+                        ),
+                    )
+                    if feedback_disclosure.get("status") != "skipped":
+                        append_run_ledger_event(
+                            run_ledger_path,
+                            run_id=run_result.run_id,
+                            provider=provider,
+                            event_type="prediction.feedback",
+                            payload=feedback_disclosure,
+                        )
+                except Exception as feedback_error:  # noqa: BLE001 - degrade
+                    append_run_ledger_event(
+                        run_ledger_path,
+                        run_id=run_result.run_id,
+                        provider=provider,
+                        event_type="prediction.feedback_degraded",
+                        payload={"error": str(feedback_error)[:300]},
+                    )
                 if observed_status in {"timeout", "paused", "awaiting_human"}:
                     status = observed_status
                 if (
@@ -5249,6 +6254,19 @@ def run_task(args: argparse.Namespace) -> int:
                 termination_domain = "local_interruption"
                 termination_reason = run_result.stop_reason
             else:
+                # R1-03: the durable-report authority resolved pre-launch
+                # (recorded in the launch description) must equal the
+                # finalize-time parse — one contract, one parse, end to end.
+                _fresh_durable = _durable_worker_report_relative_path(owned_paths)
+                if (
+                    durable_report_relative is None
+                    or launch_description.get("durable_report_relative_path")
+                    != durable_report_relative
+                    or _fresh_durable != durable_report_relative
+                ):
+                    raise AgentRuntimeError(
+                        "durable report authority drifted during execution"
+                    )
                 canonical_report_raw = _close_canonical_worker_report_authority(
                     root,
                     owned_paths,
@@ -5492,6 +6510,7 @@ def run_task(args: argparse.Namespace) -> int:
             "returncode": run_result.returncode if run_result else None,
             "stop_reason": run_result.stop_reason if run_result else "error",
             "output_present": run_result.output_present if run_result else False,
+            "usage_report": usage_report,
             "cleanup_quiescent": (
                 cleanup_result.quiescent if cleanup_result else False
             ),
@@ -5556,9 +6575,35 @@ def run_task(args: argparse.Namespace) -> int:
             f"SULDE AGENT DONE slug={args.slug} provider={provider} "
             f"status={status} rc={returncode} duration={duration}s"
         )
+        if run_result is not None and status != "paused":
+            # A policy pause is an interrupt with intent to continue: the
+            # attempt stays resumable by plain resubmission.
+            try:
+                record_dispatch_closed(
+                    dispatch_registry_path,
+                    request_id=request_id,
+                    attempt=int(dispatch_segment["attempt"]),
+                    run_id=run_result.run_id,
+                    outcome="terminal",
+                    stop_reason=run_result.stop_reason,
+                    task_status=status,
+                    returncode=returncode,
+                )
+            except DispatchRegistryError as error:
+                print(
+                    f"SULDE AGENT DISPATCH: registry close deferred: {error}",
+                    file=sys.stderr,
+                )
         if not report_verdict["passed"]:
             for failure in report_verdict["failures"]:
                 print(f"REPORT VERDICT: FAIL: {failure}")
+        _record_terminal_retrospective(
+            state, slug=args.slug, root=root,
+            task_id=str(checked_task_definition["task_id"]), guardian=guardian,
+            run_ledger_path=run_ledger_path, status_path=status_path,
+            status=status, report_passed=report_verdict["passed"],
+            summary=summary, test_mode=test_mode,
+        )
         return 0 if status == "success" else 1
     except (
         AgentRuntimeError,
@@ -5567,6 +6612,9 @@ def run_task(args: argparse.Namespace) -> int:
         IntentGuardianError,
         CorrectionInterventionError,
         AuditCursorError,
+        LaunchDescriptionError,
+        DispatchRegistryError,
+        RunConcurrencyError,
         OSError,
         UnicodeError,
         subprocess.SubprocessError,
@@ -5627,9 +6675,52 @@ def run_task(args: argparse.Namespace) -> int:
         )
         with stderr_path.open("a", encoding="utf-8") as handle:
             handle.write(f"{type(error).__name__}: {error}\n")
+        _record_terminal_retrospective(
+            state, slug=args.slug, root=root, task_id=str(task_definition["task_id"]),
+            guardian=guardian, run_ledger_path=run_ledger_path, status_path=status_path,
+            status=preserved_status or "failed",
+            report_passed=False, test_mode=test_mode,
+        )
+        if run_result is not None and events.is_file():
+            # C4: preserve already-observed usage even on a failed run.
+            _record_usage_report(
+                state,
+                events,
+                provider=provider,
+                run_id=run_result.run_id,
+                slug=args.slug,
+                intent_id=(
+                    str(guardian.contract.get("intent_id") or "") or None
+                ) if guardian is not None else None,
+                session_id=str(guardian.session_id) if guardian is not None else None,
+            )
+        if run_result is not None and status != "paused":
+            # A policy pause is an interrupt with intent to continue: the
+            # attempt stays resumable by plain resubmission.
+            try:
+                record_dispatch_closed(
+                    dispatch_registry_path,
+                    request_id=request_id,
+                    attempt=int(dispatch_segment["attempt"]),
+                    run_id=run_result.run_id,
+                    outcome="terminal",
+                    stop_reason=run_result.stop_reason,
+                    task_status=status,
+                    returncode=returncode,
+                )
+            except DispatchRegistryError:
+                pass
         print(f"SULDE AGENT FAILED slug={args.slug}: {error}", file=sys.stderr)
         return 1
     finally:
+        if run_lease is not None:
+            try:
+                run_lease.release()
+            except RunConcurrencyError as lease_error:
+                print(
+                    f"SULDE AGENT LEASE: release failed: {lease_error}",
+                    file=sys.stderr,
+                )
         try:
             unlock(lock_handle)
         finally:
@@ -5928,6 +7019,33 @@ def parse_args() -> argparse.Namespace:
         "--semantic-critic",
         action="store_true",
         help="opt in to extra provider calls over changed local artifacts after secret scanning",
+    )
+    run_parser.add_argument(
+        "--request-id",
+        default=None,
+        help=(
+            "explicit dispatch request id; resubmitting the same id with "
+            "different content is rejected, the same id with identical "
+            "content resumes its attempt"
+        ),
+    )
+    run_parser.add_argument(
+        "--retry",
+        action="store_true",
+        help=(
+            "explicit retry operation: open the next linked attempt for a "
+            "closed, retryable request (an ordinary duplicate never starts "
+            "a new launch); requires --retry-op"
+        ),
+    )
+    run_parser.add_argument(
+        "--retry-op",
+        default=None,
+        help=(
+            "stable retry-operation identity; the same identity always "
+            "resolves to the same attempt, even when the retry itself "
+            "failed or timed out"
+        ),
     )
     run_parser.add_argument(
         "--timeout",

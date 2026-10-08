@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+from intent_guardian_parts.relocation_storage import require_relocation_write_allowed
+
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -214,6 +216,16 @@ def _request_expired(request: dict[str, Any], *, now: datetime | None = None) ->
     return expires <= (now or datetime.now(timezone.utc))
 
 
+def request_is_open(request: dict[str, Any], *, now: datetime | None = None) -> bool:
+    """Read effective liveness from a validated ledger projection, not authority.
+
+    Durable ``asked`` history survives TTL expiry. Missing/unparseable deadlines
+    are not expiry evidence; replay validates malformed ledgers before callers
+    reach this predicate. Effect and native-transaction state are independent.
+    """
+    return request.get("status") == "asked" and not _request_expired(request, now=now)
+
+
 def _timeout_refresh_identity(
     previous_request_document: dict[str, Any],
     replacement_request_document: dict[str, Any],
@@ -336,6 +348,10 @@ def _store_lock(path: Path, *, timeout: float = 3.0) -> Iterator[None]:
                     )
                 time.sleep(0.01)
         try:
+            try:
+                require_relocation_write_allowed(path)
+            except RuntimeError as error:
+                raise ApprovalInvariantError(str(error)) from error
             yield
         finally:
             unlock(handle)
@@ -1726,7 +1742,7 @@ def open_requests(
     )
     rows = []
     for request in load_projection(contract_path)["requests"].values():
-        if request["status"] != "asked" or _request_expired(request):
+        if not request_is_open(request):
             continue
         if kind is not None and request["kind"] != kind:
             continue
@@ -2063,7 +2079,7 @@ def summary(contract_path: Path) -> dict[str, Any]:
     active_open = [
         row
         for row in requests
-        if row["status"] == "asked" and not _request_expired(row)
+        if request_is_open(row)
     ]
     expired = [
         row

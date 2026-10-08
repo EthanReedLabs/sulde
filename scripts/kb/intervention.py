@@ -10,6 +10,8 @@ adjacent JSON file is only a replayable projection.
 
 from __future__ import annotations
 
+from intent_guardian_parts.relocation_storage import require_relocation_write_allowed
+
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
@@ -29,6 +31,7 @@ from urllib.parse import SplitResult, urlsplit, urlunsplit
 
 from file_lock import lock_exclusive_nonblocking, unlock
 from sulde_effects import DEFAULT_EFFECT_ROUTER
+from intent_guardian_parts.remote_identity import is_ssh_request_key, validate_ssh_identity
 
 contract_identity_digest = runpy.run_path(
     str(Path(__file__).resolve().with_name("sulde_paths.py"))
@@ -1339,6 +1342,14 @@ def _typed_resource_match_state(
 ) -> str:
     """Return same/different/unknown for two typed versioned identities."""
     historical_key = str(attempt.get("resource_key") or "")
+    if is_ssh_request_key(historical_key) or is_ssh_request_key(resource_key):
+        # Literal account/IP/path binds a requested destination, not the remote
+        # host or filesystem object. In particular different paths may alias and
+        # an old command hash may hide this same SSH destination. Never let the
+        # ordinary opaque-key inequality turn that gap into disjoint resources.
+        # A fully typed local path is the only independently separated domain.
+        other = resource_key if is_ssh_request_key(historical_key) else historical_key
+        return "different" if str(other).startswith("v2:path:") else "unknown"
     if historical_key == resource_key:
         return (
             "same"
@@ -1657,6 +1668,10 @@ def _store_lock(path: Path, *, timeout: float = 3.0) -> Iterator[None]:
                     raise InterventionError(f"intervention store lock busy: {lock_path}")
                 time.sleep(0.01)
         try:
+            try:
+                require_relocation_write_allowed(path)
+            except RuntimeError as error:
+                raise InterventionError(str(error)) from error
             yield
         finally:
             unlock(handle)
@@ -2286,6 +2301,7 @@ def _apply_event(
     row: dict[str, Any],
     *,
     _batch_dispatch: bool = False,
+    _contract_path: Path | None = None,
 ) -> None:
     event_type = row["type"]
     attempts = projection["attempts"]
@@ -2580,6 +2596,11 @@ def _apply_event(
                 raise InterventionError(
                     "retry attempt does not match its explicit takeover authority"
                 )
+        risk_grant = row.get("risk_grant")
+        if risk_grant is not None:
+            if _contract_path is None:
+                raise InterventionError("risk grant replay requires its contract ledger")
+            _validate_risk_grant_link(_contract_path, projection, row, risk_grant, live=False)
         attempts[attempt_id] = {
             "attempt_id": attempt_id,
             "batch_id": str(row.get("batch_id") or ""),
@@ -2593,6 +2614,7 @@ def _apply_event(
             "semantic_retry_authority": (
                 row.get("semantic_retry_authority") is True
             ),
+            **({"risk_grant": risk_grant} if risk_grant is not None else {}),
             "intent_id": str(row.get("intent_id") or ""),
             "intent_revision": int(row.get("intent_revision") or 0),
             "provider": str(row.get("provider") or "unknown"),
@@ -2836,6 +2858,19 @@ def _apply_event(
         attempt = attempts.get(attempt_id)
         if not isinstance(attempt, dict) or attempt.get("state") != "unknown":
             raise InterventionError("an intervention may open only for an unknown attempt")
+        if "recovery_of" in row or "recovery_binding_sha256" in row:
+            history = [item for item in interventions.values()
+                       if item.get("attempt_id") == attempt_id]
+            previous = history[-1] if history else {}
+            readiness = effect_recovery_readiness(attempt)
+            if (previous.get("intervention_id") != row.get("recovery_of")
+                    or previous.get("status") != "resolved"
+                    or previous.get("decision") != "abort"
+                    or not readiness["verification_contract_ready"]
+                    or readiness["binding_sha256"] != row.get("recovery_binding_sha256")
+                    or any(item.get("resolution_evidence_basis_sha256") == readiness["evidence_basis_sha256"]
+                           for item in history if item.get("decision") == "abort")):
+                raise InterventionError("effect recovery opening has invalid predecessor or binding")
         if (
             row.get("schema") == LEGACY_EVENT_SCHEMA
             and not _legacy_row_matches_attempt(row, attempt)
@@ -2863,6 +2898,9 @@ def _apply_event(
             "retry_consumed_by": None,
             "reprobe_consumed_by": None,
             "legacy_resolution_replayed": False,
+            **({"recovery_of": row["recovery_of"],
+                "recovery_binding_sha256": row["recovery_binding_sha256"]}
+               if "recovery_of" in row else {}),
         }
     elif event_type == "intent.intervention_acknowledged":
         intervention = interventions.get(intervention_id)
@@ -2950,6 +2988,10 @@ def _apply_event(
                 "only retry/reprobe authority may name a takeover lane"
             )
         intervention["status"] = "resolved"
+        # Deterministic replay snapshot also covers pre-feature abort rows;
+        # append-only history is untouched and repeated reviews need new facts.
+        intervention["resolution_binding_sha256"] = effect_recovery_readiness(attempt)["binding_sha256"]
+        intervention["resolution_evidence_basis_sha256"] = effect_recovery_readiness(attempt)["evidence_basis_sha256"]
         intervention["decision"] = decision
         intervention["legacy_resolution_replayed"] = legacy_resolution_replay
         intervention["evidence"] = str(row.get("evidence") or "")
@@ -3011,12 +3053,13 @@ def _apply_event(
 
 
 def replay(contract_path: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
-    return _replay_digest(contract_digest(contract_path), rows)
+    return _replay_digest(contract_digest(contract_path), rows, contract_path=contract_path)
 
 
 def _replay_digest(
     expected_contract: str,
     rows: list[dict[str, Any]],
+    *, contract_path: Path | None = None,
 ) -> dict[str, Any]:
     if not re.fullmatch(r"[0-9a-f]{64}", expected_contract):
         raise InterventionError("intervention contract digest is invalid")
@@ -3032,7 +3075,7 @@ def _replay_digest(
         ).hexdigest()
         if row.get("event_id") != expected_event_id:
             raise InterventionError(f"intervention event digest mismatch at sequence {expected_sequence}")
-        _apply_event(projection, row)
+        _apply_event(projection, row, _contract_path=contract_path)
     return projection
 
 
@@ -3215,7 +3258,8 @@ def _matching_retry(
     session_id: str,
 ) -> dict[str, Any] | None:
     candidates = []
-    for intervention in projection["interventions"].values():
+    latest = {row["attempt_id"]: row for row in projection["interventions"].values()}
+    for intervention in latest.values():
         attempt = projection["attempts"].get(intervention.get("attempt_id"), {})
         sealed_operation = str(
             intervention.get("operation_fingerprint")
@@ -3755,6 +3799,9 @@ def begin_attempt(
     verification_sha256: str = "",
     compensates_attempt_id: str = "",
     semantic_retry_intervention_id: str = "",
+    risk_grant_transaction_id: str = "",
+    risk_event: dict[str, Any] | None = None,
+    risk_dispatch: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if not idempotency_key.strip():
         raise InterventionError("attempt idempotency key must not be empty")
@@ -3833,6 +3880,14 @@ def begin_attempt(
                 raise InterventionError(
                     "effect attempt idempotency key was reused for different semantics"
                 )
+            if (attempt.get("risk_grant", {}).get("transaction_id", "") != risk_grant_transaction_id
+                    or (risk_grant_transaction_id and
+                        (attempt["risk_grant"].get("source_event_id") != source_event_id
+                         or not isinstance(risk_dispatch, dict)
+                         or attempt["risk_grant"].get("dispatch_id") != risk_dispatch.get("dispatch_id")
+                         or attempt["risk_grant"].get("authority_sha256") != risk_dispatch.get("authority_sha256")
+                         or attempt["risk_grant"].get("event") != _risk_link_event(risk_event)))):
+                raise InterventionError("risk grant idempotency binding differs")
             # Historical idempotency rows predate resource identity.  Exact
             # raw target equality above is enough for them; once a row carries
             # a resource key, it must continue to match the canonical binding.
@@ -3957,6 +4012,24 @@ def begin_attempt(
             for value in (predecessor, compensates_attempt_id)
             if value
         }
+        risk_link = None
+        if risk_grant_transaction_id or risk_event is not None or risk_dispatch is not None:
+            if retry or compensates_attempt_id or observation_gap:
+                raise InterventionError("risk acceptance cannot mix retry, compensation or observation gap")
+            risk_link = {
+                "schema": "sulde-effect-risk-grant-link-v1",
+                "transaction_id": risk_grant_transaction_id,
+                "source_event_id": source_event_id,
+                "dispatch": risk_dispatch,
+                "event": _risk_link_event(risk_event),
+            }
+            facts = {"intent_id": intent_id, "intent_revision": int(intent_revision),
+                     "provider": provider, "session_id": session_id, "source_event_id": source_event_id,
+                     "capability": capability, "target": target, "effect": effect,
+                     "resource_key": selected_resource_key, "resource_context": normalized_resource_context,
+                     "operation_arguments_digest": selected_arguments_digest, "fingerprint": fingerprint}
+            risk_link = _validate_risk_grant_link(contract_path, projection, facts, risk_link, live=True)
+            permitted_blockers.update(risk_link.get("accepted_attempt_ids", [risk_link["accepted_attempt_id"]]))
         quarantined_attempt_ids = {
             str(row.get("attempt_id") or "")
             for row in terminal_quarantined_attempts(projection)
@@ -4015,6 +4088,7 @@ def begin_attempt(
             "verification_kind": verification_kind,
             "verification_sha256": verification_sha256,
             "compensates_attempt_id": compensates_attempt_id or None,
+            **({"risk_grant": risk_link} if risk_link is not None else {}),
         }
         specs = [
             {
@@ -4440,6 +4514,291 @@ def acknowledge_intervention(
     return dict(projection["interventions"][intervention_id])
 
 
+def effect_recovery_readiness(attempt: dict[str, Any]) -> dict[str, Any]:
+    """Read-only minimum evidence contract, not verification or dispatch authority."""
+    fields = ("attempt_id", "capability", "effect", "target", "target_sha256",
+              "resource_key", "resource_sha256", "resource_base", "resource_context",
+              "operation_fingerprint", "operation_arguments_digest",
+              "verification_kind", "verification_sha256", "identity_history")
+    binding = {name: attempt.get(name) for name in fields}
+    digest = hashlib.sha256(_canonical(binding).encode("utf-8")).hexdigest()
+    # CAS seals all identity/history; novelty seals only material evidence.
+    # Repeating a rebind or changing an operation nonce is not new evidence.
+    basis = {name: value for name, value in binding.items()
+             if name not in {"identity_history", "operation_fingerprint", "operation_arguments_digest"}}
+    basis_digest = hashlib.sha256(_canonical(basis).encode("utf-8")).hexdigest()
+    missing = []
+    content_bound_opaque = False
+    if attempt.get("replay_authoritative") is not True:
+        missing.append("replay_authority_missing")
+    kind = attempt.get("verification_kind")
+    if kind not in {"existence", "content", "relation"}:
+        missing.append("verification_contract_unsupported")
+    elif kind in {"content", "relation"} and not re.fullmatch(
+        r"[0-9a-f]{64}", str(attempt.get("verification_sha256") or "")
+    ):
+        missing.append("verification_digest_missing")
+    try:
+        _, resource_kind, _, _ = _resource_key_parts(
+            str(attempt.get("resource_key") or ""), allow_legacy=True)
+        self_match = settlement_resource_match(
+            attempt, target=str(attempt.get("target") or ""),
+            resource_key=str(attempt.get("resource_key") or ""),
+            resource_base=attempt.get("resource_base"),
+            resource_context=attempt.get("resource_context"),
+        ) == "proved_same"
+        # Existing sealed maintenance verification binds exact expected content
+        # even when the target label is opaque. Preserve that reprobe route,
+        # but do not use it to reopen an aborted target without resolved identity.
+        content_bound_opaque = (resource_kind == "opaque" and self_match
+                                and kind in {"content", "relation"})
+        if resource_kind == "opaque" or not self_match:
+            missing.append("resource_identity_unproved")
+    except InterventionError:
+        missing.append("resource_identity_unproved")
+    return {"verification_contract_ready": not missing,
+            "reprobe_ready": not missing or (content_bound_opaque and missing == ["resource_identity_unproved"]),
+            "missing": missing, "binding_sha256": digest,
+            "evidence_basis_sha256": basis_digest,
+            "effect_verified": False}
+
+
+def prepare_effect_recovery(
+    contract_path: Path, attempt_id: str, *, expected_binding_sha256: str,
+) -> dict[str, Any]:
+    """Open a review after new bound evidence; never authorize or settle effects."""
+    def mutation(projection: dict[str, Any]) -> tuple[list[dict[str, Any]], str]:
+        attempt = projection["attempts"].get(attempt_id)
+        if not isinstance(attempt, dict) or attempt.get("state") != "unknown":
+            raise InterventionError("effect recovery requires an unknown attempt")
+        readiness = effect_recovery_readiness(attempt)
+        if readiness["binding_sha256"] != expected_binding_sha256:
+            raise InterventionError("effect recovery binding changed (CAS)")
+        if not readiness["verification_contract_ready"]:
+            raise InterventionError("effect recovery missing verification basis: " + ",".join(readiness["missing"]))
+        history = [row for row in projection["interventions"].values()
+                   if row.get("attempt_id") == attempt_id]
+        if not history:
+            raise InterventionError("effect recovery requires a prior aborted intervention")
+        latest = history[-1]
+        if (latest.get("status") in {"open", "acknowledged"}
+                and latest.get("recovery_binding_sha256") == expected_binding_sha256):
+            return [], str(latest["intervention_id"])
+        if latest.get("status") != "resolved" or latest.get("decision") != "abort":
+            raise InterventionError("effect recovery requires the latest decision to be abort")
+        if any(row.get("resolution_evidence_basis_sha256") == readiness["evidence_basis_sha256"]
+               for row in history if row.get("decision") == "abort"):
+            raise InterventionError("effect recovery requires new bound evidence after abort")
+        identifier = _digest("int", projection["contract_sha256"], attempt_id,
+                             latest["intervention_id"], expected_binding_sha256)
+        return [{"type": "intent.intervention_opened", "intervention_id": identifier,
+                 "attempt_id": attempt_id, "recovery_of": latest["intervention_id"],
+                 "recovery_binding_sha256": expected_binding_sha256,
+                 "reason": "new bound verification evidence; native decision still required"}], identifier
+
+    projection, identifier = _mutate(contract_path, mutation)
+    return dict(projection["interventions"][identifier])
+
+
+def material_blocker_description(blocker: dict[str, Any]) -> str:
+    return {
+        "same_resource_proved": "已证明同一目标资源仍有未结算的外部效果",
+        "explicit_dependency": "显式依赖的外部效果仍未结算",
+    }.get(str(blocker.get("match_reason") or ""),
+          "资源身份尚未证明，无法排除与历史未结算外部效果冲突")
+
+
+def effect_risk_review_context(contract_path: Path, event: dict[str, Any]) -> dict[str, Any]:
+    """Freeze a scoped conflict-risk review; does not grant or settle anything.
+
+    Call under the existing contract lock when composing or consuming a grant.
+    The event must come from trusted hook normalization, including its bounded
+    SSH grammar result. A receipt is checked by the caller, never this helper.
+    """
+    from intent_guardian_parts.state import policy_digest
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    if not isinstance(contract, dict):
+        raise InterventionError("risk review contract must be an object")
+    return _effect_risk_review_context(contract_path, event, load_projection(contract_path), policy_digest(contract))
+
+
+def _effect_risk_review_context(
+    contract_path: Path, event: dict[str, Any], projection: dict[str, Any], policy_sha256: str,
+) -> dict[str, Any]:
+    remote = event.get("remote_request")
+    target = str(event.get("target") or "")
+    key = str(event.get("effect_resource_key") or "")
+    if (event.get("phase") != "started" or event.get("effect") != "external_write"
+            or not isinstance(remote, dict) or remote.get("operation") != "mkdir_p"
+            or remote.get("effect") != "external_write"
+            or remote.get("target") != target or remote.get("resource_key") != key
+            or not validate_ssh_identity(target, key)
+            or event.get("effect_resource_context") != {"schema": "exact", "value": target}
+            or event.get("sensitive_input")
+            or event.get("supervision_domain", "intent_guardian") != "intent_guardian"
+            or not event.get("provider") or event.get("provider") == "unknown"
+            or not event.get("session_id")
+            or not re.fullmatch(r"[0-9a-f]{64}", str(event.get("arguments_digest") or ""))):
+        raise InterventionError("risk review requires one bound literal SSH mkdir request and lane")
+    active = blocking_attempts(projection)
+    blocker = _material_event_blocker(contract_path, event, projection)
+    if not active or not blocker:
+        raise InterventionError("risk review requires an unresolved blocker")
+    attempt = next((row for row in active if row.get("attempt_id") == blocker.get("attempt_id")), None)
+    if attempt is None or any(row.get("state") not in {"unknown", "verifying"} for row in active):
+        raise InterventionError("risk review requires unknown or verifying historical effect")
+    fields = ("provider", "session_id", "capability", "action", "effect", "target", "effect_resource_key",
+              "effect_resource_context", "arguments_digest", "depends_on_attempt_id", "verification_for",
+              "runtime_generation", "loaded_module_generation", "artifact_generation")
+    snapshot = {
+        # Runtime observations and native question bookkeeping are not intent
+        # changes. Bind material contract fields, using the authoritative file
+        # rather than optional enrichment on the caller's event copy.
+        "policy_sha256": policy_sha256,
+        "action": {name: event.get(name) for name in fields},
+        "attempt": attempt,
+        "interventions": [row for row in projection["interventions"].values()
+                          if row.get("attempt_id") == attempt["attempt_id"]],
+    }
+    # Bind every unresolved effect, including its intervention history. A new,
+    # removed or changed debt invalidates the native card. Preserve the v1
+    # single-debt snapshot so existing append-only risk receipts remain replayable.
+    additional = sorted((row for row in active if row["attempt_id"] != attempt["attempt_id"]),
+                        key=lambda row: row["attempt_id"])
+    if additional:
+        ids = {row["attempt_id"] for row in additional}
+        snapshot["additional_attempts"] = additional
+        snapshot["additional_interventions"] = [
+            row for row in projection["interventions"].values() if row.get("attempt_id") in ids
+        ]
+    review = {
+        "schema": "guardian-effect-risk-review-v1",
+        "attempt_id": attempt["attempt_id"],
+        "attempt_state": attempt["state"],
+        "binding_sha256": hashlib.sha256(_canonical(snapshot).encode()).hexdigest(),
+        "target": target,
+        "operation": "mkdir_p",
+        "effect": "external_write",
+        "identity_quality": "explicit_literal_unverified_endpoint",
+        "reason": "accept possible conflict with one unresolved historical effect for this exact action only",
+        "limitations": ["does not prove historical target equality or success",
+                        "history remains unresolved; further actions require their own authority"],
+        "effect_verified": False,
+        "execution_authorized": False,
+    }
+    if additional:
+        review["attempt_ids"] = sorted(row["attempt_id"] for row in active)
+        review["reason"] = f"accept possible conflict with {len(active)} unresolved historical effects for this exact action only"
+    return review
+
+
+def effect_risk_acceptance_matches(
+    contract_path: Path, event: dict[str, Any], review: dict[str, Any],
+) -> bool:
+    """Check freshness only; True is not authority without the native receipt."""
+    try:
+        return review == effect_risk_review_context(contract_path, event)
+    except (InterventionError, OSError, ValueError, TypeError):
+        return False
+
+
+def _risk_link_event(event: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(event, dict):
+        raise InterventionError("risk grant requires a normalized event")
+    fields = ("phase", "kind", "provider", "session_id", "capability", "action", "effect", "target",
+              "effect_resource_key", "effect_resource_context", "arguments_digest", "fingerprint",
+              "event_id", "call_id", "depends_on_attempt_id", "verification_for", "runtime_generation",
+              "loaded_module_generation", "artifact_generation", "sensitive_input", "supervision_domain")
+    selected = {key: event[key] for key in fields if key in event}
+    remote = event.get("remote_request")
+    if not isinstance(remote, dict):
+        raise InterventionError("risk grant event has no bounded remote request")
+    selected["remote_request"] = {key: remote.get(key) for key in ("target", "resource_key", "effect", "operation")}
+    return selected
+
+
+def _validate_risk_grant_link(
+    contract_path: Path, projection: dict[str, Any], facts: dict[str, Any], link: dict[str, Any], *, live: bool,
+) -> dict[str, Any]:
+    """Authenticate durable native CAS independently of the caller's dict.
+
+    Broker reads validate no-follow storage and its complete event chain. They
+    do not acquire a broker write lock or call back into this ledger, preserving
+    contract -> effect-ledger lock order. A claimed dispatch is immutable.
+    """
+    import grant_broker as broker
+    from decision_kernel import event_effect
+    from intent_guardian_parts.state import policy_digest
+    try:
+        base_keys = {"schema", "transaction_id", "source_event_id", "event"}
+        expected_keys = base_keys | ({"dispatch"} if live else
+            {"dispatch_id", "authority_sha256", "accepted_attempt_id", "review_binding_sha256"})
+        if not live and isinstance(link, dict) and "accepted_attempt_ids" in link:
+            expected_keys.add("accepted_attempt_ids")
+        if not isinstance(link, dict) or set(link) != expected_keys or link["schema"] != "sulde-effect-risk-grant-link-v1":
+            raise InterventionError("risk grant linkage shape is invalid")
+        txid = link["transaction_id"]
+        if not isinstance(txid, str) or not txid:
+            raise InterventionError("risk grant transaction identity missing")
+        tx = broker._tx(broker._read(contract_path), txid)
+        spec, decision = tx["spec"], tx["decision"]
+        dispatch, consumed = tx["dispatch"], tx["grant_consumption"]
+        if (not isinstance(decision, dict) or decision.get("outcome") != "allow"
+                or decision.get("channel") != "native_typed_receipt" or decision.get("authority") != "human"
+                or not isinstance(consumed, dict) or not isinstance(dispatch, dict)
+                or (live and link["dispatch"] != broker._public(dispatch))
+                or (not live and (link["dispatch_id"] != dispatch.get("dispatch_id")
+                                  or link["authority_sha256"] != dispatch.get("authority_sha256")))
+                or dispatch.get("execution_authorized") is not True
+                or dispatch.get("consumer_id") != facts.get("source_event_id")
+                or link["source_event_id"] != facts.get("source_event_id")
+                or (live and (tx["settlement"] is not None or tx["effect_receipt"] is not None))):
+            raise InterventionError("risk grant lacks exact native consumed dispatch winner")
+        if any(row.get("risk_grant", {}).get("transaction_id") == txid for row in projection["attempts"].values()):
+            raise InterventionError("risk grant transaction already linked to an attempt")
+        event = link["event"]
+        if _risk_link_event(event) != event or event.get("event_id") != facts.get("source_event_id"):
+            raise InterventionError("risk grant source event identity differs")
+        for field in ("provider", "session_id", "capability", "target", "effect"):
+            if facts.get(field) != event.get(field):
+                raise InterventionError("risk grant event differs from attempt " + field)
+        if (facts.get("operation_arguments_digest") != event.get("arguments_digest")
+                or facts.get("resource_key") != event.get("effect_resource_key")
+                or facts.get("resource_context") != event.get("effect_resource_context")
+                or spec["provider"] != facts.get("provider") or spec["session_id"] != facts.get("session_id")
+                or spec["subject"] != {"intent_id": facts.get("intent_id"), "revision": facts.get("intent_revision")}
+                or spec["effect"] != event_effect(event)
+                or facts.get("fingerprint") != spec["effect"].get("event_fingerprint")
+                or spec["constraints"].get("one_shot") is not True):
+            raise InterventionError("risk grant action/subject/resource binding differs")
+        review = spec["constraints"].get("effect_risk_review")
+        if not isinstance(review, dict):
+            raise InterventionError("ordinary grant cannot authorize historical risk")
+        policy = spec["world_state"].get("policy_digest")
+        if live:
+            contract = json.loads(contract_path.read_text(encoding="utf-8"))
+            if (policy_digest(contract) != policy or contract.get("task_epoch") != spec["task_epoch"]
+                    or contract.get("revision") != facts.get("intent_revision")
+                    or contract.get("intent_id") != facts.get("intent_id")
+                    or contract.get("status") != "active"):
+                raise InterventionError("risk grant intent changed after consumption")
+        expected_review = _effect_risk_review_context(contract_path, event, projection, policy)
+        if review != expected_review:
+            raise InterventionError("risk grant historical debt snapshot changed")
+        expected = {**{key: value for key, value in link.items() if key != "dispatch"},
+                    "dispatch_id": dispatch["dispatch_id"], "authority_sha256": dispatch["authority_sha256"],
+                    "accepted_attempt_id": review["attempt_id"], "review_binding_sha256": review["binding_sha256"]}
+        if "attempt_ids" in review:
+            expected["accepted_attempt_ids"] = review["attempt_ids"]
+        else:
+            expected.pop("accepted_attempt_ids", None)
+        if not live and expected != link:
+            raise InterventionError("risk grant history linkage differs")
+        return expected
+    except (broker.GrantBrokerError, KeyError, TypeError, ValueError, OSError) as error:
+        raise InterventionError("risk grant authentication failed: " + str(error)) from error
+
+
 def resolve_intervention(
     contract_path: Path,
     intervention_id: str,
@@ -4497,6 +4856,10 @@ def resolve_intervention(
                 "historical attempt lacks replay authority for settlement or recovery; "
                 "only abort is permitted"
             )
+        if decision == "reprobe_authorized":
+            readiness = effect_recovery_readiness(attempt)
+            if not readiness["reprobe_ready"]:
+                raise InterventionError("reprobe missing verification basis: " + ",".join(readiness["missing"]))
         specs: list[dict[str, Any]] = []
         if decision == "human_attested_success":
             specs.append(
@@ -4888,23 +5251,15 @@ def verify_from_read(
                 return True, None
             if not explicit_attempt_id:
                 return False, None
-            intervention = next(
-                (
-                    row
-                    for row in projection["interventions"].values()
-                    if row.get("attempt_id") == attempt.get("attempt_id")
-                    and row.get("status") == "resolved"
-                    and row.get("decision")
-                    in {"retry_authorized", "reprobe_authorized"}
-                    and (
-                        row.get("decision") != "reprobe_authorized"
-                        or not row.get("reprobe_consumed_by")
-                    )
-                ),
-                None,
-            )
+            history = [row for row in projection["interventions"].values()
+                       if row.get("attempt_id") == attempt.get("attempt_id")]
+            intervention = history[-1] if history else None
             allowed = bool(
                 intervention
+                and intervention.get("status") == "resolved"
+                and intervention.get("decision") in {"retry_authorized", "reprobe_authorized"}
+                and (intervention.get("decision") != "reprobe_authorized"
+                     or not intervention.get("reprobe_consumed_by"))
                 and (
                     intervention.get("takeover_provider")
                     or intervention.get("provider")
@@ -5206,6 +5561,12 @@ def material_event_blocker(contract_path: Path, event: dict[str, Any]) -> dict[s
     still authoritative, but its debt now follows the exact target (or an
     explicit dependency) instead of every later material action in the lane.
     """
+    return _material_event_blocker(contract_path, event)
+
+
+def _material_event_blocker(
+    contract_path: Path, event: dict[str, Any], projection: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
     if event.get("phase") != "started":
         return None
     if event.get("supervision_domain") == "execution_passthrough":
@@ -5226,7 +5587,8 @@ def material_event_blocker(contract_path: Path, event: dict[str, Any]) -> dict[s
         )
     ):
         return None
-    projection = load_projection(contract_path)
+    if projection is None:
+        projection = load_projection(contract_path)
     provider = str(event.get("provider") or "unknown")
     session_id = str(event.get("session_id") or "")
     fingerprint = str(event.get("fingerprint") or "")
@@ -5331,7 +5693,15 @@ def material_event_blocker(contract_path: Path, event: dict[str, Any]) -> dict[s
         if row.get("attempt_id") == attempt["attempt_id"]
     ]
     intervention = intervention_rows[-1] if intervention_rows else None
+    aliases = attempt.get("identity_history") or []
+    same = any(isinstance(identity, dict) and settlement_resource_match(
+        identity, target=event_target, resource_key=resource_key,
+        resource_base=resource_base, resource_context=resource_context,
+    ) == "proved_same" for identity in [attempt, *aliases])
     return {
+        "match_reason": ("explicit_dependency" if dependency else
+                         "same_resource_proved" if same and not unresolved_target else
+                         "resource_identity_unproved"),
         "attempt_id": attempt["attempt_id"],
         "attempt_state": attempt["state"],
         "intervention_id": intervention.get("intervention_id") if intervention else None,

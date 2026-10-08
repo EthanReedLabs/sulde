@@ -80,6 +80,7 @@ class RunLedgerProjection:
     terminal: bool
     publishable: bool
     rows: int
+    prediction_observations: tuple[dict[str, Any], ...] = ()
 
 
 def _now() -> str:
@@ -161,6 +162,7 @@ def replay_run_ledger(path: Path) -> RunLedgerProjection | None:
     recovery_blocked = False
     pid: int | None = None
     tree_scope = "unknown"
+    prediction_observations: list[dict[str, Any]] = []
     for line_number, row in enumerate(rows, 1):
         if row.get("schema") != RUN_EVENT_SCHEMA:
             raise ExecutionBackendError(
@@ -178,6 +180,14 @@ def replay_run_ledger(path: Path) -> RunLedgerProjection | None:
         if event_type == "execution.requested":
             if line_number != 1 or requested:
                 raise ExecutionBackendError("execution.requested must be the first event")
+            embedded_digest = row.get("launch_description_sha256")
+            if embedded_digest is not None and (
+                not isinstance(embedded_digest, str)
+                or re.fullmatch(r"[0-9a-f]{64}", embedded_digest) is None
+            ):
+                raise ExecutionBackendError(
+                    "embedded launch description digest is invalid"
+                )
             requested = True
         elif event_type == "execution.started":
             if not requested or started or start_failed or result is not None:
@@ -235,6 +245,15 @@ def replay_run_ledger(path: Path) -> RunLedgerProjection | None:
                     "execution.disposed error count must be non-negative"
                 )
             disposed = {**row, "error_count": error_count}
+        elif event_type in {
+            "prediction.rebound",
+            "prediction.attempt_started",
+            "prediction.feedback",
+            "prediction.feedback_consumed",
+            "prediction.feedback_degraded",
+        }:
+            # supervised consumer observations: recorded, lifecycle-neutral
+            prediction_observations.append({**row})
         else:
             raise ExecutionBackendError(
                 f"run ledger row {line_number} has unsupported type {event_type!r}"
@@ -265,6 +284,7 @@ def replay_run_ledger(path: Path) -> RunLedgerProjection | None:
         terminal=terminal,
         publishable=publishable,
         rows=len(rows),
+            prediction_observations=tuple(prediction_observations),
     )
 
 
@@ -347,6 +367,13 @@ def recover_incomplete_run(
         ),
     )
     return replay_run_ledger(path)
+
+
+def append_run_ledger_event(
+    path: Path, *, run_id: str, event_type: str, **values: Any
+) -> None:
+    """Public append for supervised consumers (e.g. prediction feedback)."""
+    _append_event(path, _event(run_id, event_type, **values))
 
 
 def _event(run_id: str, event_type: str, **values: Any) -> dict[str, Any]:
@@ -676,11 +703,19 @@ class ExecutionBackend:
         stdout: int | TextIO | None = subprocess.PIPE,
         stderr: int | TextIO | None = None,
         environment: Mapping[str, str] | None = None,
+        launch_description_sha256: str | None = None,
     ) -> RunHandle:
         if not command:
             raise ExecutionBackendError("execution command must not be empty")
         root = cwd.expanduser().resolve()
         run_id = "run-" + uuid.uuid4().hex[:24]
+        requested_extra: dict[str, Any] = {}
+        if launch_description_sha256 is not None:
+            if re.fullmatch(r"[0-9a-f]{64}", launch_description_sha256) is None:
+                raise ExecutionBackendError(
+                    "launch description digest is not a sha256 digest"
+                )
+            requested_extra["launch_description_sha256"] = launch_description_sha256
         _append_event(
             ledger_path,
             _event(
@@ -690,6 +725,7 @@ class ExecutionBackend:
                 command_sha256=_digest_text("\0".join(str(value) for value in command)),
                 workspace_id=_workspace_identifier(root),
                 parent_death_watchdog=os.name != "nt",
+                **requested_extra,
             ),
         )
         selected_environment = dict(environment or os.environ)

@@ -99,7 +99,8 @@ class NativeMemoryContinuationTests(unittest.TestCase):
             with candidate._process_environment(env):
                 installed = installer._registry_add(codex, staged.marketplace, runner, expected_version=generation["plugin_version"])
                 kb = Path(env["SULDE_KB_HOME"])
-                installer._install_launchers(installed, kb, runner, platform="posix")
+                candidate._prepare_isolated_hook_launchers(installed, kb, runner,
+                    platform="posix", environment=env)
                 installer._smoke_installed(installed, kb, codex=codex, expected_tree_sha256=staged.plugin_tree_sha256, runner=runner)
                 guardian = Path(env["SULDE_HOME"]) / "bin/intent-guardian"
                 runner([codex, "mcp", "add", "sulde_kb", "--env", "SULDE_HOME=" + env["SULDE_HOME"],

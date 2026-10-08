@@ -1,0 +1,972 @@
+{
+  "files": [
+    {
+      "destination": ".claude-plugin/plugin.json",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "715a6385165ad838368b906b2e33b18c9795a22e7e4bde1e5c9c247822ba587e"
+    },
+    {
+      "destination": ".gitignore",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "c91e01ab6ac1ea13cf9f82b38e23c2bcd03f1a0eabb51fc95f1a62762581970f"
+    },
+    {
+      "destination": "CHANGELOG.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "c90a0f1d22b353200e04a9447abcb91b29d90d4650023a0267d795455ee0b954"
+    },
+    {
+      "destination": "CONTRIBUTING.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "03e3daca01a20bfb9211ecc4b32b296b6730e665c498cdca1be411de3fb30a92"
+    },
+    {
+      "destination": "LICENSE",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "2e5dbc486579f803dd5496f611577d0e9cab70e1927a54ceaeddc06fc055c30a"
+    },
+    {
+      "destination": "LICENSE-v0.1.0-MIT-archive",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "c931055aa62946f9b956ceb45d2a4364d3ca254cbb8c8c29cca4d06730905565",
+      "source": "LICENSE-v0.1.0-MIT-archive"
+    },
+    {
+      "destination": "README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "0c60cc5a5a74d0eaed4e55e135ea1c8ae2865f7a50ce8fda3006db31f58d3a7f"
+    },
+    {
+      "destination": "VERSION",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "d915cc95d6ca8f47ae297713ed46d4e5c5d99ddd29fc3c61e263bdf305f2b5b0"
+    },
+    {
+      "destination": "bin/sulde",
+      "mode": "100755",
+      "policy": "preserve",
+      "sha256": "9cd2d6fd38e3911300d4e7da178fb305773cb15a971b0c0eb6857556010c7bad"
+    },
+    {
+      "destination": "commands/sulde-add-frontend.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "26ee8078da2f28f8cc6c0de5455533345330e234608aad5945b1664a6661f5e0"
+    },
+    {
+      "destination": "commands/sulde-add-scaffold.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "44b72cc42b95fd7337c779713511d4b826562d9bce2ac39af0fdc5b602a16d7e",
+      "source": "commands/sulde-add-scaffold.md"
+    },
+    {
+      "destination": "commands/sulde-add-sensitive-file.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "0a16d8b34f59614ad38d7886c2bb9e8a51be8c3cd510644094a00973238c759e"
+    },
+    {
+      "destination": "commands/sulde-add-skill-trigger.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "a846292b74ffa3e412ebfc1a97544b75baccabc7756c34e276d9f6045fcfa370",
+      "source": "commands/sulde-add-skill-trigger.md"
+    },
+    {
+      "destination": "commands/sulde-add-team-member.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "ca393b21453b881c9d01b16ec34f1e3a0b5abb19fd3914a782aa786a03f7eb34",
+      "source": "commands/sulde-add-team-member.md"
+    },
+    {
+      "destination": "commands/sulde-end-grace.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "4ba4a688571362d4253925ed01838cb79cf94563ab2e8763921f9c3c3ff55050",
+      "source": "commands/sulde-end-grace.md"
+    },
+    {
+      "destination": "commands/sulde-init.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "de46867ea4fab79154d454c09f514804a5cd16f5e2feda2d15afdaf54f9a99ba"
+    },
+    {
+      "destination": "commands/sulde-migrate-from-v0.1.0.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "c318e3fbad5ade270c301b4e52edffd89e7fd56ffb1132588f100b5f5205be33",
+      "source": "commands/sulde-migrate-from-v0.1.0.md"
+    },
+    {
+      "destination": "docs/EXTENDING.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "cb293be911a92fcd078a62a67afd1d888a17f94c06efc3439c9b04028d808549"
+    },
+    {
+      "destination": "docs/GETTING_STARTED.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "60c421422b95dfb4c56db5d71a71d379d4ec8a28a36b3a24e544ab494f8af9d9"
+    },
+    {
+      "destination": "docs/KNOWLEDGE-KIT.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "fb4542a8651897eec5b06b80476629cfb57aeca2f4d382246d6ed66bfb13c738"
+    },
+    {
+      "destination": "docs/METHODOLOGY.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "c674f64dda749d825d4fc1c4e2a23a24efb89ccf6cdb5234c6ce92ebfe6e16b5"
+    },
+    {
+      "destination": "docs/ONBOARDING.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "7a804988e6ad1a5df618f81f3662e2c7c9edb4404196b4e518f1c09a36d56db2"
+    },
+    {
+      "destination": "docs/V0.2.0-DESIGN-v2.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "7cffb64ddb7efe6315185d8ebad1a84d0550a13892ea1b14e1cb0795bbe48192"
+    },
+    {
+      "destination": "extensions/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "2d3b4165c336c05eb21d8abc2c8a04f01bd2af6ca5642c05d5adc952ad38450a"
+    },
+    {
+      "destination": "extensions/checks/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "01f0c80603253d3f314c069e9100a09e6b9b584968c035349c207bf5c2b094eb"
+    },
+    {
+      "destination": "extensions/hooks/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "1f436611bd2eb3f2989db96d14c54ec55ad1bf64b63a737972b91eed814a51fe"
+    },
+    {
+      "destination": "extensions/registry.json",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "14e72fb063c47d56f57c2871f0f975a476b3a45ce3f45db7f76540ed3ea2c5d7"
+    },
+    {
+      "destination": "hooks/git-precommit/check_ai_traces.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "a675bd06d05d937bc97feab3033ea973925bc3c60a345184f12250df6396efa8",
+      "source": "hooks/git-precommit/check_ai_traces.sh"
+    },
+    {
+      "destination": "hooks/git-precommit/check_branch_format.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "eb806c1ae163d6feeb65167d81e0c79b50d7038854e6c1d075634aae247582cd",
+      "source": "hooks/git-precommit/check_branch_format.sh"
+    },
+    {
+      "destination": "hooks/git-precommit/check_branch_protect.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "93d8e6d343424e64bb81969105b10d1103ac021ca55bbc3eaa2c9b123296bedd",
+      "source": "hooks/git-precommit/check_branch_protect.sh"
+    },
+    {
+      "destination": "hooks/git-precommit/check_commit_alias.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "62eb35f65be80fc46d05a70d693ff672d613f7adae5b17a23e149df28f6fe2f8",
+      "source": "hooks/git-precommit/check_commit_alias.sh"
+    },
+    {
+      "destination": "hooks/hooks.json",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "fabbc35f1a93eb3dc18275d5b97d6f82c3d412ce1b3c89379c2cc262b11afaf0"
+    },
+    {
+      "destination": "hooks/lib/check_git_commit_alias.py",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "39fbb658cfb04bd1239734caef8f048fd30f48b77d72cf17169616621c7b54e8",
+      "source": "hooks/lib/check_git_commit_alias.py"
+    },
+    {
+      "destination": "hooks/lib/check_handoff_verify.py",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "db1d358b041bce3790067346361fdf2518ca017910f5baabcf71fe056c3c5273",
+      "source": "hooks/lib/check_handoff_verify.py"
+    },
+    {
+      "destination": "hooks/lib/check_subdir_cd.py",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "ddb306a0d3d6986053a57f28a5e0b813f494953e2b2752b0ee29c224294f9995",
+      "source": "hooks/lib/check_subdir_cd.py"
+    },
+    {
+      "destination": "hooks/lib/check_task_md_baseline.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "c9511d5efd90fa3e27c9d0e94fc5a1311301ea8f5a6333e46cabf46d126a7c97"
+    },
+    {
+      "destination": "hooks/lib/claude_md_inject.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "b7bd907c964f02840735b00b7815cde30a33a0885a76b9b72f5a9fc71bdd71a7"
+    },
+    {
+      "destination": "hooks/lib/community_extensions.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "7ee08c14700c5981d06005f731b50c1c6b3943990f3da11d68283bc480852e59"
+    },
+    {
+      "destination": "hooks/lib/enforcement.py",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d177114506f8aadc2cb9782a4c2c17599427ee8ca2b10ce9ca19762d48fa7723",
+      "source": "hooks/lib/enforcement.py"
+    },
+    {
+      "destination": "hooks/lib/perf_gate.py",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "bc0b5cbef00951676ecc0b35acc4d697426c34ea54f5a20f7dbf0aad7934b64d",
+      "source": "hooks/lib/perf_gate.py"
+    },
+    {
+      "destination": "hooks/lib/skill_trigger.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "14d27b4fdde99223e570feb3d6524e8cbb0c7d00db989430c8ddfe79fa32f415"
+    },
+    {
+      "destination": "hooks/lib/sulde_common.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "708ed5b153f7f57d8418c2182cdf27a6e44eff117b84c2618019705a891f6ec5"
+    },
+    {
+      "destination": "hooks/pre_tool_use.py",
+      "mode": "100755",
+      "policy": "preserve",
+      "sha256": "f427fe24a53ef6a003a8ff1436f95c229240dfa9d8369f48dd32057ccf910fc4"
+    },
+    {
+      "destination": "hooks/requirements.txt",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "9cc53f4d76902c53d39e85c519fadf5d017540fb06ae7510c9c7544fa6684687",
+      "source": "hooks/requirements.txt"
+    },
+    {
+      "destination": "hooks/run-hook.ps1",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "a42bb74ecd68b1b31dc35ee5cd1b5734f81225ac8a6f60cda2167de00f992e7f"
+    },
+    {
+      "destination": "hooks/run-hook.sh",
+      "mode": "100755",
+      "policy": "preserve",
+      "sha256": "eaf3ba09bfb448b680491c2dc76a20036b02e805a31387f9d19c623c36bdf117"
+    },
+    {
+      "destination": "hooks/session_start.py",
+      "mode": "100755",
+      "policy": "preserve",
+      "sha256": "c3e0ceee006b921c0e489cf801da65b36905ffaf6dbb2319fddb31d47d72dcc4"
+    },
+    {
+      "destination": "hooks/user_prompt_submit.py",
+      "mode": "100755",
+      "policy": "preserve",
+      "sha256": "dcd2cc53583e708f27a12c42161fec6de6a349a6e888896c571722094a257d91"
+    },
+    {
+      "destination": "scripts/anti-pattern-tools.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "60fddc642381c914d0b02c36ff633284c67771c99afb11be340427a66952e6ad",
+      "source": "scripts/anti-pattern-tools.sh"
+    },
+    {
+      "destination": "scripts/coordinator-baseline.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "bafdc8f2ed117de96156d304c8587bb6b1c59c96d26eb27f7956dc61efcfe17c",
+      "source": "scripts/coordinator-baseline.sh"
+    },
+    {
+      "destination": "scripts/health-check.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "1881cd7158c57bb9c79f81ca1a4ad329bdcc11ff18cb533198155ca3740637bb",
+      "source": "scripts/health-check.sh"
+    },
+    {
+      "destination": "scripts/refactor-review.py",
+      "mode": "100755",
+      "policy": "preserve",
+      "sha256": "c8e91455d6898cdba09ddc6822b11b295bf2677d6b415cbede840066ffff1bf6"
+    },
+    {
+      "destination": "scripts/skill-trigger.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "b64663bbd28ffa2b5a6a94fc8a83f8e5c6351b5d17768105468d1fd0890cc715",
+      "source": "scripts/skill-trigger.sh"
+    },
+    {
+      "destination": "scripts/split-anti-patterns.py",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "ad2694997664f1b1607cbd45b4e6f14788af78dcb93d5b9158efd61ccb97cb2c",
+      "source": "scripts/split-anti-patterns.py"
+    },
+    {
+      "destination": "scripts/sulde",
+      "mode": "100755",
+      "policy": "preserve",
+      "sha256": "7f8b27b22013b871d9cc33837a2bbceb425271e7ec4c088790ddaa00a158dfc1"
+    },
+    {
+      "destination": "scripts/sulde.ps1",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "3d3cf10ec4e4f2ae4252eac6a24b193e057c15e040fab018fad5ebc3c392319d"
+    },
+    {
+      "destination": "scripts/sulde.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "0f54f37477ff38e689c5197b609e1aa10af0ee1db222e2512720e0561cce04c4"
+    },
+    {
+      "destination": "scripts/sulde_doctor.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "bae03aedd30435a5b782ffece33ffe02ae1abd94abd7019d9fa53be356aa5622"
+    },
+    {
+      "destination": "scripts/sulde_extensions.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "416ddce8992316a5bc0e4e112e83c3d5e1ac05951e440d6c431244180728eda5"
+    },
+    {
+      "destination": "scripts/sulde_knowledge.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "a3484c2e4b578c22385b889a873180c2e95be58008bd6762c9e1bbebd5da2bfb"
+    },
+    {
+      "destination": "scripts/sulde_runtime.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "89be215c47ab1b095006f79d52dc2c55a234f165b7394a8f619f060682f03ab5"
+    },
+    {
+      "destination": "scripts/sync-shared-rules.py",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "086281b093080c866f3cd9e54afd7feb7899fba53cdfc751931e477fbdedb0a7",
+      "source": "scripts/sync-shared-rules.py"
+    },
+    {
+      "destination": "skills/coordinator/configure-sulde/SKILL.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "f6ad9155b3ac95ebd2c2da563ae8ecaad5518a7f6e3d70802d39e9bfdca7fa5e"
+    },
+    {
+      "destination": "skills/coordinator/multi-source-review/SKILL.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "da08899623bb8fca1c31ea130f703ce8a7cbe3fd110985d9cd7f18976e914dfb",
+      "source": "skills/coordinator/multi-source-review/SKILL.md"
+    },
+    {
+      "destination": "skills/coordinator/writing-task-md/SKILL.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "cb12a7f7996956571506823bb568f6000abeef9121e428dcd2fedd08d9a44ec1"
+    },
+    {
+      "destination": "skills/dev/assign/SKILL.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "08058bd273a8c2f739608aec7c338c42f53da0502a5fe9af9ebe8946265e965a"
+    },
+    {
+      "destination": "skills/dev/handoff/SKILL.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "95e068a6c4436dc4702f74c2df81171cfd49b81670b5b684d01b62b36794f22c"
+    },
+    {
+      "destination": "template/_project/.gitignore.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "6c73bc6f9ce2ecf0b0d3e1884a6b5ddabe2ef1cf38ee6736e415a0fc30a67b1c",
+      "source": "template/_project/.gitignore.template"
+    },
+    {
+      "destination": "template/_project/.sulde-config.yaml.example",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "e1b1b673d6b1b90e939c2a3f473b728f6fa15051c8988ec6ba452fd0cb523524",
+      "source": "template/_project/.sulde-config.yaml.example"
+    },
+    {
+      "destination": "template/_project/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "56e64e648aaea5a6322ff195f409f79349b5666dc02bcfe224ee8133dc97a801"
+    },
+    {
+      "destination": "template/_project/docs-hub/00_shared-rules/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d4cf7b6a4cfd41bc706a12101077a93add67c4e67dd73da7f29362a03f0727a8",
+      "source": "template/_project/docs-hub/00_shared-rules/README.md"
+    },
+    {
+      "destination": "template/_project/docs-hub/00_shared-rules/data-sources.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "f9ec9404423ea91d7da5aaba6e451c4071c9d08977e226bb3f7894a77dbc777e",
+      "source": "template/_project/docs-hub/00_shared-rules/data-sources.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/00_shared-rules/model-strategy.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "13b7665564e9e9ce9e1436d6b46a85145b12443ac1cfa1e63ccb6918194be0f2",
+      "source": "template/_project/docs-hub/00_shared-rules/model-strategy.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/00_shared-rules/perf-diagnosis.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "7c5dbefd1b9a18277cb0df21a58be9429c41dcdc9a141f03fcbdbc291f93ef93",
+      "source": "template/_project/docs-hub/00_shared-rules/perf-diagnosis.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/00_shared-rules/self-fix-boundary.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "5d3bfad96c6b083da6470cf3453efa67663738cc95217b4d9c3eef4b6d5dea54",
+      "source": "template/_project/docs-hub/00_shared-rules/self-fix-boundary.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/00_shared-rules/verify-build.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "ec1dc1d23ddf9559e961a9f8f506533652c236849fc947e09e9fc6bdb9f39d46",
+      "source": "template/_project/docs-hub/00_shared-rules/verify-build.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/ADR/0000-example.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "6ded7572cdd4328e381051ab261f6bc3735470f476a59c0bdeb00f604b23840c",
+      "source": "template/_project/docs-hub/ADR/0000-example.md"
+    },
+    {
+      "destination": "template/_project/docs-hub/ADR/0001-coordinator-impression-based-dispatch.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "82cd147eca5b6be1e77250e4b4834e53796b3e47f0bac120bd8199a8fa23783c",
+      "source": "template/_project/docs-hub/ADR/0001-coordinator-impression-based-dispatch.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/ADR/0002-scaffold-bypass.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "cb32939ed5bbfee84747f9034689efcaa20030d62d4590457523f68ad72faf29",
+      "source": "template/_project/docs-hub/ADR/0002-scaffold-bypass.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/ADR/0003-mobile-cold-flow-stateflow.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "bf7627505c4a92879aa06d374afbe5daaec6fd9d7c5f082c6d0deba7b36cfc22",
+      "source": "template/_project/docs-hub/ADR/0003-mobile-cold-flow-stateflow.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/ADR/INDEX.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "d07c41499c055ed3b43440a4c681b8874ff397edaaa14cb130c6abcc2de1a1c0"
+    },
+    {
+      "destination": "template/_project/docs-hub/ADR/_frontmatter.schema.yaml",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "867f215bc26c336e0e3aeed70a1b8959fb209b0d79075f2a61c66255bd188b33",
+      "source": "template/_project/docs-hub/ADR/_frontmatter.schema.yaml"
+    },
+    {
+      "destination": "template/_project/docs-hub/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "1bc1f7859b5ea1ca70394af19ae3f1af639b9f027ee6826f77f52017e0565a98"
+    },
+    {
+      "destination": "template/_project/docs-hub/coordinator-todos.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "cb531ca58b36f03ace5c2ba8ba3ded2527b96512e3a32eb2bb21e95697da8439",
+      "source": "template/_project/docs-hub/coordinator-todos.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/design-truth/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "411446021e0c13a318a3daaf84909f77151cfe9c731cf8105bc0d9bab4905e1b"
+    },
+    {
+      "destination": "template/_project/docs-hub/design-truth/_example.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "fe7b38a85469f8bb33cb3bfe001e8a3304463abfaed4ae819207ad9fef70fdf8",
+      "source": "template/_project/docs-hub/design-truth/_example.md.template"
+    },
+    {
+      "destination": "template/_project/docs-hub/design/page-relation.yaml.example",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "bf7ee644f8b92dce90d430598e9b1a08d8221d725488fde3f9c0a93f2044cb7c",
+      "source": "template/_project/docs-hub/design/page-relation.yaml.example"
+    },
+    {
+      "destination": "template/_project/knowledge/INDEX.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "732669d224efefd1a4cfb033609c413f1c951dd9c0afd8896dc2a5993ffbe964"
+    },
+    {
+      "destination": "template/_project/knowledge/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "88319bd19f333e1e9e1e9870914f709f088b5882b80db47ef0ce43fac16a6463"
+    },
+    {
+      "destination": "template/_project/knowledge/anti-patterns/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "fa6d1984978a3a708bebf30e68e05cc70ad874dd27092883284303829f43d6e5"
+    },
+    {
+      "destination": "template/_project/knowledge/case-studies/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "770e31bef29821f7377b2da4a77d9c06e4471cc7f664469a1bfdc48ce29c518b"
+    },
+    {
+      "destination": "template/_project/knowledge/containers.json",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "4a0e893f2e5d3deccfd70e79513b47d4d9aed9f7913a11ceeea31cb2672a1dc1"
+    },
+    {
+      "destination": "template/_project/knowledge/containers/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "058f11ba5489a6f0fbd0d2ba95e83ebb844219b03fe2cd06836c255b1785821f"
+    },
+    {
+      "destination": "template/_project/knowledge/platform-kb/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "3b5cfbebeacf566858d671711c0f6ac707efa4b5178438f6997494c4fa18dad6"
+    },
+    {
+      "destination": "template/_project/knowledge/schema.yaml",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "db406ebd8ad10374a62a8613b41a76a495360a028f206b4e90d5c773474825cf"
+    },
+    {
+      "destination": "template/_project/knowledge/tech-docs/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "bb8eb217a1e618efc99aeaffa3be0a93e4e2f3dc335750002c216ae48144bbd9"
+    },
+    {
+      "destination": "template/_project/knowledge/work-model/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "8eca9bf5197a8d12601b28bc4b7720f80ee709cb115f06b551c4386d8faccb2a"
+    },
+    {
+      "destination": "template/_project/scripts/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "10e6bbcd89dab02530f33ee6b2ce09a6b1993d3f1fe5309bd9584ea6b42b9842",
+      "source": "template/_project/scripts/README.md"
+    },
+    {
+      "destination": "template/_project/scripts/coordinator-baseline.sh.template",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "180601b8809440d6c8bfcfa22d1f8157403faee2a38bc9c4723a07e7ce5b4190",
+      "source": "template/_project/scripts/coordinator-baseline.sh.template"
+    },
+    {
+      "destination": "template/_project/scripts/health-check.sh.template",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "aba56e57cd03e78ee4687b16688271c22493829b7ad7dab65cd28223cfa43d9c",
+      "source": "template/_project/scripts/health-check.sh.template"
+    },
+    {
+      "destination": "template/android/.ai-workspace/baseline/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "e820de28cd2fec76463b7ef1382869e21635ddaa55f2798a5283d720bfb8ba17",
+      "source": "template/android/.ai-workspace/baseline/README.md"
+    },
+    {
+      "destination": "template/android/.ai-workspace/diag/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d0490417e59e26bee699102950fe313a9457cbe5aa301363660212ec5ed6f19b",
+      "source": "template/android/.ai-workspace/diag/README.md"
+    },
+    {
+      "destination": "template/android/.ai-workspace/handoff/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "77a332cfec3eab7e76b8b1182050faa1c28628b6abf0da5f19088263ac9421f6",
+      "source": "template/android/.ai-workspace/handoff/README.md"
+    },
+    {
+      "destination": "template/android/.ai-workspace/screenshots/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "ea1af34cc537673bdd10346c7b956497df2103ca4bf1df9da31550f45b785a09",
+      "source": "template/android/.ai-workspace/screenshots/README.md"
+    },
+    {
+      "destination": "template/android/.ai-workspace/session-resume/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d5110814e137e3bed1211fbe2d94914769f9521be6bbdd48a8fc1d430d0b02ab",
+      "source": "template/android/.ai-workspace/session-resume/README.md"
+    },
+    {
+      "destination": "template/android/.ai-workspace/tasks/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "cc15e9517a8bdac2399fba0df5e16fb2ec051f77d554c7041dc8c3435b9c4571",
+      "source": "template/android/.ai-workspace/tasks/README.md"
+    },
+    {
+      "destination": "template/android/.ai-workspace/ui-audit/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "171432f5a748104fa5dbc78f96a1c5e3e53c93c52ff2f1180086c6dc49399b01",
+      "source": "template/android/.ai-workspace/ui-audit/README.md"
+    },
+    {
+      "destination": "template/android/.gitignore.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "a7a54ef313bc6f1c11d8f5a3075e89d61b00cdb8a164706829b1c9bc328fa502",
+      "source": "template/android/.gitignore.template"
+    },
+    {
+      "destination": "template/android/CLAUDE.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "f0d1966664591c08c22ac6ef3b382391b7e5d3371ae01ffc4ee6e9131c521f9d",
+      "source": "template/android/CLAUDE.md.template"
+    },
+    {
+      "destination": "template/android/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "e269add8e2c18ae94fd0f9abcf433a948e69b27c4e88d887c50ebee30be9310e"
+    },
+    {
+      "destination": "template/android/scripts/pre-commit-installer.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "7c7d7717769154d36ef569b4cd2af60eb64f8a3ca6f7773270d5ac65780fc4d0",
+      "source": "template/android/scripts/pre-commit-installer.sh"
+    },
+    {
+      "destination": "template/flutter/.ai-workspace/baseline/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "e820de28cd2fec76463b7ef1382869e21635ddaa55f2798a5283d720bfb8ba17",
+      "source": "template/flutter/.ai-workspace/baseline/README.md"
+    },
+    {
+      "destination": "template/flutter/.ai-workspace/diag/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d0490417e59e26bee699102950fe313a9457cbe5aa301363660212ec5ed6f19b",
+      "source": "template/flutter/.ai-workspace/diag/README.md"
+    },
+    {
+      "destination": "template/flutter/.ai-workspace/handoff/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "77a332cfec3eab7e76b8b1182050faa1c28628b6abf0da5f19088263ac9421f6",
+      "source": "template/flutter/.ai-workspace/handoff/README.md"
+    },
+    {
+      "destination": "template/flutter/.ai-workspace/screenshots/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "ea1af34cc537673bdd10346c7b956497df2103ca4bf1df9da31550f45b785a09",
+      "source": "template/flutter/.ai-workspace/screenshots/README.md"
+    },
+    {
+      "destination": "template/flutter/.ai-workspace/session-resume/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d5110814e137e3bed1211fbe2d94914769f9521be6bbdd48a8fc1d430d0b02ab",
+      "source": "template/flutter/.ai-workspace/session-resume/README.md"
+    },
+    {
+      "destination": "template/flutter/.ai-workspace/tasks/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "cc15e9517a8bdac2399fba0df5e16fb2ec051f77d554c7041dc8c3435b9c4571",
+      "source": "template/flutter/.ai-workspace/tasks/README.md"
+    },
+    {
+      "destination": "template/flutter/.ai-workspace/ui-audit/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "171432f5a748104fa5dbc78f96a1c5e3e53c93c52ff2f1180086c6dc49399b01",
+      "source": "template/flutter/.ai-workspace/ui-audit/README.md"
+    },
+    {
+      "destination": "template/flutter/.gitignore.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "16a09bcd4be5827986ad8285b310543a47eee4c6fc7b43cc1c0389ce3f0fb6c9",
+      "source": "template/flutter/.gitignore.template"
+    },
+    {
+      "destination": "template/flutter/CLAUDE.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "37be913780ea5a3363b05736d9c45d3e99da25e928f9957421c6514870686f63",
+      "source": "template/flutter/CLAUDE.md.template"
+    },
+    {
+      "destination": "template/flutter/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d884db8f7c6d74d514291a23754019319825ee9c9cb6a364e96a74a6075a42dc",
+      "source": "template/flutter/README.md"
+    },
+    {
+      "destination": "template/flutter/scripts/pre-commit-installer.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "7c7d7717769154d36ef569b4cd2af60eb64f8a3ca6f7773270d5ac65780fc4d0",
+      "source": "template/flutter/scripts/pre-commit-installer.sh"
+    },
+    {
+      "destination": "template/harmony/.ai-workspace/baseline/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "e820de28cd2fec76463b7ef1382869e21635ddaa55f2798a5283d720bfb8ba17",
+      "source": "template/harmony/.ai-workspace/baseline/README.md"
+    },
+    {
+      "destination": "template/harmony/.ai-workspace/diag/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d0490417e59e26bee699102950fe313a9457cbe5aa301363660212ec5ed6f19b",
+      "source": "template/harmony/.ai-workspace/diag/README.md"
+    },
+    {
+      "destination": "template/harmony/.ai-workspace/handoff/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "77a332cfec3eab7e76b8b1182050faa1c28628b6abf0da5f19088263ac9421f6",
+      "source": "template/harmony/.ai-workspace/handoff/README.md"
+    },
+    {
+      "destination": "template/harmony/.ai-workspace/screenshots/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "ea1af34cc537673bdd10346c7b956497df2103ca4bf1df9da31550f45b785a09",
+      "source": "template/harmony/.ai-workspace/screenshots/README.md"
+    },
+    {
+      "destination": "template/harmony/.ai-workspace/session-resume/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d5110814e137e3bed1211fbe2d94914769f9521be6bbdd48a8fc1d430d0b02ab",
+      "source": "template/harmony/.ai-workspace/session-resume/README.md"
+    },
+    {
+      "destination": "template/harmony/.ai-workspace/tasks/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "cc15e9517a8bdac2399fba0df5e16fb2ec051f77d554c7041dc8c3435b9c4571",
+      "source": "template/harmony/.ai-workspace/tasks/README.md"
+    },
+    {
+      "destination": "template/harmony/.ai-workspace/ui-audit/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "171432f5a748104fa5dbc78f96a1c5e3e53c93c52ff2f1180086c6dc49399b01",
+      "source": "template/harmony/.ai-workspace/ui-audit/README.md"
+    },
+    {
+      "destination": "template/harmony/.gitignore.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "001e85fc882785e4a3e17f27c6fc994dd47ed2707775aeb12f8b79310ca3e626",
+      "source": "template/harmony/.gitignore.template"
+    },
+    {
+      "destination": "template/harmony/CLAUDE.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "8cb64b8289910a4f189a36b5569d15dcf6e0186a198b079f724f0ed38feced8a",
+      "source": "template/harmony/CLAUDE.md.template"
+    },
+    {
+      "destination": "template/harmony/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "cac2bc587e6c5d0297d89a48236dad89f54da3e0955f624a30e72ed5f0978997",
+      "source": "template/harmony/README.md"
+    },
+    {
+      "destination": "template/harmony/scripts/pre-commit-installer.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "7c7d7717769154d36ef569b4cd2af60eb64f8a3ca6f7773270d5ac65780fc4d0",
+      "source": "template/harmony/scripts/pre-commit-installer.sh"
+    },
+    {
+      "destination": "template/ios/.ai-workspace/baseline/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "e820de28cd2fec76463b7ef1382869e21635ddaa55f2798a5283d720bfb8ba17",
+      "source": "template/ios/.ai-workspace/baseline/README.md"
+    },
+    {
+      "destination": "template/ios/.ai-workspace/diag/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d0490417e59e26bee699102950fe313a9457cbe5aa301363660212ec5ed6f19b",
+      "source": "template/ios/.ai-workspace/diag/README.md"
+    },
+    {
+      "destination": "template/ios/.ai-workspace/handoff/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "77a332cfec3eab7e76b8b1182050faa1c28628b6abf0da5f19088263ac9421f6",
+      "source": "template/ios/.ai-workspace/handoff/README.md"
+    },
+    {
+      "destination": "template/ios/.ai-workspace/screenshots/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "ea1af34cc537673bdd10346c7b956497df2103ca4bf1df9da31550f45b785a09",
+      "source": "template/ios/.ai-workspace/screenshots/README.md"
+    },
+    {
+      "destination": "template/ios/.ai-workspace/session-resume/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "d5110814e137e3bed1211fbe2d94914769f9521be6bbdd48a8fc1d430d0b02ab",
+      "source": "template/ios/.ai-workspace/session-resume/README.md"
+    },
+    {
+      "destination": "template/ios/.ai-workspace/tasks/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "cc15e9517a8bdac2399fba0df5e16fb2ec051f77d554c7041dc8c3435b9c4571",
+      "source": "template/ios/.ai-workspace/tasks/README.md"
+    },
+    {
+      "destination": "template/ios/.ai-workspace/ui-audit/README.md",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "171432f5a748104fa5dbc78f96a1c5e3e53c93c52ff2f1180086c6dc49399b01",
+      "source": "template/ios/.ai-workspace/ui-audit/README.md"
+    },
+    {
+      "destination": "template/ios/.gitignore.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "372b02d16a8adae19f8191124632602208d81c7f1489fcc56a852685371530f8",
+      "source": "template/ios/.gitignore.template"
+    },
+    {
+      "destination": "template/ios/CLAUDE.md.template",
+      "mode": "100644",
+      "policy": "copy",
+      "sha256": "de47e1ae7734c75e89c9ed1082d691993106e322cc84a7b9b9cf2191cd6cdbfb",
+      "source": "template/ios/CLAUDE.md.template"
+    },
+    {
+      "destination": "template/ios/README.md",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "40f815477d461629d3dda7bd12a30a98cf163fd647a050b8fbbb7c08a864e82c"
+    },
+    {
+      "destination": "template/ios/scripts/pre-commit-installer.sh",
+      "mode": "100755",
+      "policy": "copy",
+      "sha256": "7c7d7717769154d36ef569b4cd2af60eb64f8a3ca6f7773270d5ac65780fc4d0",
+      "source": "template/ios/scripts/pre-commit-installer.sh"
+    },
+    {
+      "destination": "tests/p1_hook_dryrun.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "1080466069ad4f97754c125e4c064601968edc3cdc45eb2f11703897895b076a"
+    },
+    {
+      "destination": "tests/p2_template_dryrun.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "dc5e2e19184af83b0e7a7cee7c41bb9c13c6b9744a0039cde7879271934a9f1f"
+    },
+    {
+      "destination": "tests/test_public_toolkit.py",
+      "mode": "100644",
+      "policy": "preserve",
+      "sha256": "7a41d004089ce6b98db329cb21833db44082a319ee45b4de626388047eb688a7"
+    }
+  ],
+  "release": "community-0.3.0",
+  "version": 1
+}

@@ -1,4 +1,409 @@
-# Knowledge index
+# 知识库索引
 
-This distribution starts with an empty corpus.
-No formal knowledge documents or project memory are bundled.
+> 生成时间戳：<deterministic-placeholder>；由 build-index-md.py 生成,勿手改。
+> 文档总数：390
+
+## anti-patterns
+
+- ap-0001 在每个页面单独修系统级问题 [android]
+- ap-0002 浮层用 LinearLayout 排列 [android]
+- ap-0003 用标准 BottomNavigationView 实现自定义形状底栏 [android]
+- ap-0004 颜色硬编码 [cross]
+- ap-0005 主内容区固定高度 [android]
+- ap-0006 SwiftUI 浮层用 VStack/HStack [ios]
+- ap-0007 字号既用 sp 又用 dp 混乱 [android]
+- ap-0008 标题贴状态栏 / 三层根因 [android]
+- ap-0009 底栏 inset 误用 navigationBars + 容器固定高度 [android]
+- ap-0010 iOS 长按菜单用 `.contextMenu` 而不是 `.confirmationDialog` [ios]
+- ap-0011 视觉资源降级:渐变 / vector → 纯色 / 简单 shape 占位 [cross]
+- ap-0012 MVI 基类不继承统一自适应基类 → 每个二级页重复补状态栏手动 inset [android]
+- ap-0013 选中态 pill bg 撑满整个 tab frame [cross]
+- ap-0014 SwiftUI 固定区放 ScrollView 内 + 键盘自动顶整页 [ios]
+- ap-0015 Android EditText 页面应继承统一基类默认"点外部收键盘" [android]
+- ap-0016 reduceResult 中产生 Command [android]
+- ap-0017 iOS Result Action 返回 `.run` [ios]
+- ap-0018 Feature 直接依赖另一个 Feature [cross]
+- ap-0019 Service 为每种类型写单独的方法 [cross]
+- ap-0020 长时工作流链式触发新 `.run` [ios]
+- ap-0021 Fragment 绕过统一返回钩子(AdaptiveBaseFragment.onBackPressed） [cross]
+- ap-0022 登录拦截 delegate 设计了但父 reducer 没接住 [cross]
+- ap-0023 Feature 模块自建 AVPlayer / ExoPlayer / MediaPlayer 实例 [cross]
+- ap-0024 SwiftUI 高频驱动手势组件的 5 类性能与正确性陷阱 [cross]
+- ap-0025 toggle / 偏好类组件对 guest 用户应允许视觉切换，不强行打断主流程 [cross]
+- ap-0026 ExoPlayer 池复用 + RecyclerView/ViewPager2 复用 → 同实例 setPlayer early return → 黑屏 — ExoPlayer 池复用 + RecyclerView/ViewPager2 复用 → 同实例 setPlayer… [cross]
+- ap-0027 修改 UI 时删除业务逻辑
+- ap-0028 提交身份和分支不匹配 — 提交身份、分支与代码归属不匹配，或一次跨多个 Dev 模块的改动未按归属拆分提交
+- ap-0029 给终端发指令时让用户手动转述差异
+- ap-0030 已弃用：一次任务跨多个 Dev 的模块使用同一 git 身份 — 已弃用：跨多个 Dev 模块使用同一 git 身份的技术真值已合并至 ap-0028
+- ap-0031 UI 对齐任务误用 uiautomator dump 代替多模态看图 [android]
+- ap-0032 首启不弹 GDPR 同意弹窗 [android]
+- ap-0033 google-services.json 被 .gitignore 全量拦截导致 build 失败 [android]
+- ap-0034 任务书硬约束写字面行数而非意图
+- ap-0035 协调端任务书引用旧版 / 简版 PRD 而非最新详版 PRD
+- ap-0036 macOS TCC 拦截 Claude Code agent 模拟器自动化输入 [cross]
+- ap-0037 多 sub-page 链路 / wizard 流程对齐任务用单行表对待 → 视觉粒度严重丢失
+- ap-0038 Wizard / 多 step 任务书未列 step 编号 → Dev 误按 pageId 字母推导顺序
+- ap-0039 handoff 自检流于声明 → 用户验收发现"未做" → 协调端返工
+- ap-0040 节点对照表只验证节点存在，不验证视觉属性细节 → "对齐"假象
+- ap-0041 0041 协调端登记反模式后第一时间忘记应用 → 同源问题立刻复发 [harmonyos]
+- ap-0042 0042 task md 留 fallback 口子 + 跨依赖糅合 → Dev 走 fallback 合规但违反用户意图 — 0042 task md 留 fallback 口子 + 跨依赖糅合 → Dev 走 fallback 合规但违反用户…
+- ap-0043 0043 Dev 自发修小 bug 时改动范围扩散到敏感字段 → 协调端协作类防护被绕过
+- ap-0044 0044 协调端写技术文档/任务书时凭印象编"项目实际状态"(类名 / 文件名 / token 名 / 方法签名)→ Dev 抄错引发编译 fail — 0044 协调端写技术文档/任务书时凭印象编"项目实际状态"(类名 / 文件名 / token 名 / 方法签名)→…
+- ap-0045 0045 Dev 完成 task 但未走完"出 handoff + 合主干 + 删分支"完整闭环 → 协调端 audit 时状态不一致 — 0045 Dev 完成 task 但未走完"出 handoff + 合主干 + 删分支"完整闭环 → 协调端 audi…
+- ap-0046 0046 协调端写双端 task md 未硬约束 Spec / Service 组织一致 → 双端 Dev 各自合理选择 → 后续接口接入差异 — 0046 协调端写双端 task md 未硬约束 Spec / Service 组织一致 → 双端 Dev 各自合理选…
+- ap-0047 0047 跨端默认 Real 路径不对称(一端 DEBUG 默认 Mock,另一端 DEBUG 默认 Real)→ 同 task 验收结果迥异 — 0047 跨端默认 Real 路径不对称(一端 DEBUG 默认 Mock,另一端 DEBUG 默认 Real)→ 同…
+- ap-0048 0048 iOS verify 任务 `find ... | head -1` 拣到 N 天前旧 .app → 验证证据无效 — 0048 iOS verify 任务 `find ... [ios]
+- ap-0049 0049 Spec Feature 层抽象 Client 留 Mock 不易察觉 → 主线流量 0 真后端命中
+- ap-0050 0050 后端 envelope 双键名(`msg` vs `message`) + 严格 decode + `try?` 三连 → 全模块静默 — 0050 后端 envelope 双键名(`msg` vs `message`) + 严格 decode + `try? [cross]
+- ap-0051 0051 iOS 底部抽屉禁 `.sheet` / `.fullScreenCover` → 必须用 BottomDrawer ZStack overlay — 0051 iOS 底部抽屉禁 `.sheet` / `.fullScreenCover` → 必须用 BottomDr… [cross]
+- ap-0052 0052 协调端写 task md 凭单一数据源(只看 PRD 或 pen-truth 或接口),未做 UI/PRD/接口 3 维交叉验证 → SSE 真数据来时字段对不上 → 返工 — 0052 协调端写 task md 凭单一数据源(只看 PRD 或 pen-truth 或接口),未做 UI/PRD/…
+- ap-0053 0053 协调端读 .pen batch_get 拿 JSON 节点数据但不导 .png 视觉对照 → 凭文字描述猜形态 → 双端 task md 反复误派 — 0053 协调端读 .pen batch_get 拿 JSON 节点数据但不导 .png 视觉对照 → 凭文字描述猜形…
+- ap-0054 0054 协调端 task md 给完整代码 boilerplate + 标 model: sonnet → Dev 退化翻译机 / 不抽抽象 / 不思考复用 — 0054 协调端 task md 给完整代码 boilerplate + 标 model: sonnet → Dev…
+- ap-0055 0055 SSE 流式协议 Decoder 对每行 generic decode<业务模型> 静默吞错 → 0 events / 流空跑 — 0055 SSE 流式协议 Decoder 对每行 generic decode<业务模型> 静默吞错 → 0 eve… [cross]
+- ap-0056 0056 CLAUDE.md / shared-rules 改动后,Dev session 旧 system-reminder 注入快照不更新 → 新规则不生效 — 0056 CLAUDE.md / shared-rules 改动后,Dev session 旧 system-remi…
+- ap-0057 0057 协调端 task md 漏 audit "资源 cp 实证" → Dev 实施漏拷资源 / Asset Catalog / drawable 缺失 → UI 渲染空白 — 0057 协调端 task md 漏 audit "资源 cp 实证" → Dev 实施漏拷资源 / Asset Ca…
+- ap-0058 0058 Xcode 26 Debug-iphoneos build 默认注 __preview.dylib → iOS 16.x 真机启动 SIGTRAP crash — 0058 Xcode 26 Debug-iphoneos build 默认注 __preview.dylib → iO… [cross]
+- ap-0059 0059 协调端漏 sweep handoff escalation → 同源问题多次回归
+- ap-0060 0060 双端 Spec 进度不同步 → 跨端漂移视觉/行为不一致
+- ap-0061 0061 协调端凭印象不查技术真值
+- ap-0062 0062 iOS 16.x Asset Catalog SVG `currentColor` + SwiftUI Image `.template` 渲染兼容性 bug — 0062 iOS 16.x Asset Catalog SVG `currentColor` + SwiftUI Im… [ios]
+- ap-0063 0063 SwiftUI `.offset` hit-testing 不随渲染移动 [ios]
+- ap-0064 0064 TCA `@Perception.Bindable` + `WithPerceptionTracking` 必配对 — 0064 TCA `@Perception.Bindable` + `WithPerceptionTracking`… [ios]
+- ap-0065 0065 简单任务用 ultrathink
+- ap-0066 0066 parallel-dev 所有 subagent 都用 ultrathink
+- ap-0067 0067 修复 UI 时不分类系统级 vs 业务级
+- ap-0068 0068 Feature 模块重复造脚手架轮子
+- ap-0069 0069 协调端 Bash 里 `cd` 到子端目录导致 CLAUDE.md 反复注入
+- ap-0070 0070 在 main / develop 上直接 commit
+- ap-0071 0071 worktree 创建在项目目录之外
+- ap-0072 0072 commit message 用英文
+- ap-0073 0073 commit message 写得像 AI 报告
+- ap-0074 0074 复合命令 `&&` 链 + 主目录污染 → git 卡死
+- ap-0075 0075 主目录污染
+- ap-0076 0076 提交后不删除已合并分支
+- ap-0077 0077 列表里图片不复用
+- ap-0078 0078 视频区每次切换都创建新播放器
+- ap-0079 0079 长时轮询固定间隔死循环
+- ap-0081 多语言只翻部分语言 — ❌ **错误**:只准备主语言 + 一种次语言（如 en + zh），海外其他语言全用英文兜底。
+- ap-0082 长文案在小屏溢出 — ❌ **错误**:硬编码 width，长文案被截断或挤压。
+- ap-0083 视觉对齐 task 误改业务链路
+- ap-0084 协调端 task md 缺 UI 时序约束 → 双端动画 jank 对称返工
+- ap-0085 SwiftUI LazyVStack 子 View 含 closure 参数 → 父 body 重算时子树永远无法跳过 [ios]
+- ap-0086 滚动列表 `onAppear` 触发 store action → fast swipe 时 action 风暴 [ios]
+- ap-0087 SwiftUI + TCA escaping closure 漏 WithPerceptionTracking 五大触发点 — SwiftUI + TCA escaping closure 漏 WithPerceptionTracking 五大触… [ios]
+- ap-0088 SwiftUI Button `.frame()` 无 `.contentShape()` 致 hit-testing 命中区偏小 — SwiftUI Button `.frame()` 无 `.contentShape()` 致 hit-testing… [ios]
+- ap-0089 SwiftUI PreferenceKey + GeometryReader 在 LazyContainer ScrollView 内不可靠 — SwiftUI PreferenceKey + GeometryReader 在 LazyContainer Scro… [ios]
+- ap-0090 Reducer / Feature 内 `distinctBy` 改 key 不实测 distinct 数量
+- ap-0091 协调端 session 切换后忘记派发过的任务，重新 audit 重写已完工 task md
+- ap-0092 单模块长期密集 patch 散落 → 抽统一 State Module 收敛重构
+- ap-0093 Cache 文件用 hash 命名无扩展名 → iOS AVPlayer 解码失败 -11828 [cross]
+- ap-0094 Wizard ViewModel 会话 ID 凭本地随机 UUID 不接 server 返回 ID → 后端报错
+- ap-0095 协调端 audit root cause 凭症状推 Module 跳过 grep 接口契约 → 多轮 fix 失败
+- ap-0096 协调端写 task md 引过时设计真值没 git log verify → 差点造成代码回退
+- ap-0097 scaffold 已建但业务层散落直接调底层 API → 视觉 / 行为不一致 + 跨期复发 [harmonyos]
+- ap-0098 Cold flow 暴露 StateFlow 但更新链断 — 不订阅 events 的消费者读到永恒初始快照 [android]
+- ap-0099 Ralph PROMPT 内含反引号 / markdown fence → shell parse error 或用户复制污染 — Ralph PROMPT 内含反引号 / markdown fence → shell parse error 或用户…
+- ap-0101 Android core-network factory 多实例化反模式 [android]
+- ap-0102 0102 WebView evaluateJavascript 注入 localStorage 的 3 个时序坑 [cross]
+- ap-0103 iOS Chat 流式 textChunk 临时用占位 capsule 渲染(无累积无 JSON 过滤) [ios]
+- ap-0104 iOS 跨 Feature backport 漏接(一个 Feature 升级了时序设计,同款另一个 Feature 漏 backport) — iOS 跨 Feature backport 漏接(一个 Feature 升级了时序设计,同款另一个 Feature… [ios]
+- ap-0105 协调端 approve gating 契约凭"通用 UX 模式"未验 thin step running 行为
+- ap-0106 协调端实装 task md 凭"通用平台模式"决定播放/弹窗/导航形态不查 pen-truth
+- ap-0107 fixture 必须逐行镜像真实 SSE wire [cross]
+- ap-0108 DI 单例 + 运行时配置 = stale state [cross]
+- ap-0109 URI 跨 Activity FLAG_GRANT_READ_URI_PERMISSION 未传 [android]
+- ap-0110 裸 toLong / toInt 解析外部 ID 串 [android]
+- ap-0111 SwiftUI 嵌套空 Button + 自定义 tap modifier 手势冲突 [ios]
+- ap-0112 childFragmentManager show + parent setFragmentResultListener 错配 — childFragmentManager show + parent setFragmentResultListene… [android]
+- ap-0113 TCA .cancellable(id:) metatype 编译失败 → CancelID { case x } idiom — TCA .cancellable(id:) metatype 编译失败 → CancelID { case x } i… [ios]
+- ap-0114 TCA picker delegate 不关父态 + commit(nil) 误擦互斥兄弟字段 [ios]
+- ap-0115 EncryptedSharedPreferences 无解密兜底启动闪退 [android]
+- ap-0116 iOS UIKit 链式 sheet present-while-dismissing 竞态 [ios]
+- ap-0117 Coil 全局 crossfade → ImageView.drawable 强转 BitmapDrawable 崩 [android]
+- ap-0118 Coil 默认 allowHardware=true → HARDWARE bitmap 画到软件 Canvas 全黑 [android]
+- ap-0119 通用 UploadService 对纯文件(image / 头像)无分支,落 else 当业务存 [cross]
+- ap-0120 协调端 API 文档多版本漏读 → 凭印象判 BE 阻塞
+- ap-0121 0121 协调端只看 endpoint 名 / schema 字段,漏看章节标题 / 场景定位
+- ap-0122 0122 客户端用占位逻辑伪造后端缺失的业务字段 → 占位与真实状态脱钩 [cross]
+- ap-0123 0123 后端业务错误全 HTTP 200 + code≠0,客户端 HTTP 401/403 拦截器是死代码 [cross]
+- ap-0124 0124 adapter wrap ≠ 真链路 — 验链路必查文档 + 消费方 + live 正向验证 [cross]
+- ap-0125 0125 后端错误话术 UI 抽象不匹配 + 可操作真因藏在子对象 [cross]
+- ap-0126 0126 异步渲染期必须有明确"合成中"态 + 不露占位 fallback [cross]
+- ap-0127 0127 TCA / MVI effect 发非幂等网络副作用无防重入 + 非 cancellable → 多触发源双发 [cross]
+- ap-0128 0128 iOS 自定义播放器漏 STATE_ENDED → seekTo(0) → 视频「只能播一次」 [ios]
+- ap-0129 0129 后端 boolean 字段语义不明时直传 UI state 不取反 + 标 #once 跳过沉淀 [cross]
+- ap-0130 0130 协调端跨端镜像 task md 写 L10n 文案 diff 前未 grep 全部引用点 → 一 key 多用直改污染 — 0130 协调端跨端镜像 task md 写 L10n 文案 diff 前未 grep 全部引用点 → 一 key 多…
+- ap-0131 0131 audit subagent 把 commit 归为某需求修复时凭 commit message 关键词匹配,未 verify diff — 0131 audit subagent 把 commit 归为某需求修复时凭 commit message 关键词匹配…
+- ap-0132 0132 poll-first 把"查询失败 null"当"无任务" → 重复付费 [cross]
+- ap-0133 0133 register/unregister 跨生命周期级别不对称 → 重复注册泄漏 [cross]
+- ap-0134 0134 协调端 pen-truth 批量铺设时未做 PRD↔设计稿反向校验
+- ap-0135 0135 跨端导航 routing id 串单一 extra 传 vs 分离参数传 — Android 易污染下游 [cross]
+- ap-0136 0136 pen-truth 颜色 8 位 hex 跨端格式陷阱 — RGBA(设计稿)vs ARGB(Android)vs opacity(iOS) — 0136 pen-truth 颜色 8 位 hex 跨端格式陷阱 — RGBA(设计稿)vs ARGB(Android… [cross]
+- ap-0137 0137 Real adapter 委托 mock 导致数据源失真 [cross]
+- ap-0138 0138 组件内建交互控件 + 默认空 callback → 死按钮 / 列表复用 placeholder 串台 [cross]
+- ap-0139 0139 duration 秒→ms 先截断后乘(单位口径漂移) [cross]
+- ap-0140 0140 SwiftUI `.id(version)` 整树重建后 TCA store/view 发散 [cross]
+- ap-0141 0141 凭证据不足的截图判 UI 对齐(sticky/scroll 方向、视觉差异来源) [harmonyos]
+- ap-0142 浅层反抽源码(grep 采样 + 无运行时实证 + 无跨端能力探针)→ 累积漂移 + 多轮返工 [cross]
+- ap-0143 Dev 主任务 ship 后自驱 polish bundle 绕过协调端 task md 边界
+- ap-0144 spike/实验分支禁 merge 回主干(简化版入口/系统文件回灌主链路) [cross]
+- ap-0145 ArkUI `bindContentCover` + `@Builder` 内 reactive 订阅脱钩(reactive 重场景必 Stack overlay) — ArkUI `bindContentCover` + `@Builder` 内 reactive 订阅脱钩(react… [harmonyos]
+- ap-0146 UI 还原前先建「场景 × 状态」矩阵,主题策略不同的资源必须拆名隔离 [cross]
+- ap-0147 已弃用：滚动页壳与固定标题栏规则 — 已弃用：滚动页壳技术与治理真值已迁移至 platform-kb/harmony/arkui-layout-scroll-shell [harmonyos]
+- ap-0148 三方/复杂控件转译前必先抽状态机 + 内部数据模型 + 平台能力对照 [cross]
+- ap-0149 页面同步只对齐可见像素,漏掉业务副作用链路 [cross]
+- ap-0150 反抽自绘公共组件时用系统默认组件替代(丢宽度/圆角/遮罩/动画真值) [cross]
+- ap-0151 滚动容器内多手势共存:先划事件所有权矩阵,再写手势代码 [harmonyos]
+- ap-0152 图片资源对齐必须反抽渲染语义,禁止只校验 asset hash [cross]
+- ap-0153 支付链路商店商品查询是展示/诊断,不是购买前置 gate(且平台分支必须先拆) [cross]
+- ap-0154 ArkUI `width('100%') + margin` 不等价 Flutter `EdgeInsets`,布局锚点必须显式建模 — ArkUI `width('100%') + margin` 不等价 Flutter `EdgeInsets`,布局锚… [harmonyos]
+- ap-0155 运行时视觉锚点必须闭包测量:禁止用设计常量冒充真实尖点 / 中心点 [harmonyos]
+- ap-0156 浮层不是一个宽度:遮罩 / 承载 / 视觉面板 / 内容必须拆层建模 [harmonyos]
+- ap-0157 键盘遮挡先判承载边界:`KeyboardAvoidMode.RESIZE` 不覆盖 bindSheet 内自绘二级底部浮层 — 键盘遮挡先判承载边界:`KeyboardAvoidMode.RESIZE` 不覆盖 bindSheet 内自绘二级底部… [harmonyos]
+- ap-0158 字号/颜色"同参数不同效果":转译只对字面参数,不解析到最终渲染值 [harmonyos]
+- ap-0159 Compose 懒列表 item 在组合期同步初始化音频元数据与播放器 [android]
+- ap-0160 0160 KMP Kotlin/Native 直接调用 Objective-C variadic API [cross]
+- ap-0161 KMP 将 Objective-C 可失败初始化器放入 Compose 列表组合路径 [ios]
+- ap-0162 0162 MVI reducer 硬编码用户可见字符串导致 i18n 泄漏 [cross]
+- ap-0163 0163 hide/show 宿主下 Fragment 生命周期与可见性解耦 [android]
+- ap-0164 0164 响应 DTO 按假设强类型建模而未对照真实响应 [cross]
+- ap-0165 0165 iOS 16 同一 NavigationStack 注册多个 navigationDestination 导致 push 卡死 — 0165 iOS 16 同一 NavigationStack 注册多个 navigationDestination 导… [ios]
+- ap-0166 0166 Material 2 主题使用 Material 3 专属组件导致静默不渲染 [android]
+- ap-0167 0167 Perception 条件读取导致依赖追踪集不稳定 [ios]
+- ap-0168 0168 xcodebuild 全局覆盖 Bundle ID 导致 SPM 资源 bundle 撞名 [ios]
+- ap-0169 0169 长后台恢复只开启播放而不重建 surface 导致画面冻结 [android]
+- ap-0170 0170 用可塌缩字段合成 ID 导致集合陷阱或列表错乱 [cross]
+- ap-0171 0171 actor 可重入导致同 key 请求未单飞 [ios]
+- ap-0172 0172 kotlinx.serialization 默认值未编码导致协议必填字段缺失 [android]
+- ap-0173 0173 异步结果写回缺少取消与 identity 双保险 [ios]
+- ap-0174 0174 原生客户端复用人机校验前置的 Web 通道导致渠道契约错配 [cross]
+- ap-0175 0175 前台服务未在五秒时限内调用 startForeground [android]
+- ap-0176 0176 security-scoped URL 未在授权窗口内复制 [ios]
+- ap-0177 0177 SDK 就绪判据只检查配置文件存在而未检查必需键集合 [cross]
+- ap-0178 0178 流式诊断日志缺少编译闸与字段脱敏双闸 [cross]
+- ap-0179 0179 .strings 引号语法错误未用 plutil 校验全部 locale [ios]
+- ap-0180 子代理暖会话无上限复用 — 复用暖子代理会话多轮后单轮超时且零产出,同任务冷启动反而数分钟内完成
+- ap-0181 长寿命会话跨越插件热更新持有悬空路径 — 长寿命会话持有旧插件绝对路径；路径删除会断 Hook，原样保留又会持续执行旧控制规则
+- ap-0182 归一化排序分被当作绝对资格门 — 检索注入设了较高分数线仍持续串场,弱相关内容以近满分穿门,且总是每轮的第一名
+- ap-0183 守护进程环境缺用户级 PATH,调不到用户安装的 CLI — 定时任务/守护进程里调用的 CLI 手动跑正常,由 launchd/cron 触发时报 command not found 或静默无产出
+- ap-0184 多模块工程 install 跑错模块,制造"改了没生效"假象 — 代码明明改了,真机上还是旧行为——排查半天发现 install 任务跑的不是应用模块 [android]
+- ap-0185 清单显式声明与约定式自动发现双重注册 — 插件在旧版宿主一直正常,换新版宿主(或新机器装新版)时被直接拒绝加载,报能力重复注册
+- ap-0186 GPU 后端编进包内即污染 CPU 回退:nGpuLayers=0 不是安全回退 — 设置 nGpuLayers=0 后推理仍走 GPU 后端——只要 GPU 后端编进了包并完成注册,层数为零不等于回退到纯 CPU [android]
+- ap-0187 BuildConfig 布尔常量编译期内联,增量缓存烙死旧值 — 切换 Gradle 属性重新构建后布尔开关行为不变、像改了没生效——BuildConfig 常量在编译期被内联,增量缓存把旧值烙死在调用点 [android]
+- ap-0188 ExternalProject 子构建不继承工具链,工具 NOTFOUND 静默产出空产物 — 子构建里某工具变量为 NOTFOUND 却照样跑完并产出空产物,失败拖到主工程链接期才报符号缺失/文件无效 [cross]
+- ap-0189 NDK 自带 Vulkan-Hpp 版本落后:混用头文件产生重定义,正解是 vendor 匹配版本的 Khronos Vulkan-Headers — 编译 llama.cpp Vulkan 后端时出现 Vulkan-Hpp 重定义/二义性报错——NDK 自带的 Vulkan 头文件版本落后于上游要求,混用不同来源头文件即冲突 [android]
+- ap-0190 设备硬件支持某后端 ≠ 当前构建已编译该后端:有效 profile 必须按构建能力裁剪 — benchmark/路由选中了某加速后端,运行时却初始化失败或悄悄落回 CPU——按设备硬件能力生成的候选后端列表未按当前构建实际编译的后端集合裁剪 [android]
+- ap-0191 NNNN — 实验特性放量单层开关,调试开关被误当生产开关 — 实验/调试特性只有一层开关,调用方显式允许即在生产生效——调试开关被误当生产开关,实验路径无门禁放量给真实用户 [cross]
+- ap-0192 NNNN — 并行 git 写操作竞争 index.lock — 并行执行多个 git 写命令(如 submodule add)时报 "Unable to create '.git/index.lock': File exists",部分操作随机失败留下不一致状态
+- ap-0193 NNNN — 持久资产存放系统临时目录且 ready 标记与本体分离 — ready 标记显示资产就绪,但资产本体已被系统临时目录清扫删除,下游按标记跳过重建,任务静默失败并持续积压
+- ap-0194 NNNN — 端侧长推理同步阻塞 + 配额阻断静默 return — 用户点击触发端侧长推理或被配额拦下后界面毫无反应,表现为"按钮按了没反应",实为同步阻塞等待或静默 return
+- ap-0195 NNNN — 搜索工具默认忽略隐藏目录导致误判文件不存在 — 用 rg/fd 等搜索工具零结果就断言文件"不存在",实际文件在隐藏目录里,被搜索工具默认规则跳过
+- ap-0196 NNNN — 新接口另起路由前缀,绕过既有网关/负载均衡转发规则 — 新接口部署后在某环境 404/不可达而代码本身无误——根因是接口另起了新路由前缀,网关/负载均衡没有对应的转发规则
+- ap-0197 NNNN — Gradle Kotlin DSL `file(path)` 按当前模块目录解析,repo 根相对路径需 `rootProject.file()` — Gradle 脚本里传了 repo 根相对路径给 file(),配置文件/规则文件静默没生效,构建无报错但行为等于没配 [android]
+- ap-0198 NNNN — 去重键混入易变字段导致同一主体分裂为多个 profile — 同一硬件/主体在系统中出现多个 profile,画像数量虚高或按画像键的配置命中率异常低 [cross]
+- ap-0199 NNNN — 手工验证过的门禁规则必须立即固化成可重复自测 — 门禁规则改动后 PASS/BLOCKED 分支行为无声翻转,回查发现该规则当初只靠临时 fixture 手工验证过,没有任何可重复自测 [cross]
+- ap-0200 NNNN — 并发测试任务共写同一结果/缓存目录导致假失败 — 多个测试任务并发执行时偶发失败、单独重跑即通过,失败集中在读写共享缓存或共享结果目录的用例 [android]
+- ap-0201 XXXX — 沙箱权限噪声掩盖脚本真实行为,preflight 结论前需提升权限干净复跑 — 沙箱内运行依赖特权守护进程的脚本，或让 Python subprocess 直接启动 adb daemon，输出混杂权限噪声甚至全 UNKNOWN 假产物，却仍据此判定脚本或设备状态 [cross]
+- ap-0202 NNNN — shell 手写 JSON 换行转义错误且无合法性自测 — shell 拼接生成的 JSON 工件肉眼看着正常,下游 json 解析却报非法——多行文本里的换行/转义未按 JSON 规则处理,且生成脚本从未做过合法性校验
+- ap-0203 NNNN — set -euo pipefail 下 grep/rg 零匹配返回码 1 被误判为失败 — set -e/pipefail 脚本里 grep/rg 计数或过滤,零匹配时脚本静默退出或把正常空结果当失败处理
+- ap-0204 NNNN — grep 断言中字面量含正则元字符被当作模式解释 — shell 断言用 grep/rg 匹配含 *、.、[ 等字符的字面字符串,元字符被当正则解释——断言变宽出现假阳性(测试照样绿),或匹配不到预期内容,错误远离出错点才暴露
+- ap-0205 NNNN — shell 变量后紧跟多字节字符必须加花括号 ${var} — 同一脚本 bash 5 正常、bash 3.2(如 macOS 自带 /bin/bash)报 unbound variable 或展开为空——变量展开后紧跟中文等多字节字符未加花括号,旧版 bash 把多字节字符的字节吞进变量名
+- ap-0206 NNNN — 排查容器配置时 dump 完整环境变量泄露凭据 — 排查容器配置时整屏打印了环境变量,输出进入会话/日志/粘贴板后数据库等凭据泄露,被迫全量轮换
+- ap-0207 XXXX — 凭据轮换未分类分批、未按 slave→master 滚动重建、readiness 不分项 — 凭据轮换后服务出现数据库或缓存认证失败,但 readiness 只报整体 unhealthy 无法定位是哪个后端;或重建顺序先动 master 导致失去回退
+- ap-0208 NNNN — 架构升级未同步升级监控脚本,长期 DOWN 项屏蔽真实告警 — 架构升级后某监控检查项长期处于 DOWN,团队将其视为"已知红"而习惯性忽略,后续真实故障的告警被同一常红状态淹没,故障发生却无人响应
+- ap-0209 NNNN — 后台任务观察流成功后不结束 — 把落库/刷新押在"流结束"上导致 UI 永不更新 — 后台任务成功后 UI 一直不刷新 — 落库/刷新写在观察流的完成回调里,而该流成功后不会自然结束 [android]
+- ap-0210 NNNN — 用 worker 日志 SUCCESS 代替 UI 落屏与设备端 DB 验收 — 用中间信号(worker 日志 SUCCESS、UI 截图看着对、点击没报错)宣布验收通过，但设备端数据库里查不到对应记录 [cross]
+- ap-0211 KMP Kotlin/Native framework 导出模块内全部 public 声明 — iOS 侧构建在 Kotlin/Native 生成 ObjC framework 阶段崩溃、报错不指向任何业务代码行时,说明整个模块的 public 面被全量导出 [cross]
+- ap-0212 跨平台框架 CocoaPods 集成必须走 workspace 且不得与残留 embedAndSign phase 共存 — 跨平台共享框架改用 CocoaPods 后仍构建 .xcodeproj、保留 embedAndSign phase，或让 App 与共享框架同时链接同一原生依赖，造成模块缺失、重复嵌入/签名冲突或 dyld 初始化 abort [ios]
+- ap-0213 NNNN — Kotlin/Native 平台 API 符号名靠猜而不反查 klib 真实导出名 — Kotlin/Native 侧引用平台或第三方框架符号时凭 Swift 文档/记忆写名字，编译期报 unresolved reference 或命中同名异义符号 [cross]
+- ap-0214 NNNN — 静态库 Pod 的传递依赖不会自动进入 Kotlin/Native 链接命令行 — Kotlin/Native 通过 CocoaPods 引入静态库 Pod 后，链接期报 undefined symbols，或链接通过但运行时找不到计算图/模型——只声明了 pod 本身，未把传递 framework、运行时注册 archive 与 App bundle 资源显式补入对应链路 [ios]
+- ap-0215 NNNN — 已弃用：静态 Pod 的传递依赖不会自动传给 Kotlin/Native linker — 已弃用：静态 Pod 传递依赖与 Kotlin/Native linker 的技术真值已合并至 ap-0214 [ios]
+- ap-0216 NNNN — 真机 UI 自动化复用旧 dump 的控件坐标 — 真机自动化点击'无反应'或误触相邻控件,且脚本不报错继续跑——多半是复用了键盘弹起前 dump 的旧 bounds
+- ap-0217 Compose bottom sheet 与 AlertDialog 叠加导致点击/焦点分发不稳定 — Compose 里 bottom sheet 还没关就弹 AlertDialog,出现点不动、点穿、外部点击关错层、输入框抢不到焦点 [android]
+- ap-0218 NNNN — 规则必须自带边界声明(禁什么 + 不禁什么 + 判据) — 一个合法做法被以某条规则为由拦下,回查发现该规则通篇只有禁令句,从未写明不禁什么、也没给判定是否落入禁区的判据 [cross]
+- ap-0219 NNNN — 高动量期路由纪律漂移 — 连续高频交付的顺手期里指挥方开始亲自直改超出路由红线的改动,并出现凭印象盲改翻车
+- ap-0220 NNNN — 指挥方自宣"整体完成"不对照自建清单:近因语境压过常设指令 — 宣告'整体完成'时拿不出逐行勾选的清单对照表;事后发现被跳过的项,恰好都是最近上下文里没出现过的那些
+- ap-0221 NNNN — 升级排序组件却不复核下游判据 — 排序/打分组件升级后端到端注入(采纳)量骤降甚至归零,被挡掉的恰是正确条目,而门槛配置"没人动过"
+- ap-0222 NNNN — 质量门禁只校验形态而不校验实质 — 自动化质量门禁按形态(必须有列表项/必须匹配模板)判定合格,把成段的深度论述判为不合格,产出方索性绕开或停用该流程——门禁零拦截不是因为质量高,而是因为它从未真正运行 [cross]
+- ap-0223 NNNN — 异常归类不分真因,一条兜底错误消息掩盖上游故障 — 日志/告警把性质不同的结果收敛成同一种表征——多种失败共用一条消息,甚至'启动失败'与'成功但无结果'写出完全相同的记录;排查者按字面含义查下游,真因(上游超时、进程根本没起来)被自己的错误信息掩盖
+- ap-0224 验收判据的运行环境宽于生产,验证了一个不存在的场景 — 测试全绿、验收通过,缺陷却在真实环境照旧复现——判据跑在比生产更宽松的环境里(有额外的 PATH、有交互终端、数据是空的或纯 ASCII),验证的是一个不存在的场景
+- ap-0225 Windows 进程启动的三个坑:无扩展名脚本 / execve / 商店别名 — 同一份脚本在开发者终端跑得好好的,换成程序去启动就失败——Windows 上 subprocess 启动无扩展名脚本报 WinError 193、os.execve 触发访问违例、商店别名在受限令牌下拒绝访问,三者都只在非交互场景暴露
+- ap-0226 把文件扩展名当作类型判据 — 按文件后缀判断文件性质——决定它能否执行、要不要处理、是什么媒体类型;凡是命名不带后缀或后缀不代表内容的文件就被判错或被漏掉,而漏掉的那部分往往正好是关键路径
+- ap-0227 启动期的周期性刷新掐断已就绪的连接 — 宿主报某个服务"未初始化",但日志显示它其实初始化成功过——启动窗口内的周期性刷新把刚就绪的连接无差别取消,最后一次刷新之后无人重拉,于是对外看起来像从没起来过
+- ap-0228 现象含"超时"二字就调超时参数 — 看到"超时/被取消"就去调超时参数,调大调小都没用——先量"取消发生在开始后多久",这个值恒等于某个配置项才是超时,否则是别的东西在主动取消,调旋钮属于治错对象
+- ap-0229 把"观测不到"写成"观测到没有" — 报告里出现"不存在/已彻底排除/该方案无效"这类终局结论,但支撑它的只是一次没有观测到目标现象的差分、打点或日志
+- ap-0230 通用故障表现被当作亲历项目事实写入事实基线 — 事实基线里出现只有现象名词、没有本人时间线/定位过程/验证证据的故障条目(如花屏、double free),说明通用排查知识被当成亲历项目事实写了进去
+- ap-0231 调试审查入口对未知状态静默 fallback 到其他页面 — 截图证据看着正常、审查结论也下了，事后才发现截的根本不是目标页——调试入口拿到未知状态时静默跳到了默认页/上一页/首页 [cross]
+- ap-0232 消息写库后不回读稳定 ID，后续按 ID 操作静默失效 — 流式或新发消息已经写入数据库，但 UI 继续持有无持久 ID 的临时对象，导致长按编辑、删除和重新生成按 ID 查询时静默无效 [cross]
+- ap-0233 Kotlin 多模块依赖版本漂移在原生侧表现为 IrLinkageError — Kotlin 多模块或 KMP 工程对同一依赖族使用不同版本，公共代码可能编译通过，却在 Kotlin/Native 链接或 iOS 运行期因 ABI/符号不一致抛 IrLinkageError [ios]
+- ap-0234 把历史证据用现在时写成当前状态 — 沉淀文档把历史时点的 BLOCKED、未实现或待处理结论继续用现在时书写，恢复上下文的读者会把旧证据误当当前状态并重复派活或错误阻断
+- ap-0235 launcher 规范已更新，但已生成包装器仍是旧壳 — 跨平台 launcher 的规范或目标形态已经从 shell 改为 Python，但其他机器上 bootstrap 生成的旧包装器不会随 Git 更新自动重建，最终由旧壳解释新目标并在对端失败 [cross]
+- ap-0236 AVFoundation 帧跨协程前未在回调窗口 retain — Kotlin/Native 在 AVFoundation 回调里取得 CVPixelBuffer 后直接送入协程或 channel，离开同步回调才尝试 lock/retain；底层帧已被回收或复用，消费侧会卡死、读坏数据或崩溃。 [ios]
+- ap-0237 异步原生推理提交与关闭并发 — 异步 native 推理仍在同步提交阶段时释放 runner，协程取消未等待 JNI/FFI 调用结束，最终形成 use-after-free 崩溃。 [cross]
+- ap-0238 误以为 KMP 公共资源会自动进入 Android APK Assets — KMP 公共源码集里存在资源文件并不证明它会进入 Android APK assets；编译和状态测试全绿，安装后仍可能在首次读取时崩溃。 [android]
+- ap-0239 提供方专属模型泄漏进共享任务契约 — 多宿主协调端把某一宿主的模型名和 slash command 写进共享任务契约，目标换成另一宿主后仍输出无效档位切换，任务尚未执行就发生提供方漂移
+- ap-0240 跨进程消费者只读加密凭据导致登录态分裂 — 主应用保持登录而扩展进程误判退出，通常是各进程分别解释凭据，并把安全存储解密失败直接当成 token 缺失。 [harmonyos]
+- ap-0241 Windows 与 WSL 构建的迁移行尾不一致导致 SQLx 校验冲突 — 官方 Windows 构建能打开的既有 SQLite 状态库，换成 WSL/Linux 交叉构建的同源程序后却报历史 SQLx migration 已被修改，常见根因是 CRLF/LF 改变了迁移原始字节及其校验值。 [cross]
+- ap-0242 只读 MCP 中断被升级为外部效果干预 — 只读 MCP 调用在缺少完成回调时被按能力类型而非声明效果升级为外部副作用干预，制造无法证明的待验证债务和无意义人工确认。
+- ap-0243 控制命令组合违规被误升级为破坏性暂停 — 监督器把不可组合的可信控制命令直接归类为破坏性动作，虽然命令已被拒绝，仍写入安全暂停并锁住当前任务。
+- ap-0244 精确 Git 暂存被压成仓库级权限 — 监督器把带显式文件列表的 git add 折算成仓库根写入，迫使单文件任务申请不必要的全仓权限，并让未跟踪发布输入陷入 bootstrap 自锁。
+- ap-0245 人工审批超时不是授权结果 — 人工审批请求的等待超时被同时当成活性、有效期和授权结果，导致沉默被误授权、合法晚到决定失效或系统反复要求人工确认。
+- ap-0246 共享消耗型 SKU 的未完成交易阻塞跨内容购买 — 多个业务权益共用一个消耗型 SKU 时，未完成的历史交易会让所有入口返回 ALREADY_OWNED；若缺少持久业务身份绑定，恢复还可能把旧订单错发给当前内容。 [cross]
+- ap-0247 人工 Allow 未被消费，执行层再次决策 — 人已经在原生界面明确 Allow，执行层却没有消费对应强类型授权，仍按普通策略重复拒绝或再次询问。
+- ap-0248 组件迁移后沿用旧内容槽布局 — 组件迁移只替换外壳，不按新组件内部内容槽重算约束，元素仍可见但在不同主题、字号或内容下溢出重叠。 [cross]
+- ap-0249 手动全量任务复用定时 opt-in 过滤导致空跑成功 — 手动全量任务复用定时 opt-in 过滤时会空跑成功，并用全零摘要掩盖实际未检查任何对象 [cross]
+- ap-0250 同名方法缺少对象类型证明导致文本操作误拦截 — 文本读改写中的 replace 被当成文件替换拒绝，根因是同名方法风险分类缺少有界、可失效的接收对象类型证明。 [cross]
+- ap-0251 可选记忆增强被错误计入无关业务审批依赖 — 可选记忆增强使无关业务提案反复失效，需要按明确依赖投影审批新鲜度，并保留权威效果债务和旧写者兼容性。 [cross]
+- ap-0252 实际测试解释器的依赖预检放得太晚 — 昂贵测试跑到深层安装用例才发现实际 Python 缺少 PyYAML，应在最外层入口预检同一解释器及依赖并记录身份。 [cross]
+- ap-0253 动画中断后在已有形变上再次累加 — 可中断动画在当前形变上反复追加位移相关拉伸，连续改选时轮廓越变越大；须从当前帧续接并约束起终边界包络。 [cross]
+
+## platform-kb
+
+- platform-kb/harmony/arkts-language ArkTS 语言陷阱 — 写 .ets / 看到编译 ERROR 前必读。 [harmonyos]
+- platform-kb/harmony/arkui-components ArkUI 组件 API 行为 — 用 ArkUI 组件 / 看到视觉异常 / 不确定 API 行为前必读。 [harmonyos]
+- platform-kb/harmony/arkui-incompatibility ArkUI 不可共存 / Workaround — 视觉异常 / 某 modifier 不渲染 → 必查本文 + 用既定 workaround。 [harmonyos]
+- platform-kb/harmony/arkui-layout-scroll-shell ArkUI 滚动页壳 / 固定标题栏 / 悬浮底栏避让规则(v1.2) — ArkUI 页面壳须区分固定区、完整滚动视口和浮层占用；悬浮底栏的尾部避让由宿主统一派生，安全区仅计一次。 [harmonyos]
+- platform-kb/harmony/arkweb ArkWeb / Web 组件 — `@kit.ArkWeb` 的 `Web` 组件用法 + 渲染陷阱。 [harmonyos]
+- platform-kb/harmony/build-toolchain 构建 / 工具链 [harmonyos]
+- platform-kb/harmony/network-api 网络 / API [harmonyos]
+- platform-kb/harmony/real-device-verify 真机 verify(v1.1) [harmonyos]
+- platform-kb/harmony/resources-system 资源 / 主题系统 — HarmonyOS **资源目录同名覆盖**(0 代码改动): [harmonyos]
+- platform-kb/harmony/routing-navigation 路由 / 导航 — 集中式路由常量 + 薄封装 util,是 ArkUI 端替代 Flutter GetX 命名路由的通用形态: [harmonyos]
+- platform-kb/harmony/routing-navigation-overlay-frames 路由 / 导航 — 浮层返回栈 frame 归属机制(v1.0) — `routing-navigation.md` 子文件(主文件超长 split)。 [harmonyos]
+- platform-kb/harmony/state-management 状态管理 [harmonyos]
+- platform-kb/harmony/translate-rules Flutter Dart → ArkUI 翻译 mapping 规则 — UI 还原 task / transpile Flutter file → ArkUI ets 时**逐行 ref 本… [harmonyos]
+- platform-kb/mobile-android-ios/平台API速查表 平台 API 速查表 — 适配场景的标准代码片段，写代码时直接复制粘贴。 [cross]
+
+## tech-docs
+
+- tech-docs/AMI额度必须以持久化分析任务为事实 AMI 额度必须以持久化分析任务为事实 — 动作分析额度不能从缓存结果或 UI 内存计数。
+- tech-docs/Android构建日志先定位首个编译失败 Android 构建日志先定位首个编译失败 — Android 聚合构建中的 D8/元数据警告可能淹没更早的 Kotlin 编译错误；诊断应先定位首个失败 task，再单独重跑对应 compile/test compile task 获取未经后续噪声稀释的根因。 [android]
+- tech-docs/dart-to-arkts Flutter/Dart → HarmonyOS/ArkTS 转译规则总纲 — 把一套 Flutter(Dart + GetX)现有实现逐页迁到 HarmonyOS(ArkTS + ArkUI St…
+- tech-docs/docker-platform-export-verification Docker 多架构镜像导出与完整性验证 — Docker 镜像导出出现 content digest not found，压缩管道却返回成功时，应检查目标平台内容、管道退出状态以及传输后导入的完整性。 [cross]
+- tech-docs/durable-effect-claim-and-ledger-identity Durable claim、执行权与账本身份必须分层 — 一次性副作用的 claim、公开读回与安全账本必须分离执行权和观察权，并绑定稳定父目录与叶节点身份。
+- tech-docs/pose-first-open-set-motion-arbitration Pose-first 的开放集运动理解与模型仲裁 — 开放集运动理解应先控制视频输入并提取时间同步 Pose 原语，以可解释置信度裁决动作和评分，VLM 负责补充解释而非覆盖强证据。 [cross]
+- tech-docs/user-visible-model-output-contract 用户可见模型输出的事实、叙事与清洗契约 — 用户可见模型文本必须由结构化事实派生自然叙事，并在生成、融合、缓存回填和最终渲染多层阻止内部码、提示词与裸 JSON 泄漏。 [cross]
+- tech-docs/wechat-payment-activation-and-settlement 微信支付接入：能力确认、凭据隔离与旧单结算 — 微信支付接入须区分网页授权、商户产品权限和真实交易验收；停用新收款时仍需保留旧订单的验签通知、查单、退款和对账能力。 [web]
+- tech-docs/业务列表重排必须保持连续稳定顺序 业务列表重排必须保持连续稳定顺序 — 计划、步骤、处方等业务列表的顺序不是纯 UI 状态。
+- tech-docs/个人数据计数导出删除必须覆盖同一数据面 个人数据计数导出删除必须覆盖同一数据面 — 隐私控制中的“数据数量”“导出我的数据”和“删除我的数据”必须覆盖同一组个人数据表。
+- tech-docs/事实纠错必须重算父级聚合 事实纠错必须重算父级聚合 — 允许用户编辑或删除明细事实的系统，不能只更新明细行。
+- tech-docs/健康平台数据先标准化再进入决策 健康平台数据先标准化再进入决策 — 应用同时读取 Health Connect、HealthKit、手表、体脂秤或其他健康来源，并用这些数据生成训练、恢复…
+- tech-docs/免费体验与持续价值必须在领域层分界 免费体验与持续价值必须在领域层分界 — 订阅门槛不能只隐藏按钮，也不能阻止用户访问自己的数据。
+- tech-docs/分阶段产品体验必须改变任务优先级 分阶段产品体验必须改变任务优先级 — 采集了用户经验等级，却让所有等级进入同一个页面，只替换标题或说明文字，不构成真正的个性化。
+- tech-docs/功能目录必须连接主工作流 功能目录必须连接主工作流 — 搜索、筛选和详情完整的功能目录，如果用户选中条目后不能进入实际任务，仍然只是只读资料库。
+- tech-docs/动作示范素材必须精确匹配变式 动作示范素材必须精确匹配变式 — 动作教学不能按运动模式共用一张泛化图片。
+- tech-docs/半自动流程创建前必须展示完整链路 半自动流程创建前必须展示完整链路 — 含人工外部操作的半自动功能,用户创建后卡在中途不知道下一步在哪做、由谁做
+- tech-docs/单次结果形成候选而非自动改计划 单次结果形成候选而非自动改计划 — 长期计划产品不应依据一次表现直接修改后续处方。
+- tech-docs/历史达标率必须使用当时生效的目标 历史达标率必须使用当时生效的目标 — 目标可以随阶段、能力和用户选择变化。
+- tech-docs/嵌入模型维度选型与升级决策 嵌入模型维度选型与升级决策 — 嵌入维度由模型决定；升级需要重建向量与重标阈值，写入异常只有经 schema 确认不匹配后才能转换且必须保留原异常链
+- tech-docs/异步分析不阻塞事实汇总 异步分析不阻塞事实汇总 — 训练、健康和业务记录属于确定事实，模型分析属于异步增强。
+- tech-docs/异步状态写入前必须确认平台能力 异步状态写入前必须确认平台能力 — 跨平台代码常用 no-op 实现维持依赖图可编译。
+- tech-docs/思考模式使用规范 Claude Code 思考模式使用规范 — 两端终端共用，按场景自动选择合适的思考强度。
+- tech-docs/性能专项技术决策 性能专项技术决策(全屏视频类 App 通用方法论) — 适用于"全屏视频消费 + 多任务生成 + 大文件上传"类移动 App。
+- tech-docs/恢复日任务必须连接真实记录 恢复日任务必须连接真实记录 — 恢复日不能只是空页面或复选框集合。
+- tech-docs/手动修改生成结果需要保留用户控制权 手动修改生成结果需要保留用户控制权 — 生成阶段可以将时间、剂量等预算设为硬门禁；用户手动修改时不应静默突破预算，也不宜直接禁止有意安排。
+- tech-docs/批次切分原则 批次切分原则 — 协调端派发 Batch / Phase 任务时的切分依据。
+- tech-docs/派生产物缓存双失效与负缓存 派生产物缓存:双失效与负缓存纪律 — 缓存昂贵的派生产物(摘要/prose/嵌入)而非原始数据,用 TTL 与 sourceVersion 双条件失效;失败、超时与半有效结果绝不写缓存,读取侧复用前也要校验条目有效性,否则临时错误被固化为长期错误答案
+- tech-docs/生成式计划必须通过时间预算硬门禁 生成式计划必须通过时间预算硬门禁 — 仅在 prompt 中要求模型遵守频次和时长，并不能保证输出可执行。
+- tech-docs/用户展示与业务门禁必须复用同一估算器 用户展示与业务门禁必须复用同一估算器 — 当系统用预计时间、成本或负荷做业务门禁时，页面不能另写一套近似计算。
+- tech-docs/用户操作的审计来源必须真实 用户操作的审计来源必须真实 — 当用户通过编辑器直接修改并保存业务对象时，不能复用默认系统更新接口。
+- tech-docs/真机语音识别验证的可复现证据 真机语音识别验证的可复现证据 — 真机 STT 验证依赖人工说话时不可复现、无法归档；用本机 TTS 回放固定语料构成声学回路可产出可比对的转写证据，静音与环境音轮次是失败路径证据而非作废轮次。
+- tech-docs/端侧大模型文件必须做内容哈希校验 端侧大模型文件必须做内容哈希校验 — 文件大小相同不代表内容完整；ready 判据的字节数必须是精确值,不能用估算占位。
+- tech-docs/端侧小模型结构化输出分层治理 端侧小模型结构化输出分层治理 — 端侧小模型要求严格 JSON 时，不能只靠 prompt 或再次调用模型修复；应按生成约束、确定性提取/归一化、schema 与语义校验、限次修复形成分层闭环。 [cross]
+- tech-docs/端侧应用隐私政策与商店声明对齐方法 端侧应用隐私政策与商店声明对齐方法 — 移动应用必须让真实数据流、第三方 SDK 传递能力、最终安装包权限、运行时同意、隐私政策和商店声明保持同一事实。
+- tech-docs/端侧文本推理连续请求的状态边界 端侧文本推理连续请求的状态边界 — 端侧模型权重可以跨请求复用，但会话上下文、单次生成、并发所有权和 UTF-8 流式缓冲必须按不同生命周期管理。 [cross]
+- tech-docs/端侧模型异构分层卸载验证方法 端侧模型异构分层卸载验证方法 — 适用于 Android 端侧 LLM/VLM 在 CPU 与 OpenCL GPU 之间分配计算层的性能优化。
+- tech-docs/结构化建档与安全约束贯通训练计划 结构化建档与安全约束贯通训练计划 — 个性化训练应用不能把首次建档当作普通资料表。
+- tech-docs/编码原则集 编码原则集(Kotlin / Swift 习语优先级) — 微观层:每行代码用什么语法、API、数据结构。
+- tech-docs/自主训练也必须复用持久化执行处方 自主训练也必须复用持久化执行处方 — 用户从动作库临时发起训练，并自行选择组数、次数和组间休息。
+- tech-docs/视觉推理方向元数据与像素归一化 视觉推理方向元数据与像素归一化 — CameraX 预览方向、ImageAnalysis 像素、rotation metadata、视觉模型输入和 landmark 映射必须采用同一方向契约。 [android]
+- tech-docs/订阅权益必须来自商店交易真值 订阅权益必须来自商店交易真值 — 客户端不能用本地布尔值模拟订阅成功。
+- tech-docs/训练休息计时的暂停与有效时长 训练休息计时的暂停与有效时长 — 健身、康复和间歇训练应用通常用绝对截止时间恢复后台倒计时，但“临时离开”与正常休息语义不同。
+- tech-docs/设计模式实现 设计模式实现(GoF + 现代模式 × iOS Swift / Android Kotlin) — 宏观层:如何组织对象间关系,让代码可扩展、解耦、可测试。
+- tech-docs/设计稿示意图识别指南 设计稿示意图识别指南 — **目的**:避免把"一图代表一类"的示意图误解为"每张图 = 一个独立实现"。
+- tech-docs/调整入口应出现在用户发现问题的上下文 调整入口应出现在用户发现问题的上下文 — 底层已有调整能力、其他页面已有入口，不代表用户旅程闭环。
+- tech-docs/跨平台导出功能必须保持契约对等 跨平台导出功能必须保持契约对等 — 共享 UI 暴露了导出入口，就必须在每个目标平台绑定真实实现。
+- tech-docs/跨端大模型下载与平台能力门禁 跨端大模型下载与平台能力门禁 — 跨端应用常把模型管理界面和 ViewModel 放在共享层，但把下载器、文件系统和推理引擎放在平台层。
+- tech-docs/跨设备发布产物固定架构与版本目录 跨设备发布产物必须固定架构与版本目录 — Apple Silicon 等开发机产出的默认架构不一定等于生产 linux/amd64；发布流水线必须显式固定目标平台，并按不可变版本目录保存带摘要的产物，禁止发布器从共享目录猜最新包。 [cross]
+- tech-docs/验证器输出必须为LLM设计 验证器输出必须为 LLM 设计 — 测试/验证脚本把成千上万行原始日志整段灌回 agent 上下文,一次验证吃掉大半窗口且关键错误被淹没
+
+## case-studies
+
+- tech-docs/案例研究/01-Android媒体与性能工程/视频Feed七项性能优化 Android 视频 Feed 七项性能优化案例研究 — **技术域**：Android 媒体与性能工程 **难度**：⭐⭐⭐⭐⭐ **关键词**：ExoPlayer / Vi…
+- tech-docs/案例研究/01-Android媒体与性能工程/视频Feed黑屏与播放竞态 Android 视频 Feed 黑屏与播放竞态案例研究 — **技术域**：Android 媒体与性能工程 **难度**：⭐⭐⭐⭐ **关键词**：ExoPlayer / Vie…
+- tech-docs/案例研究/01-Android媒体与性能工程/视频列表四类典型缺陷与离屏渲染架构 视频列表（RecyclerView + ExoPlayer）四类典型缺陷与离屏渲染架构 — **技术域**：Android 媒体与性能工程 **难度**：⭐⭐⭐⭐⭐ **关键词**：ExoPlayer / Re…
+- tech-docs/案例研究/01-Android媒体与性能工程/音频预览预加载与起播延迟 音频预览预加载与起播延迟优化案例研究 — **技术域**：Android / iOS 媒体播放性能工程 **难度**：⭐⭐⭐⭐⭐ **关键词**：ExoPlay…
+- tech-docs/案例研究/02-iOS-TCA架构实践/SwiftUI列表分页卡顿与懒加载 SwiftUI 列表分页卡顿与懒加载案例研究 — **技术域**：iOS 性能工程 / SwiftUI / Perception 状态观察 **难度**：⭐⭐⭐⭐⭐ *…
+- tech-docs/案例研究/02-iOS-TCA架构实践/TCA依赖注入scope错配与占位值 TCA 依赖注入 Scope 错配与占位值案例研究 — **技术域**：iOS 架构 / Swift / The Composable Architecture / swif…
+- tech-docs/案例研究/02-iOS-TCA架构实践/TCA状态机登出登录闭环 TCA 状态机登出登录闭环案例研究 — **技术域**：iOS 架构 / Swift / SwiftUI / The Composable Architect…
+- tech-docs/案例研究/02-iOS-TCA架构实践/UIKit链式模态present-dismiss竞态 UIKit 链式模态 Present/Dismiss 竞态案例研究 — **技术域**：iOS 架构 / UIKit / SwiftUI Hosting / TCA 状态驱动 UI **难度…
+- tech-docs/案例研究/02-iOS-TCA架构实践/异步媒体子页的播放所有权与可见性门控 异步媒体子页的播放所有权与可见性门控 — **技术域**：iOS TCA 架构实践 **难度**：⭐⭐⭐⭐⭐ **关键词**：UIKit 容器控制器 / UIP…
+- tech-docs/案例研究/02-iOS-TCA架构实践/流式快照合并的单调性守则 流式快照合并的单调性守则 — **技术域**：iOS TCA 架构实践 **难度**：⭐⭐⭐⭐⭐ **关键词**：SSE / TCA / Reduc…
+- tech-docs/案例研究/02-iOS-TCA架构实践/观察系统条件读取与依赖追踪失稳 观察系统条件读取与依赖追踪失稳 — **技术域**：iOS TCA 架构实践 **难度**：⭐⭐⭐⭐⭐ **关键词**：SwiftUI / TCA / P…
+- tech-docs/案例研究/03-跨端一致性工程/双端进场动画jank与对称工程 双端进场动画 Jank 与对称工程案例研究 — **技术域**：移动端性能工程 / iOS SwiftUI / Android UI 性能 / 跨端一致性 **难度*…
+- tech-docs/案例研究/03-跨端一致性工程/状态模块register-setter竞态与占位补偿 状态模块 Register/Setter 竞态与占位补偿案例研究 — **技术域**：移动端状态管理 / Kotlin Coroutines / Swift Concurrency / 双…
+- tech-docs/案例研究/04-移动端缓存架构/L1缓存链路断裂排查 iOS 积分 L1 缓存链路断裂排查案例研究 — **技术域**：iOS 架构 / Swift / TCA / swift-dependencies / 移动端缓存 *…
+- tech-docs/案例研究/04-移动端缓存架构/图片加载三级缓存与组件抽象 图片加载三级缓存与组件抽象案例研究 — **技术域**：移动端网络与图片性能 / Android Coil / iOS Kingfisher **难度**：⭐…
+- tech-docs/案例研究/04-移动端缓存架构/用户已有资产复用与内容寻址分享缓存 用户已有资产复用与内容寻址分享缓存 — **技术域**：移动端缓存架构 **难度**：⭐⭐⭐⭐⭐ **关键词**：系统媒体库 / 内容寻址 / URL 哈希…
+- tech-docs/案例研究/04-移动端缓存架构/缓存SWR陈旧重验策略 移动端用户资料缓存的 Stale-While-Revalidate 策略案例研究 — **技术域**：移动端缓存架构 / iOS TCA / Android 状态管理 / UserDefaults / S…
+- tech-docs/案例研究/04-移动端缓存架构/网络层单例化与连接预热 移动端网络层单例化、连接预热与 HTTP 缓存案例研究 — **技术域**：移动端网络架构 / Android / OkHttp / Retrofit / HTTP 缓存 **难…
+- tech-docs/案例研究/04-移动端缓存架构/请求级单飞与多订阅者广播缓存 请求级单飞与多订阅者广播缓存 — **技术域**：移动端缓存架构 **难度**：⭐⭐⭐⭐⭐ **关键词**：Swift actor / AsyncStr…
+- tech-docs/案例研究/05-诊断方法论/iOS媒体加载失败诊断-缓存扩展名 iOS 媒体加载失败诊断：缓存文件扩展名案例研究 — **技术域**：iOS 媒体工程 / AVFoundation / 磁盘缓存 / 系统化调试 **难度**：⭐⭐⭐⭐⭐…
+- tech-docs/案例研究/05-诊断方法论/分页Feed空态越界崩溃边界防御 分页 Feed 空态越界崩溃的边界防御案例研究 — **技术域**：iOS 稳定性 / UIKit 分页容器 / 状态驱动 UI / 不可复现崩溃诊断 **难度**：⭐⭐…
+- tech-docs/案例研究/05-诊断方法论/动作到主力与协同肌群的可审计可视化 动作到主力与协同肌群的可审计可视化 — 训练产品不能给所有动作展示同一张肌肉图。
+- tech-docs/案例研究/05-诊断方法论/原创动作动图与第三方训练数据隔离 原创动作动图与第三方训练数据隔离 — 健身产品常同时需要大规模动作元数据、动作教学动图和模型训练语料。
+- tech-docs/案例研究/05-诊断方法论/性能诊断方法论与常见误区 移动端感知延迟性能诊断方法论与常见误区 — **技术域**：移动端性能工程 / iOS Instruments / Android Studio Profiler…
+- tech-docs/案例研究/05-诊断方法论/权威3D解剖数据校验生成式肌肉图谱 权威 3D 解剖数据校验生成式肌肉图谱 — 训练、康复和健康产品常用生成式图片批量制作肌肉示意图。
+- tech-docs/案例研究/05-诊断方法论/流式连接三类终止路径与终态闸门 流式连接三类终止路径与终态闸门 — **技术域**：诊断方法论 **难度**：⭐⭐⭐⭐⭐ **关键词**：SSE / EOF / Flow / 业务终态…
+- tech-docs/案例研究/05-诊断方法论/轮询守卫三值语义与防御性收紧陷阱 轮询守卫三值语义与防御性收紧陷阱 — **技术域**：诊断方法论 **难度**：⭐⭐⭐⭐⭐ **关键词**：poll-first / 三值语义 / Resu…
+- tech-docs/案例研究/06-HarmonyOS-ArkUI工程/ArkUI浮层体系的响应式-宽度-键盘三类深水区 ArkUI 浮层体系的响应式 / 宽度 / 键盘三类深水区 — **技术域**：HarmonyOS ArkUI 工程 — 声明式浮层（floating surface）架构 **难度…
+- tech-docs/案例研究/06-HarmonyOS-ArkUI工程/SSE流式响应的生命周期与分帧 HarmonyOS 上 SSE 流式响应的生命周期、分帧与静默解码陷阱 — **技术域**：HarmonyOS / ArkTS 网络与流式协议工程 **难度**：⭐⭐⭐⭐ **关键词**：SSE…
+
+## work-model
+
+- work-model/canonical-byte-authority-self-hosted-verification 规范化字节权威与自托管验证 — 报告与回执共享版本化字节权威；热更新验证需使用候选绑定的新进程，并把实际事件的模块代际与发布件代际沿真实宿主链核对。
+- work-model/content-addressed-device-fixture-lifecycle 内容寻址的设备素材 fixture 生命周期 — 真实设备评测素材必须从扫描、去重、人工审核、接受、归档到导入全程绑定内容哈希，并把短缺、拒绝、跳过与失败保留为机器可读状态。 [cross]
+- work-model/cross-stack-parity-loop 跨栈对齐修复 SOP:源真值端 → 目标端 parity loop(canonical) — **项目无关工作模型。
+- work-model/data-sources 数据来源优先级铁律(三端共享) — 协调端 / iOS / Android 三端通用。
+- work-model/evidence-gate-contract 证据门禁的来源、格式与时序契约 — 证据门禁绑定目标、运行和发布范围；复用测试必须证明输入等价，安装退出成功不能替代本次授权消费、独立效果验证或真实宿主证据。
+- work-model/failure-triggered-diagnostics-and-scope-freeze 失败触发诊断与串行返修范围冻结 — 低频异常应把重诊断放在失败后，并在连续返修时冻结范围和停止线，避免成功热路径与任务边界持续膨胀。
+- work-model/final-backup-before-migration-cutover 迁移切流前的最终备份验证 — 数据迁移切流前必须重新证明最终备份可生成和可恢复；源已释放时只能使用最后一份已验证备份并披露恢复点缺口。
+- work-model/git-worktree-content-evidence-materialization Git 多工作树的内容证据与检出后物化 — 多 worktree 与隔离发布验证必须把工作树、index、提交树、文件模式和引用形状分别证明，不能用另一个 checkout 的状态代替。 [cross]
+- work-model/governance-observation-contract 治理观察的时间、范围与暂态契约 — 长期治理观察必须同时记录绝对基线、足够细的更新时间、与证据一致的适用范围，以及暂态状态的失效期限和到期动作；只留速率、日粒度心跳或无限期待定都会制造假稳定。
+- work-model/hosted-automation-cost-disclosure 托管自动化启用前的触发与成本披露契约 — 仓库自动化可能由 push、PR、定时或人工事件启动托管执行器；启用前必须披露触发链路、费用归属、额度边界、预算保护和关闭方法。
+- work-model/idempotent-registration-verifier-contract 幂等登记与独立验证共享契约 — 幂等登记的授权、输入摘要、存储来源与独立验证必须共享版本化契约，重复请求和丢失完成回调不能制造自锁或盲目重放。
+- work-model/lossless-knowledge-dedup 知识判重必须无损合并技术真值与治理资产 — 知识判重合并不是删除较短文档：必须先做双向差集，把技术真值与复发次数、lint、静态门禁、review checklist、别名关系等治理资产无损并入 canonical，再用 tombstone 保留旧身份。
+- work-model/machine-readable-stage-control-plane 多阶段任务的机器可读控制边与原子刷新 — 多阶段人工与自动流程必须由单入口原子刷新机器可读状态、blocker 和 handoff，不能让旧派生工件或上下文记忆决定下一步。
+- work-model/model-strategy 多宿主模型与推理档策略（唯一真值） — 任务只记录宿主无关能力档，目标 Claude Code 或 Codex 会话再按当前模型翻译为原生模型与推理控制。
+- work-model/multimodal-run-orchestration-and-observability 多模态 run 编排与端到端可观测性 — 多模态任务必须以 run identity 串联输入、转写、媒体分析、缓存、后台生命周期和终态证据，并让慢支路不阻塞附件落库。 [cross]
+- work-model/offline-fake-device-cli-testing 离线 fake 设备工具链 CLI 自测(无真机锁流程逻辑) — 无真机环境下用 PATH 前置 fake 设备 CLI + 环境变量命令覆盖点做离线自测,锁住设备流程编排逻辑防回退;一切 fake 桩(fake 设备 CLI / fake evaluator 等)输出必须与真实 schema 一致,否则 happy-path 自测掩盖真实门禁不可通过。 [cross]
+- work-model/ownership-aware-receipt-locks 回执锁必须匹配集成后的所有权模型 — 集成后的回执事务若跨源合同、目标合同与会话路由，锁和中断恢复验证必须覆盖全部权威写者，单合同测试不能证明组合安全。
+- work-model/perf-diagnosis 性能诊断 SOP(三端共享) — 源自某次秒级延迟多轮盲修复复盘。
+- work-model/postmortem-generalization 沉淀 / 复盘通用化规则 — 沉淀必须从事故抽象出可复用规则，并进入实际 Skill 路由、执行流程或机械门禁；只留下总结文档不能阻止复发。
+- work-model/recurring-root-cause-governance 同根因多处复发时转统一治理 — 同一个根因在不同位置反复冒出来时,继续逐处打补丁的成本是无限的——判据是"第 N 次"而非"第 N 个 bug",应转为统一治理:抽共享实现消存量,加机械守卫防增量
+- work-model/schema-fixture-migration-and-real-execution Schema 收紧后的 fixture 迁移与真实执行覆盖 — 协议或 schema 收紧后必须全仓迁移 fixture，并证明关键测试既进入语法/编译阶段也在生产路径实际执行，不能靠测试名和 test-mode 旁路冒充覆盖。 [cross]
+- work-model/self-fix-boundary 自发修复边界(三端共享) — 子端 Dev 自发修小 bug 时的硬约束,作为唯一真值。
+- work-model/session-isolation-explicit-continuation 会话隔离与显式任务续接必须组合验收 — 会话改为独立合同后，旧任务续接必须显式选择源合同、审查双合同并原子切换路由，不能依赖预先共享 lane 或复制旧执行权。
+- work-model/single-session-task-execution 单 session 一次跑通工作法 — 复杂 task 由**单个 Dev session 端到端跑通**的正向工作法。
+- work-model/skills/coordinator-maintenance 协调端维护类规则(4 子流程) — 关联:概要版见 ../postmortem-generalization.md,本文是完整操作流
+- work-model/skills/curate-to-kb Layer1 → Layer2 知识库上浮（curation） — 关联:概要版见 ../postmortem-generalization.md,本文是完整操作流
+- work-model/skills/dev/assign 任务指派 — 指派一个任务给指定开发者，自动切换到对应分支和 git 身份。
+- work-model/skills/dev/bug-hunt Bug 排查团队 — 启动一个 3 人排查团队，从不同角度调查问题，互相讨论找出最可能的原因。
+- work-model/skills/dev/code-review 代码审查团队 — 启动一个 2 人审查团队，分别从架构合规和代码质量两个维度审查指定分支。
+- work-model/skills/dev/crash-fix 崩溃快速修复（Android / iOS） — Android/iOS Dev 以四阶段证据链完成崩溃(含 native/tombstone)、无响应与编译错误的最小修复。 [cross]
+- work-model/skills/dev/parallel-dev 并行开发团队 — 启动一个多人开发团队，每个队友在独立的 worktree 中工作，互不冲突。
+- work-model/skills/dev/perf-diagnose 性能诊断（Android / iOS） — Android/iOS Dev 在提出性能 fix 前以数值、trace 与截图建立可复测诊断证据。 [cross]
+- work-model/skills/dev/postmortem Bug 修复事后沉淀 — Dev 通过三问漏斗把已验证修复转成反模式、lint 或人工 review 的协调端 handoff。 [cross]
+- work-model/skills/dev/ui-impl UI 精确还原（Android / iOS） — Android/iOS Dev 以 pen-truth、运行截图和行为契约逐节点还原 UI，并保留双平台适配差异。 [cross]
+- work-model/skills/dispatch-parallel-task 协调端派发并行任务规则 — 并行任务先做文件交集检查，再为每项标注宿主无关能力档。
+- work-model/skills/multi-source-review multi-source-review — 多源评审 + 分类决策 — **Why this skill exists**:单 reviewer 实证 critical claim 有失误风…
+- work-model/skills/record-prd-supplement 甲方需求补充登记流程(协调端) — **目的**:甲方临时补充的需求(口头/微信/会议口令)只存在主会话历史会丢失,必须在第一时间落到**真相文档**。
+- work-model/skills/sediment-from-code 协调端 sediment-from-code skill — 代码即真值的 BTM 增量沉淀 — 关联:概要版见 ../postmortem-generalization.md,本文是完整操作流
+- work-model/skills/update-design 设计稿更新流程(Pencil MCP + pen-truth 管道) — **废弃**:原 `sync-design.sh` (Figma 链路)已废弃,本 skill 不再触发它。
+- work-model/skills/writing-task-md 协调端写 task md 完整规则 — 关联:概要版见 ../single-session-task-execution.md,本文是完整操作流
+- work-model/task-md-template task md 模板与协调端 checklist(三端共享)— ⚠️ STALE v1(已废) — 🚨 **本文件被 v2 取代,标记 stale** 协调端写 task md **必读真值入口** = `writin…
+- work-model/task-md-template-v2 Task md 共享模板 v2(short form) — 📍 **本文件是 reference 模板**(short form),**真值入口** = `writing-tas…
+- work-model/task-schema-v3 Task / Handoff Schema v3(Agent 友好) — 📍 **本文件是 task md frontmatter 字段 schema reference**(yaml 字段定…
+- work-model/verify-build 验证流程:simulator/真机 install 必含显式 5 步(三端共享) — iOS 与 Android 通用语义,平台命令分别列;launch 与采集证据须核对渲染真值与 summary 落盘,不能只看 PID/exit code。
+- work-model/事实基线入库必须与下游产出同步交付 事实基线入库必须与下游产出同步交付 — 只把事实挖进库、不产出下游文档，流程看起来跑完了，实际交付为零。
+- work-model/方程式赛车架构思维 方程式赛车架构思维 — 架构决策方法论:三问法识别确定会变的轴心做到极致灵活,其余做到极致简单;赛规先于代码,过早抽象比没有抽象更危险 [cross]

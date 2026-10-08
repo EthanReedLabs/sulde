@@ -1,0 +1,61 @@
+{
+  "schema": "sulde-public-export-bounded-evidence-v1",
+  "intent_id": "completion:d7c56153d92f24aaedadbd0c",
+  "intent_revision": 5,
+  "cut": "R4",
+  "status": "bounded_cut_passed",
+  "release_ready": false,
+  "source_revision": "4e6302e2f0ec7603c2f3e3ced45295649568213d",
+  "public_revision": "c966bae1477423ee3a64fd2a6d02fdcb91a43913",
+  "candidate": ".sulde/public-export/review-008",
+  "manifest_sha256": "6c96b8fc89ae4fc4ae44ff4340de9e68074680762259bc5e1ec37b6f376e2cd1",
+  "review_file_sha256": "ddbe50ea648fbd4429bd07481166eb10954623a151e66759a8ec3d07c29a9136",
+  "comparison": {
+    "baseline": "review-007",
+    "added": [],
+    "removed": [],
+    "mode_changes": [],
+    "changed": [
+      "tests/test_auto_sediment.py",
+      "tests/test_intent_guardian.py",
+      "tests/test_predecessor_composition.py",
+      "tests/test_production_recovery_control.py"
+    ],
+    "runtime_unchanged": true
+  },
+  "source_tests": {
+    "run": 98,
+    "passed": 98,
+    "skipped": 0,
+    "seconds": 32.510,
+    "log": ".sulde/public-export/r4-source-scoped.log",
+    "log_sha256": "938f981eed0f46e7c0fd328e5e93a4e3fec0a3b01123a67ebc6096532a1d3e9b"
+  },
+  "candidate_checks": {
+    "results": ".sulde/public-export/validation-009/results.json",
+    "results_sha256": "540d89237d994a9595bd136ab5de55d734fd4b8185f0b46c195beedc9a54624b",
+    "verifier_sha256": "85c2f6e170dfb340c4333f7acf235db2ef447bef9eba5b7244adafe661a93f16",
+    "check_groups": 22,
+    "all_bounded_probes_passed": true,
+    "tests_run": 112,
+    "tests_passed": 112,
+    "tests_skipped": 0,
+    "sum_probe_seconds": 35.206,
+    "overlaps_source_tests": true,
+    "full_suite_attempted": false
+  },
+  "privacy_review_findings": 15,
+  "new_privacy_finding_locations": 0,
+  "not_verified": [
+    "final-privacy-review",
+    "full-source-regression-on-new-cut",
+    "bootstrap-installation",
+    "live-host-hooks",
+    "upgrade-and-rollback",
+    "Windows-native-execution",
+    "production-hook-failure-attribution"
+  ],
+  "external_writes": [],
+  "installation_performed": false,
+  "public_push_performed": false
+}

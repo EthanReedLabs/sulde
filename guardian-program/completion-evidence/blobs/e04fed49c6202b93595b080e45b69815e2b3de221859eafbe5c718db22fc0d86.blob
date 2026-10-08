@@ -1,0 +1,42 @@
+{
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "program",
+  "task_id": "",
+  "kind": "live_host_canary",
+  "baseline": "program:guardian-remediation-r97",
+  "run_id": "program-final-t32-20260824",
+  "verdict": "pass",
+  "summary": "The bound Codex session uses the installed T32 runtime for live supervision and completes real worktree Git operations with operational readiness ready.",
+  "facts": [
+    "Session 01a00d6f-65b3-7663-b51b-f88684ffa561 remains bound to the Sulde workspace and active task lane.",
+    "Prompt and session observations are verified through hot rebind; current runtime tool_guard and tool_result observations are live_verified with call continuity.",
+    "Installed PreToolUse permitted exact worktree add, commit, safe dev merge and main ff-only; an unsupported merge shape was denied before state change.",
+    "Doctor and operational readiness are ready with artifact, scheduler and interactive domains ready, effect debt clear and native decision pairing settled."
+  ],
+  "requirements": [],
+  "findings": [],
+  "acceptance": [],
+  "commands": [
+    {
+      "argv": ["git", "-C", "<controlled-worktree>", "add", "--", "<exact-files>"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["git", "-C", "<dev-worktree>", "merge", "--no-ff", "--no-edit", "<verified-branch>"],
+      "exit_code": 0,
+      "result": "pass"
+    },
+    {
+      "argv": ["intent-guardian", "doctor", "--provider", "codex", "--session-id", "01a00d6f-65b3-7663-b51b-f88684ffa561"],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "reports/program-final-acceptance-t32.md",
+      "sha256": "c64dece515e276ea17d803fe2d8edbb3fba55ec78edbbec3366f1892f3c22d22"
+    }
+  ]
+}

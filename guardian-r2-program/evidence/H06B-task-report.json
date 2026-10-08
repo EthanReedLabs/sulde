@@ -1,0 +1,23 @@
+{
+  "acceptance": [],
+  "artifacts": [{"path": "reports/H06B-codex-0150-authority.md", "sha256": "27b52eb201865503691830f436ecb5538a73bd95b875ea72e9a4c8fe85ef2a5c"}],
+  "baseline": "e9afaac7b6126ba2c1ccec16ac9a3367f9863820",
+  "commands": [
+    {"argv": ["agent-runtime.py", "run", "<H06B-full-clone>", "r2-h06b-codex-0150-authority-repair2"], "exit_code": 0, "result": "pass"},
+    {"argv": ["task_report_verdict", "reports/H06B-codex-0150-authority.md"], "exit_code": 0, "result": "pass"}
+  ],
+  "facts": [
+    "The repair2 managed run completed quiescent in 597 seconds, changed only the owned report, and restored global codex-cli 0.150.1.",
+    "The durable six-section report has ten current checks, passed=true and no failure reasons; it separates worker projection, wrapper restore, coordinator tests and unrelated external production activity.",
+    "The report explicitly leaves fleet-safe quiet formal, installation, scheduler, Codex/Claude live, native Windows, same-generation and program acceptance to the final H06 successor."
+  ],
+  "findings": ["FR2-H06-001", "FR2-H06B-001", "FR2-H06B-002", "FR2-H06B-003", "FR2-H06B-004", "FR2-H06B-005"],
+  "kind": "task_report",
+  "requirements": [],
+  "run_id": "run-gpe-be866b2fa440a994860b63a9",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "H06B report preserves both successful task proof and the explicitly transferred fleet-safe concurrency finding without a release claim.",
+  "task_id": "H06B-codex-0150-authority",
+  "verdict": "pass"
+}

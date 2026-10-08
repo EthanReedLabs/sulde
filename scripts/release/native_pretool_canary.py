@@ -13,15 +13,20 @@ import threading
 import time
 from pathlib import Path
 
+from fixture_process_lifecycle import finish_fixture_process_group, start_fixture_process
+
 
 class NativeCanaryError(RuntimeError):
     pass
 
 
 class NativeCanary:
-    def __init__(self, codex, workspace, environment, *, externally_isolated=False):
+    def __init__(self, codex, workspace, environment, *, externally_isolated=False,
+                 writable_workspaces=()):
         self.codex, self.workspace, self.environment = codex, workspace, environment
         self.externally_isolated = externally_isolated
+        self.writable_workspaces = tuple(writable_workspaces)
+        self.sandbox_policy = None
         self.commands, self.calls, self.notifications = [], [], []
         self.messages = queue.Queue(maxsize=4096)
         self.process = None
@@ -29,6 +34,29 @@ class NativeCanary:
         isolated = Path(environment['SULDE_HOME']).parent.resolve()
         if isolated.name != 'isolated' or not Path(environment['CODEX_HOME']).resolve().is_relative_to(isolated):
             raise NativeCanaryError('native canary requires candidate-owned isolated roots')
+
+    def workspace_sandbox_config(self):
+        """Declare only fixture-owned state, temp and explicitly named worktrees.
+
+        Guardian routing does not change the executor's writable roots. Do not
+        rely on /tmp being implicitly writable to make a handoff appear valid.
+        """
+        sulde_home = Path(self.environment['SULDE_HOME']).resolve()
+        isolated = sulde_home.parent
+        roots = [self.workspace, *self.writable_workspaces]
+        for key in ('SULDE_KB_HOME', 'TMPDIR'):
+            if not self.environment.get(key):
+                raise NativeCanaryError('candidate sandbox requires ' + key)
+            roots.append(self.environment[key])
+        canonical = set()
+        for root in roots:
+            path = Path(root).resolve(strict=True)
+            if (not path.is_dir() or not path.is_relative_to(isolated)
+                    or path in (isolated, sulde_home)):
+                raise NativeCanaryError('writable root must be an exact candidate-owned directory')
+            canonical.add(str(path))
+        return {'writable_roots': sorted(canonical), 'network_access': False,
+                'exclude_slash_tmp': True, 'exclude_tmpdir_env_var': True}
 
     def send(self, value):
         self.process.stdin.write(json.dumps(value) + '\n')
@@ -117,7 +145,7 @@ class NativeCanary:
                  'request_max_retries = 0\nstream_max_retries = 0\n')
         try:
             config.write_bytes(original + extra.encode())
-            self.process = subprocess.Popen([self.codex, '-c', 'model_provider="sulde_native_canary"',
+            self.process = start_fixture_process([self.codex, '-c', 'model_provider="sulde_native_canary"',
                 '-c', 'model="fixture"', '-c', 'check_for_update_on_startup=false',
                 '-c', 'features.hooks=true', '-c', 'features.unified_exec=true', 'app-server'],
                 cwd=self.workspace, env=self.environment, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -155,25 +183,42 @@ class NativeCanary:
                       if h.get('pluginId') == 'sulde@sulde-local']
             if len(actual) != 6 or any(h.get('trustStatus') != 'trusted' or h.get('enabled') is not True for h in actual):
                 raise NativeCanaryError('candidate native Hook trust did not settle')
-            result = self.rpc('thread/start', {'cwd': str(self.workspace), 'approvalPolicy': 'never',
-                              'sandbox': 'danger-full-access' if self.externally_isolated else 'workspace-write'})
+            params = {'cwd': str(self.workspace), 'approvalPolicy': 'never',
+                      'sandbox': 'danger-full-access' if self.externally_isolated else 'workspace-write'}
+            if not self.externally_isolated:
+                sandbox_config = self.workspace_sandbox_config()
+                params['config'] = {'sandbox_workspace_write': sandbox_config}
+            result = self.rpc('thread/start', params)
+            self.sandbox_policy = result.get('sandbox')
+            if not self.externally_isolated:
+                expected_policy = {'type': 'workspaceWrite',
+                    # The host omits cwd from additional roots: workspace-write
+                    # already includes it. Compare the effective exact set.
+                    'writableRoots': sandbox_config['writable_roots'], 'networkAccess': False,
+                    'excludeSlashTmp': True, 'excludeTmpdirEnvVar': True}
+                actual = dict(self.sandbox_policy or {})
+                actual['writableRoots'] = sorted(set(actual.get('writableRoots', []))
+                                                | {str(Path(self.workspace).resolve())})
+                if actual != expected_policy:
+                    raise NativeCanaryError('native sandbox did not bind exact fixture roots: '
+                                            + json.dumps(self.sandbox_policy))
             self.session = result['thread']['id']
             yield self
         finally:
-            if self.process is not None:
-                if self.process.poll() is None:
-                    self.process.terminate()
+            try:
+                if self.process is not None:
                     try:
-                        self.process.wait(timeout=3)
-                    except subprocess.TimeoutExpired:
-                        self.process.kill()
-                        self.process.wait(timeout=3)
-                self.process.stdin.close()
-                self.process.stdout.close()
-            config.write_bytes(original)
-            server.shutdown()
-            server.server_close()
-            server_thread.join(timeout=2)
+                        finish_fixture_process_group(self.process)
+                    finally:
+                        self.process.stdin.close()
+                        self.process.stdout.close()
+            finally:
+                try:
+                    config.write_bytes(original)
+                finally:
+                    server.shutdown()
+                    server.server_close()
+                    server_thread.join(timeout=2)
 
     def execute(self, commands):
         self.commands = list(commands)

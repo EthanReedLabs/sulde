@@ -1,0 +1,34 @@
+{
+  "acceptance": [],
+  "artifacts": [],
+  "baseline": "0eb4fb6553e652b0352750f4bac24aa6bae746d7",
+  "commands": [
+    {
+      "argv": [
+        "env", "PYTHONDONTWRITEBYTECODE=1",
+        "/Users/eric/.claude/plugins/data/sulde-cc/kb/venv/bin/python", "-B",
+        "scripts/kb/run-isolated-tests.py",
+        "tests.test_intent_guardian", "tests.test_intervention", "tests.test_agent_runtime",
+        "tests.test_native_decision_journal", "tests.test_operational_readiness",
+        "tests.test_sulde_statusline", "tests.test_human_grant", "tests.test_grant_broker",
+        "tests.test_recovery_supervisor", "tests.test_sulde_supervisor",
+        "tests.test_runtime_provider", "tests.test_terminal_invariants"
+      ],
+      "exit_code": 0,
+      "result": "pass"
+    }
+  ],
+  "facts": [
+    "The supported isolated runner completed 520 tests in 91.853 seconds with exit 0 on the exact integrated H01+H02+H03 tree.",
+    "The suite covers intent routing, intervention debt, managed runtime, native decisions, readiness, statusline, grants, broker and active recovery supervision without installing a plugin or mutating production configuration."
+  ],
+  "findings": [],
+  "kind": "system_tests",
+  "requirements": [],
+  "run_id": "run-gpe-911f4018e20b6c8d699f94e3",
+  "schema": "sulde-guardian-program-evidence-v1",
+  "scope": "task",
+  "summary": "The supported isolated Guardian baseline plus accepted H01/H02 and integrated H03 passes 520 tests.",
+  "task_id": "H03-recovery-supervisor",
+  "verdict": "pass"
+}

@@ -1,0 +1,39 @@
+{
+  "acceptance": [
+    "one shared helper defines the exact Codex help probe environment and canonical observation consumed by both installer sealing and runtime preflight",
+    "PTY versus non-PTY and the exact known PATH-alias permission warning do not create authority drift, while any unknown stderr, help stdout, return code, executable, version or contract drift still fails closed",
+    "focused real and synthetic tests prove identical sealed observations across supported launch environments and reject color, semantic, diagnostic and re-signed authority attacks",
+    "the six-path repair passes focused and affected isolated suites without production installation, scheduler mutation, dev/main merge or external effects"
+  ],
+  "base_commit": "f0e845617867c1710b636205c6798d03140d1646",
+  "capability_tier": "deep",
+  "depends_on": [
+    "H06A2-integration-hygiene",
+    "H06B-codex-0150-authority"
+  ],
+  "supersedes": [],
+  "evidence_gates": {
+    "implemented": ["task_report", "changed_files"],
+    "integrated": ["integration_tests"],
+    "system_verified": ["system_tests", "requirement_traceability"],
+    "task_verified": ["targeted_tests", "failure_injection"]
+  },
+  "owned_paths": [
+    "scripts/kb/codex_cli_contract.py",
+    "scripts/kb/agent-runtime.py",
+    "scripts/release/install_codex_plugin.py",
+    "tests/test_agent_runtime.py",
+    "tests/test_codex_plugin_install.py",
+    "guardian-r2-program/reports/H06E-codex-help-authority.md"
+  ],
+  "owner": "guardian-r2-worker-h06e",
+  "requirements": [
+    "R2-RECOVERY-SUPERVISOR",
+    "R2-RECOVERY-LANE",
+    "R2-LIVE-ACCEPTANCE",
+    "PROGRAM-GOVERNANCE"
+  ],
+  "schema": "sulde-guardian-program-task-v1",
+  "task_id": "H06E-codex-help-authority",
+  "title": "消除 Codex help authority 的 PTY 与已知诊断误漂移"
+}
