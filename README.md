@@ -5,13 +5,14 @@
 <h1 align="center">From AI coding tasks to verifiable delivery.</h1>
 
 <p align="center">
-  Give Claude Code and Codex a shared workflow for tasks, project context, and review.<br/>
+  Give your coding agents a shared workflow for tasks, project context, and review.<br/>
   Define the work. Carry forward what you learn. Check what was delivered.
 </p>
 
 <p align="center">
   <a href="#quick-start"><strong>Get started</strong></a> ·
   <a href="#a-task-from-brief-to-review">See the workflow</a> ·
+  <a href="#supported-agents">Supported Agents</a> ·
   <a href="#documentation">Documentation</a> ·
   <a href="README.zh-CN.md">简体中文</a>
 </p>
@@ -31,8 +32,31 @@ Sulde brings that context into a workflow you and your coding agents can inspect
 - **Bring useful experience forward.** Find relevant project knowledge and recorded session context, with sources you can check.
 - **Review the work with evidence.** Connect changes to their checks and reports, and send incomplete work back for a focused revision.
 
-Sulde is independently developed. This repository contains the framework source and project toolkit;
-full agent workflows require the corresponding host setup.
+Sulde is independently developed. This repository contains the framework source and a CLI toolkit
+you can call from your existing agent workflow.
+
+## Supported Agents
+
+Works with **any agent or tool that can run CLI commands**. Call Sulde directly from the workflow you already use.
+
+<p>
+  <a href="https://code.claude.com/docs/en/overview"><kbd><img src="https://www.google.com/s2/favicons?domain=claude.ai&amp;sz=64" alt="Claude Code logo" width="16" height="16" valign="middle" /> Claude Code</kbd></a> &nbsp;
+  <a href="https://github.com/openai/codex"><kbd><img src="https://www.google.com/s2/favicons?domain=openai.com&amp;sz=64" alt="Codex logo" width="16" height="16" valign="middle" /> Codex</kbd></a> &nbsp;
+  <a href="https://cursor.com/docs/cli/overview"><kbd><img src="https://www.google.com/s2/favicons?domain=cursor.com&amp;sz=64" alt="Cursor logo" width="16" height="16" valign="middle" /> Cursor</kbd></a> &nbsp;
+  <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli"><kbd><img src="https://www.google.com/s2/favicons?domain=github.com&amp;sz=64" alt="GitHub Copilot logo" width="16" height="16" valign="middle" /> GitHub Copilot</kbd></a> &nbsp;
+  <a href="https://opencode.ai/docs/cli/"><kbd><img src="https://www.google.com/s2/favicons?domain=opencode.ai&amp;sz=64" alt="OpenCode logo" width="16" height="16" valign="middle" /> OpenCode</kbd></a> &nbsp;
+  <a href="https://geminicli.com/docs/"><kbd><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&amp;sz=64" alt="Gemini CLI logo" width="16" height="16" valign="middle" /> Gemini CLI</kbd></a> &nbsp;
+  <a href="https://docs.cline.bot/usage/cli-overview"><kbd><img src="https://www.google.com/s2/favicons?domain=cline.bot&amp;sz=64" alt="Cline logo" width="16" height="16" valign="middle" /> Cline</kbd></a> &nbsp;
+  <a href="https://github.com/continuedev/continue/tree/main/extensions/cli"><kbd><img src="https://www.google.com/s2/favicons?domain=continue.dev&amp;sz=64" alt="Continue logo" width="16" height="16" valign="middle" /> Continue</kbd></a> &nbsp;
+  <a href="https://kiro.dev/docs/cli/"><kbd><img src="https://www.google.com/s2/favicons?domain=kiro.dev&amp;sz=64" alt="Kiro logo" width="16" height="16" valign="middle" /> Kiro</kbd></a> &nbsp;
+  <a href="https://qwenlm.github.io/qwen-code-docs/"><kbd><img src="https://www.google.com/s2/favicons?domain=qwenlm.github.io&amp;sz=64" alt="Qwen Code logo" width="16" height="16" valign="middle" /> Qwen Code</kbd></a> &nbsp;
+  <kbd>+ any CLI-capable tool</kbd>
+</p>
+
+Claude Code and Codex also include host adapters for skills, hooks, and managed task execution.
+Knowledge and memory tools are additionally available through MCP.
+
+[Get started with the CLI →](#quick-start) · [Host adapters →](docs/DEVELOPMENT.md) · [MCP tools →](docs/MCP.md)
 
 ## A task from brief to review
 
@@ -114,18 +138,6 @@ and installation instructions before enabling a full workflow.
 | **Verification & rework** | Keep checks and delivery reports attached to the task, with a path back to revision. |
 | **Project extensions** | Add skills, hooks, checks, knowledge containers, and project-specific conventions. |
 | **Project templates** | Start from Android, iOS, Flutter, and HarmonyOS templates; reuse the shared tooling elsewhere. |
-
-## Works with your tools
-
-| Integration | Available surface |
-| --- | --- |
-| **Claude Code** | Plugin adapter, skills, hooks, and managed execution support. |
-| **Codex** | Plugin adapter, skills, hooks, and managed execution support. |
-| **Compatible MCP clients** | Exposed knowledge, memory, status, and event tools. |
-| **CLI workflows** | Local project checks, extension scaffolding, and the knowledge toolkit. |
-
-Full host integration needs an adapter that maps the host's events, permissions, and process lifecycle.
-For another agent, start with the interfaces it supports and the [host integration guide](docs/DEVELOPMENT.md#adding-a-compatible-host).
 
 ## Architecture
 

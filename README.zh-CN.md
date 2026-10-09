@@ -5,13 +5,14 @@
 <h1 align="center">让 AI 编码任务，从需求走到可验证的交付。</h1>
 
 <p align="center">
-  为 Claude Code 和 Codex 提供任务、项目上下文与审核的共同工作流程。<br/>
+  为你使用的编码 Agent 提供任务、项目上下文与审核的共同工作流程。<br/>
   明确要做的事，带上积累的经验，核对实际交付的结果。
 </p>
 
 <p align="center">
   <a href="#快速开始"><strong>开始使用</strong></a> ·
   <a href="#一个任务从需求到审核">查看工作流程</a> ·
+  <a href="#支持的-agent">支持的 Agent</a> ·
   <a href="#文档">阅读文档</a> ·
   <a href="README.md">English</a>
 </p>
@@ -31,8 +32,31 @@ Sulde 把这些信息组织到你和编码 Agent 都能核对的工作流程中�
 - **经验可以复用。** 检索相关工程知识和已记录的会话背景，保留来源供你核对。
 - **交付有据可查。** 将改动与检查、报告关联起来，针对未满足的要求继续返修。
 
-Sulde 由个人独立开发和维护。这个仓库提供框架源码与项目工具箱；
-完整的 Agent 工作流程需要配置对应宿主。
+Sulde 由个人独立开发和维护。这个仓库提供框架源码与 CLI 工具箱，
+可直接从你已有的 Agent 工作流程中调用。
+
+## 支持的 Agent
+
+**任何能调用 CLI 的 Agent 或工具，都可以直接使用 Sulde。** 在你已有的工作流程中调用即可。
+
+<p>
+  <a href="https://code.claude.com/docs/en/overview"><kbd><img src="https://www.google.com/s2/favicons?domain=claude.ai&amp;sz=64" alt="Claude Code logo" width="16" height="16" valign="middle" /> Claude Code</kbd></a> &nbsp;
+  <a href="https://github.com/openai/codex"><kbd><img src="https://www.google.com/s2/favicons?domain=openai.com&amp;sz=64" alt="Codex logo" width="16" height="16" valign="middle" /> Codex</kbd></a> &nbsp;
+  <a href="https://cursor.com/docs/cli/overview"><kbd><img src="https://www.google.com/s2/favicons?domain=cursor.com&amp;sz=64" alt="Cursor logo" width="16" height="16" valign="middle" /> Cursor</kbd></a> &nbsp;
+  <a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli"><kbd><img src="https://www.google.com/s2/favicons?domain=github.com&amp;sz=64" alt="GitHub Copilot logo" width="16" height="16" valign="middle" /> GitHub Copilot</kbd></a> &nbsp;
+  <a href="https://opencode.ai/docs/cli/"><kbd><img src="https://www.google.com/s2/favicons?domain=opencode.ai&amp;sz=64" alt="OpenCode logo" width="16" height="16" valign="middle" /> OpenCode</kbd></a> &nbsp;
+  <a href="https://geminicli.com/docs/"><kbd><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&amp;sz=64" alt="Gemini CLI logo" width="16" height="16" valign="middle" /> Gemini CLI</kbd></a> &nbsp;
+  <a href="https://docs.cline.bot/usage/cli-overview"><kbd><img src="https://www.google.com/s2/favicons?domain=cline.bot&amp;sz=64" alt="Cline logo" width="16" height="16" valign="middle" /> Cline</kbd></a> &nbsp;
+  <a href="https://github.com/continuedev/continue/tree/main/extensions/cli"><kbd><img src="https://www.google.com/s2/favicons?domain=continue.dev&amp;sz=64" alt="Continue logo" width="16" height="16" valign="middle" /> Continue</kbd></a> &nbsp;
+  <a href="https://kiro.dev/docs/cli/"><kbd><img src="https://www.google.com/s2/favicons?domain=kiro.dev&amp;sz=64" alt="Kiro logo" width="16" height="16" valign="middle" /> Kiro</kbd></a> &nbsp;
+  <a href="https://qwenlm.github.io/qwen-code-docs/"><kbd><img src="https://www.google.com/s2/favicons?domain=qwenlm.github.io&amp;sz=64" alt="Qwen Code logo" width="16" height="16" valign="middle" /> Qwen Code</kbd></a> &nbsp;
+  <kbd>+ 任何支持 CLI 的工具</kbd>
+</p>
+
+Claude Code 和 Codex 另有内置宿主适配器，提供 Skill、Hook 与受管任务执行。
+知识与记忆工具也可通过 MCP 接入。
+
+[CLI 快速开始 →](#快速开始) · [宿主适配器 →](docs/DEVELOPMENT.zh-CN.md) · [MCP 工具 →](docs/MCP.zh-CN.md)
 
 ## 一个任务，从需求到审核
 
@@ -112,18 +136,6 @@ python -B scripts/sulde.py kb search --root .tmp/sulde-demo "stale cache refresh
 | **验证与返修** | 将检查和交付报告关联到任务，保留继续返修的路径。 |
 | **项目扩展** | 添加 Skill、Hook、检查项、知识容器和项目约定。 |
 | **项目模板** | 从 Android、iOS、Flutter、HarmonyOS 模板起步，在其他项目复用通用工具。 |
-
-## 与现有工具配合
-
-| 接入方式 | 提供的能力 |
-| --- | --- |
-| **Claude Code** | 插件适配器、Skill、Hook 及受管执行支持。 |
-| **Codex** | 插件适配器、Skill、Hook 及受管执行支持。 |
-| **兼容 MCP 的客户端** | 已暴露的知识、记忆、状态和事件工具。 |
-| **CLI 工作流程** | 本地项目检查、扩展生成和知识工具箱。 |
-
-完整宿主接入需要适配其事件、权限与进程生命周期。其他 Agent 可从已支持的接口开始，
-按[宿主接入指南](docs/DEVELOPMENT.zh-CN.md#扩展兼容宿主)扩展。
 
 ## 架构
 
