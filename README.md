@@ -92,10 +92,27 @@ Every run produces a SHA256-hashed evidence manifest: source identities, prompt 
   <a href="https://windsurf.com"><kbd><img src="https://www.google.com/s2/favicons?domain=windsurf.com&sz=64" alt="Windsurf" width="16" valign="middle" /> Windsurf</kbd></a> &nbsp;
   <a href="https://cursor.com"><kbd><img src="https://www.google.com/s2/favicons?domain=cursor.com&sz=64" alt="Cursor" width="16" valign="middle" /> Cursor</kbd></a> &nbsp;
   <a href="https://gemini.google.com/docs/cli"><kbd><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="Gemini CLI" width="16" valign="middle" /> Gemini CLI</kbd></a> &nbsp;
+  <a href="https://github.com/block/goose"><kbd><img src="https://www.google.com/s2/favicons?domain=block.github.io&sz=64" alt="Goose" width="16" valign="middle" /> Goose</kbd></a> &nbsp;
+  <a href="https://github.com/paul-gauthier/aider"><kbd><img src="https://www.google.com/s2/favicons?domain=aider.chat&sz=64" alt="Aider" width="16" valign="middle" /> Aider</kbd></a> &nbsp;
+  <a href="https://codebuddy.ai"><kbd><img src="https://www.google.com/s2/favicons?domain=codebuddy.ai&sz=64" alt="CodeBuddy" width="16" valign="middle" /> CodeBuddy</kbd></a> &nbsp;
+  <a href="https://www.codebuff.com"><kbd><img src="https://www.google.com/s2/favicons?domain=codebuff.com&sz=64" alt="Codebuff" width="16" valign="middle" /> Codebuff</kbd></a> &nbsp;
+  <a href="https://github.com/anthropics/claude-code"><kbd><img src="https://img.shields.io/badge/Claude_Code_Dev-08C?style=flat-square" alt="Claude Code Dev" /></kbd></a> &nbsp;
+  <a href="https://github.com/Cline CLI/cline"><kbd><img src="https://www.google.com/s2/favicons?domain=cline.bot&sz=64" alt="Cline" width="16" valign="middle" /> Cline</kbd></a> &nbsp;
+  <a href="https://github.com/All-Hands-AI/openhands"><kbd><img src="https://www.google.com/s2/favicons?domain=all-hands.dev&sz=64" alt="OpenHands" width="16" valign="middle" /> OpenHands</kbd></a> &nbsp;
+  <a href="https://github.com/princeton-nlp/SWE-agent"><kbd><img src="https://www.google.com/s2/favicons?domain=swe-agent.com&sz=64" alt="SWE-Agent" width="16" valign="middle" /> SWE-Agent</kbd></a> &nbsp;
+  <a href="https://github.com/SWE-bench/SWE-bench"><kbd><img src="https://img.shields.io/badge/SWE_bench-08C?style=flat-square" alt="SWE-bench" /></kbd></a> &nbsp;
+  <a href="https://github.com/AgentLess/agentless"><kbd><img src="https://img.shields.io/badge/AgentLess-05C?style=flat-square" alt="AgentLess" /></kbd></a> &nbsp;
+  <a href="https://github.com/RVCC-idpv/rvo-dev"><kbd><img src="https://www.google.com/s2/favicons?domain=atlassian.com&sz=64" alt="Rovo Dev" width="16" valign="middle" /> Rovo Dev</kbd></a> &nbsp;
   <kbd>+ any CLI agent</kbd>
 </p>
 
 <details>
+<summary><strong>架构说明</strong></summary>
+<br/>
+Sulde 通过 <code>runtime_provider.py</code> 的统一选择链管理多个 CLI Agent 宿主。
+新宿主只需实现两个约定：<strong>从 stdin 读取任务简报</strong> + <strong>产出结构化事件流</strong>。
+其余（意图合同绑定、效果分类、纠偏生命周期、经验召回）由 Sulde 框架自动提供。
+</details>
 <summary><strong>架构说明</strong></summary>
 <br/>
 Sulde 通过 <code>runtime_provider.py</code> 的统一选择链管理多个 CLI Agent 宿主。
