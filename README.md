@@ -80,30 +80,18 @@ Every run produces a SHA256-hashed evidence manifest: source identities, prompt 
 ## Supported Agents
 
 <p align="center">
-  <a href="https://claude.ai/claude-code"><kbd><img src="https://img.shields.io/badge/Claude_Code-08C?style=flat-square" alt="Claude Code" /></kbd></a>
-  &nbsp;
-  <a href="https://openai.com/codex"><kbd><img src="https://img.shields.io/badge/Codex-000000?style=flat-square" alt="Codex" /></kbd></a>
-  &nbsp;
-  <a href="https://github.com/opencode-ai/opencode"><kbd><img src="https://img.shields.io/badge/OpenCode-05C?style=flat-square" alt="OpenCode" /></kbd></a>
-  &nbsp;
-  <a href="https://github.com/anthropics/claude-code"><kbd><img src="https://img.shields.io/badge/Gemini_CLI-4285F4?style=flat-square" alt="Gemini CLI" /></kbd></a>
-  &nbsp;
-  <a href="https://github.com/Aider-AI/aider"><kbd><img src="https://img.shields.io/badge/Aider-FF6B35?style=flat-square" alt="Aider" /></kbd></a>
-  &nbsp;
-  <a href="https://github.com/continuedev/continue"><kbd><img src="https://img.shields.io/badge/Continue-05C?style=flat-square" alt="Continue" /></kbd></a>
-  &nbsp;
-  <a href="https://github.com/mistralai/mistral-vibe"><kbd><img src="https://img.shields.io/badge/Mistral_Vibe-FF7000?style=flat-square" alt="Mistral Vibe" /></kbd></a>
-  &nbsp;
-  <a href="https://qwenlm.github.io/qwen-code/"><kbd><img src="https://img.shields.io/badge/Qwen_Code-6C2BD9?style=flat-square" alt="Qwen Code" /></kbd></a>
-  &nbsp;
-  <a href="https://kilocode.ai"><kbd><img src="https://img.shields.io/badge/Kilocode-DD00A0?style=flat-square" alt="Kilocode" /></kbd></a>
-  &nbsp;
-  <a href="https://kiro.dev"><kbd><img src="https://img.shields.io/badge/Kiro-08C?style=flat-square" alt="Kiro" /></kbd></a>
-  &nbsp;
-  <a href="https://codeium.com/windsurf"><kbd><img src="https://img.shields.io/badge/Windsurf-0A8F4E?style=flat-square" alt="Windsurf" /></kbd></a>
-  &nbsp;
-  <a href="https://cursor.com"><kbd><img src="https://img.shields.io/badge/Cursor-000000?style=flat-square" alt="Cursor" /></kbd></a>
-  &nbsp;
+  <a href="https://claude.ai/claude-code"><kbd><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="Claude Code" width="16" valign="middle" /> Claude Code</kbd></a> &nbsp;
+  <a href="https://openai.com/codex"><kbd><img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="Codex" width="16" valign="middle" /> Codex</kbd></a> &nbsp;
+  <a href="https://opencode.ai"><kbd><img src="https://www.google.com/s2/favicons?domain=opencode.ai&sz=64" alt="OpenCode" width="16" valign="middle" /> OpenCode</kbd></a> &nbsp;
+  <a href="https://aider.chat"><kbd><img src="https://www.google.com/s2/favicons?domain=aider.chat&sz=64" alt="Aider" width="16" valign="middle" /> Aider</kbd></a> &nbsp;
+  <a href="https://www.continue.dev"><kbd><img src="https://www.google.com/s2/favicons?domain=continue.dev&sz=64" alt="Continue" width="16" valign="middle" /> Continue</kbd></a> &nbsp;
+  <a href="https://mistral.ai"><kbd><img src="https://www.google.com/s2/favicons?domain=mistral.ai&sz=64" alt="Mistral Vibe" width="16" valign="middle" /> Mistral Vibe</kbd></a> &nbsp;
+  <a href="https://qwenlm.github.io/qwen-code/docs/en/kimi-code-cli/getting-started.html"><kbd><img src="https://www.google.com/s2/favicons?domain=qwenlm.github.io&sz=64" alt="Qwen Code" width="16" valign="middle" /> Qwen Code</kbd></a> &nbsp;
+  <a href="https://kilocode.ai"><kbd><img src="https://www.google.com/s2/favicons?domain=kilocode.ai&sz=64" alt="Kilocode" width="16" valign="middle" /> Kilocode</kbd></a> &nbsp;
+  <a href="https://kiro.dev/docs/cli/"><kbd><img src="https://www.google.com/s2/favicons?domain=kiro.dev&sz=64" alt="Kiro" width="16" valign="middle" /> Kiro</kbd></a> &nbsp;
+  <a href="https://windsurf.com"><kbd><img src="https://www.google.com/s2/favicons?domain=windsurf.com&sz=64" alt="Windsurf" width="16" valign="middle" /> Windsurf</kbd></a> &nbsp;
+  <a href="https://cursor.com"><kbd><img src="https://www.google.com/s2/favicons?domain=cursor.com&sz=64" alt="Cursor" width="16" valign="middle" /> Cursor</kbd></a> &nbsp;
+  <a href="https://gemini.google.com/docs/cli"><kbd><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="Gemini CLI" width="16" valign="middle" /> Gemini CLI</kbd></a> &nbsp;
   <kbd>+ any CLI agent</kbd>
 </p>
 
