@@ -84,8 +84,36 @@ Every run produces a SHA256-hashed evidence manifest: source identities, prompt 
   &nbsp;
   <a href="https://openai.com/codex"><kbd><img src="https://img.shields.io/badge/Codex-000000?style=flat-square" alt="Codex" /></kbd></a>
   &nbsp;
+  <a href="https://github.com/opencode-ai/opencode"><kbd><img src="https://img.shields.io/badge/OpenCode-05C?style=flat-square" alt="OpenCode" /></kbd></a>
+  &nbsp;
+  <a href="https://github.com/anthropics/claude-code"><kbd><img src="https://img.shields.io/badge/Gemini_CLI-4285F4?style=flat-square" alt="Gemini CLI" /></kbd></a>
+  &nbsp;
+  <a href="https://github.com/Aider-AI/aider"><kbd><img src="https://img.shields.io/badge/Aider-FF6B35?style=flat-square" alt="Aider" /></kbd></a>
+  &nbsp;
+  <a href="https://github.com/continuedev/continue"><kbd><img src="https://img.shields.io/badge/Continue-05C?style=flat-square" alt="Continue" /></kbd></a>
+  &nbsp;
+  <a href="https://github.com/mistralai/mistral-vibe"><kbd><img src="https://img.shields.io/badge/Mistral_Vibe-FF7000?style=flat-square" alt="Mistral Vibe" /></kbd></a>
+  &nbsp;
+  <a href="https://qwenlm.github.io/qwen-code/"><kbd><img src="https://img.shields.io/badge/Qwen_Code-6C2BD9?style=flat-square" alt="Qwen Code" /></kbd></a>
+  &nbsp;
+  <a href="https://kilocode.ai"><kbd><img src="https://img.shields.io/badge/Kilocode-DD00A0?style=flat-square" alt="Kilocode" /></kbd></a>
+  &nbsp;
+  <a href="https://kiro.dev"><kbd><img src="https://img.shields.io/badge/Kiro-08C?style=flat-square" alt="Kiro" /></kbd></a>
+  &nbsp;
+  <a href="https://codeium.com/windsurf"><kbd><img src="https://img.shields.io/badge/Windsurf-0A8F4E?style=flat-square" alt="Windsurf" /></kbd></a>
+  &nbsp;
+  <a href="https://cursor.com"><kbd><img src="https://img.shields.io/badge/Cursor-000000?style=flat-square" alt="Cursor" /></kbd></a>
+  &nbsp;
   <kbd>+ any CLI agent</kbd>
 </p>
+
+<details>
+<summary><strong>架构说明</strong></summary>
+<br/>
+Sulde 通过 <code>runtime_provider.py</code> 的统一选择链管理多个 CLI Agent 宿主。
+新宿主只需实现两个约定：<strong>从 stdin 读取任务简报</strong> + <strong>产出结构化事件流</strong>。
+其余（意图合同绑定、效果分类、纠偏生命周期、经验召回）由 Sulde 框架自动提供。
+</details>
 
 ## How It Works
 
