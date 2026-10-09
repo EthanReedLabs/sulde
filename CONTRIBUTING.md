@@ -44,6 +44,48 @@ These areas are maintainer-controlled and PRs touching them will be redirected:
 
 If you have a strong argument for changing one of these, open an issue with the rationale before writing code.
 
+## Maintainer branch workflow
+
+The upstream `EthanReedLabs/sulde` repository keeps **one remote branch: `main`**.
+Local `dev` holds the latest integrated development work. Task branches and their worktrees
+start from `dev`, are reviewed and checked locally, and merge back into `dev` before publication.
+
+Start a task from the main checkout, using a unique task name:
+
+```sh
+git switch dev
+git worktree add -b contrib/cache-fix .worktrees/cache-fix dev
+```
+
+Make and commit changes inside that worktree. Once its scoped checks pass and both worktrees
+are clean, integrate from the main checkout:
+
+```sh
+git switch dev
+git merge contrib/cache-fix
+```
+
+Run the relevant checks against the integrated `dev` tree. After they pass, advance and publish
+`main`, then return the working checkout to `dev`:
+
+```sh
+git switch main
+git merge --ff-only dev
+git push origin main
+git switch dev
+```
+
+Resolve divergence on `dev` and repeat the relevant checks before advancing `main`.
+The local repository's default push refspec is limited to `main`:
+
+```sh
+git config --local --replace-all remote.origin.push refs/heads/main:refs/heads/main
+```
+
+Keep `dev` and task branches local. Retire an old upstream task branch after its commits are
+included in published `main`. External contributors may use branches in their own forks for
+pull requests; maintainers integrate those changes through the same local `dev` → `main` flow.
+
 ## PR mechanics
 
 1. Fork → branch named `contrib/{kebab-slug}`
