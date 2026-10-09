@@ -2,89 +2,63 @@
 
 **English** | [简体中文](LICENSING.zh-CN.md)
 
-Sulde's current source is offered under the **PolyForm Noncommercial License 1.0.0**, with SPDX
-identifier `PolyForm-Noncommercial-1.0.0`. Commercial use is outside this license grant.
-See [LICENSE](../LICENSE) for the full terms and [NOTICE](../NOTICE) for copyright and attribution.
-This guide explains usage; the English license text controls. This guide does not add, remove,
-or replace any license term.
+Sulde's current project-owned source is available under the **MIT License**, with SPDX
+identifier `MIT`. Commercial and noncommercial use are permitted under its terms.
+See [LICENSE](../LICENSE) for the complete grant and [NOTICE](../NOTICE) for attribution.
+This guide explains the license; it does not add, remove, or replace its terms.
 
-## Permitted uses
+## Using Sulde
 
-- Use Sulde for personal study, experiments, research, and hobby projects without any anticipated commercial application.
-- Read, copy, modify, maintain forks, and share modified versions for purposes permitted by the license.
-- Submit issues, documentation fixes, and code contributions under the [contribution guidelines](../CONTRIBUTING.md).
+The MIT License permits use, copying, modification, merging, publication, distribution,
+sublicensing, and sale. This includes personal projects, internal business use, paid client
+work, and commercial products or services.
 
-The standard license's `Noncommercial Organizations` provision also expressly permits use by
-charitable organizations, educational institutions, public research organizations, public safety
-or health organizations, environmental protection organizations, and government institutions,
-regardless of their funding sources or obligations arising from that funding. That provision
-remains intact; this license must not be described as prohibiting all organizational use.
+Include the copyright notice and permission notice in all copies or substantial portions
+of the software. The software is provided without warranty, subject to the disclaimer in
+[LICENSE](../LICENSE). Keeping that complete file with a distribution preserves the grant,
+condition, and disclaimer together.
 
-## Commercial use boundaries
+The current MIT grant takes effect for this source revision. It has no future Change Date
+or requirement to wait for a later license conversion.
 
-For commercial purposes outside the license's express permissions, the following uses are not granted:
+## Scope and third-party material
 
-| Scenario | Current license |
-| --- | --- |
-| Selling or distributing Sulde, or products based on modified Sulde source, for a fee | Not granted |
-| Packaging Sulde as a paid plugin, SaaS offering, hosted service, or part of a commercial product | Not granted |
-| Using Sulde internally to support commercial development, production, or business operations | Not granted; internal use is not an exemption |
-| Using Sulde for paid contracting, client delivery, or commercial consulting | Not granted |
-| Providing Sulde services for free to generate commercial leads, advertising revenue, or promotion for a commercial product | Free access does not itself grant permission |
-
-The purpose of the use and the license's express permissions determine the boundary, not just
-whether a separate plugin fee is charged. A personal account, private fork, internal deployment,
-or publication of modified source does not automatically confer commercial use rights.
-This repository does not offer commercial authorization or promise that it will be available
-separately. Direct licensing questions to [eric.gao.tech@gmail.com](mailto:eric.gao.tech@gmail.com).
-
-## Copying, modification, and redistribution
-
-Anyone receiving any part of the software must also receive the license text or its official URL,
-and all `Required Notice:` statements provided with the project. Include `LICENSE` and `NOTICE`
-unchanged where practical, identify modifications and their source, and retain applicable
-third-party license and copyright notices. Forking or repackaging does not remove license restrictions.
-
-The project license covers project-owned code, scripts, hooks, skills, templates, and documentation,
-except material explicitly licensed otherwise. Third-party dependencies, downloaded models, and
-external hosts or API services retain their own terms. This license does not claim ownership of
-users' independently authored project code or knowledge. Material containing or adapting Sulde
-content remains subject to the applicable terms. Ownership of an independent output does not
-itself authorize commercial use of Sulde as a tool.
+The project license covers project-owned code, scripts, hooks, skills, templates, and
+documentation, except material explicitly licensed otherwise. Third-party dependencies,
+downloaded models, and external hosts or API services retain their own terms and notices.
+This change does not relicense those components or claim ownership of users' independently
+authored project code or knowledge.
 
 See the [third-party inventory](../THIRD_PARTY_NOTICES.md) for dependency and model sources,
-their upstream license references, and the additional records needed for bundled distributions.
+upstream license references, and records needed when bundling those components.
 
-## Why source available
+## Contributions
 
-[Section 6 of the Open Source Definition](https://opensource.org/osd) requires that licenses do
-not restrict fields of endeavor, including business use. Sulde therefore uses the description
-“source available for noncommercial use” rather than claiming to be open source in the OSI sense.
-Publicly accessible source does not grant permission for every purpose.
+New contributions are submitted under the MIT License. Contributors retain their copyright
+and must have the rights needed to submit their work. See [CONTRIBUTING.md](../CONTRIBUTING.md)
+for the contribution policy.
 
 ## License history
 
-The change takes effect at the **source revision containing the license change**. A reused plugin
-version number alone is not enough to identify applicable terms. Check the exact commit, the
-`LICENSE` bundled with the release, and its accompanying notices.
+This MIT declaration is identified by the source revision containing this `LICENSE` change.
+A reused plugin version number alone does not identify applicable terms. Check the exact
+commit and the license bundled with the source or archive you use.
 
-| Material | Applicable terms |
+| Material | Recorded terms |
 | --- | --- |
-| Historical v0.1.x | Existing MIT grants remain effective; see the [MIT text in Git history](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-v0.1.0-MIT-archive) |
-| Copies distributed under BSL 1.1 before this change | Their original BSL conditions and change-license rights remain effective; see the [BSL declaration in Git history](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-BSL-1.1-archive) |
-| New material first distributed under the current license | PolyForm Noncommercial 1.0.0, with no automatic MIT conversion date |
+| Current project-owned source | [MIT License](../LICENSE), except material explicitly licensed otherwise. |
+| Historical v0.1.x | MIT; see the [historical MIT text](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-v0.1.0-MIT-archive). |
+| Earlier copies distributed under BSL 1.1 | Their existing grants and change-license provisions remain recorded in the [historical BSL declaration](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-BSL-1.1-archive). |
+| Earlier copies distributed under PolyForm Noncommercial 1.0.0 | Their original terms remain recorded in the [historical PolyForm license](https://github.com/EthanReedLabs/sulde/blob/2428fa1a721e822353ce26c4e336cfe51c9519f4/LICENSE). |
 
-Historical license files are kept in the pinned Git revision above rather than the current source
-tree or plugin packages. The current project license file is `LICENSE`.
+This source change does not rewrite previously published archives or revoke rights already
+granted. Historical references describe those copies; they do not add restrictions to the
+current MIT-licensed project-owned source. Separately licensed material keeps its own terms.
 
-The new declaration does not revoke or reduce rights already granted for historical versions or
-their content. It does not relicense third-party or historical contributor material without the
-necessary permission. Historical material may be used under its original grant; a version that
-includes new material must also satisfy the applicable terms for that material. The archives do
-not offer an MIT or BSL dual-license option for new material.
+## References
 
-## Official references
+- [MIT License — Open Source Initiative](https://opensource.org/license/mit)
+- [MIT SPDX identifier](https://spdx.org/licenses/MIT.html)
+- [Project license](../LICENSE)
 
-- [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)
-- [SPDX license identifier](https://spdx.org/licenses/PolyForm-Noncommercial-1.0.0.html)
-- [Historical BSL 1.1 text](https://mariadb.com/bsl11/)
+For project licensing questions, contact [eric.gao.tech@gmail.com](mailto:eric.gao.tech@gmail.com).

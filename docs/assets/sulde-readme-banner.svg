@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Sulde</title>
+  <desc id="desc">Plan, build, verify. A visual path connects a task, its execution, and evidence.</desc>
+  <defs>
+    <linearGradient id="surface" x1="0" y1="0" x2="1200" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#101D32"/><stop offset="1" stop-color="#0B1220"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="75" y1="80" x2="150" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7AF0CD"/><stop offset="1" stop-color="#57ABF7"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#91A7C3" fill-opacity=".12"/>
+    </pattern>
+  </defs>
+  <rect x="1" y="1" width="1198" height="258" rx="22" fill="url(#surface)" stroke="#23344C" stroke-width="2"/>
+  <rect x="640" y="24" width="524" height="212" rx="20" fill="url(#grid)"/>
+  <path d="M155 83H107C90 83 80 93 80 108C80 122 90 130 107 130H131C148 130 158 140 158 155C158 169 148 179 131 179H80" stroke="url(#accent)" stroke-width="13" stroke-linecap="square"/>
+  <text x="190" y="150" fill="#F4F7FC" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="82" font-weight="750" letter-spacing="7">SULDE</text>
+  <text x="193" y="186" fill="#9FB4CF" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="500" letter-spacing="3">PLAN. BUILD. VERIFY.</text>
+  <path d="M777 130H831M949 130H1003" stroke="#44607E" stroke-width="2"/>
+  <path d="m821 125 6 5-6 5m172-5 6 5-6 5" stroke="#7AF0CD" stroke-width="2"/>
+  <g stroke="#35506E" fill="#122239">
+    <rect x="662" y="73" width="112" height="114" rx="16"/>
+    <rect x="836" y="73" width="112" height="114" rx="16"/>
+    <rect x="1010" y="73" width="112" height="114" rx="16"/>
+  </g>
+  <g stroke="#B5CBE5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="701" y="103" width="34" height="43" rx="4"/>
+    <path d="M710 114H726M710 123H726M710 132H720"/>
+    <path d="m880 111-13 13 13 13m24-26 13 13-13 13m-6-30-9 35"/>
+    <path d="m1054 124 9 9 18-20" stroke="#7AF0CD"/>
+    <circle cx="1066" cy="124" r="25" stroke="#7AF0CD"/>
+  </g>
+  <g fill="#9FB4CF" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" letter-spacing="1.8" text-anchor="middle">
+    <text x="718" y="169">TASK</text><text x="892" y="169">RUN</text><text x="1066" y="169">EVIDENCE</text>
+  </g>
+</svg>

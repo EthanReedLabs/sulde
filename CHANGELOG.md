@@ -11,6 +11,12 @@ All notable changes to sulde-cc are recorded here. The format follows [Keep a Ch
 
 ## [Unreleased]
 
+- Adopt the MIT License for current project-owned source. Align Claude Code and Codex
+  plugin metadata, notices, contribution terms, and English/Chinese documentation;
+  preserve third-party terms and historical release records.
+- Restore the public Hook launcher routes and align `VERSION` with the Claude plugin's
+  `0.8.11` source version so `sulde doctor --strict` can verify a consistent checkout.
+
 ## [0.8.6] - 2026-09-27
 
 - **编排迭代 A(R1–R3 closeout)**:统一受管启动描述与幂等派发注册、行级用量核算、

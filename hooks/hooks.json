@@ -1,79 +1,76 @@
 {
   "description": "Sulde v0.8.0 workspace intent supervision plus opt-in mobile engineering enforcement, Python-based for cross-OS support. Intent shadow state is workspace-scoped; project gates use .sulde-config.yaml.",
   "hooks": {
-    "PreToolUse": [
+    "Notification": [
       {
-        "matcher": ".*",
         "hooks": [
           {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/pre_tool_use.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" notification.py",
+            "shell": "bash",
+            "type": "command"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": ".*",
         "hooks": [
           {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post_tool_use.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" post_tool_use.py",
+            "shell": "bash",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": ".*"
       }
     ],
     "PostToolUseFailure": [
       {
-        "matcher": ".*",
         "hooks": [
           {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/post_tool_use.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" post_tool_use.py",
+            "shell": "bash",
+            "type": "command"
           }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/user_prompt_submit.py\""
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/canon_inject.py\""
-          },
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/session_start.py\""
-          }
-        ]
+        ],
+        "matcher": ".*"
       }
     ],
     "PreCompact": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/pre_compact.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" pre_compact.py",
+            "shell": "bash",
+            "type": "command"
           }
         ]
       }
     ],
-    "Notification": [
+    "PreToolUse": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/notification.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" pre_tool_use.py",
+            "shell": "bash",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" canon_inject.py",
+            "shell": "bash",
+            "type": "command"
+          },
+          {
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" session_start.py",
+            "shell": "bash",
+            "type": "command"
           }
         ]
       }
@@ -82,8 +79,20 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/stop.py\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" stop.py",
+            "shell": "bash",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\" user_prompt_submit.py",
+            "shell": "bash",
+            "type": "command"
           }
         ]
       }

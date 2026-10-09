@@ -1,34 +1,21 @@
-sulde-cc is distributed under the Business Source License 1.1.
+MIT License
 
-Canonical license text (authoritative):
-  https://mariadb.com/bsl11/
+Copyright (c) 2026 eric.gao.tech (EthanReedLabs) and contributors.
 
-License Parameters (this project):
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-  Licensor:              eric.gao.tech (SpielbergGao)
-  Licensed Work:         sulde-cc — multi-end Claude Code coordination framework
-  Licensed Work Source:  https://github.com/SpielbergGao/sulde-cc
-  Effective Date:        2026-05-25  (v0.2.0 release)
-  Change Date:           2030-05-25  (4 years after Effective Date)
-  Change License:        MIT License
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-  Additional Use Grant:
-    You may make production use of the Licensed Work, provided that your use
-    does not include offering the Licensed Work to third parties as a hosted
-    or embedded service whose primary value derives from the methodology,
-    skills, or hooks shipped here. Internal team use, single-organisation
-    adoption, and forks for project-private customisation are unrestricted.
-
-Historical license:
-
-  Versions through v0.1.x were released under the MIT License. The original
-  MIT grant for those versions is preserved verbatim in `LICENSE-v0.1.0-MIT-archive`
-  in the repository root, and continues to apply to those historical releases
-  in perpetuity.
-
-  On the Change Date above, the Licensed Work as of that date will
-  automatically transition to the Change License (MIT), as required by
-  Business Source License 1.1.
-
-For questions about commercial use beyond the Additional Use Grant, contact
-the Licensor at the email listed in `.claude-plugin/plugin.json`.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

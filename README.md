@@ -1,175 +1,181 @@
-<h1 align="center">
-  <strong>Sulde</strong>
-</h1>
+<p align="center">
+  <img src="docs/assets/sulde-readme-banner.svg" alt="Sulde — plan, build, verify" width="100%" />
+</p>
+
+<h1 align="center">From AI coding tasks to verifiable delivery.</h1>
 
 <p align="center">
-  <a href="https://github.com/EthanReedLabs/sulde"><img src="https://img.shields.io/github/stars/EthanReedLabs/sulde?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub stars" /></a>
-  <img src="https://img.shields.io/badge/license-BSL_1.1-08C?style=flat" alt="License: BSL 1.1" />
-  <img src="https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux-4493F8?style=flat-square" alt="macOS, Windows, Linux" />
+  Give Claude Code and Codex a shared workflow for tasks, project context, and review.<br/>
+  Define the work. Carry forward what you learn. Check what was delivered.
 </p>
 
 <p align="center">
-  <strong>Intent-supervised AI coding agent execution.</strong><br/>
-  Run Claude Code and Codex side-by-side with versioned intent contracts,<br/>
-  per-action effect classification, and experience-driven verification.
+  <a href="#quick-start"><strong>Get started</strong></a> ·
+  <a href="#a-task-from-brief-to-review">See the workflow</a> ·
+  <a href="#documentation">Documentation</a> ·
+  <a href="README.zh-CN.md">简体中文</a>
 </p>
-
----
-
-## Features
-
-<table>
-<tr><td width="50%" valign="middle">
-
-### Intent Contracts
-
-Every task starts with a versioned, auditable contract binding task, run, session, and source identity. Feedback can never retroactively alter the original prediction.
-
-</td><td width="50%" valign="middle">
-
-### Effect Classification
-
-Per-action safety invariants — external writes, destructive operations, and unresolved outcomes each get their own verification path. No blanket Allow/Deny.
-
-</td>
-</tr>
-<tr><td width="50%" valign="middle">
-
-### Correction Lifecycle
-
-Feedback isn't just "rejected" or "approved" — it flows through proposed → delivered → acknowledged → verified → closed, with the executor unable to self-settle.
-
-</td><td width="50%" valign="middle">
-
-### Experience Feedback
-
-Verified experience is recalled through formal entry points and changes future verification strategy. Expired experience loses authority — stale knowledge never silently drives decisions.
-
-</td>
-</tr>
-<tr><td width="50%" valign="middle">
-
-### Dual-Host Supervision
-
-Claude Code and Codex run side-by-side under the same intent contract, each with independent worktrees, session binding, and generation fencing.
-
-</td><td width="50%" valign="middle">
-
-### Zero-Token Supervision
-
-All supervision — effect classification, identity binding, drift detection, feedback consumption — runs as deterministic local scripts. Zero added model calls.
-
-</td>
-</tr>
-<tr><td width="50%" valign="middle">
-
-### Formal Retry &amp; Continuation
-
-Failed attempts are retried through a formal retry channel bound to a stable operation identity. Continuations inherit intent contracts, not execution authority — and feedback artifacts survive across attempt boundaries.
-
-</td><td width="50%" valign="middle">
-
-### Evidence Archive
-
-Every run produces a SHA256-hashed evidence manifest: source identities, prompt captures, consumption records, probe outputs, and prediction checks — independently readable, never overwritten.
-
-</td>
-</tr>
-</table>
-
-## Supported Agents
 
 <p align="center">
-  <a href="https://claude.ai/claude-code"><kbd><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="Claude Code" width="16" valign="middle" /> Claude Code</kbd></a> &nbsp;
-  <a href="https://openai.com/codex"><kbd><img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="Codex" width="16" valign="middle" /> Codex</kbd></a> &nbsp;
-  <a href="https://opencode.ai"><kbd><img src="https://www.google.com/s2/favicons?domain=opencode.ai&sz=64" alt="OpenCode" width="16" valign="middle" /> OpenCode</kbd></a> &nbsp;
-  <a href="https://aider.chat"><kbd><img src="https://www.google.com/s2/favicons?domain=aider.chat&sz=64" alt="Aider" width="16" valign="middle" /> Aider</kbd></a> &nbsp;
-  <a href="https://www.continue.dev"><kbd><img src="https://www.google.com/s2/favicons?domain=continue.dev&sz=64" alt="Continue" width="16" valign="middle" /> Continue</kbd></a> &nbsp;
-  <a href="https://mistral.ai"><kbd><img src="https://www.google.com/s2/favicons?domain=mistral.ai&sz=64" alt="Mistral Vibe" width="16" valign="middle" /> Mistral Vibe</kbd></a> &nbsp;
-  <a href="https://qwenlm.github.io/qwen-code/docs/en/kimi-code-cli/getting-started.html"><kbd><img src="https://www.google.com/s2/favicons?domain=qwenlm.github.io&sz=64" alt="Qwen Code" width="16" valign="middle" /> Qwen Code</kbd></a> &nbsp;
-  <a href="https://kilocode.ai"><kbd><img src="https://www.google.com/s2/favicons?domain=kilocode.ai&sz=64" alt="Kilocode" width="16" valign="middle" /> Kilocode</kbd></a> &nbsp;
-  <a href="https://kiro.dev/docs/cli/"><kbd><img src="https://www.google.com/s2/favicons?domain=kiro.dev&sz=64" alt="Kiro" width="16" valign="middle" /> Kiro</kbd></a> &nbsp;
-  <a href="https://windsurf.com"><kbd><img src="https://www.google.com/s2/favicons?domain=windsurf.com&sz=64" alt="Windsurf" width="16" valign="middle" /> Windsurf</kbd></a> &nbsp;
-  <a href="https://cursor.com"><kbd><img src="https://www.google.com/s2/favicons?domain=cursor.com&sz=64" alt="Cursor" width="16" valign="middle" /> Cursor</kbd></a> &nbsp;
-  <a href="https://gemini.google.com/docs/cli"><kbd><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="Gemini CLI" width="16" valign="middle" /> Gemini CLI</kbd></a> &nbsp;
-  <a href="https://github.com/block/goose"><kbd><img src="https://www.google.com/s2/favicons?domain=block.github.io&sz=64" alt="Goose" width="16" valign="middle" /> Goose</kbd></a> &nbsp;
-  <a href="https://github.com/paul-gauthier/aider"><kbd><img src="https://www.google.com/s2/favicons?domain=aider.chat&sz=64" alt="Aider" width="16" valign="middle" /> Aider</kbd></a> &nbsp;
-  <a href="https://codebuddy.ai"><kbd><img src="https://www.google.com/s2/favicons?domain=codebuddy.ai&sz=64" alt="CodeBuddy" width="16" valign="middle" /> CodeBuddy</kbd></a> &nbsp;
-  <a href="https://www.codebuff.com"><kbd><img src="https://www.google.com/s2/favicons?domain=codebuff.com&sz=64" alt="Codebuff" width="16" valign="middle" /> Codebuff</kbd></a> &nbsp;
-  <a href="https://github.com/anthropics/claude-code"><kbd><img src="https://img.shields.io/badge/Claude_Code_Dev-08C?style=flat-square" alt="Claude Code Dev" /></kbd></a> &nbsp;
-  <a href="https://github.com/Cline CLI/cline"><kbd><img src="https://www.google.com/s2/favicons?domain=cline.bot&sz=64" alt="Cline" width="16" valign="middle" /> Cline</kbd></a> &nbsp;
-  <a href="https://github.com/All-Hands-AI/openhands"><kbd><img src="https://www.google.com/s2/favicons?domain=all-hands.dev&sz=64" alt="OpenHands" width="16" valign="middle" /> OpenHands</kbd></a> &nbsp;
-  <a href="https://github.com/princeton-nlp/SWE-agent"><kbd><img src="https://www.google.com/s2/favicons?domain=swe-agent.com&sz=64" alt="SWE-Agent" width="16" valign="middle" /> SWE-Agent</kbd></a> &nbsp;
-  <a href="https://github.com/SWE-bench/SWE-bench"><kbd><img src="https://img.shields.io/badge/SWE_bench-08C?style=flat-square" alt="SWE-bench" /></kbd></a> &nbsp;
-  <a href="https://github.com/AgentLess/agentless"><kbd><img src="https://img.shields.io/badge/AgentLess-05C?style=flat-square" alt="AgentLess" /></kbd></a> &nbsp;
-  <a href="https://github.com/RVCC-idpv/rvo-dev"><kbd><img src="https://www.google.com/s2/favicons?domain=atlassian.com&sz=64" alt="Rovo Dev" width="16" valign="middle" /> Rovo Dev</kbd></a> &nbsp;
-  <kbd>+ any CLI agent</kbd>
+  <a href="docs/DEVELOPMENT.md">Claude Code + Codex adapters</a> &nbsp;·&nbsp;
+  <a href="docs/MCP.md">MCP / CLI interfaces</a> &nbsp;·&nbsp;
+  <a href="LICENSE">MIT License</a>
 </p>
 
-<details>
-<summary><strong>架构说明</strong></summary>
-<br/>
-Sulde 通过 <code>runtime_provider.py</code> 的统一选择链管理多个 CLI Agent 宿主。
-新宿主只需实现两个约定：<strong>从 stdin 读取任务简报</strong> + <strong>产出结构化事件流</strong>。
-其余（意图合同绑定、效果分类、纠偏生命周期、经验召回）由 Sulde 框架自动提供。
-</details>
-<summary><strong>架构说明</strong></summary>
-<br/>
-Sulde 通过 <code>runtime_provider.py</code> 的统一选择链管理多个 CLI Agent 宿主。
-新宿主只需实现两个约定：<strong>从 stdin 读取任务简报</strong> + <strong>产出结构化事件流</strong>。
-其余（意图合同绑定、效果分类、纠偏生命周期、经验召回）由 Sulde 框架自动提供。
-</details>
+## Why Sulde?
 
-## How It Works
+A coding task carries more than a prompt: its scope, project history, decisions, and definition of done.
+Sulde brings that context into a workflow you and your coding agents can inspect.
 
-```
-┌─────────────────────────────────────────────────┐
-│              Intent Contract (v1)                │
-│  task_id · run_id · session_id · source_id      │
-│  expected_touch · impact_bounds · invariants    │
-├─────────────────────────────────────────────────┤
-│           PreToolUse (Effect Classifier)         │
-│  in-scope → allow · out-of-scope → deny         │
-│  unresolved → intervention → human gate          │
-├─────────────────────────────────────────────────┤
-│           PostToolUse (Fact Collection)          │
-│  drift detection · verdict · evidence            │
-├─────────────────────────────────────────────────┤
-│         Feedback Artifact (v1)                   │
-│  request_id · source run · facts · probe         │
-├─────────────────────────────────────────────────┤
-│      Experience Recall → Next Prediction         │
-└─────────────────────────────────────────────────┘
-```
+- **Keep the task clear.** Record the owner, dependencies, allowed changes, and acceptance criteria before execution.
+- **Bring useful experience forward.** Find relevant project knowledge and recorded session context, with sources you can check.
+- **Review the work with evidence.** Connect changes to their checks and reports, and send incomplete work back for a focused revision.
 
-Supervision runs as deterministic local scripts — zero added model calls. The agent sees the intent contract and feedback in its execution input and adjusts accordingly.
+Sulde is independently developed. This repository contains the framework source and project toolkit;
+full agent workflows require the corresponding host setup.
 
-## Install
+## A task from brief to review
 
-### Claude Code Plugin
+**Example: fix a cache refresh that overwrites newer data.**
 
-```bash
-# Via Claude Code plugin marketplace
-claude plugin install sulde-cc@sulde
-```
+| Step | What you do with Sulde | What you can review |
+| --- | --- | --- |
+| Define | Set the goal, affected files, owner, and regression checks. | A task brief with a clear definition of done. |
+| Prepare | Retrieve related lessons and check their original sources. | Relevant context and the reasons for applying it. |
+| Execute | Dispatch to Claude Code or Codex; use an isolated worktree for a managed task. | Changes and recorded execution events. |
+| Verify | Run the selected checks and review the report against the task. | Results tied to the work that was tested. |
+| Improve | Return unmet criteria for revision and record a verified lesson for later use. | A focused follow-up and reusable project knowledge. |
 
-### Codex Plugin
+This is an example of a configured workflow. You and the coordinating agent choose the task,
+checks, and acceptance decision. See the [task guide](spec/task-authoring.md) for the underlying contract.
 
-```bash
-# Via the transactional installer
-python3 scripts/release/install_codex_plugin.py --artifact-root <path>
-```
+## Quick start
 
-### From Source
+**Try a small local workflow first.** You need Git and Python 3.10+.
+This example exercises the knowledge toolkit without an agent account, a model, or an MCP server.
 
-```bash
+**1. Set up the source toolkit**
+
+```sh
 git clone https://github.com/EthanReedLabs/sulde.git
 cd sulde
-claude plugin install .
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r hooks/requirements.txt
+python -B scripts/sulde.py doctor --strict
 ```
 
----
+<details>
+<summary>Windows / PowerShell</summary>
+
+After cloning the repository, create the environment with `py -3 -m venv .venv`.
+Install dependencies with `.venv\Scripts\python.exe -m pip install -r hooks/requirements.txt`,
+and replace `python` below with `.venv\Scripts\python.exe`.
+
+</details>
+
+**2. Save and find one lesson**
+
+Run from the repository root, using a fresh `.tmp/sulde-demo` directory:
+
+```sh
+python -B scripts/sulde.py kb init --root .tmp/sulde-demo
+python -c "from pathlib import Path; Path('.tmp/sulde-demo/lesson.md').write_text('Ignore an older cache refresh response after a newer request has completed.', encoding='utf-8')"
+python -B scripts/sulde.py kb add --root .tmp/sulde-demo --container anti-patterns --title "Stale cache refresh" --summary "Keep newer cache results from being overwritten." --body .tmp/sulde-demo/lesson.md
+python -B scripts/sulde.py kb lint --root .tmp/sulde-demo
+python -B scripts/sulde.py kb search --root .tmp/sulde-demo "stale cache refresh"
+```
+
+The lint result should report `"documents": 1` and `"errors": []`. Search should return
+**Stale cache refresh** with the document ID `anti-patterns/stale-cache-refresh`.
+The generated document starts as a draft. Review it before treating it as project guidance.
+
+This toolkit uses local lexical search. The full knowledge and memory runtime has its own dependencies
+and initialization; see the [Knowledge Kit](docs/KNOWLEDGE-KIT.md) and [MCP guide](docs/MCP.md).
+
+**3. Connect the capabilities you need**
+
+| Your next step | Guide |
+| --- | --- |
+| Add Sulde to Claude Code or Codex | [Build and configure a host adapter](docs/DEVELOPMENT.md) |
+| Use knowledge and memory from a compatible MCP client | [Set up the local MCP server](docs/MCP.md) |
+| Define and dispatch an engineering task | [Write your first task brief](spec/task-authoring.md) |
+
+Host adapters are delivered as source candidates. Check the selected revision's CLI compatibility
+and installation instructions before enabling a full workflow.
+
+## What you can build on
+
+| Capability | How it helps |
+| --- | --- |
+| **Task orchestration** | Organize owners, dependencies, scope, dispatch, and acceptance around explicit tasks. |
+| **Knowledge & memory** | Retrieve engineering lessons and recorded context across projects and sessions. |
+| **Execution visibility** | Observe host events, tool operations, and outcomes through configured adapters. |
+| **Verification & rework** | Keep checks and delivery reports attached to the task, with a path back to revision. |
+| **Project extensions** | Add skills, hooks, checks, knowledge containers, and project-specific conventions. |
+| **Project templates** | Start from Android, iOS, Flutter, and HarmonyOS templates; reuse the shared tooling elsewhere. |
+
+## Works with your tools
+
+| Integration | Available surface |
+| --- | --- |
+| **Claude Code** | Plugin adapter, skills, hooks, and managed execution support. |
+| **Codex** | Plugin adapter, skills, hooks, and managed execution support. |
+| **Compatible MCP clients** | Exposed knowledge, memory, status, and event tools. |
+| **CLI workflows** | Local project checks, extension scaffolding, and the knowledge toolkit. |
+
+Full host integration needs an adapter that maps the host's events, permissions, and process lifecycle.
+For another agent, start with the interfaces it supports and the [host integration guide](docs/DEVELOPMENT.md#adding-a-compatible-host).
+
+## Architecture
+
+```text
+Task brief → Host adapter → Execution → Checks & evidence → Review / revision
+                  ↕                         ↕
+          Project knowledge and recorded session context
+```
+
+The host adapter connects Claude Code or Codex to the shared runtime. Skills guide the workflow;
+CLI and MCP interfaces expose individual capabilities. Managed execution adds an isolated worktree
+and task-bound reports. [Explore the host contract →](docs/dual-runtime-contract.md)
+
+## A few practical questions
+
+**Can I use only the knowledge tools?**
+
+Yes. The local toolkit runs independently. The MCP server exposes a separate set of knowledge,
+memory, status, and event tools; connecting it does not enable the entire task workflow.
+
+**Will it remember every conversation automatically?**
+
+Memory search needs recorded data. Session ingestion and background maintenance require their own
+configuration; a new MCP connection alone does not collect the client's conversation history.
+
+**Where does my data live?**
+
+Knowledge and memory use the configured local data directory. Data sent to a connected client,
+model, or external service depends on your configuration. See the [data boundary](docs/PUBLIC-DATA-BOUNDARY.md).
+
+## Documentation
+
+| Start using Sulde | Go deeper |
+| --- | --- |
+| [Host setup & packaging](docs/DEVELOPMENT.md) | [Host runtime contract](docs/dual-runtime-contract.md) |
+| [Knowledge Kit](docs/KNOWLEDGE-KIT.md) | [Task contract](spec/task-contract.md) |
+| [MCP setup & tools](docs/MCP.md) | [Event observation](docs/event-observability.md) |
+| [Task authoring](spec/task-authoring.md) | [Extension guide](docs/EXTENDING.md) |
+
+## Contribute
+
+Share a reproducible issue, improve a confusing instruction, or contribute a reusable engineering example.
+Read the [contribution guide](CONTRIBUTING.md), or [open an issue](https://github.com/EthanReedLabs/sulde/issues).
+If Sulde is useful to you, a star helps other developers find it.
 
 ## License
 
-Sulde is free to use under the [BSL 1.1 License](LICENSE) (Change Date: 2030-05-25 → MIT). Prior versions (v0.1.x) remain under MIT.
+Open source under the [MIT License](LICENSE). Commercial use is permitted; retain the copyright
+and permission notices. See the [licensing guide](docs/LICENSING.md) for scope and historical releases.
+
+---
+
+**Start with one task you can verify.** [Get started ↑](#quick-start)

@@ -56,7 +56,7 @@ If adding dependencies, native binaries, dictionaries, or model weights to a dis
 2. Obtain the license, copyright, and applicable NOTICE files from those exact distribution files,
    including transitive and embedded components; include the notices required by their terms.
 3. Record any modifications and review compatibility for the actual use and distribution.
-4. Keep third-party rights separate from Sulde's noncommercial grant and its historical MIT/BSL grants.
+4. Keep third-party rights separate from Sulde's current MIT grant and the grants recorded in historical releases.
 
 These records supplement the [licensing guide](docs/LICENSING.md). Product names identify integration
 points and sources; they do not imply endorsement or ownership by Sulde.

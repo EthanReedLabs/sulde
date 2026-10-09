@@ -6,8 +6,9 @@
 **stdio** 通信，协商 MCP **2024-11-05** 协议。客户端需要支持该版本；本次不提供
 HTTP/SSE 服务。`mcp-v0.2.0` 标签独立标识 MCP 组件，与 Claude/Codex 插件版本分开。
 
-Sulde 由个人独立开发，源码按 [PolyForm Noncommercial 1.0.0](../LICENSE) 提供，供非商业
-使用；具体范围见[许可说明](LICENSING.zh-CN.md)。
+Sulde 由个人独立开发，当前仓库源码按 [MIT License](../LICENSE) 提供，
+具体范围见[许可说明](LICENSING.zh-CN.md)。已发布的归档包保留其附带的许可声明，
+下载时应核对实际归档包中的许可证。
 
 ## 下载与安装
 

@@ -2,78 +2,54 @@
 
 [English](LICENSING.md) | **简体中文**
 
-Sulde 当前源码采用 **PolyForm Noncommercial License 1.0.0**，SPDX 标识为
-`PolyForm-Noncommercial-1.0.0`。商业用途不在本次许可授权范围内。
-完整条款见 [LICENSE](../LICENSE)，版权与来源见 [NOTICE](../NOTICE)。
-本文为使用说明，具体授权以英文许可证原文为准，不增加、删减或替代其条款。
+Sulde 当前项目自有源码采用 **MIT License**，SPDX 标识为 `MIT`。
+可按其条款用于商业及非商业用途。完整授权见 [LICENSE](../LICENSE)，
+版权与来源见 [NOTICE](../NOTICE)。本文为使用说明，不增加、删减或替代许可证条款。
 
-## 可以做什么
+## 如何使用 Sulde
 
-- 为没有预期商业应用的个人学习、实验、研究和兴趣项目使用 Sulde。
-- 在许可证允许的目的下阅读、复制、修改源码，维护 fork，并分享修改版本。
-- 提交问题、文档修正和代码贡献；贡献规则见 [CONTRIBUTING.md](../CONTRIBUTING.md)。
+MIT 许可允许使用、复制、修改、合并、发布、分发、再许可和销售。
+可以用于个人项目、企业内部研发、收费客户交付及商业产品或服务。
 
-标准许可证的 `Noncommercial Organizations` 条款还明确许可慈善组织、教育机构、
-公共研究机构、公共安全或卫生组织、环保组织及政府机构使用，不受其资金来源或
-资金义务影响。这里保留该标准条款，不能把它解释为“任何组织使用都禁止”。
+软件的所有副本或实质性部分须包含版权声明和许可声明。软件按原样提供，
+不提供担保，具体免责条款见 [LICENSE](../LICENSE)。分发时保留完整许可证文件，
+即可一并保留授权、条件与免责声明。
 
-## 商业使用边界
+当前 MIT 授权适用于本次源码修订，没有未来的 Change Date，也无需等待后续转许可。
 
-对未落入许可证明确允许范围的商业用途，以下行为不获本许可证授权：
+## 适用范围与第三方材料
 
-| 场景 | 当前许可 |
-| --- | --- |
-| 出售、付费分发 Sulde 或基于其源码修改的产品 | 不授权 |
-| 将 Sulde 包装为收费插件、SaaS、托管服务或商业产品的一部分 | 不授权 |
-| 在企业内部使用 Sulde 支撑商业研发、生产或经营 | 不授权；内部自用并非豁免 |
-| 使用 Sulde 完成收费外包、客户交付或商业咨询工作 | 不授权 |
-| 免费提供 Sulde 服务，用于商业引流、广告收入或商业产品推广 | 不因免费而获得授权 |
+项目许可适用于项目自有的代码、脚本、Hook、Skill、模板和文档，另有明确许可的材料除外。
+第三方依赖、下载的模型及外部宿主或 API 服务保留各自的条款与声明。
+本次变更不改写这些组件的许可，也不主张用户独立编写的项目代码或知识内容的所有权。
 
-判断取决于使用目的和许可证的明确许可，不仅取决于是否单独收取插件费用。
-个人账号、私有 fork、只在公司内部运行或公开修改源码，都不会自动取得商用权。
-本仓库不提供商业授权，也不承诺会另行提供；许可问题可联系
-[eric.gao.tech@gmail.com](mailto:eric.gao.tech@gmail.com)。
-
-## 转载、修改与再分发
-
-接收任何部分源码的人必须同时获得许可证全文或其官方 URL，以及项目提供的全部
-`Required Notice:` 声明。建议原样附带 `LICENSE` 和 `NOTICE`，标明修改与来源，
-并保留适用的第三方许可及版权声明。Fork 或重新打包不会取消原有许可限制。
-
-项目许可适用于项目自有的代码、脚本、hooks、skills、模板和文档，另有明确许可
-的材料除外。第三方依赖、下载的模型及外部宿主/API 服务分别遵守自身条款。
-本许可不主张用户独立编写的项目代码或知识内容的所有权；包含或改编 Sulde 内容
-的材料仍需遵守适用条款。独立产物的归属也不等于获准商业使用 Sulde 工具本身。
-
-依赖与模型的来源、上游许可，以及附带分发时需要补齐的记录，见
+依赖与模型的来源、上游许可及附带分发时需要补齐的记录，见
 [第三方软件与模型清单](../THIRD_PARTY_NOTICES.zh-CN.md)。
 
-## 为什么称为源码可见
+## 贡献许可
 
-[OSI 开源定义第 6 条](https://opensource.org/osd)要求不得限制商业等应用领域。
-因此这里使用“源码可见 / source available、仅限非商业用途”的表述，避免把
-禁止商用的许可误称为 OSI 意义上的开源。源码公开不等于任意用途免费授权。
+新增贡献按 MIT 许可提交。贡献者保留其版权，并应具备提交相关内容所需的权利。
+具体规则见 [CONTRIBUTING.md](../CONTRIBUTING.md)。
 
 ## License history
 
-此次切换以**包含本许可变更的源码修订**为界；不得仅凭复用的插件版本号判断许可。
-接收者应查看具体提交、发行包内的 `LICENSE` 和相应声明。
+本次 MIT 声明以包含 `LICENSE` 变更的源码修订为界。复用的插件版本号本身不足以判断许可，
+应核对实际提交，以及所使用源码或发行包附带的许可证。
 
-| 范围 | 适用说明 |
+| 范围 | 已记录的许可 |
 | --- | --- |
-| 历史 v0.1.x | 已授出的 MIT 权利继续有效，见 [Git 历史中的 MIT 文本](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-v0.1.0-MIT-archive) |
-| 此次切换前已按 BSL 1.1 分发的副本 | 原有 BSL 条件及转 MIT 权利继续有效，见 [Git 历史中的 BSL 声明](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-BSL-1.1-archive) |
-| 首次按当前许可分发的新内容 | PolyForm Noncommercial 1.0.0；没有自动转 MIT 的日期 |
+| 当前项目自有源码 | [MIT License](../LICENSE)，另有明确许可的材料除外。 |
+| 历史 v0.1.x | MIT，见[历史 MIT 文本](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-v0.1.0-MIT-archive)。 |
+| 曾按 BSL 1.1 分发的副本 | 原有授权及转许可条款保留在[历史 BSL 声明](https://github.com/EthanReedLabs/sulde/blob/d70748711e00a772fee5073f67a8d9b6c1bce91e/LICENSE-BSL-1.1-archive)中。 |
+| 曾按 PolyForm Noncommercial 1.0.0 分发的副本 | 原有条款保留在[历史 PolyForm 许可证](https://github.com/EthanReedLabs/sulde/blob/2428fa1a721e822353ce26c4e336cfe51c9519f4/LICENSE)中。 |
 
-旧许可证文件保存在上方链接固定的 Git 历史版本中，当前源码目录和插件包不再携带。
-当前项目许可证文件为 `LICENSE`。
+本次源码变更不改写已发布的归档包，也不撤销已经授出的权利。历史引用说明对应副本的许可，
+不为当前采用 MIT 的项目自有源码增加限制。另有单独许可的材料继续遵守自身条款。
 
-新的许可声明不撤销或缩减历史版本及其内容已经授出的权利，也不把第三方或历史
-贡献者未授权重许可的内容强行改为新许可。使用历史内容可依其原有授权；使用包含
-新内容的版本需同时满足相应许可。历史存档不构成新内容的 MIT/BSL 双重许可选项。
+## 参考
 
-## 官方依据
+- [MIT 许可证 — Open Source Initiative](https://opensource.org/license/mit)
+- [MIT SPDX 标识](https://spdx.org/licenses/MIT.html)
+- [项目许可证](../LICENSE)
 
-- [PolyForm Noncommercial 1.0.0 原文](https://polyformproject.org/licenses/noncommercial/1.0.0)
-- [SPDX 许可证标识](https://spdx.org/licenses/PolyForm-Noncommercial-1.0.0.html)
-- [历史 BSL 1.1 原文](https://mariadb.com/bsl11/)
+项目许可问题可联系 [eric.gao.tech@gmail.com](mailto:eric.gao.tech@gmail.com)。

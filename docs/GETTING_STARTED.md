@@ -1,5 +1,9 @@
 # Getting Started (v0.2.0)
 
+This is a historical v0.2.0 walkthrough. For the current source and MIT license,
+start with the [README](../README.md), [host setup](DEVELOPMENT.md), and
+[licensing guide](LICENSING.md).
+
 > Go from "I cloned sulde-cc" to "my first Dev session is running a task-md" in about 10 minutes.
 
 This walkthrough assumes you have Claude Code installed, Python 3.6+ available, and a mobile project (or empty directory) where you want to adopt the methodology.
@@ -9,7 +13,7 @@ This walkthrough assumes you have Claude Code installed, Python 3.6+ available, 
 ## 1. Install the plugin (~ 2 min)
 
 ```sh
-# Latest v0.2.0 (mobile-first, BSL 1.1, Python hooks)
+# Historical v0.2.0 (mobile-first, BSL 1.1, Python hooks)
 /plugin marketplace add EthanReedLabs/sulde-cc
 /plugin install sulde-cc@sulde-cc
 

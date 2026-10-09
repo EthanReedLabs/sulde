@@ -1,27 +1,22 @@
-Required Notice: Copyright (c) 2026 eric.gao.tech (EthanReedLabs) and contributors.
-Required Notice: Sulde source: https://github.com/EthanReedLabs/sulde
+Copyright (c) 2026 eric.gao.tech (EthanReedLabs) and contributors.
+Sulde source: https://github.com/EthanReedLabs/sulde
 
-Current license: PolyForm Noncommercial License 1.0.0
-SPDX identifier: PolyForm-Noncommercial-1.0.0
+Current license: MIT License
+SPDX identifier: MIT
 License text: LICENSE
 Licensing guide: docs/LICENSING.md
 Third-party inventory: THIRD_PARTY_NOTICES.md (English), THIRD_PARTY_NOTICES.zh-CN.md (Chinese)
 Contact: eric.gao.tech@gmail.com
 
-This source revision is offered under the accompanying LICENSE. It does not
-grant commercial use or promise automatic conversion to MIT or another license.
-The standard license's express permissions, including its Noncommercial
-Organizations provision, remain unchanged.
+This source revision is offered under the accompanying MIT License. Include
+the copyright and permission notices in copies or substantial portions of
+the software, as required by that license.
 
 The project license covers project-owned code, scripts, hooks, skills, templates
 and documentation except material explicitly licensed otherwise. Third-party
 software, models, services and other separately licensed material retain their
 own terms. This notice does not relicense them or license users' independent work.
 
-Previously distributed copies retain their original license grants. Versions
-through v0.1.x retain MIT. Copies
-previously distributed under BSL 1.1 retain their parameters and change-license
-rights. Historical texts are retained in Git history and linked from the
-License history section of docs/LICENSING.md; they are not bundled with current
-packages. They are not alternative licenses for new work first distributed
-under the current LICENSE.
+Earlier releases retain their recorded license grants. This revision does not
+rewrite previously published archives or revoke rights already granted. See
+the License history section of docs/LICENSING.md for the historical texts.

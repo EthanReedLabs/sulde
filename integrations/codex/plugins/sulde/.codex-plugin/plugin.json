@@ -6,9 +6,9 @@
     "name": "eric.gao.tech",
     "email": "eric.gao.tech@gmail.com"
   },
-  "homepage": "https://github.com/EthanReedLabs/sulde-pro",
-  "repository": "https://github.com/EthanReedLabs/sulde-pro",
-  "license": "BUSL-1.1",
+  "homepage": "https://github.com/EthanReedLabs/sulde",
+  "repository": "https://github.com/EthanReedLabs/sulde",
+  "license": "MIT",
   "keywords": [
     "knowledge-base",
     "memory",

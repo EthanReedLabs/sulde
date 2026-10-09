@@ -7,8 +7,9 @@ newline-delimited JSON-RPC over **stdio** and negotiates MCP **2024-11-05**. Cli
 must support that revision; HTTP/SSE hosting is not included. The `mcp-v0.2.0` tag
 versions this component independently of the Claude and Codex plugin manifests.
 
-Sulde is independently developed. Source is available for noncommercial use under
-[PolyForm Noncommercial 1.0.0](../LICENSE); see the [licensing guide](LICENSING.md).
+Sulde is independently developed. The current repository source is available under the
+[MIT License](../LICENSE); see the [licensing guide](LICENSING.md). Previously published
+release archives retain their bundled license notices; check the exact archive you download.
 
 ## Download and install
 

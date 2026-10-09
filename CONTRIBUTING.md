@@ -40,7 +40,7 @@ These areas are maintainer-controlled and PRs touching them will be redirected:
 - **Skill internals** (`skills/*/SKILL.md`). The structure of the five skills is part of the framework's design. If you think a skill is missing something, open an **issue** describing the problem; a maintainer will evaluate.
 - **Hook logic** (`hooks/*.py`, `hooks/lib/*.py`, `hooks/git-precommit/*.sh`, `hooks/hooks.json`). Same reason. Includes the protocol-compliance details (exit-code semantics, JSON `permissionDecision`, marker-file grace mechanics).
 - **Template top-level layout** (`template/_project/` and `template/{android,ios,flutter,harmony}/`). Adding new top-level directories or new stacks changes the framework's shape; this needs a design discussion first.
-- **`plugin.json` / version bumps / `LICENSE`**. Release management is centralized. License-change proposals require maintainer sign-off given BSL 1.1's Change Date / Change License parameters.
+- **`plugin.json` / version bumps / `LICENSE`**. Release management is centralized. License-change proposals require maintainer sign-off.
 
 If you have a strong argument for changing one of these, open an issue with the rationale before writing code.
 
@@ -52,18 +52,15 @@ If you have a strong argument for changing one of these, open an issue with the 
 4. Body explains *why* (not just *what* — the diff shows what)
 5. If your change has a "this would have caused X before" story, include it; concrete pain motivates merges
 
-### Sign-off — Contributor License Agreement (CLA)
+### Contribution licensing
 
-By opening a PR against sulde-cc you agree to the following terms:
+By opening a pull request, you assert that you authored the contribution or have the rights
+needed to submit it, and offer it under the project's [MIT License](LICENSE). You retain your
+copyright. No copyright assignment or additional relicensing agreement is required.
 
-1. You assert that you authored the contribution and have the right to submit it.
-2. You license your contribution to the Licensor (eric.gao.tech / EthanReedLabs) under the same **Business Source License 1.1** that covers the project, with the same Change Date and Change License (MIT) parameters.
-3. You grant the Licensor an additional perpetual, irrevocable license to re-license your contribution under any OSI-approved license, including but not limited to MIT, so the Licensor can manage the v0.2.0 → Change Date transition consistently across all parts of the codebase.
-4. You retain your copyright on the contribution itself; only the licensing terms are granted.
-
-Why this CLA exists: BSL 1.1 has a Change Date (currently 2030-05-25) at which the licensed work transitions to MIT. The Licensor must hold the right to perform this transition uniformly across the codebase, including contributor code. Without an explicit grant, contributor code would remain BSL after the Change Date in ways that fragment the license.
-
-The CLA does not apply to contributions to the v0.1.x line (MIT, no Change Date) — those continue under MIT in perpetuity per the `LICENSE-v0.1.0-MIT-archive` file.
+Identify third-party material and preserve its original license and attribution. Historical
+contributions and releases retain their existing grants; see the
+[licensing guide](docs/LICENSING.md#license-history).
 
 ### CI
 
